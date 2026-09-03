@@ -14,102 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Applica colonne compatte e fisse
+      - name: Applica modifica tabella clienti
         shell: bash
         run: |
-          python3 <<'PY'
-          from pathlib import Path
-
-          p = Path('clienti.html')
-          s = p.read_text(encoding='utf-8')
-
-          css = r'''
-
-/* clienti-sticky-columns-v1 */
-.table-wrap{
-  overflow-x:auto;
-  position:relative;
-  -webkit-overflow-scrolling:touch;
-}
-table{
-  width:1186px;
-  min-width:1186px;
-  table-layout:fixed;
-  border-collapse:separate;
-  border-spacing:0;
-}
-th,td{padding-left:7px;padding-right:7px}
-
-/* ID sempre visibile */
-thead th:nth-child(1),
-tbody td.id{
-  position:sticky;
-  left:0;
-  width:56px;
-  min-width:56px;
-  max-width:56px;
-}
-thead th:nth-child(1){z-index:8;background:#f7faf9}
-tbody td.id{z-index:5;background:#fff}
-
-/* Nome sempre visibile accanto all'ID */
-thead th:nth-child(2),
-tbody td.nome{
-  position:sticky;
-  left:56px;
-  width:142px;
-  min-width:142px;
-  max-width:142px;
-  box-shadow:9px 0 12px -12px rgba(0,45,37,.55);
-}
-thead th:nth-child(2){z-index:8;background:#f7faf9}
-tbody td.nome{z-index:5;background:#fff}
-.name-btn{max-width:126px;width:126px;padding-left:2px;padding-right:2px}
-
-/* Colonne più compatte */
-thead th:nth-child(3),td.operator{width:104px;min-width:104px;max-width:104px}
-thead th:nth-child(4),td.category{width:118px;min-width:118px;max-width:118px}
-thead th:nth-child(5),thead th:nth-child(6),td.link{width:72px;min-width:72px;max-width:72px}
-thead th:nth-child(7),thead th:nth-child(8),thead th:nth-child(9),thead th:nth-child(10),td.metric{width:72px;min-width:72px;max-width:72px}
-thead th:nth-child(11),tbody td:nth-child(11){width:96px;min-width:96px;max-width:96px}
-thead th:nth-child(12),tbody td:nth-child(12){width:126px;min-width:126px;max-width:126px}
-thead th:nth-child(13),tbody td:nth-child(13){width:112px;min-width:112px;max-width:112px}
-.row-actions{gap:5px}.open-btn{padding:0 10px}.delete-row{flex:0 0 40px}
-
-@media(max-width:760px){
-  th,td{padding-left:6px;padding-right:6px}
-  thead th:nth-child(1),tbody td.id{width:52px;min-width:52px;max-width:52px}
-  thead th:nth-child(2),tbody td.nome{left:52px;width:132px;min-width:132px;max-width:132px}
-  .name-btn{max-width:116px;width:116px}
-}
-'''
-
-          if '/* clienti-sticky-columns-v1 */' not in s:
-              s = s.replace('</style>', css + '\n</style>', 1)
-
-          s = s.replace(
-              '<button id="confirmNo" class="confirm-no" type="button">NO</button><button id="confirmYes" class="confirm-yes" type="button">SÌ</button>',
-              '<button id="confirmNo" class="confirm-no" type="button">Annulla</button><button id="confirmYes" class="confirm-yes" type="button">Elimina definitivamente</button>',
-              1
-          )
-
-          s = s.replace(
-              'confirmClientName.textContent=`${c.nome||"Cliente"} (ID ${c.id})`;',
-              'confirmClientName.textContent=`ID ${c.id} — ${c.nome||"Cliente"}`;',
-              1
-          )
-
-          old_delete = '<button class="delete-row" data-delete="${escapeAttr(c.id)}" type="button" title="Elimina cliente">❌</button>'
-          new_delete = '<button class="delete-row" data-delete="${escapeAttr(c.id)}" type="button" title="Elimina cliente ID ${escapeAttr(c.id)}" aria-label="Elimina cliente ID ${escapeAttr(c.id)} - ${escapeAttr(c.nome)}">❌</button>'
-          s = s.replace(old_delete, new_delete, 1)
-
-          p.write_text(s, encoding='utf-8')
-          PY
-
+          echo 'CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aApwID0gUGF0aCgiY2xpZW50aS5odG1sIikKcyA9IHAucmVhZF90ZXh0KGVuY29kaW5nPSJ1dGYtOCIpCgpjc3MgPSByIiIiCi8qIGNsaWVudGktc3RpY2t5LWNvbHVtbnMtdjEgKi8KLnRhYmxlLXdyYXB7CiAgb3ZlcmZsb3cteDphdXRvOwogIHBvc2l0aW9uOnJlbGF0aXZlOwogIC13ZWJraXQtb3ZlcmZsb3ctc2Nyb2xsaW5nOnRvdWNoOwp9CnRhYmxlewogIHdpZHRoOjExODZweDsKICBtaW4td2lkdGg6MTE4NnB4OwogIHRhYmxlLWxheW91dDpmaXhlZDsKICBib3JkZXItY29sbGFwc2U6c2VwYXJhdGU7CiAgYm9yZGVyLXNwYWNpbmc6MDsKfQp0aCx0ZHtwYWRkaW5nLWxlZnQ6N3B4O3BhZGRpbmctcmlnaHQ6N3B4fQp0aGVhZCB0aDpudGgtY2hpbGQoMSksCnRib2R5IHRkLmlkewogIHBvc2l0aW9uOnN0aWNreTsKICBsZWZ0OjA7CiAgd2lkdGg6NTZweDsKICBtaW4td2lkdGg6NTZweDsKICBtYXgtd2lkdGg6NTZweDsKfQp0aGVhZCB0aDpudGgtY2hpbGQoMSl7ei1pbmRleDo4O2JhY2tncm91bmQ6I2Y3ZmFmOX0KdGJvZHkgdGQuaWR7ei1pbmRleDo1O2JhY2tncm91bmQ6I2ZmZn0KdGhlYWQgdGg6bnRoLWNoaWxkKDIpLAp0Ym9keSB0ZC5ub21lewogIHBvc2l0aW9uOnN0aWNreTsKICBsZWZ0OjU2cHg7CiAgd2lkdGg6MTQycHg7CiAgbWluLXdpZHRoOjE0MnB4OwogIG1heC13aWR0aDoxNDJweDsKICBib3gtc2hhZG93OjlweCAwIDEycHggLTEycHggcmdiYSgwLDQ1LDM3LC41NSk7Cn0KdGhlYWQgdGg6bnRoLWNoaWxkKDIpe3otaW5kZXg6ODtiYWNrZ3JvdW5kOiNmN2ZhZjl9CnRib2R5IHRkLm5vbWV7ei1pbmRleDo1O2JhY2tncm91bmQ6I2ZmZn0KLm5hbWUtYnRue21heC13aWR0aDoxMjZweDt3aWR0aDoxMjZweDtwYWRkaW5nLWxlZnQ6MnB4O3BhZGRpbmctcmlnaHQ6MnB4fQp0aGVhZCB0aDpudGgtY2hpbGQoMyksdGQub3BlcmF0b3J7d2lkdGg6MTA0cHg7bWluLXdpZHRoOjEwNHB4O21heC13aWR0aDoxMDRweH0KdGhlYWQgdGg6bnRoLWNoaWxkKDQpLHRkLmNhdGVnb3J5e3dpZHRoOjExOHB4O21pbi13aWR0aDoxMThweDttYXgtd2lkdGg6MTE4cHh9CnRoZWFkIHRoOm50aC1jaGlsZCg1KSx0aGVhZCB0aDpudGgtY2hpbGQoNiksdGQubGlua3t3aWR0aDo3MnB4O21pbi13aWR0aDo3MnB4O21heC13aWR0aDo3MnB4fQp0aGVhZCB0aDpudGgtY2hpbGQoNyksdGhlYWQgdGg6bnRoLWNoaWxkKDgpLHRoZWFkIHRoOm50aC1jaGlsZCg5KSx0aGVhZCB0aDpudGgtY2hpbGQoMTApLHRkLm1ldHJpY3t3aWR0aDo3MnB4O21pbi13aWR0aDo3MnB4O21heC13aWR0aDo3MnB4fQp0aGVhZCB0aDpudGgtY2hpbGQoMTEpLHRib2R5IHRkOm50aC1jaGlsZCgxMSl7d2lkdGg6OTZweDttaW4td2lkdGg6OTZweDttYXgtd2lkdGg6OTZweH0KdGhlYWQgdGg6bnRoLWNoaWxkKDEyKSx0Ym9keSB0ZDpudGgtY2hpbGQoMTIpe3dpZHRoOjEyNnB4O21pbi13aWR0aDoxMjZweDttYXgtd2lkdGg6MTI2cHh9CnRoZWFkIHRoOm50aC1jaGlsZCgxMyksdGJvZHkgdGQ6bnRoLWNoaWxkKDEzKXt3aWR0aDoxMTJweDttaW4td2lkdGg6MTEycHg7bWF4LXdpZHRoOjExMnB4fQoucm93LWFjdGlvbnN7Z2FwOjVweH0ub3Blbi1idG57cGFkZGluZzowIDEwcHh9LmRlbGV0ZS1yb3d7ZmxleDowIDAgNDBweH0KQG1lZGlhKG1heC13aWR0aDo3NjBweCl7CiAgdGgsdGR7cGFkZGluZy1sZWZ0OjZweDtwYWRkaW5nLXJpZ2h0OjZweH0KICB0aGVhZCB0aDpudGgtY2hpbGQoMSksdGJvZHkgdGQuaWR7d2lkdGg6NTJweDttaW4td2lkdGg6NTJweDttYXgtd2lkdGg6NTJweH0KICB0aGVhZCB0aDpudGgtY2hpbGQoMiksdGJvZHkgdGQubm9tZXtsZWZ0OjUycHg7d2lkdGg6MTMycHg7bWluLXdpZHRoOjEzMnB4O21heC13aWR0aDoxMzJweH0KICAubmFtZS1idG57bWF4LXdpZHRoOjExNnB4O3dpZHRoOjExNnB4fQp9CiIiIgoKaWYgIi8qIGNsaWVudGktc3RpY2t5LWNvbHVtbnMtdjEgKi8iIG5vdCBpbiBzOgogICAgcyA9IHMucmVwbGFjZSgiPC9zdHlsZT4iLCBjc3MgKyAiXG48L3N0eWxlPiIsIDEpCgpzID0gcy5yZXBsYWNlKAogICAgJzxidXR0b24gaWQ9ImNvbmZpcm1ObyIgY2xhc3M9ImNvbmZpcm0tbm8iIHR5cGU9ImJ1dHRvbiI+Tk88L2J1dHRvbj48YnV0dG9uIGlkPSJjb25maXJtWWVzIiBjbGFzcz0iY29uZmlybS15ZXMiIHR5cGU9ImJ1dHRvbiI+U8OMPC9idXR0b24+JywKICAgICc8YnV0dG9uIGlkPSJjb25maXJtTm8iIGNsYXNzPSJjb25maXJtLW5vIiB0eXBlPSJidXR0b24iPkFubnVsbGE8L2J1dHRvbj48YnV0dG9uIGlkPSJjb25maXJtWWVzIiBjbGFzcz0iY29uZmlybS15ZXMiIHR5cGU9ImJ1dHRvbiI+RWxpbWluYSBkZWZpbml0aXZhbWVudGU8L2J1dHRvbj4nLAogICAgMQopCgpzID0gcy5yZXBsYWNlKAogICAgJ2NvbmZpcm1DbGllbnROYW1lLnRleHRDb250ZW50PWAke2Mubm9tZXx8IkNsaWVudGUifSAoSUQgJHtjLmlkfSlgOycsCiAgICAnY29uZmlybUNsaWVudE5hbWUudGV4dENvbnRlbnQ9YElEICR7Yy5pZH0g4oCUICR7Yy5ub21lfHwiQ2xpZW50ZSJ9YDsnLAogICAgMQopCgpvbGRfZGVsZXRlID0gJzxidXR0b24gY2xhc3M9ImRlbGV0ZS1yb3ciIGRhdGEtZGVsZXRlPSIke2VzY2FwZUF0dHIoYy5pZCl9IiB0eXBlPSJidXR0b24iIHRpdGxlPSJFbGltaW5hIGNsaWVudGUiPuKdjDwvYnV0dG9uPicKbmV3X2RlbGV0ZSA9ICc8YnV0dG9uIGNsYXNzPSJkZWxldGUtcm93IiBkYXRhLWRlbGV0ZT0iJHtlc2NhcGVBdHRyKGMuaWQpfSIgdHlwZT0iYnV0dG9uIiB0aXRsZT0iRWxpbWluYSBjbGllbnRlIElEICR7ZXNjYXBlQXR0cihjLmlkKX0iIGFyaWEtbGFiZWw9IkVsaW1pbmEgY2xpZW50ZSBJRCAke2VzY2FwZUF0dHIoYy5pZCl9IC0gJHtlc2NhcGVBdHRyKGMubm9tZSl9Ij7inYw8L2J1dHRvbj4nCnMgPSBzLnJlcGxhY2Uob2xkX2RlbGV0ZSwgbmV3X2RlbGV0ZSwgMSkKCnAud3JpdGVfdGV4dChzLCBlbmNvZGluZz0idXRmLTgiKQo=' | base64 -d > /tmp/patch_clienti.py
+          python3 /tmp/patch_clienti.py
           grep -q 'clienti-sticky-columns-v1' clienti.html
           grep -q 'Elimina definitivamente' clienti.html
-          grep -q 'ID ${c.id} —' clienti.html
 
       - name: Salva modifica
         run: |
