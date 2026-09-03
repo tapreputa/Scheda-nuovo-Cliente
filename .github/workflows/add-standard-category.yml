@@ -1,0 +1,85 @@
+name: Aggiungi categoria Standard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-standard-category.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Applica categoria Standard
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('personalizza.html')
+          s = p.read_text(encoding='utf-8')
+
+          def rep(old, new, expected=1):
+              global s
+              n = s.count(old)
+              if n != expected:
+                  raise SystemExit(f'Replacement non sicuro: attesi {expected}, trovati {n}: {old[:140]!r}')
+              s = s.replace(old, new)
+
+          # Standard in cima al menu categorie.
+          rep('<option value="" selected disabled>Seleziona la tipologia di attività</option>\n<option value="ristorante">Ristoranti</option>',
+              '<option value="" selected disabled>Seleziona la tipologia di attività</option>\n<option value="standard">Standard — collegamento diretto</option>\n<option value="ristorante">Ristoranti</option>')
+
+          # Descrizione del template Standard e gestione automatica del campo logo.
+          rep('''  const templates = {\n    bar: ["Bar / Caffetterie", "Sfondobar fisso + layout Indexbar + pulsante con chicchi animati + 5 stelle + Powered by Tapreputa."],''',
+              '''  const templates = {\n    standard: ["Standard", "Collegamento diretto alla pagina recensioni Google. Nessun logo e nessuna pagina personalizzata richiesta."],\n    bar: ["Bar / Caffetterie", "Sfondobar fisso + layout Indexbar + pulsante con chicchi animati + 5 stelle + Powered by Tapreputa."],''')
+
+          rep('''  const item = templates[activityType.value];\n  if (item) templateInfo.innerHTML = `<strong>${item[0]} — TEMPLATE MASTER ATTIVO</strong><span>${item[1]}</span>`;\n});''',
+              '''  const item = templates[activityType.value];\n  if (item) templateInfo.innerHTML = `<strong>${item[0]} — TEMPLATE MASTER ATTIVO</strong><span>${item[1]}</span>`;\n\n  const isStandard = activityType.value === "standard";\n  const logoField = logoFile.closest(".field");\n  if (logoField) logoField.style.display = isStandard ? "none" : "";\n  logoFile.disabled = isStandard;\n  if (isStandard) logoPreview.classList.remove("show");\n\n  const previewButton = document.getElementById("previewBtn");\n  if (previewButton) previewButton.textContent = isStandard ? "Apri pagina recensioni" : "Anteprima pagina";\n\n  const finalLabel = document.querySelector(".final-link-label");\n  if (finalLabel) finalLabel.textContent = isStandard ? "Link diretto da scrivere sulla NFC" : "Link finale da scrivere sulla NFC";\n});''')
+
+          # Standard è una categoria valida in generazione e anteprima.
+          allowed_old = '["bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico"]'
+          allowed_new = '["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico"]'
+          rep(allowed_old, allowed_new, 2)
+
+          # Il logo è obbligatorio solo per i template personalizzati.
+          rep('if (!logoDataUrl) return warn("Carica il logo dell’attività.");',
+              'if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");', 2)
+
+          # Per Standard il link NFC coincide con il link Google diretto.
+          rep('''  const slug = slugifyBusinessName(businessName);\n  if (!slug) return warn("Non riesco a creare il nome del link finale.");\n\n  finalNfcUrl = "https://tapreputa.github.io/" + slug + "/";''',
+              '''  if (type === "standard") {\n    finalNfcUrl = reviewUrl;\n  } else {\n    const slug = slugifyBusinessName(businessName);\n    if (!slug) return warn("Non riesco a creare il nome del link finale.");\n    finalNfcUrl = "https://tapreputa.github.io/" + slug + "/";\n  }''')
+
+          rep('''  msg.className = "message show ok";\n  msg.textContent = "Link finale generato. Copialo e incollalo in NFC Tools.";\n  addClientBtn.classList.add("show");''',
+              '''  msg.className = "message show ok";\n  msg.textContent = type === "standard"\n    ? "Link diretto alle recensioni pronto. Copialo e scrivilo sulla NFC."\n    : "Link finale generato. Copialo e incollalo in NFC Tools.";\n  addClientBtn.classList.add("show");''')
+
+          # Anteprima Standard = apertura diretta della pagina Google recensioni.
+          rep('''  if (!reviewUrl) return warn("Il link recensioni non è presente.");\n\n  try {\n    msg.className = "message show ok";\n    msg.textContent = "Preparazione anteprima...";''',
+              '''  if (!reviewUrl) return warn("Il link recensioni non è presente.");\n\n  if (type === "standard") {\n    const win = window.open(reviewUrl, "_blank", "noopener,noreferrer");\n    if (!win) return warn("Il browser ha bloccato l’apertura della pagina recensioni.");\n    msg.className = "message show ok";\n    msg.textContent = "Pagina recensioni aperta correttamente.";\n    return;\n  }\n\n  try {\n    msg.className = "message show ok";\n    msg.textContent = "Preparazione anteprima...";''')
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Verifica e pubblica
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s = Path('personalizza.html').read_text(encoding='utf-8')
+          start = s.index('<script>') + len('<script>')
+          end = s.rindex('</script>')
+          Path('/tmp/personalizza.js').write_text(s[start:end], encoding='utf-8')
+          PY
+          node --check /tmp/personalizza.js
+          git diff --check
+          git config user.name "Tapreputa Automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add personalizza.html
+          git commit -m "Aggiungi categoria Standard con link diretto recensioni"
+          git push
