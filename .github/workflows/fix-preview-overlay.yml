@@ -19,89 +19,21 @@ jobs:
         run: |
           python3 <<'PY'
           from pathlib import Path
+          import base64
           p = Path('personalizza.html')
           s = p.read_text(encoding='utf-8')
-
+          helper = base64.b64decode('CmZ1bmN0aW9uIG9wZW5JbmxpbmVQcmV2aWV3KHByZXZpZXdIdG1sKSB7CiAgbGV0IG92ZXJsYXkgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgidGFwUHJldmlld092ZXJsYXkiKTsKCiAgaWYgKCFvdmVybGF5KSB7CiAgICBvdmVybGF5ID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiZGl2Iik7CiAgICBvdmVybGF5LmlkID0gInRhcFByZXZpZXdPdmVybGF5IjsKICAgIG92ZXJsYXkuc3R5bGUuY3NzVGV4dCA9ICJwb3NpdGlvbjpmaXhlZDtpbnNldDowO3otaW5kZXg6OTk5OTk5O2JhY2tncm91bmQ6I2ZmZjtkaXNwbGF5Om5vbmU7ZmxleC1kaXJlY3Rpb246Y29sdW1uOyI7CgogICAgY29uc3QgdG9wYmFyID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiZGl2Iik7CiAgICB0b3BiYXIuc3R5bGUuY3NzVGV4dCA9ICJoZWlnaHQ6NjRweDtmbGV4OjAgMCA2NHB4O2JhY2tncm91bmQ6IzAwM2MzMztjb2xvcjojZmZmO2Rpc3BsYXk6ZmxleDthbGlnbi1pdGVtczpjZW50ZXI7anVzdGlmeS1jb250ZW50OnNwYWNlLWJldHdlZW47cGFkZGluZzowIDE2cHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7Ym94LXNoYWRvdzowIDJweCAxMHB4IHJnYmEoMCwwLDAsLjE4KTsiOwoKICAgIGNvbnN0IHRpdGxlID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgic3Ryb25nIik7CiAgICB0aXRsZS50ZXh0Q29udGVudCA9ICJBbnRlcHJpbWEgcGFnaW5hIjsKICAgIHRpdGxlLnN0eWxlLmNzc1RleHQgPSAiZm9udC1zaXplOjE3cHg7IjsKCiAgICBjb25zdCBjbG9zZSA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoImJ1dHRvbiIpOwogICAgY2xvc2UudHlwZSA9ICJidXR0b24iOwogICAgY2xvc2UudGV4dENvbnRlbnQgPSAi4oaQIFRvcm5hIGEgUGVyc29uYWxpenphIjsKICAgIGNsb3NlLnN0eWxlLmNzc1RleHQgPSAiYm9yZGVyOjFweCBzb2xpZCByZ2JhKDI1NSwyNTUsMjU1LC4zNSk7YmFja2dyb3VuZDojZmZmO2NvbG9yOiMwMDNjMzM7Ym9yZGVyLXJhZGl1czo5OTlweDtwYWRkaW5nOjEwcHggMTRweDtmb250LXdlaWdodDo4MDA7Zm9udC1zaXplOjEzcHg7Y3Vyc29yOnBvaW50ZXI7IjsKICAgIGNsb3NlLmFkZEV2ZW50TGlzdGVuZXIoImNsaWNrIiwgY2xvc2VJbmxpbmVQcmV2aWV3KTsKCiAgICB0b3BiYXIuYXBwZW5kQ2hpbGQodGl0bGUpOwogICAgdG9wYmFyLmFwcGVuZENoaWxkKGNsb3NlKTsKCiAgICBjb25zdCBmcmFtZSA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoImlmcmFtZSIpOwogICAgZnJhbWUuaWQgPSAidGFwUHJldmlld0ZyYW1lIjsKICAgIGZyYW1lLnRpdGxlID0gIkFudGVwcmltYSBwYWdpbmEgY2xpZW50ZSI7CiAgICBmcmFtZS5zdHlsZS5jc3NUZXh0ID0gImJvcmRlcjowO3dpZHRoOjEwMCU7ZmxleDoxIDEgYXV0bztiYWNrZ3JvdW5kOiNmZmY7IjsKCiAgICBvdmVybGF5LmFwcGVuZENoaWxkKHRvcGJhcik7CiAgICBvdmVybGF5LmFwcGVuZENoaWxkKGZyYW1lKTsKICAgIGRvY3VtZW50LmJvZHkuYXBwZW5kQ2hpbGQob3ZlcmxheSk7CiAgfQoKICBjb25zdCBmcmFtZSA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJ0YXBQcmV2aWV3RnJhbWUiKTsKICBmcmFtZS5zcmNkb2MgPSBwcmV2aWV3SHRtbDsKICBvdmVybGF5LnN0eWxlLmRpc3BsYXkgPSAiZmxleCI7CiAgZG9jdW1lbnQuYm9keS5zdHlsZS5vdmVyZmxvdyA9ICJoaWRkZW4iOwp9CgpmdW5jdGlvbiBjbG9zZUlubGluZVByZXZpZXcoKSB7CiAgY29uc3Qgb3ZlcmxheSA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJ0YXBQcmV2aWV3T3ZlcmxheSIpOwogIGNvbnN0IGZyYW1lID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInRhcFByZXZpZXdGcmFtZSIpOwogIGlmIChmcmFtZSkgZnJhbWUuc3JjZG9jID0gIiI7CiAgaWYgKG92ZXJsYXkpIG92ZXJsYXkuc3R5bGUuZGlzcGxheSA9ICJub25lIjsKICBkb2N1bWVudC5ib2R5LnN0eWxlLm92ZXJmbG93ID0gIiI7Cn0KCg==').decode('utf-8')
+          old = base64.b64decode('ICAgIGNvbnN0IGJsb2IgPSBuZXcgQmxvYihbcHJldmlld0h0bWxdLCB7IHR5cGU6ICJ0ZXh0L2h0bWw7Y2hhcnNldD11dGYtOCIgfSk7CiAgICBjb25zdCBwcmV2aWV3VXJsID0gVVJMLmNyZWF0ZU9iamVjdFVSTChibG9iKTsKICAgIGNvbnN0IHdpbiA9IHdpbmRvdy5vcGVuKHByZXZpZXdVcmwsICJfYmxhbmsiKTsKCiAgICBpZiAoIXdpbikgewogICAgICBVUkwucmV2b2tlT2JqZWN0VVJMKHByZXZpZXdVcmwpOwogICAgICByZXR1cm4gd2FybigiSWwgYnJvd3NlciBoYSBibG9jY2F0byBs4oCZYW50ZXByaW1hLiBDb25zZW50aSBs4oCZYXBlcnR1cmEgZGVsbGEgbnVvdmEgc2NoZWRhLiIpOwogICAgfQoKICAgIG1zZy5jbGFzc05hbWUgPSAibWVzc2FnZSBzaG93IG9rIjsKICAgIG1zZy50ZXh0Q29udGVudCA9ICJBbnRlcHJpbWEgYXBlcnRhIGNvcnJldHRhbWVudGUuIjsKCiAgICBzZXRUaW1lb3V0KCgpID0+IFVSTC5yZXZva2VPYmplY3RVUkwocHJldmlld1VybCksIDEyMDAwMCk7').decode('utf-8')
+          new = base64.b64decode('ICAgIG9wZW5JbmxpbmVQcmV2aWV3KHByZXZpZXdIdG1sKTsKCiAgICBtc2cuY2xhc3NOYW1lID0gIm1lc3NhZ2Ugc2hvdyBvayI7CiAgICBtc2cudGV4dENvbnRlbnQgPSAiQW50ZXByaW1hIGFwZXJ0YSBjb3JyZXR0YW1lbnRlLiI7').decode('utf-8')
           marker = 'previewBtn.addEventListener("click", async () => {'
-          helper = r'''
-function openInlinePreview(previewHtml) {
-  let overlay = document.getElementById("tapPreviewOverlay");
-
-  if (!overlay) {
-    overlay = document.createElement("div");
-    overlay.id = "tapPreviewOverlay";
-    overlay.style.cssText = "position:fixed;inset:0;z-index:999999;background:#fff;display:none;flex-direction:column;";
-
-    const topbar = document.createElement("div");
-    topbar.style.cssText = "height:64px;flex:0 0 64px;background:#003c33;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-family:Arial,Helvetica,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.18);";
-
-    const title = document.createElement("strong");
-    title.textContent = "Anteprima pagina";
-    title.style.cssText = "font-size:17px;";
-
-    const close = document.createElement("button");
-    close.type = "button";
-    close.textContent = "← Torna a Personalizza";
-    close.style.cssText = "border:1px solid rgba(255,255,255,.35);background:#fff;color:#003c33;border-radius:999px;padding:10px 14px;font-weight:800;font-size:13px;cursor:pointer;";
-    close.addEventListener("click", closeInlinePreview);
-
-    topbar.appendChild(title);
-    topbar.appendChild(close);
-
-    const frame = document.createElement("iframe");
-    frame.id = "tapPreviewFrame";
-    frame.title = "Anteprima pagina cliente";
-    frame.style.cssText = "border:0;width:100%;flex:1 1 auto;background:#fff;";
-
-    overlay.appendChild(topbar);
-    overlay.appendChild(frame);
-    document.body.appendChild(overlay);
-  }
-
-  const frame = document.getElementById("tapPreviewFrame");
-  frame.srcdoc = previewHtml;
-  overlay.style.display = "flex";
-  document.body.style.overflow = "hidden";
-}
-
-function closeInlinePreview() {
-  const overlay = document.getElementById("tapPreviewOverlay");
-  const frame = document.getElementById("tapPreviewFrame");
-  if (frame) frame.srcdoc = "";
-  if (overlay) overlay.style.display = "none";
-  document.body.style.overflow = "";
-}
-
-'''
           if 'function openInlinePreview(previewHtml)' not in s:
               if marker not in s:
                   raise SystemExit('Listener anteprima non trovato')
               s = s.replace(marker, helper + marker, 1)
-
-          old = r'''    const blob = new Blob([previewHtml], { type: "text/html;charset=utf-8" });
-    const previewUrl = URL.createObjectURL(blob);
-    const win = window.open(previewUrl, "_blank");
-
-    if (!win) {
-      URL.revokeObjectURL(previewUrl);
-      return warn("Il browser ha bloccato l’anteprima. Consenti l’apertura della nuova scheda.");
-    }
-
-    msg.className = "message show ok";
-    msg.textContent = "Anteprima aperta correttamente.";
-
-    setTimeout(() => URL.revokeObjectURL(previewUrl), 120000);'''
-
-          new = r'''    openInlinePreview(previewHtml);
-
-    msg.className = "message show ok";
-    msg.textContent = "Anteprima aperta correttamente.";'''
-
           if old in s:
               s = s.replace(old, new, 1)
           elif 'openInlinePreview(previewHtml);' not in s:
               raise SystemExit('Blocco popup anteprima non trovato')
-
           p.write_text(s, encoding='utf-8')
           PY
           grep -q 'function openInlinePreview(previewHtml)' personalizza.html
