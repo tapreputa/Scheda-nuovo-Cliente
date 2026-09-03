@@ -1,0 +1,107 @@
+name: Correggi anteprima Bar Caffetteria
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-bar-mobile-preview.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Correggi layout responsive Bar
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('personalizza.html')
+          text = p.read_text(encoding='utf-8')
+          marker = 'const BAR_CSS = `'
+          end_marker = '`;\n\nfunction buildBarTemplate'
+          if marker not in text or end_marker not in text:
+              raise SystemExit('BAR_CSS non trovato')
+
+          before, tail = text.split(marker, 1)
+          css, after = tail.split(end_marker, 1)
+          original_css = css
+
+          css = css.replace(
+          '''    display: grid;\n\n    grid-template-rows:''',
+          '''    display: grid;\n\n    grid-template-columns:\n        minmax(0, 1fr);\n\n    grid-template-rows:''', 1)
+
+          css = css.replace(
+          '''.brand {\n\n    justify-self: center;\n\n    width:\n        min(82vw, 430px);\n\n    margin-top: -18px;\n}''',
+          '''.brand {\n\n    justify-self: center;\n\n    width:\n        min(68vw, 300px);\n\n    max-width: 100%;\n\n    max-height: 180px;\n\n    min-width: 0;\n\n    display: flex;\n\n    align-items: flex-start;\n\n    justify-content: center;\n\n    margin-top: 0;\n}''', 1)
+
+          css = css.replace(
+          '''.logo {\n\n    display: block;\n\n    width: 100%;\n\n    height: auto;\n\n    object-fit: contain;''',
+          '''.logo {\n\n    display: block;\n\n    width: auto;\n\n    max-width: 100%;\n\n    height: auto;\n\n    max-height: 180px;\n\n    object-fit: contain;\n\n    object-position: center top;''', 1)
+
+          css = css.replace(
+          '''    width:\n        min(100%, 780px);\n\n    margin-top: -5vh;''',
+          '''    width:\n        min(100%, 780px);\n\n    max-width: 100%;\n\n    min-width: 0;\n\n    margin-top: -2vh;''', 1)
+
+          css = css.replace(
+          '''    white-space: nowrap;\n\n    text-shadow:''',
+          '''    white-space: normal;\n\n    line-height: 1.28;\n\n    text-wrap: balance;\n\n    text-shadow:''', 1)
+
+          css = css.replace(
+          '''.messaggio-box {\n\n    overflow: hidden;''',
+          '''.messaggio-box {\n\n    width: 100%;\n\n    max-width: 100%;\n\n    min-width: 0;\n\n    overflow: hidden;''', 1)
+
+          css = css.replace(
+          '''.recensione {\n\n    justify-self: center;''',
+          '''.recensione {\n\n    justify-self: center;\n\n    width: 100%;\n\n    max-width: 100%;\n\n    min-width: 0;''', 1)
+
+          css = css.replace(
+          '''    .brand {\n\n        width:\n            min(\n                82vw,\n                360px\n            );\n\n        margin-top:\n            -12px;\n    }''',
+          '''    .brand {\n\n        width:\n            min(\n                66vw,\n                270px\n            );\n\n        max-height: 145px;\n\n        margin-top: 0;\n    }\n\n\n    .logo {\n\n        max-height: 145px;\n    }''', 1)
+
+          css = css.replace(
+          '''        transform:\n            translateY(-25px);''',
+          '''        transform:\n            translateY(-12px);''', 1)
+
+          css = css.replace(
+          '''        font-size:\n            0.95rem;\n\n        letter-spacing:\n            0.12em;''',
+          '''        font-size:\n            clamp(0.78rem, 3.8vw, 0.95rem);\n\n        letter-spacing:\n            0.09em;''', 1)
+
+          css = css.replace(
+          '''        width:\n            34px;''',
+          '''        width:\n            clamp(18px, 7vw, 34px);''', 1)
+
+          css = css.replace(
+          '''        width:\n            min(\n                70vw,\n                310px\n            );''',
+          '''        width:\n            min(\n                60vw,\n                235px\n            );\n\n        max-height: 118px;''', 1)
+
+          if css == original_css:
+              raise SystemExit('Nessuna modifica applicata al BAR_CSS')
+
+          required = [
+              'grid-template-columns:',
+              'max-height: 180px;',
+              'white-space: normal;',
+              'max-height: 145px;'
+          ]
+          for item in required:
+              if item not in css:
+                  raise SystemExit(f'Controllo fallito: {item}')
+
+          p.write_text(before + marker + css + end_marker + after, encoding='utf-8')
+          PY
+
+      - name: Salva correzione
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add personalizza.html
+          if git diff --cached --quiet; then
+            echo "Nessuna modifica necessaria"
+            exit 0
+          fi
+          git commit -m "Sistema anteprima mobile Bar Caffetteria"
+          git push
