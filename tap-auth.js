@@ -1,6 +1,16 @@
 (() => {
   'use strict';
 
+  const PAGE_NAME = location.pathname.split('/').pop() || 'index.html';
+  document.documentElement.dataset.tapPage = PAGE_NAME;
+  if (!document.querySelector('link[data-tap-landscape]')) {
+    const responsiveLink = document.createElement('link');
+    responsiveLink.rel = 'stylesheet';
+    responsiveLink.href = 'landscape.css';
+    responsiveLink.dataset.tapLandscape = '1';
+    document.head.appendChild(responsiveLink);
+  }
+
   const SUPABASE_URL = 'https://rqzgdgdoulgjwlxtdxhi.supabase.co';
   const PUBLISHABLE_KEY = 'sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
   const SESSION_KEY = 'tapnfc_supabase_session_v1';
@@ -17,22 +27,38 @@
   }
 
   function loadSession() {
-    return safeJson(localStorage.getItem(SESSION_KEY) || 'null');
+    const temporary = safeJson(sessionStorage.getItem(SESSION_KEY) || 'null');
+    if (temporary?.access_token) return { ...temporary, _storage: 'session' };
+    const persistent = safeJson(localStorage.getItem(SESSION_KEY) || 'null');
+    if (persistent?.access_token) return { ...persistent, _storage: 'local' };
+    return null;
   }
 
-  function saveSession(data) {
+  function persistSession(session, storageName) {
+    const targetName = storageName === 'local' ? 'local' : 'session';
+    const target = targetName === 'local' ? localStorage : sessionStorage;
+    const other = targetName === 'local' ? sessionStorage : localStorage;
+    const clean = { ...session };
+    delete clean._storage;
+    target.setItem(SESSION_KEY, JSON.stringify(clean));
+    other.removeItem(SESSION_KEY);
+  }
+
+  function saveSession(data, remember = false, storageName = '') {
+    const targetName = storageName || (remember ? 'local' : 'session');
     const session = {
       access_token: data.access_token,
       refresh_token: data.refresh_token,
       expires_at: Date.now() + Math.max(30, Number(data.expires_in || 3600)) * 1000,
       user: data.user || null
     };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    return session;
+    persistSession(session, targetName);
+    return { ...session, _storage: targetName };
   }
 
   function clearSession() {
     localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
   }
 
   async function authFetch(path, options = {}) {
@@ -42,7 +68,7 @@
     return fetch(SUPABASE_URL + path, { ...options, headers });
   }
 
-  async function login(email, password) {
+  async function login(email, password, remember = false) {
     const normalizedEmail = String(email || '').trim().toLowerCase();
     if (!OPERATORS[normalizedEmail]) throw new Error('Operatore non autorizzato.');
 
@@ -54,7 +80,7 @@
     if (!response.ok || !data.access_token) {
       throw new Error(data.error_description || data.msg || data.message || 'Credenziali non corrette.');
     }
-    return saveSession(data);
+    return saveSession(data, Boolean(remember));
   }
 
   async function refreshSession(session) {
@@ -68,7 +94,7 @@
       clearSession();
       return null;
     }
-    return saveSession(data);
+    return saveSession(data, session?._storage === 'local', session?._storage || 'session');
   }
 
   async function getSession() {
@@ -97,7 +123,7 @@
       return null;
     }
     session.user = user;
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    persistSession(session, session._storage || 'session');
     return user;
   }
 
