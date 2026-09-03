@@ -1,4 +1,4 @@
-name: Correggi anteprima Tap NFC
+name: Correggi link recensioni Tap NFC
 
 on:
   push:
@@ -14,32 +14,124 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Sostituisci popup anteprima con overlay interno
+      - name: Correggi Place ID e apertura pagina recensioni
         shell: bash
         run: |
           python3 <<'PY'
           from pathlib import Path
-          import base64
-          p = Path('personalizza.html')
+
+          # 1) NUOVO CLIENTE: accetta sia Place ID puro sia link completo/nidificato
+          p = Path('index.html')
           s = p.read_text(encoding='utf-8')
-          helper = base64.b64decode('CmZ1bmN0aW9uIG9wZW5JbmxpbmVQcmV2aWV3KHByZXZpZXdIdG1sKSB7CiAgbGV0IG92ZXJsYXkgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgidGFwUHJldmlld092ZXJsYXkiKTsKCiAgaWYgKCFvdmVybGF5KSB7CiAgICBvdmVybGF5ID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiZGl2Iik7CiAgICBvdmVybGF5LmlkID0gInRhcFByZXZpZXdPdmVybGF5IjsKICAgIG92ZXJsYXkuc3R5bGUuY3NzVGV4dCA9ICJwb3NpdGlvbjpmaXhlZDtpbnNldDowO3otaW5kZXg6OTk5OTk5O2JhY2tncm91bmQ6I2ZmZjtkaXNwbGF5Om5vbmU7ZmxleC1kaXJlY3Rpb246Y29sdW1uOyI7CgogICAgY29uc3QgdG9wYmFyID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiZGl2Iik7CiAgICB0b3BiYXIuc3R5bGUuY3NzVGV4dCA9ICJoZWlnaHQ6NjRweDtmbGV4OjAgMCA2NHB4O2JhY2tncm91bmQ6IzAwM2MzMztjb2xvcjojZmZmO2Rpc3BsYXk6ZmxleDthbGlnbi1pdGVtczpjZW50ZXI7anVzdGlmeS1jb250ZW50OnNwYWNlLWJldHdlZW47cGFkZGluZzowIDE2cHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7Ym94LXNoYWRvdzowIDJweCAxMHB4IHJnYmEoMCwwLDAsLjE4KTsiOwoKICAgIGNvbnN0IHRpdGxlID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgic3Ryb25nIik7CiAgICB0aXRsZS50ZXh0Q29udGVudCA9ICJBbnRlcHJpbWEgcGFnaW5hIjsKICAgIHRpdGxlLnN0eWxlLmNzc1RleHQgPSAiZm9udC1zaXplOjE3cHg7IjsKCiAgICBjb25zdCBjbG9zZSA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoImJ1dHRvbiIpOwogICAgY2xvc2UudHlwZSA9ICJidXR0b24iOwogICAgY2xvc2UudGV4dENvbnRlbnQgPSAi4oaQIFRvcm5hIGEgUGVyc29uYWxpenphIjsKICAgIGNsb3NlLnN0eWxlLmNzc1RleHQgPSAiYm9yZGVyOjFweCBzb2xpZCByZ2JhKDI1NSwyNTUsMjU1LC4zNSk7YmFja2dyb3VuZDojZmZmO2NvbG9yOiMwMDNjMzM7Ym9yZGVyLXJhZGl1czo5OTlweDtwYWRkaW5nOjEwcHggMTRweDtmb250LXdlaWdodDo4MDA7Zm9udC1zaXplOjEzcHg7Y3Vyc29yOnBvaW50ZXI7IjsKICAgIGNsb3NlLmFkZEV2ZW50TGlzdGVuZXIoImNsaWNrIiwgY2xvc2VJbmxpbmVQcmV2aWV3KTsKCiAgICB0b3BiYXIuYXBwZW5kQ2hpbGQodGl0bGUpOwogICAgdG9wYmFyLmFwcGVuZENoaWxkKGNsb3NlKTsKCiAgICBjb25zdCBmcmFtZSA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoImlmcmFtZSIpOwogICAgZnJhbWUuaWQgPSAidGFwUHJldmlld0ZyYW1lIjsKICAgIGZyYW1lLnRpdGxlID0gIkFudGVwcmltYSBwYWdpbmEgY2xpZW50ZSI7CiAgICBmcmFtZS5zdHlsZS5jc3NUZXh0ID0gImJvcmRlcjowO3dpZHRoOjEwMCU7ZmxleDoxIDEgYXV0bztiYWNrZ3JvdW5kOiNmZmY7IjsKCiAgICBvdmVybGF5LmFwcGVuZENoaWxkKHRvcGJhcik7CiAgICBvdmVybGF5LmFwcGVuZENoaWxkKGZyYW1lKTsKICAgIGRvY3VtZW50LmJvZHkuYXBwZW5kQ2hpbGQob3ZlcmxheSk7CiAgfQoKICBjb25zdCBmcmFtZSA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJ0YXBQcmV2aWV3RnJhbWUiKTsKICBmcmFtZS5zcmNkb2MgPSBwcmV2aWV3SHRtbDsKICBvdmVybGF5LnN0eWxlLmRpc3BsYXkgPSAiZmxleCI7CiAgZG9jdW1lbnQuYm9keS5zdHlsZS5vdmVyZmxvdyA9ICJoaWRkZW4iOwp9CgpmdW5jdGlvbiBjbG9zZUlubGluZVByZXZpZXcoKSB7CiAgY29uc3Qgb3ZlcmxheSA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJ0YXBQcmV2aWV3T3ZlcmxheSIpOwogIGNvbnN0IGZyYW1lID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInRhcFByZXZpZXdGcmFtZSIpOwogIGlmIChmcmFtZSkgZnJhbWUuc3JjZG9jID0gIiI7CiAgaWYgKG92ZXJsYXkpIG92ZXJsYXkuc3R5bGUuZGlzcGxheSA9ICJub25lIjsKICBkb2N1bWVudC5ib2R5LnN0eWxlLm92ZXJmbG93ID0gIiI7Cn0KCg==').decode('utf-8')
-          old = base64.b64decode('ICAgIGNvbnN0IGJsb2IgPSBuZXcgQmxvYihbcHJldmlld0h0bWxdLCB7IHR5cGU6ICJ0ZXh0L2h0bWw7Y2hhcnNldD11dGYtOCIgfSk7CiAgICBjb25zdCBwcmV2aWV3VXJsID0gVVJMLmNyZWF0ZU9iamVjdFVSTChibG9iKTsKICAgIGNvbnN0IHdpbiA9IHdpbmRvdy5vcGVuKHByZXZpZXdVcmwsICJfYmxhbmsiKTsKCiAgICBpZiAoIXdpbikgewogICAgICBVUkwucmV2b2tlT2JqZWN0VVJMKHByZXZpZXdVcmwpOwogICAgICByZXR1cm4gd2FybigiSWwgYnJvd3NlciBoYSBibG9jY2F0byBs4oCZYW50ZXByaW1hLiBDb25zZW50aSBs4oCZYXBlcnR1cmEgZGVsbGEgbnVvdmEgc2NoZWRhLiIpOwogICAgfQoKICAgIG1zZy5jbGFzc05hbWUgPSAibWVzc2FnZSBzaG93IG9rIjsKICAgIG1zZy50ZXh0Q29udGVudCA9ICJBbnRlcHJpbWEgYXBlcnRhIGNvcnJldHRhbWVudGUuIjsKCiAgICBzZXRUaW1lb3V0KCgpID0+IFVSTC5yZXZva2VPYmplY3RVUkwocHJldmlld1VybCksIDEyMDAwMCk7').decode('utf-8')
-          new = base64.b64decode('ICAgIG9wZW5JbmxpbmVQcmV2aWV3KHByZXZpZXdIdG1sKTsKCiAgICBtc2cuY2xhc3NOYW1lID0gIm1lc3NhZ2Ugc2hvdyBvayI7CiAgICBtc2cudGV4dENvbnRlbnQgPSAiQW50ZXByaW1hIGFwZXJ0YSBjb3JyZXR0YW1lbnRlLiI7').decode('utf-8')
-          marker = 'previewBtn.addEventListener("click", async () => {'
-          if 'function openInlinePreview(previewHtml)' not in s:
+
+          marker = "  document.getElementById('generateBtn').addEventListener('click', () => {"
+          helper = r'''  function normalizePlaceIdInput(value) {
+    let current = String(value || '').trim();
+
+    for (let i = 0; i < 5; i++) {
+      const match = current.match(/[?&]placeid=([^&#]+)/i);
+      if (!match) break;
+
+      let next = match[1];
+      try { next = decodeURIComponent(next); } catch {}
+      next = next.trim();
+
+      if (!next || next === current) break;
+      current = next;
+    }
+
+    return current;
+  }
+
+'''
+          if 'function normalizePlaceIdInput(value)' not in s:
               if marker not in s:
-                  raise SystemExit('Listener anteprima non trovato')
+                  raise SystemExit('Listener Genera link non trovato in index.html')
               s = s.replace(marker, helper + marker, 1)
+
+          s = s.replace(
+              "    const placeIdValue = placeid.value.trim();\n\n    if (!placeIdValue) {",
+              "    let placeIdValue = normalizePlaceIdInput(placeid.value);\n\n    if (!placeIdValue) {",
+              1
+          )
+
+          old = """    reviewUrl = BASE_REVIEW_URL + placeIdValue;\n\n    generatedLink.textContent = reviewUrl;"""
+          new = """    if (/^https?:\\/\\//i.test(placeIdValue)) {\n      msg.className = 'message show warn';\n      msg.textContent = 'Il valore inserito non contiene un Place ID valido.';\n      result.classList.remove('show');\n      return;\n    }\n\n    placeid.value = placeIdValue;\n    reviewUrl = BASE_REVIEW_URL + placeIdValue;\n\n    generatedLink.textContent = reviewUrl;"""
           if old in s:
               s = s.replace(old, new, 1)
-          elif 'openInlinePreview(previewHtml);' not in s:
-              raise SystemExit('Blocco popup anteprima non trovato')
+
+          s = s.replace(
+              'placeholder="Es. ChIJ..."',
+              'placeholder="Es. ChIJ... oppure incolla il link completo"',
+              1
+          )
+
+          p.write_text(s, encoding='utf-8')
+
+          # 2) PERSONALIZZA: ripara anche link già duplicati e non mostra falso blocco browser
+          p = Path('personalizza.html')
+          s = p.read_text(encoding='utf-8')
+
+          params_marker = 'const incomingParams = new URLSearchParams(window.location.search);'
+          review_helper = r'''function normalizeReviewUrl(value) {
+  const prefix = "https://search.google.com/local/writereview?placeid=";
+  let current = String(value || "").trim();
+
+  if (!current) return "";
+
+  if (current.startsWith(prefix)) {
+    let placePart = current.slice(prefix.length);
+    for (let i = 0; i < 5 && placePart.startsWith(prefix); i++) {
+      placePart = placePart.slice(prefix.length);
+    }
+    return prefix + placePart;
+  }
+
+  return current;
+}
+
+'''
+          if 'function normalizeReviewUrl(value)' not in s:
+              if params_marker not in s:
+                  raise SystemExit('Parametri iniziali non trovati in personalizza.html')
+              s = s.replace(params_marker, review_helper + params_marker, 1)
+
+          s = s.replace(
+              '  destinationUrl.value = incomingReviewUrl;',
+              '  destinationUrl.value = normalizeReviewUrl(incomingReviewUrl);',
+              1
+          )
+
+          s = s.replace(
+              'const reviewUrl = destinationUrl.value.trim();',
+              'const reviewUrl = normalizeReviewUrl(destinationUrl.value);\n  destinationUrl.value = reviewUrl;'
+          )
+
+          old_standard = '''  if (type === "standard") {
+    const win = window.open(reviewUrl, "_blank", "noopener,noreferrer");
+    if (!win) return warn("Il browser ha bloccato l’apertura della pagina recensioni.");
+    msg.className = "message show ok";
+    msg.textContent = "Pagina recensioni aperta correttamente.";
+    return;
+  }'''
+          new_standard = '''  if (type === "standard") {
+    window.open(reviewUrl, "_blank", "noopener,noreferrer");
+    msg.className = "message show ok";
+    msg.textContent = "Pagina recensioni aperta correttamente.";
+    return;
+  }'''
+          if old_standard in s:
+              s = s.replace(old_standard, new_standard, 1)
+
           p.write_text(s, encoding='utf-8')
           PY
-          grep -q 'function openInlinePreview(previewHtml)' personalizza.html
-          grep -q 'openInlinePreview(previewHtml);' personalizza.html
+
+          grep -q 'function normalizePlaceIdInput(value)' index.html
+          grep -q 'function normalizeReviewUrl(value)' personalizza.html
+          ! grep -q 'browser ha bloccato l.apertura della pagina recensioni' personalizza.html
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add personalizza.html
-          git diff --cached --quiet || git commit -m "Correggi anteprima con overlay interno"
+          git add index.html personalizza.html
+          git diff --cached --quiet || git commit -m "Correggi Place ID duplicato e apertura recensioni"
           git push
