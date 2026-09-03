@@ -86,7 +86,13 @@
       margin:0;font-size:32px;line-height:1.1;
       font-weight:500;letter-spacing:-.025em
     }
+    .card-head p{
+      margin:12px 0 0;color:#7e8583;font-size:18px;line-height:1.5
+    }
 
+    .two-cols{
+      display:grid;grid-template-columns:1fr 1fr;gap:22px
+    }
     .field{margin-bottom:24px}
     label{
       display:block;font-size:15px;font-weight:800;margin:0 0 10px
@@ -101,6 +107,9 @@
       border-color:#0c9b80;
       box-shadow:0 0 0 4px rgba(12,155,128,.10)
     }
+    .hint{
+      margin:-10px 0 22px;color:#7e8885;font-size:13px;line-height:1.45
+    }
 
     .primary{
       width:100%;height:67px;border:0;border-radius:16px;
@@ -109,6 +118,20 @@
       font-size:17px;font-weight:800;cursor:pointer
     }
     .primary svg{width:23px;height:23px}
+    .primary:disabled{opacity:.65;cursor:wait}
+
+    .manual-box{
+      margin-top:28px;padding-top:24px;border-top:1px solid #dbe3e0
+    }
+    details{border-radius:14px}
+    summary{
+      cursor:pointer;color:#076c59;font-weight:800;font-size:16px;
+      list-style:none;display:flex;align-items:center;gap:10px
+    }
+    summary::-webkit-details-marker{display:none}
+    summary::before{content:"⌄";font-size:22px;line-height:1;transform:translateY(-2px)}
+    details[open] summary::before{content:"⌃"}
+    .manual-content{padding-top:20px}
 
     .result{
       display:none;margin-top:24px;padding:20px;
@@ -116,10 +139,18 @@
     }
     .result.show{display:block}
     .result-title{
-      font-size:15px;font-weight:800;margin-bottom:10px
+      font-size:15px;font-weight:800;margin-bottom:14px
     }
+    .result-row{
+      display:grid;grid-template-columns:110px 1fr;gap:12px;
+      padding:10px 0;border-bottom:1px solid #e0e9e6;
+      font-size:14px;align-items:start
+    }
+    .result-row:last-of-type{border-bottom:0}
+    .result-label{color:#6f7d79;font-weight:700}
+    .result-value{font-weight:800;word-break:break-all}
     .result-link{
-      padding:14px 16px;border:2px solid #d1dbd7;border-radius:14px;
+      margin-top:14px;padding:14px 16px;border:2px solid #d1dbd7;border-radius:14px;
       background:#fff;word-break:break-all;font-size:14px;line-height:1.45
     }
     .copy-btn,.continue-btn{
@@ -158,8 +189,11 @@
       .card-head{gap:14px;margin-bottom:28px}
       .card-icon{width:52px;height:52px;border-radius:17px}
       .card-head h2{font-size:26px}
+      .card-head p{font-size:16px}
+      .two-cols{grid-template-columns:1fr;gap:0}
       input{height:58px}
       .primary{height:61px}
+      .result-row{grid-template-columns:1fr;gap:5px}
     }
     @media(max-width:440px){
       .user-pill{display:none}
@@ -202,7 +236,7 @@
 <main class="wrap">
 
   <div class="eyebrow">Nuovo cliente</div>
-  <h1>Nuovo cliente</h1>
+  <h1>Trova l’attività</h1>
 
   <div class="steps" aria-label="Avanzamento">
     <div class="step active">1. <span>Attività</span></div>
@@ -221,36 +255,65 @@
         </svg>
       </div>
       <div>
-        <h2>Nuovo cliente</h2>
+        <h2>Cerca su Google</h2>
+        <p>Inserisci il nome dell’attività e il suo indirizzo. Lo strumento recupera automaticamente il Place ID e genera il link recensioni.</p>
+      </div>
+    </div>
+
+    <div class="two-cols">
+      <div class="field">
+        <label for="business">Nome attività</label>
+        <input id="business" autocomplete="organization" placeholder="Es. Maxim Bar">
+      </div>
+
+      <div class="field">
+        <label for="address">Indirizzo e città</label>
+        <input id="address" autocomplete="street-address" placeholder="Via Roma 174, Isola delle Femmine">
       </div>
     </div>
 
     <div class="field">
-      <label for="business">Nome attività</label>
-      <input id="business" autocomplete="organization" placeholder="Es. Maxim Bar">
+      <label for="apiKey">🔑 Chiave Google Places API</label>
+      <input id="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="Non viene salvata">
     </div>
+    <div class="hint">La chiave viene usata solo per effettuare la ricerca in questa pagina e non viene salvata dal gestionale.</div>
 
-    <div class="field">
-      <label for="placeid">Google Place ID</label>
-      <input id="placeid" autocomplete="off" placeholder="Es. ChIJ...">
-    </div>
-
-    <button class="primary" id="generateBtn" type="button">
+    <button class="primary" id="searchBtn" type="button">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M10.5 13.5 13.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
-        <path d="M8.2 15.8 6.5 17.5a3.2 3.2 0 0 1-4.5-4.5l3.2-3.2a3.2 3.2 0 0 1 4.5 0" stroke="white" stroke-width="2" stroke-linecap="round"/>
-        <path d="m15.8 8.2 1.7-1.7A3.2 3.2 0 0 1 22 11l-3.2 3.2a3.2 3.2 0 0 1-4.5 0" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2"/>
+        <path d="m16.3 16.3 4.2 4.2" stroke="white" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      Genera link
+      Trova attività
     </button>
 
     <div id="msg" class="message"></div>
 
     <div id="result" class="result">
-      <div class="result-title">Link recensioni generato</div>
-      <div id="generatedLink" class="result-link"></div>
+      <div class="result-title">Attività trovata</div>
+      <div class="result-row">
+        <div class="result-label">Ricerca</div>
+        <div id="searchedBusiness" class="result-value"></div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">Place ID</div>
+        <div id="resultPlaceId" class="result-value"></div>
+      </div>
+      <div class="result-link" id="generatedLink"></div>
       <button id="copyBtn" class="copy-btn" type="button">Copia link</button>
       <button id="continueBtn" class="continue-btn" type="button">Continua a Personalizza →</button>
+    </div>
+
+    <div class="manual-box">
+      <details id="manualDetails">
+        <summary>Possiedo già il Place ID</summary>
+        <div class="manual-content">
+          <div class="field">
+            <label for="manualPlaceId">Google Place ID</label>
+            <input id="manualPlaceId" autocomplete="off" spellcheck="false" placeholder="Es. ChIJ...">
+          </div>
+          <button class="primary" id="manualBtn" type="button">Usa questo Place ID</button>
+        </div>
+      </details>
     </div>
 
   </section>
@@ -259,34 +322,165 @@
 
 <script>
   const BASE_REVIEW_URL = 'https://search.google.com/local/writereview?placeid=';
+  const PLACES_TEXT_SEARCH_URL = 'https://places.googleapis.com/v1/places:searchText';
 
   const business = document.getElementById('business');
-  const placeid = document.getElementById('placeid');
+  const address = document.getElementById('address');
+  const apiKey = document.getElementById('apiKey');
+  const manualPlaceId = document.getElementById('manualPlaceId');
+  const searchBtn = document.getElementById('searchBtn');
+  const manualBtn = document.getElementById('manualBtn');
   const msg = document.getElementById('msg');
   const result = document.getElementById('result');
+  const searchedBusiness = document.getElementById('searchedBusiness');
+  const resultPlaceId = document.getElementById('resultPlaceId');
   const generatedLink = document.getElementById('generatedLink');
   const copyBtn = document.getElementById('copyBtn');
   const continueBtn = document.getElementById('continueBtn');
 
   let reviewUrl = '';
+  let currentPlaceId = '';
 
-  document.getElementById('generateBtn').addEventListener('click', () => {
-    const placeIdValue = placeid.value.trim();
+  function resetResult() {
+    reviewUrl = '';
+    currentPlaceId = '';
+    result.classList.remove('show');
+  }
 
-    if (!placeIdValue) {
-      msg.className = 'message show warn';
-      msg.textContent = 'Inserisci il Google Place ID.';
-      result.classList.remove('show');
-      return;
-    }
+  function showMessage(type, text) {
+    msg.className = 'message show ' + type;
+    msg.textContent = text;
+  }
 
-    reviewUrl = BASE_REVIEW_URL + placeIdValue;
+  function clearMessage() {
+    msg.className = 'message';
+    msg.textContent = '';
+  }
 
+  function applyPlaceId(placeId, label) {
+    currentPlaceId = placeId.trim();
+    reviewUrl = BASE_REVIEW_URL + encodeURIComponent(currentPlaceId);
+
+    searchedBusiness.textContent = label || business.value.trim() || 'Place ID inserito manualmente';
+    resultPlaceId.textContent = currentPlaceId;
     generatedLink.textContent = reviewUrl;
     result.classList.add('show');
 
-    msg.className = 'message show ok';
-    msg.textContent = 'Link recensioni generato correttamente.';
+    showMessage('ok', 'Place ID trovato e link recensioni generato correttamente.');
+  }
+
+  async function findBusiness() {
+    clearMessage();
+    resetResult();
+
+    const businessValue = business.value.trim();
+    const addressValue = address.value.trim();
+    const apiKeyValue = apiKey.value.trim();
+
+    if (!businessValue) {
+      showMessage('warn', 'Inserisci il nome dell’attività.');
+      business.focus();
+      return;
+    }
+
+    if (!addressValue) {
+      showMessage('warn', 'Inserisci l’indirizzo e la città.');
+      address.focus();
+      return;
+    }
+
+    if (!apiKeyValue) {
+      showMessage('warn', 'Inserisci la chiave Google Places API.');
+      apiKey.focus();
+      return;
+    }
+
+    const query = businessValue + ', ' + addressValue;
+    const originalLabel = searchBtn.innerHTML;
+
+    searchBtn.disabled = true;
+    searchBtn.textContent = 'Ricerca in corso…';
+
+    try {
+      const response = await fetch(PLACES_TEXT_SEARCH_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': apiKeyValue,
+          'X-Goog-FieldMask': 'places.id'
+        },
+        body: JSON.stringify({
+          textQuery: query,
+          languageCode: 'it',
+          regionCode: 'IT',
+          pageSize: 1
+        })
+      });
+
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
+
+      if (!response.ok) {
+        const apiError = data && data.error && data.error.message ? data.error.message : '';
+        throw new Error(apiError || ('Errore Google Places (' + response.status + ').'));
+      }
+
+      const place = data && Array.isArray(data.places) ? data.places[0] : null;
+
+      if (!place || !place.id) {
+        showMessage('warn', 'Nessuna attività trovata. Controlla nome e indirizzo oppure usa il Place ID manuale.');
+        return;
+      }
+
+      applyPlaceId(place.id, query);
+    } catch (error) {
+      console.error(error);
+      const text = String(error && error.message ? error.message : '');
+
+      if (/API key|API_KEY|billing|PERMISSION_DENIED|REQUEST_DENIED|403/i.test(text)) {
+        showMessage('warn', 'Google ha rifiutato la richiesta. Controlla che fatturazione, Places API (New) e restrizioni della chiave siano configurate correttamente.');
+      } else if (/Failed to fetch|NetworkError|CORS/i.test(text)) {
+        showMessage('warn', 'La richiesta a Google non è partita correttamente dal browser. Controlla la connessione e le restrizioni della chiave API.');
+      } else {
+        showMessage('warn', 'Ricerca non riuscita: ' + (text || 'errore sconosciuto.'));
+      }
+    } finally {
+      searchBtn.disabled = false;
+      searchBtn.innerHTML = originalLabel;
+    }
+  }
+
+  searchBtn.addEventListener('click', findBusiness);
+
+  business.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') findBusiness();
+  });
+
+  address.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') findBusiness();
+  });
+
+  apiKey.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') findBusiness();
+  });
+
+  manualBtn.addEventListener('click', () => {
+    clearMessage();
+    resetResult();
+
+    const value = manualPlaceId.value.trim();
+
+    if (!value) {
+      showMessage('warn', 'Inserisci il Google Place ID.');
+      manualPlaceId.focus();
+      return;
+    }
+
+    applyPlaceId(value, business.value.trim() || 'Place ID inserito manualmente');
   });
 
   copyBtn.addEventListener('click', async () => {
@@ -311,7 +505,7 @@
   });
 
   continueBtn.addEventListener('click', () => {
-    if (!reviewUrl) return;
+    if (!reviewUrl || !currentPlaceId) return;
 
     const params = new URLSearchParams();
     params.set('reviewurl', reviewUrl);
@@ -319,8 +513,7 @@
     const businessValue = business.value.trim();
     if (businessValue) params.set('business', businessValue);
 
-    const placeIdValue = placeid.value.trim();
-    if (placeIdValue) params.set('placeid', placeIdValue);
+    params.set('placeid', currentPlaceId);
 
     window.location.href = 'personalizza.html?' + params.toString();
   });
