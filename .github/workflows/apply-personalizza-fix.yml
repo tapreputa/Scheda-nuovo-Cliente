@@ -1,0 +1,101 @@
+name: Applica correzioni Personalizza
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-personalizza-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Applica modifiche
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('personalizza.html')
+          s = p.read_text(encoding='utf-8')
+
+          def rep(old, new, expected=1):
+              global s
+              n = s.count(old)
+              if n != expected:
+                  raise SystemExit(f'Replacement non sicuro: attesi {expected}, trovati {n}: {old[:120]!r}')
+              s = s.replace(old, new)
+
+          # Testi specifici per categoria
+          rep('pizzeria: {file:"Sfondopizzeria.jpg", accent:', 'pizzeria: {file:"Sfondopizzeria.jpg", title:"Ti è piaciuta la nostra pizza?", accent:')
+          rep('gelateria: {file:"Sfondogelateria.jpg", accent:', 'gelateria: {file:"Sfondogelateria.jpg", title:"Ti è piaciuto il nostro gelato?", accent:')
+          rep('stabilimento: {file:"Sfondostabilimento.jpg", accent:', 'stabilimento: {file:"Sfondostabilimento.jpg", title:"Ti è piaciuta la tua giornata al mare?", accent:')
+          rep('parrucchiere: {file:"Sfondoparrucchiere.jpg", accent:', 'parrucchiere: {file:"Sfondoparrucchiere.jpg", title:"Ti è piaciuto il tuo nuovo look?", accent:')
+          rep('barbershop: {file:"Sfondobarbershop.jpg", accent:', 'barbershop: {file:"Sfondobarbershop.jpg", title:"Ti è piaciuto il tuo nuovo stile?", accent:')
+          rep('centroestetico: {file:"Sfondocentroestetico.jpg", accent:', 'centroestetico: {file:"Sfondocentroestetico.jpg", title:"Ti è piaciuto il tuo momento di benessere?", accent:')
+
+          # Pizzeria, gelateria, stabilimenti, parrucchieri, barber shop, centri estetici:
+          # logo molto più in alto e footer in basso a destra.
+          rep('align-items:center;justify-content:center;padding:20px 16px}.card{width:min(100%,530px);text-align:center;padding:10px 8px 14px}',
+              'align-items:flex-start;justify-content:center;padding:max(6px,env(safe-area-inset-top)) 16px 110px}.card{width:min(100%,530px);text-align:center;padding:0 8px 14px}', 2)
+          rep('footer{margin-top:24px;font-size:14px;font-weight:650;color:#fff;text-shadow:0 3px 10px rgba(0,0,0,.95)}footer strong{color:#fff;font-weight:900}',
+              'footer{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));margin:0;font-size:11px;font-weight:650;color:#fff;text-align:right;text-shadow:0 3px 10px rgba(0,0,0,.95)}footer strong{display:block;color:#fff;font-size:23px;line-height:1.05;font-weight:950;letter-spacing:.02em}')
+          rep('footer{margin-top:24px;font-size:14px;font-weight:650;color:#fff;text-shadow:0 3px 10px rgba(0,0,0,.9)}footer strong{color:#dff7ff;font-weight:900}',
+              'footer{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));margin:0;font-size:11px;font-weight:650;color:#fff;text-align:right;text-shadow:0 3px 10px rgba(0,0,0,.9)}footer strong{display:block;color:#dff7ff;font-size:23px;line-height:1.05;font-weight:950;letter-spacing:.02em}')
+          rep('<div class="eyebrow">La tua opinione conta</div><div class="messaggio-box"><p class="messaggio">${safeMessage}</p>',
+              '<div class="eyebrow">${escapeHtml(cfg.title || "La tua opinione conta")}</div><div class="messaggio-box"><p class="messaggio">${safeMessage}</p>')
+          rep('<div class="eyebrow">La tua opinione conta</div><div class="messaggio-box"><p class="messaggio">Il tuo feedback ci aiuta a rendere ogni esperienza ancora più speciale.',
+              '<div class="eyebrow">Ti è piaciuta la nostra cucina sul mare?</div><div class="messaggio-box"><p class="messaggio">Il tuo feedback ci aiuta a rendere ogni esperienza ancora più speciale.')
+
+          # Ristoranti
+          rep('''  align-items:center;\n  justify-content:center;\n  padding:20px 16px;''',
+              '''  align-items:flex-start;\n  justify-content:center;\n  padding:max(6px, env(safe-area-inset-top)) 16px 110px;''')
+          rep('''  text-align:center;\n  padding:12px 8px 14px;''',
+              '''  text-align:center;\n  padding:0 8px 14px;''')
+          rep('''footer{\n  margin-top:24px;\n  font-size:14px;\n  font-weight:650;\n  color:#fff;\n  text-shadow:0 3px 10px rgba(0,0,0,.88);\n}\nfooter strong{\n  color:#ffe0ad;\n  font-weight:900;\n  text-shadow:0 2px 10px rgba(0,0,0,.9);\n}''',
+              '''footer{\n  position:fixed;\n  right:max(18px, env(safe-area-inset-right));\n  bottom:max(16px, env(safe-area-inset-bottom));\n  margin:0;\n  font-size:11px;\n  font-weight:650;\n  color:#fff;\n  text-align:right;\n  text-shadow:0 3px 10px rgba(0,0,0,.88);\n}\nfooter strong{\n  display:block;\n  color:#ffe0ad;\n  font-size:23px;\n  line-height:1.05;\n  font-weight:950;\n  letter-spacing:.02em;\n  text-shadow:0 2px 10px rgba(0,0,0,.9);\n}''')
+          rep('''    <div class="eyebrow">La tua opinione conta</div>\n    <div class="messaggio-box">\n      <p class="messaggio">\n        Il tuo feedback ci aiuta a rendere ogni esperienza a tavola ancora migliore.''',
+              '''    <div class="eyebrow">Ti è piaciuta la nostra cucina?</div>\n    <div class="messaggio-box">\n      <p class="messaggio">\n        Il tuo feedback ci aiuta a rendere ogni esperienza a tavola ancora migliore.''')
+
+          # Bar / Caffetterie
+          rep('''    padding:\n        22px\n        clamp(20px, 6vw, 86px)\n        86px;''',
+              '''    padding:\n        8px\n        clamp(20px, 6vw, 86px)\n        86px;''')
+          rep('''    margin-top: 6px;''', '''    margin-top: -18px;''')
+          rep('''    font-size:\n        1rem;''', '''    font-size:\n        .72rem;''')
+          rep('''footer strong {\n\n    color: white;\n\n    font-size:\n        1.12rem;\n\n    font-weight:\n        800;\n}''',
+              '''footer strong {\n\n    color: white;\n\n    display: block;\n\n    font-size:\n        1.55rem;\n\n    line-height: 1.05;\n\n    font-weight:\n        900;\n}''')
+          rep('''                18px,\n                env(safe-area-inset-top)''',
+              '''                6px,\n                env(safe-area-inset-top)''')
+          rep('''        margin-top:\n            2px;''', '''        margin-top:\n            -12px;''')
+          rep('''        font-size:\n            0.90rem;''', '''        font-size:\n            .70rem;''')
+          rep('''        font-size:\n            1rem;\n    }\n}\n\n\n\n/* =====================================================\n   SMARTPHONE PICCOLI''',
+              '''        font-size:\n            1.38rem;\n    }\n}\n\n\n\n/* =====================================================\n   SMARTPHONE PICCOLI''')
+          rep('''<div class="eyebrow">La tua opinione conta</div>\n<div class="messaggio-box">\n<p class="messaggio">\nIl tuo feedback ci aiuta a fare sempre meglio.''',
+              '''<div class="eyebrow">Ti è piaciuto il nostro caffè?</div>\n<div class="messaggio-box">\n<p class="messaggio">\nLa tua opinione ci aiuta a rendere ogni pausa ancora più piacevole.''')
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Verifica e pubblica
+        shell: bash
+        run: |
+          node --check <(python - <<'PY'
+          from pathlib import Path
+          s = Path('personalizza.html').read_text(encoding='utf-8')
+          start = s.index('<script>') + len('<script>')
+          end = s.rindex('</script>')
+          print(s[start:end])
+          PY
+          )
+          git diff --check
+          git config user.name "Tapreputa Automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add personalizza.html
+          git commit -m "Sistema logo, footer e testi per categoria"
+          git push
