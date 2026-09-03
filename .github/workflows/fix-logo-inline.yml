@@ -1,4 +1,4 @@
-name: Aggiorna brand Tap NFC
+name: Aggiungi Place ID Finder
 
 on:
   push:
@@ -14,21 +14,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Sostituisci Targa NFC con Tap NFC in tutte le pagine
+      - name: Aggiungi pulsante Place ID Finder solo a Nuovo cliente
         shell: bash
         run: |
           python3 <<'PY'
           from pathlib import Path
-          files = ['index.html','personalizza.html','clienti.html']
-          for filename in files:
-              p = Path(filename)
-              s = p.read_text(encoding='utf-8')
-              s = s.replace('Targa NFC', 'Tap NFC')
-              p.write_text(s, encoding='utf-8')
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          marker='''    <div class="field">\n      <label for="placeid">Google Place ID</label>'''
+          button='''    <a class="place-finder-btn" href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" rel="noopener noreferrer">Place ID Finder</a>\n\n'''
+          if 'class="place-finder-btn"' not in s:
+              if marker not in s:
+                  raise SystemExit('Punto di inserimento Google Place ID non trovato')
+              s=s.replace(marker,button+marker,1)
+          css='''\n    .place-finder-btn{\n      width:100%;height:58px;border:1px solid #0a8e75;border-radius:15px;\n      background:#effaf7;color:#08735f;text-decoration:none;\n      display:flex;align-items:center;justify-content:center;\n      margin:-4px 0 24px;font-size:16px;font-weight:800\n    }\n    .place-finder-btn:active{transform:translateY(1px)}\n'''
+          if '.place-finder-btn{' not in s:
+              s=s.replace('    .primary{',css+'\n    .primary{',1)
+          p.write_text(s,encoding='utf-8')
           PY
-          ! grep -R -n --include='*.html' 'Targa NFC' .
+          grep -q 'Place ID Finder' index.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html personalizza.html clienti.html
-          git diff --cached --quiet || git commit -m "Sostituisci Targa NFC con Tap NFC in tutte le pagine"
+          git add index.html
+          git diff --cached --quiet || git commit -m "Aggiungi Place ID Finder a Nuovo cliente"
           git push
