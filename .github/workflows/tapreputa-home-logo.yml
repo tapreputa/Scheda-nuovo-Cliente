@@ -1,0 +1,57 @@
+name: Logo Tapreputa home
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/tapreputa-home-logo.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inserisci logo e collegamento home
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, base64
+
+          logo_b64 = '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'
+          Path("tapreputa-logo.webp").write_bytes(base64.b64decode(logo_b64))
+
+          files = ["index.html", "personalizza.html", "clienti.html"]
+          replacement_icon = '<a class="brand-home" href="index.html" aria-label="Vai alla home"><div class="brand-icon"><img src="tapreputa-logo.webp" alt="Tapreputa"></div></a>'
+
+          for filename in files:
+              p = Path(filename)
+              s = p.read_text(encoding="utf-8")
+              s, n = re.subn(r'<div class="brand-icon"[^>]*>.*?</div>', replacement_icon, s, count=1, flags=re.S)
+              if n != 1:
+                  raise SystemExit(f"Impossibile sostituire brand-icon in {filename}")
+              common_css = '''
+.brand-home{display:block;flex:0 0 auto;text-decoration:none;border-radius:14px}
+.brand-home:focus-visible{outline:3px solid rgba(255,255,255,.72);outline-offset:3px}
+.brand-icon{background:#fff!important;overflow:hidden;box-shadow:0 7px 18px rgba(0,0,0,.16)}
+.brand-icon img{width:100%;height:100%;display:block;object-fit:contain;padding:5px}
+'''
+              if ".brand-home{" not in s:
+                  s = s.replace("</style>", common_css + "\n</style>", 1)
+              p.write_text(s, encoding="utf-8")
+          PY
+
+      - name: Verifica e pubblica
+        run: |
+          test -s tapreputa-logo.webp
+          for f in index.html personalizza.html clienti.html; do
+            grep -q 'class="brand-home" href="index.html"' "$f"
+            grep -q 'tapreputa-logo.webp' "$f"
+          done
+          git config user.name "tapreputa"
+          git config user.email "tapreputa@gmail.com"
+          git add index.html personalizza.html clienti.html tapreputa-logo.webp
+          git commit -m "Sostituisci icona header con logo Tapreputa cliccabile"
+          git push
