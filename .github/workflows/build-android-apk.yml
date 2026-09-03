@@ -36,19 +36,51 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Compila APK privata Tap NFC
-        working-directory: android
-        run: gradle --no-daemon assembleDebug
+      - name: Ricostruisci keystore privata
+        env:
+          TAP_NFC_KEYSTORE_BASE64: ${{ secrets.TAP_NFC_KEYSTORE_BASE64 }}
+        run: |
+          test -n "$TAP_NFC_KEYSTORE_BASE64"
+          printf '%s' "$TAP_NFC_KEYSTORE_BASE64" | base64 --decode > android/Tap-NFC-release.jks
+          test -s android/Tap-NFC-release.jks
 
-      - name: Prepara APK
+      - name: Compila APK release
+        working-directory: android
+        run: gradle --no-daemon assembleRelease
+
+      - name: Allinea APK
         run: |
           mkdir -p android/apk
-          cp android/app/build/outputs/apk/debug/app-debug.apk android/apk/Tap-NFC.apk
+          "$ANDROID_HOME/build-tools/35.0.0/zipalign" -f -p 4 \
+            android/app/build/outputs/apk/release/app-release-unsigned.apk \
+            android/apk/Tap-NFC-aligned.apk
 
-      - name: Carica APK
+      - name: Firma APK definitiva
+        env:
+          TAP_NFC_KEYSTORE_PASSWORD: ${{ secrets.TAP_NFC_KEYSTORE_PASSWORD }}
+        run: |
+          test -n "$TAP_NFC_KEYSTORE_PASSWORD"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" sign \
+            --ks android/Tap-NFC-release.jks \
+            --ks-key-alias tapnfc \
+            --ks-pass env:TAP_NFC_KEYSTORE_PASSWORD \
+            --key-pass env:TAP_NFC_KEYSTORE_PASSWORD \
+            --out android/apk/Tap-NFC.apk \
+            android/apk/Tap-NFC-aligned.apk
+
+      - name: Verifica firma APK
+        run: |
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs android/apk/Tap-NFC.apk
+
+      - name: Rimuovi file sensibili temporanei
+        if: always()
+        run: |
+          rm -f android/Tap-NFC-release.jks android/apk/Tap-NFC-aligned.apk
+
+      - name: Carica APK firmata
         uses: actions/upload-artifact@v4
         with:
-          name: Tap-NFC
+          name: Tap-NFC-signed
           path: android/apk/Tap-NFC.apk
           if-no-files-found: error
           retention-days: 30
