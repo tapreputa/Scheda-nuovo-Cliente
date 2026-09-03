@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#003c33">
+<title>Tap NFC · Accesso</title>
+<style>
+:root{--green-950:#003c33;--green-700:#007f69;--green-600:#009477;--green-100:#dff4ef;--ink:#0f2824;--shadow:0 24px 70px rgba(0,45,37,.16)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink)}
+body{min-height:100vh;background:linear-gradient(160deg,#003c33 0 36%,#edf6f3 36% 100%);display:grid;place-items:center;padding:28px}
+.shell{width:min(100%,470px)}.brand{display:flex;align-items:center;gap:14px;color:#fff;margin:0 0 24px 6px}.logo{width:62px;height:62px;border-radius:17px;background:#fff;box-shadow:0 10px 28px rgba(0,0,0,.22)}.logo svg{width:100%;height:100%;display:block}.brand-title{font-size:23px;font-weight:900}.brand-sub{margin-top:5px;color:#c3d5d0;font-size:14px}.brand-sub strong{color:#fff}
+.card{background:#fff;border:1px solid #d8e4e0;border-radius:28px;padding:34px;box-shadow:var(--shadow)}.eyebrow{color:var(--green-700);font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:900;margin-bottom:12px}h1{font-size:36px;line-height:1.05;margin:0 0 10px;letter-spacing:-.035em;font-weight:600}.intro{margin:0 0 28px;color:#687772;line-height:1.5;font-size:15px}.field{margin-bottom:19px}label{display:block;font-size:14px;font-weight:850;margin-bottom:9px}select,input{width:100%;height:58px;border:2px solid #d2deda;border-radius:15px;background:#fff;padding:0 15px;font:inherit;font-size:16px;color:#18352f;outline:none}select:focus,input:focus{border-color:#0c9b80;box-shadow:0 0 0 4px rgba(12,155,128,.10)}button.primary{width:100%;height:61px;border:0;border-radius:15px;background:var(--green-600);color:#fff;font:inherit;font-size:16px;font-weight:900;cursor:pointer;margin-top:4px}button.primary:disabled{opacity:.65;cursor:default}.message{display:none;margin-top:16px;padding:13px 14px;border-radius:13px;font-size:14px;line-height:1.45}.message.show{display:block}.message.error{background:#fff0ed;border:1px solid #efc0b8;color:#8c2d21}.message.ok{background:#eaf8f4;border:1px solid #b8e4d8;color:#096450}.foot{text-align:center;color:#6f7c78;font-size:12px;margin-top:18px}
+@media(max-width:560px){body{padding:20px;background:linear-gradient(180deg,#003c33 0 31%,#edf6f3 31%)}.card{padding:27px 21px;border-radius:23px}h1{font-size:32px}.logo{width:54px;height:54px}.brand-title{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="brand">
+    <div class="logo"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Tapreputa"><rect width="100" height="100" rx="14" fill="#fff"/><path d="M31 12 L88 50 L16 92 L48 56 L66 50 L25 23 Z" fill="#071d35"/><path d="M18 31 L50 50 L39 60 L8 40 Z" fill="#071d35"/><path d="M15 90 L27 57 L39 64 Z" fill="#e6a019"/></svg></div>
+    <div><div class="brand-title">Tap NFC</div><div class="brand-sub">Powered by <strong>Tapreputa</strong></div></div>
+  </div>
+
+  <section class="card">
+    <div class="eyebrow">Area operatori</div>
+    <h1>Accedi</h1>
+    <p class="intro">Francesco e Gisberto lavorano sullo stesso database clienti condiviso.</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="operator">Operatore</label>
+        <select id="operator" required>
+          <option value="" selected disabled>Seleziona operatore</option>
+          <option value="francesco@tapnfc.local">Francesco</option>
+          <option value="gisberto@tapnfc.local">Gisberto</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required placeholder="Inserisci la password">
+      </div>
+      <button id="loginBtn" class="primary" type="submit">Entra in Tap NFC</button>
+      <div id="msg" class="message" role="status"></div>
+    </form>
+  </section>
+  <div class="foot">Accesso riservato agli operatori autorizzati.</div>
+</div>
+
+<script src="tap-auth.js"></script>
+<script>
+const form=document.getElementById('loginForm');
+const operator=document.getElementById('operator');
+const password=document.getElementById('password');
+const button=document.getElementById('loginBtn');
+const msg=document.getElementById('msg');
+
+function destination(){
+  const next=new URLSearchParams(location.search).get('next');
+  if(!next) return 'index.html';
+  try{
+    const url=new URL(next,location.href);
+    if(url.origin!==location.origin) return 'index.html';
+    return url.pathname.split('/').pop()+url.search+url.hash;
+  }catch{return 'index.html'}
+}
+
+(async()=>{
+  const user=await TapNfc.getUser();
+  if(user) location.replace(destination());
+})();
+
+form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  msg.className='message';
+  button.disabled=true;
+  button.textContent='Accesso in corso...';
+  try{
+    await TapNfc.login(operator.value,password.value);
+    msg.className='message show ok';
+    msg.textContent='Accesso riuscito.';
+    location.replace(destination());
+  }catch(err){
+    msg.className='message show error';
+    msg.textContent=err.message||'Credenziali non corrette.';
+    button.disabled=false;
+    button.textContent='Entra in Tap NFC';
+  }
+});
+</script>
+</body>
+</html>
