@@ -1,2 +1,0 @@
-Connessione ChatGPT-GitHub funzionante
-Test modifica file riuscito.
