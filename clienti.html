@@ -85,6 +85,22 @@ td.link{min-width:260px;max-width:330px}
   height:40px;border:0;border-radius:10px;background:#007f69;color:white;
   padding:0 14px;font-weight:800;cursor:pointer
 }
+.row-actions{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.delete-row{
+  width:40px;height:40px;border:1px solid #efc9c4;border-radius:10px;
+  background:#fff7f5;display:grid;place-items:center;cursor:pointer;
+  font-size:17px;line-height:1
+}
+.delete-row:hover{background:#ffece8}
+.confirm-modal{width:min(460px,100%);text-align:center;margin:80px auto}
+.confirm-icon{font-size:38px;margin-bottom:12px}
+.confirm-modal h2{font-size:26px;margin:0 0 12px}
+.confirm-text{margin:0;color:#5f6c68;font-size:15px;line-height:1.55}
+.confirm-name{font-weight:850;color:#17332d}
+.confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+.confirm-actions button{min-height:54px;border-radius:13px;font:inherit;font-size:15px;font-weight:850;cursor:pointer}
+.confirm-no{border:1px solid #cbd8d4;background:#fff;color:#31544d}
+.confirm-yes{border:1px solid #d66255;background:#b93628;color:#fff}
 .empty{display:none;text-align:center;padding:60px 20px;color:#7b8783}
 .empty.show{display:block}
 
@@ -203,16 +219,31 @@ td.link{min-width:260px;max-width:330px}
   </div>
 </div>
 
+<div id="confirmOverlay" class="overlay">
+  <div class="modal confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="confirm-icon">❌</div>
+    <h2 id="confirmTitle">Eliminare questo cliente?</h2>
+    <p class="confirm-text">Stai per eliminare definitivamente <span id="confirmClientName" class="confirm-name"></span>. Gli ID dei clienti successivi verranno riordinati automaticamente.</p>
+    <div class="confirm-actions">
+      <button id="confirmNo" class="confirm-no" type="button">NO</button>
+      <button id="confirmYes" class="confirm-yes" type="button">SÌ</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const STORAGE_KEY = "tapreputa_clienti_v1";
 let clienti = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 let currentId = null;
+let pendingDeleteId = null;
 
 const rows = document.getElementById("rows");
 const empty = document.getElementById("empty");
 const tableWrap = document.getElementById("tableWrap");
 const count = document.getElementById("count");
 const overlay = document.getElementById("overlay");
+const confirmOverlay = document.getElementById("confirmOverlay");
+const confirmClientName = document.getElementById("confirmClientName");
 
 function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(clienti)); }
 
@@ -244,7 +275,7 @@ function render(){
           ${["Da completare","Da consegnare","Consegnato","Attivo"].map(s => `<option ${c.stato===s?"selected":""}>${s}</option>`).join("")}
         </select>
       </td>
-      <td><button class="open-btn" data-open="${escapeAttr(c.id)}">Apri</button></td>
+      <td><div class="row-actions"><button class="open-btn" data-open="${escapeAttr(c.id)}">Apri</button><button class="delete-row" data-delete="${escapeAttr(c.id)}" type="button" title="Elimina cliente" aria-label="Elimina cliente ${escapeAttr(c.nome || c.id)}">❌</button></div></td>
     `;
     rows.appendChild(tr);
   });
@@ -259,6 +290,36 @@ function render(){
   document.querySelectorAll("[data-open]").forEach(btn => {
     btn.addEventListener("click", () => openClient(btn.dataset.open));
   });
+
+  document.querySelectorAll("[data-delete]").forEach(btn => {
+    btn.addEventListener("click", () => openDeleteConfirm(btn.dataset.delete));
+  });
+}
+
+function openDeleteConfirm(id){
+  const c = clienti.find(x => x.id === id);
+  if (!c) return;
+  pendingDeleteId = id;
+  confirmClientName.textContent = `${c.nome || "Cliente"} (ID ${c.id})`;
+  overlay.classList.remove("show");
+  confirmOverlay.classList.add("show");
+}
+
+function closeDeleteConfirm(){
+  pendingDeleteId = null;
+  confirmOverlay.classList.remove("show");
+}
+
+function deleteClientAndRenumber(){
+  if (!pendingDeleteId) return;
+  clienti = clienti
+    .filter(c => c.id !== pendingDeleteId)
+    .sort((a,b) => Number(a.id) - Number(b.id))
+    .map((c, index) => ({...c, id: String(index + 1).padStart(3, "0")}));
+  save();
+  currentId = null;
+  closeDeleteConfirm();
+  render();
 }
 
 function openClient(id){
@@ -318,10 +379,12 @@ document.getElementById("edit").onclick = () => {
 };
 document.getElementById("delete").onclick = () => {
   const c=current(); if(!c) return;
-  if(!confirm('Eliminare "' + c.nome + '" dal database?')) return;
-  clienti = clienti.filter(x => x.id !== c.id);
-  save(); overlay.classList.remove("show"); render();
+  openDeleteConfirm(c.id);
 };
+
+document.getElementById("confirmNo").onclick = closeDeleteConfirm;
+document.getElementById("confirmYes").onclick = deleteClientAndRenumber;
+confirmOverlay.addEventListener("click", e => { if(e.target === confirmOverlay) closeDeleteConfirm(); });
 
 function escapeHtml(s){
   return String(s ?? "").replace(/[&<>"']/g, ch => ({
