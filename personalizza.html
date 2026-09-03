@@ -164,6 +164,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <label for="activityType">Tipologia di attività</label>
 <select id="activityType">
 <option value="" selected disabled>Seleziona la tipologia di attività</option>
+<option value="standard">Standard — collegamento diretto</option>
 <option value="ristorante">Ristoranti</option>
 <option value="ristorantemare">Ristoranti Mare</option>
 <option value="pizzeria">Pizzerie</option>
@@ -256,6 +257,7 @@ if (incomingBusiness) {
 
 activityType.addEventListener("change", () => {
   const templates = {
+    standard: ["Standard", "Collegamento diretto alla pagina recensioni Google. Nessun logo e nessuna pagina personalizzata richiesta."],
     bar: ["Bar / Caffetterie", "Sfondobar fisso + layout Indexbar + pulsante con chicchi animati + 5 stelle + Powered by Tapreputa."],
     ristorante: ["Ristoranti", "Sfondoristorante fisso + layout elegante premium + 5 stelle + Powered by Tapreputa."],
     ristorantemare: ["Ristoranti Mare", "Sfondoristorantemare fisso + stile mediterraneo + pulsante premium + 5 stelle + Powered by Tapreputa."],
@@ -268,6 +270,18 @@ activityType.addEventListener("change", () => {
   };
   const item = templates[activityType.value];
   if (item) templateInfo.innerHTML = `<strong>${item[0]} — TEMPLATE MASTER ATTIVO</strong><span>${item[1]}</span>`;
+
+  const isStandard = activityType.value === "standard";
+  const logoField = logoFile.closest(".field");
+  if (logoField) logoField.style.display = isStandard ? "none" : "";
+  logoFile.disabled = isStandard;
+  if (isStandard) logoPreview.classList.remove("show");
+
+  const previewButton = document.getElementById("previewBtn");
+  if (previewButton) previewButton.textContent = isStandard ? "Apri pagina recensioni" : "Anteprima pagina";
+
+  const finalLabel = document.querySelector(".final-link-label");
+  if (finalLabel) finalLabel.textContent = isStandard ? "Link diretto da scrivere sulla NFC" : "Link finale da scrivere sulla NFC";
 });
 
 if (incomingCategory) {
@@ -314,21 +328,26 @@ document.getElementById("generateBtn").onclick = () => {
   const businessName = incomingBusiness || "";
 
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
-  if (!logoDataUrl) return warn("Carica il logo dell’attività.");
+  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
   if (!businessName) return warn("Nome attività non disponibile. Torna indietro e inseriscilo.");
 
-  const slug = slugifyBusinessName(businessName);
-  if (!slug) return warn("Non riesco a creare il nome del link finale.");
-
-  finalNfcUrl = "https://tapreputa.github.io/" + slug + "/";
+  if (type === "standard") {
+    finalNfcUrl = reviewUrl;
+  } else {
+    const slug = slugifyBusinessName(businessName);
+    if (!slug) return warn("Non riesco a creare il nome del link finale.");
+    finalNfcUrl = "https://tapreputa.github.io/" + slug + "/";
+  }
 
   finalLinkValue.textContent = finalNfcUrl;
   finalLinkBox.classList.add("show");
 
   msg.className = "message show ok";
-  msg.textContent = "Link finale generato. Copialo e incollalo in NFC Tools.";
+  msg.textContent = type === "standard"
+    ? "Link diretto alle recensioni pronto. Copialo e scrivilo sulla NFC."
+    : "Link finale generato. Copialo e incollalo in NFC Tools.";
   addClientBtn.classList.add("show");
 };
 
@@ -357,9 +376,17 @@ previewBtn.addEventListener("click", async () => {
   const reviewUrl = destinationUrl.value.trim();
 
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
-  if (!logoDataUrl) return warn("Carica il logo dell’attività.");
+  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
+
+  if (type === "standard") {
+    const win = window.open(reviewUrl, "_blank", "noopener,noreferrer");
+    if (!win) return warn("Il browser ha bloccato l’apertura della pagina recensioni.");
+    msg.className = "message show ok";
+    msg.textContent = "Pagina recensioni aperta correttamente.";
+    return;
+  }
 
   try {
     msg.className = "message show ok";
