@@ -403,6 +403,55 @@ async function loadBackgroundDataUrl(fileName) {
   });
 }
 
+
+function openInlinePreview(previewHtml) {
+  let overlay = document.getElementById("tapPreviewOverlay");
+
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "tapPreviewOverlay";
+    overlay.style.cssText = "position:fixed;inset:0;z-index:999999;background:#fff;display:none;flex-direction:column;";
+
+    const topbar = document.createElement("div");
+    topbar.style.cssText = "height:64px;flex:0 0 64px;background:#003c33;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-family:Arial,Helvetica,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.18);";
+
+    const title = document.createElement("strong");
+    title.textContent = "Anteprima pagina";
+    title.style.cssText = "font-size:17px;";
+
+    const close = document.createElement("button");
+    close.type = "button";
+    close.textContent = "← Torna a Personalizza";
+    close.style.cssText = "border:1px solid rgba(255,255,255,.35);background:#fff;color:#003c33;border-radius:999px;padding:10px 14px;font-weight:800;font-size:13px;cursor:pointer;";
+    close.addEventListener("click", closeInlinePreview);
+
+    topbar.appendChild(title);
+    topbar.appendChild(close);
+
+    const frame = document.createElement("iframe");
+    frame.id = "tapPreviewFrame";
+    frame.title = "Anteprima pagina cliente";
+    frame.style.cssText = "border:0;width:100%;flex:1 1 auto;background:#fff;";
+
+    overlay.appendChild(topbar);
+    overlay.appendChild(frame);
+    document.body.appendChild(overlay);
+  }
+
+  const frame = document.getElementById("tapPreviewFrame");
+  frame.srcdoc = previewHtml;
+  overlay.style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+
+function closeInlinePreview() {
+  const overlay = document.getElementById("tapPreviewOverlay");
+  const frame = document.getElementById("tapPreviewFrame");
+  if (frame) frame.srcdoc = "";
+  if (overlay) overlay.style.display = "none";
+  document.body.style.overflow = "";
+}
+
 previewBtn.addEventListener("click", async () => {
   const type = activityType.value;
   const reviewUrl = destinationUrl.value.trim();
@@ -449,19 +498,10 @@ previewBtn.addEventListener("click", async () => {
       previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, cfg);
     }
 
-    const blob = new Blob([previewHtml], { type: "text/html;charset=utf-8" });
-    const previewUrl = URL.createObjectURL(blob);
-    const win = window.open(previewUrl, "_blank");
-
-    if (!win) {
-      URL.revokeObjectURL(previewUrl);
-      return warn("Il browser ha bloccato l’anteprima. Consenti l’apertura della nuova scheda.");
-    }
+    openInlinePreview(previewHtml);
 
     msg.className = "message show ok";
     msg.textContent = "Anteprima aperta correttamente.";
-
-    setTimeout(() => URL.revokeObjectURL(previewUrl), 120000);
   } catch (err) {
     console.error(err);
     warn("Non riesco a caricare lo sfondo della categoria. Verifica che il file sia presente accanto a personalizza.html.");
