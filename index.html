@@ -243,7 +243,7 @@
 
     <div class="field">
       <label for="placeid">Google Place ID</label>
-      <input id="placeid" autocomplete="off" placeholder="Es. ChIJ...">
+      <input id="placeid" autocomplete="off" placeholder="Es. ChIJ... oppure incolla il link completo">
     </div>
 
     <button class="primary" id="generateBtn" type="button">
@@ -281,8 +281,26 @@
 
   let reviewUrl = '';
 
+  function normalizePlaceIdInput(value) {
+    let current = String(value || '').trim();
+
+    for (let i = 0; i < 5; i++) {
+      const match = current.match(/[?&]placeid=([^&#]+)/i);
+      if (!match) break;
+
+      let next = match[1];
+      try { next = decodeURIComponent(next); } catch {}
+      next = next.trim();
+
+      if (!next || next === current) break;
+      current = next;
+    }
+
+    return current;
+  }
+
   document.getElementById('generateBtn').addEventListener('click', () => {
-    const placeIdValue = placeid.value.trim();
+    let placeIdValue = normalizePlaceIdInput(placeid.value);
 
     if (!placeIdValue) {
       msg.className = 'message show warn';
@@ -291,6 +309,14 @@
       return;
     }
 
+    if (/^https?:\/\//i.test(placeIdValue)) {
+      msg.className = 'message show warn';
+      msg.textContent = 'Il valore inserito non contiene un Place ID valido.';
+      result.classList.remove('show');
+      return;
+    }
+
+    placeid.value = placeIdValue;
     reviewUrl = BASE_REVIEW_URL + placeIdValue;
 
     generatedLink.textContent = reviewUrl;

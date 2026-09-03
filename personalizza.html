@@ -267,6 +267,23 @@ const msg = document.getElementById("msg");
 
 let logoDataUrl = "";
 
+function normalizeReviewUrl(value) {
+  const prefix = "https://search.google.com/local/writereview?placeid=";
+  let current = String(value || "").trim();
+
+  if (!current) return "";
+
+  if (current.startsWith(prefix)) {
+    let placePart = current.slice(prefix.length);
+    for (let i = 0; i < 5 && placePart.startsWith(prefix); i++) {
+      placePart = placePart.slice(prefix.length);
+    }
+    return prefix + placePart;
+  }
+
+  return current;
+}
+
 const incomingParams = new URLSearchParams(window.location.search);
 const incomingReviewUrl = incomingParams.get("reviewurl");
 const incomingBusiness = incomingParams.get("business");
@@ -278,7 +295,7 @@ if (incomingOperator) {
 }
 
 if (incomingReviewUrl) {
-  destinationUrl.value = incomingReviewUrl;
+  destinationUrl.value = normalizeReviewUrl(incomingReviewUrl);
 }
 
 if (incomingBusiness) {
@@ -355,7 +372,8 @@ function slugifyBusinessName(name) {
 
 document.getElementById("generateBtn").onclick = () => {
   const type = activityType.value;
-  const reviewUrl = destinationUrl.value.trim();
+  const reviewUrl = normalizeReviewUrl(destinationUrl.value);
+  destinationUrl.value = reviewUrl;
   const businessName = incomingBusiness || "";
 
   if (!operatorSelect.value) return warn("Seleziona l’operatore.");
@@ -454,7 +472,8 @@ function closeInlinePreview() {
 
 previewBtn.addEventListener("click", async () => {
   const type = activityType.value;
-  const reviewUrl = destinationUrl.value.trim();
+  const reviewUrl = normalizeReviewUrl(destinationUrl.value);
+  destinationUrl.value = reviewUrl;
 
   if (!type) return warn("Seleziona la tipologia di attività.");
   if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
@@ -462,8 +481,7 @@ previewBtn.addEventListener("click", async () => {
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
 
   if (type === "standard") {
-    const win = window.open(reviewUrl, "_blank", "noopener,noreferrer");
-    if (!win) return warn("Il browser ha bloccato l’apertura della pagina recensioni.");
+    window.open(reviewUrl, "_blank", "noopener,noreferrer");
     msg.className = "message show ok";
     msg.textContent = "Pagina recensioni aperta correttamente.";
     return;
@@ -511,7 +529,8 @@ previewBtn.addEventListener("click", async () => {
 
 addClientBtn.addEventListener("click", () => {
   const businessName = incomingBusiness || "";
-  const reviewUrl = destinationUrl.value.trim();
+  const reviewUrl = normalizeReviewUrl(destinationUrl.value);
+  destinationUrl.value = reviewUrl;
   const placeIdValue = incomingParams.get("placeid") || "";
   const categoryValue = activityType.options[activityType.selectedIndex]?.text || "";
   const categoryCode = activityType.value || "";
