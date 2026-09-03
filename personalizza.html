@@ -255,14 +255,19 @@ if (incomingBusiness) {
 
 
 activityType.addEventListener("change", () => {
-  if (activityType.value === "bar") {
-    templateInfo.innerHTML = "<strong>Bar / Caffetterie — TEMPLATE MASTER ATTIVO</strong><span>Sfondobar fisso + layout Indexbar + testo fisso + pulsante con chicchi animati + 5 stelle + Powered by Tapreputa.</span>";
-  } else if (activityType.value === "ristorante") {
-    templateInfo.innerHTML = "<strong>Ristoranti — TEMPLATE MASTER ATTIVO</strong><span>Sfondoristorante fisso + layout elegante + testo fisso + pulsante Recensione Google + 5 stelle + Powered by Tapreputa.</span>";
-  } else {
-    const label = activityType.options[activityType.selectedIndex].text;
-    templateInfo.innerHTML = "<strong>" + label + "</strong><span>Template master non ancora configurato.</span>";
-  }
+  const templates = {
+    bar: ["Bar / Caffetterie", "Sfondobar fisso + layout Indexbar + pulsante con chicchi animati + 5 stelle + Powered by Tapreputa."],
+    ristorante: ["Ristoranti", "Sfondoristorante fisso + layout elegante premium + 5 stelle + Powered by Tapreputa."],
+    ristorantemare: ["Ristoranti Mare", "Sfondoristorantemare fisso + stile mediterraneo + pulsante premium + 5 stelle + Powered by Tapreputa."],
+    pizzeria: ["Pizzerie", "Sfondo pizzeria con forno a legna + stile caldo + pulsante premium + 5 stelle + Powered by Tapreputa."],
+    gelateria: ["Gelaterie", "Sfondo gelateria luminoso + stile fresco + pulsante premium + 5 stelle + Powered by Tapreputa."],
+    stabilimento: ["Stabilimenti balneari", "Sfondo mare al tramonto + stile tropicale + pulsante premium + 5 stelle + Powered by Tapreputa."],
+    parrucchiere: ["Parrucchieri", "Sfondo salone moderno + stile elegante + pulsante premium + 5 stelle + Powered by Tapreputa."],
+    barbershop: ["Barber Shop", "Sfondo barber moderno + stile deciso + pulsante premium + 5 stelle + Powered by Tapreputa."],
+    centroestetico: ["Centri estetici", "Sfondo wellness luminoso + stile raffinato + pulsante premium + 5 stelle + Powered by Tapreputa."]
+  };
+  const item = templates[activityType.value];
+  if (item) templateInfo.innerHTML = `<strong>${item[0]} — TEMPLATE MASTER ATTIVO</strong><span>${item[1]}</span>`;
 });
 
 if (incomingCategory) {
@@ -309,7 +314,7 @@ document.getElementById("generateBtn").onclick = () => {
   const businessName = incomingBusiness || "";
 
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (type !== "bar" && type !== "ristorante") return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (!logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
   if (!businessName) return warn("Nome attività non disponibile. Torna indietro e inseriscilo.");
@@ -352,7 +357,7 @@ previewBtn.addEventListener("click", async () => {
   const reviewUrl = destinationUrl.value.trim();
 
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (type !== "bar" && type !== "ristorante") return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (!logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
 
@@ -368,6 +373,21 @@ previewBtn.addEventListener("click", async () => {
     } else if (type === "ristorante") {
       const backgroundDataUrl = await loadBackgroundDataUrl("Sfondoristorante.png");
       previewHtml = buildRestaurantTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
+    } else if (type === "ristorantemare") {
+      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondoristorantemare.png");
+      previewHtml = buildSeaRestaurantTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
+    } else {
+      const configs = {
+        pizzeria: {file:"Sfondopizzeria.jpg", accent:"#c24b22", accent2:"#7d2415", theme:"#5b2418", box:"rgba(255,247,235,.62)", text:"#402015", message:"Il tuo feedback è l’ingrediente che ci aiuta a migliorare ogni giorno. Dicci la tua! Bastano 2 secondi!"},
+        gelateria: {file:"Sfondogelateria.jpg", accent:"#df5f91", accent2:"#58aeb1", theme:"#d85b8b", box:"rgba(255,255,255,.68)", text:"#493340", message:"La tua opinione rende tutto ancora più dolce. Raccontaci la tua esperienza! Bastano 2 secondi!"},
+        stabilimento: {file:"Sfondostabilimento.jpg", accent:"#1689a6", accent2:"#075f78", theme:"#087b96", box:"rgba(247,253,255,.60)", text:"#123d4a", message:"Aiutaci a rendere ogni giornata al mare ancora più speciale. Dicci la tua! Bastano 2 secondi!"},
+        parrucchiere: {file:"Sfondoparrucchiere.jpg", accent:"#9b6b45", accent2:"#5d3b28", theme:"#6c4a34", box:"rgba(255,250,245,.62)", text:"#39291f", message:"La tua opinione ci aiuta a valorizzare ogni dettaglio del nostro lavoro. Dicci la tua! Bastano 2 secondi!"},
+        barbershop: {file:"Sfondobarbershop.jpg", accent:"#313131", accent2:"#111111", theme:"#171717", box:"rgba(245,241,234,.62)", text:"#25211d", message:"Il tuo feedback ci aiuta a perfezionare stile, servizio ed esperienza. Dicci la tua! Bastano 2 secondi!"},
+        centroestetico: {file:"Sfondocentroestetico.jpg", accent:"#b58b63", accent2:"#8b6548", theme:"#a57c59", box:"rgba(255,253,249,.70)", text:"#493b31", message:"Il tuo feedback ci aiuta a prenderci cura di ogni dettaglio della tua esperienza. Dicci la tua! Bastano 2 secondi!"}
+      };
+      const cfg = configs[type];
+      const backgroundDataUrl = await loadBackgroundDataUrl(cfg.file);
+      previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, cfg);
     }
 
     const blob = new Blob([previewHtml], { type: "text/html;charset=utf-8" });
@@ -484,6 +504,19 @@ function escapeHtml(s) {
   return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
 }
 
+
+function buildPremiumTemplate(logo, reviewUrl, backgroundDataUrl, cfg) {
+  const safeUrl = escapeHtml(reviewUrl);
+  const safeMessage = escapeHtml(cfg.message);
+  return `<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"><meta name="theme-color" content="${cfg.theme}"><title>Recensioni</title><style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}body{min-height:100vh;color:#fff;background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.02) 48%,rgba(0,0,0,.18)),url("${backgroundDataUrl}") center/cover no-repeat fixed}.pagina{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px 16px}.card{width:min(100%,530px);text-align:center;padding:10px 8px 14px}.logo{display:block;width:min(310px,88%);max-height:175px;object-fit:contain;margin:0 auto 22px;padding:8px 12px;border-radius:22px;background:rgba(255,255,255,.10);filter:drop-shadow(0 0 12px rgba(255,255,255,.25)) drop-shadow(0 10px 24px rgba(0,0,0,.55))}.eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:15px;font-weight:900;color:#fff;margin:0 0 16px;text-shadow:0 4px 14px rgba(0,0,0,.9)}.messaggio-box{background:${cfg.box};color:${cfg.text};border:1px solid rgba(255,255,255,.45);border-radius:18px;padding:15px 16px;margin:0 auto 22px;box-shadow:0 8px 22px rgba(0,0,0,.16);backdrop-filter:blur(1px)}.messaggio{margin:0;font-size:17px;line-height:1.48;font-weight:650}.bottone-google{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:62px;width:100%;border-radius:18px;text-decoration:none;color:#fff;font-weight:900;font-size:17px;padding:14px 18px;background:linear-gradient(135deg,${cfg.accent},${cfg.accent2} 60%,${cfg.accent});box-shadow:0 16px 35px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.24);border:1px solid rgba(255,255,255,.25);animation:p 2.8s ease-in-out infinite}.bottone-google:before{content:"";position:absolute;top:-20%;left:-45%;width:34%;height:140%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.40),transparent);transform:skewX(-20deg);animation:sh 3.6s ease-in-out infinite}.bottone-google:after{content:"✦";position:absolute;right:18px;font-size:18px;color:#fff3c8;text-shadow:0 0 10px rgba(255,255,255,.8);animation:sp 1.8s ease-in-out infinite}@keyframes sh{0%,55%{left:-45%;opacity:0}60%{opacity:1}85%{left:120%;opacity:1}100%{left:120%;opacity:0}}@keyframes p{50%{transform:scale(1.018)}}@keyframes sp{50%{opacity:1;transform:scale(1.15) rotate(12deg)}}.stelle{margin-top:18px;font-size:28px;letter-spacing:.16em;color:#ffd86d;text-shadow:0 3px 8px rgba(0,0,0,.5)}footer{margin-top:24px;font-size:14px;font-weight:650;color:#fff;text-shadow:0 3px 10px rgba(0,0,0,.95)}footer strong{color:#fff;font-weight:900}@media(max-width:640px){.logo{width:min(285px,88%);max-height:160px;margin-bottom:18px}.messaggio{font-size:16px}.eyebrow{font-size:13px}.bottone-google{min-height:58px;font-size:16px}.stelle{font-size:26px}}</style></head><body><main class="pagina"><section class="card"><img class="logo" src="${logo}" alt="Logo attività"><div class="eyebrow">La tua opinione conta</div><div class="messaggio-box"><p class="messaggio">${safeMessage}</p></div><a class="bottone-google" href="${safeUrl}" target="_blank" rel="noopener noreferrer">Recensione Google</a><div class="stelle">★★★★★</div><footer>Powered by <strong>Tapreputa</strong></footer></section></main></body></html>`;
+}
+
+function buildSeaRestaurantTemplate(logo, reviewUrl, backgroundDataUrl) {
+const safeUrl = escapeHtml(reviewUrl);
+return `<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"><meta name="theme-color" content="#164a62"><title>Recensioni</title><style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}body{min-height:100vh;color:#fff;background:linear-gradient(180deg,rgba(4,24,34,.03),rgba(4,24,34,.02) 48%,rgba(4,24,34,.13)),url("${backgroundDataUrl}") center/cover no-repeat fixed}.pagina{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px 16px}.card{width:min(100%,530px);text-align:center;padding:10px 8px 14px}.logo{display:block;width:min(310px,88%);max-height:175px;object-fit:contain;margin:0 auto 22px;padding:8px 12px;border-radius:22px;background:rgba(255,255,255,.07);filter:drop-shadow(0 0 12px rgba(180,235,255,.34)) drop-shadow(0 10px 24px rgba(0,0,0,.5))}.eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:15px;font-weight:900;color:#fff;margin:0 0 16px;text-shadow:0 4px 14px rgba(0,20,32,.88)}.messaggio-box{background:rgba(248,253,255,.5);color:#123442;border:1px solid rgba(255,255,255,.42);border-radius:18px;padding:15px 16px;margin:0 auto 22px;box-shadow:0 8px 22px rgba(0,31,46,.16);backdrop-filter:blur(1px)}.messaggio{margin:0;font-size:17px;line-height:1.48;font-weight:650}.bottone-google{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:62px;width:100%;border-radius:18px;text-decoration:none;color:#fff;font-weight:900;font-size:17px;padding:14px 18px;background:linear-gradient(135deg,#1f7998,#12546f 55%,#2183a4);box-shadow:0 16px 35px rgba(3,47,66,.36),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid rgba(205,242,255,.32);animation:p 2.8s ease-in-out infinite}.bottone-google:before{content:"";position:absolute;top:-20%;left:-45%;width:34%;height:140%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-20deg);animation:sh 3.6s ease-in-out infinite}.bottone-google:after{content:"✦";position:absolute;right:18px;font-size:18px;color:#d8f6ff;text-shadow:0 0 10px rgba(150,230,255,.85);animation:sp 1.8s ease-in-out infinite}@keyframes sh{0%,55%{left:-45%;opacity:0}60%{opacity:1}85%{left:120%;opacity:1}100%{left:120%;opacity:0}}@keyframes p{50%{transform:scale(1.018)}}@keyframes sp{50%{opacity:1;transform:scale(1.15) rotate(12deg)}}.stelle{margin-top:18px;font-size:28px;letter-spacing:.16em;color:#ffd86d;text-shadow:0 3px 8px rgba(0,0,0,.38)}footer{margin-top:24px;font-size:14px;font-weight:650;color:#fff;text-shadow:0 3px 10px rgba(0,0,0,.9)}footer strong{color:#dff7ff;font-weight:900}@media(max-width:640px){.card{padding:8px 4px 12px}.logo{width:min(285px,88%);max-height:160px;margin-bottom:18px}.messaggio{font-size:16px}.eyebrow{font-size:13px}.bottone-google{min-height:58px;font-size:16px}.stelle{font-size:26px}}</style></head><body><main class="pagina"><section class="card"><img class="logo" src="${logo}" alt="Logo attività"><div class="eyebrow">La tua opinione conta</div><div class="messaggio-box"><p class="messaggio">Il tuo feedback ci aiuta a rendere ogni esperienza ancora più speciale. Dicci la tua! Bastano 2 secondi!</p></div><a class="bottone-google" href="${safeUrl}" target="_blank" rel="noopener noreferrer">Recensione Google</a><div class="stelle">★★★★★</div><footer>Powered by <strong>Tapreputa</strong></footer></section></main></body></html>`;
+}
 
 function buildRestaurantTemplate(logo, reviewUrl, backgroundDataUrl) {
 const safeUrl = escapeHtml(reviewUrl);
