@@ -23,12 +23,7 @@ jobs:
 
           files = ['index.html', 'personalizza.html', 'clienti.html']
           replacement = '<a class="brand-home" href="index.html" aria-label="Vai alla home"><div class="brand-icon"><img src="tapreputa-logo.webp" alt="Tapreputa"></div></a>'
-          css = '''
-.brand-home{display:block;flex:0 0 auto;text-decoration:none;border-radius:14px}
-.brand-home:focus-visible{outline:3px solid rgba(255,255,255,.72);outline-offset:3px}
-.brand-icon{background:#fff!important;overflow:hidden;box-shadow:0 7px 18px rgba(0,0,0,.16)}
-.brand-icon img{width:100%;height:100%;display:block;object-fit:contain;padding:5px}
-'''
+          css = "\n.brand-home{display:block;flex:0 0 auto;text-decoration:none;border-radius:14px}\n.brand-home:focus-visible{outline:3px solid rgba(255,255,255,.72);outline-offset:3px}\n.brand-icon{background:#fff!important;overflow:hidden;box-shadow:0 7px 18px rgba(0,0,0,.16)}\n.brand-icon img{width:100%;height:100%;display:block;object-fit:contain;padding:5px}\n"
 
           for filename in files:
               p = Path(filename)
