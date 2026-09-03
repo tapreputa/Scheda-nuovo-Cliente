@@ -887,6 +887,9 @@ body {
 
     display: grid;
 
+    grid-template-columns:
+        minmax(0, 1fr);
+
     grid-template-rows:
         auto
         1fr
@@ -967,9 +970,21 @@ footer {
     justify-self: center;
 
     width:
-        min(82vw, 430px);
+        min(68vw, 300px);
 
-    margin-top: -18px;
+    max-width: 100%;
+
+    max-height: 180px;
+
+    min-width: 0;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: center;
+
+    margin-top: 0;
 }
 
 
@@ -977,11 +992,17 @@ footer {
 
     display: block;
 
-    width: 100%;
+    width: auto;
+
+    max-width: 100%;
 
     height: auto;
 
+    max-height: 180px;
+
     object-fit: contain;
+
+    object-position: center top;
 
     filter:
         drop-shadow(
@@ -1005,7 +1026,11 @@ footer {
     width:
         min(100%, 780px);
 
-    margin-top: -5vh;
+    max-width: 100%;
+
+    min-width: 0;
+
+    margin-top: -2vh;
 
     text-align: center;
 }
@@ -1041,7 +1066,11 @@ footer {
 
     text-transform: uppercase;
 
-    white-space: nowrap;
+    white-space: normal;
+
+    line-height: 1.28;
+
+    text-wrap: balance;
 
     text-shadow:
         0 2px 8px
@@ -1081,6 +1110,12 @@ footer {
 ===================================================== */
 
 .messaggio-box {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    min-width: 0;
 
     overflow: hidden;
 
@@ -1141,6 +1176,12 @@ footer {
 .recensione {
 
     justify-self: center;
+
+    width: 100%;
+
+    max-width: 100%;
+
+    min-width: 0;
 
     display: flex;
 
@@ -1729,12 +1770,19 @@ footer strong {
 
         width:
             min(
-                82vw,
-                360px
+                66vw,
+                270px
             );
 
-        margin-top:
-            -12px;
+        max-height: 145px;
+
+        margin-top: 0;
+    }
+
+
+    .logo {
+
+        max-height: 145px;
     }
 
 
@@ -1751,16 +1799,16 @@ footer strong {
     .eyebrow {
 
         transform:
-            translateY(-25px);
+            translateY(-12px);
 
         gap:
             10px;
 
         font-size:
-            0.95rem;
+            clamp(0.78rem, 3.8vw, 0.95rem);
 
         letter-spacing:
-            0.12em;
+            0.09em;
     }
 
 
@@ -1768,7 +1816,7 @@ footer strong {
     .eyebrow::after {
 
         width:
-            34px;
+            clamp(18px, 7vw, 34px);
     }
 
 
@@ -1880,9 +1928,11 @@ and
 
         width:
             min(
-                70vw,
-                310px
+                60vw,
+                235px
             );
+
+        max-height: 118px;
     }
 
 
