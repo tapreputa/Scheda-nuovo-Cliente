@@ -26,8 +26,14 @@ jobs:
           if '<body data-auth="required">' not in text:
               text = text.replace('<body>', '<body data-auth="required">', 1)
 
-          if 'src="tap-auth.js"' not in text:
-              text = text.replace('</body>', '<script src="tap-auth.js"></script>\n</body>', 1)
+          # Rimuove eventuali inserimenti precedenti dentro i template HTML generati.
+          text = text.replace('<script src="tap-auth.js"></script>\n', '')
+
+          # Inserisce lo script soltanto prima dell'ultimo </body>, cioè quello della pagina Personalizza.
+          pos = text.rfind('</body>')
+          if pos == -1:
+              raise SystemExit('Tag </body> finale non trovato')
+          text = text[:pos] + '<script src="tap-auth.js"></script>\n' + text[pos:]
 
           if text != original:
               p.write_text(text, encoding='utf-8')
@@ -41,5 +47,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add personalizza.html
-          git commit -m "Proteggi Personalizza e usa database condiviso"
+          git commit -m "Correggi collegamento login in Personalizza"
           git push
