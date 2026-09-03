@@ -1,0 +1,45 @@
+name: Applica login condiviso a Personalizza
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-shared-login.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collega autenticazione
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('personalizza.html')
+          text = p.read_text(encoding='utf-8')
+          original = text
+
+          if '<body data-auth="required">' not in text:
+              text = text.replace('<body>', '<body data-auth="required">', 1)
+
+          if 'src="tap-auth.js"' not in text:
+              text = text.replace('</body>', '<script src="tap-auth.js"></script>\n</body>', 1)
+
+          if text != original:
+              p.write_text(text, encoding='utf-8')
+          PY
+      - name: Salva modifica
+        run: |
+          if git diff --quiet; then
+            echo "Nessuna modifica necessaria"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add personalizza.html
+          git commit -m "Proteggi Personalizza e usa database condiviso"
+          git push
