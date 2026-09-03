@@ -133,12 +133,18 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
     }
     .add-client.show{display:block}
     .add-client:disabled{opacity:.65;cursor:default}
-    </style>
+    
+.brand-home{display:block;flex:0 0 auto;text-decoration:none;border-radius:14px}
+.brand-home:focus-visible{outline:3px solid rgba(255,255,255,.72);outline-offset:3px}
+.brand-icon{background:#fff!important;overflow:hidden;box-shadow:0 7px 18px rgba(0,0,0,.16)}
+.brand-icon img{width:100%;height:100%;display:block;object-fit:contain;padding:5px}
+
+</style>
 </head>
 <body>
 <header class="topbar">
 <div class="brand">
-<div class="brand-icon" style="color:white;font-size:28px">◔</div>
+<a class="brand-home" href="index.html" aria-label="Vai alla home"><div class="brand-icon"><img src="tapreputa-logo.webp" alt="Tapreputa"></div></a>
 <div><div class="brand-title">Targa NFC</div><div class="brand-sub">Gestione clienti</div></div>
 </div>
 <div class="top-actions"><a class="clients-top" href="clienti.html">👥 I miei clienti</a><div class="user-pill">Francesco Terreno</div></div>
