@@ -1,0 +1,120 @@
+name: Migliora tabella I miei clienti
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-clienti-sticky.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Applica colonne compatte e fisse
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          p = Path('clienti.html')
+          s = p.read_text(encoding='utf-8')
+
+          css = r'''
+
+/* clienti-sticky-columns-v1 */
+.table-wrap{
+  overflow-x:auto;
+  position:relative;
+  -webkit-overflow-scrolling:touch;
+}
+table{
+  width:1186px;
+  min-width:1186px;
+  table-layout:fixed;
+  border-collapse:separate;
+  border-spacing:0;
+}
+th,td{padding-left:7px;padding-right:7px}
+
+/* ID sempre visibile */
+thead th:nth-child(1),
+tbody td.id{
+  position:sticky;
+  left:0;
+  width:56px;
+  min-width:56px;
+  max-width:56px;
+}
+thead th:nth-child(1){z-index:8;background:#f7faf9}
+tbody td.id{z-index:5;background:#fff}
+
+/* Nome sempre visibile accanto all'ID */
+thead th:nth-child(2),
+tbody td.nome{
+  position:sticky;
+  left:56px;
+  width:142px;
+  min-width:142px;
+  max-width:142px;
+  box-shadow:9px 0 12px -12px rgba(0,45,37,.55);
+}
+thead th:nth-child(2){z-index:8;background:#f7faf9}
+tbody td.nome{z-index:5;background:#fff}
+.name-btn{max-width:126px;width:126px;padding-left:2px;padding-right:2px}
+
+/* Colonne più compatte */
+thead th:nth-child(3),td.operator{width:104px;min-width:104px;max-width:104px}
+thead th:nth-child(4),td.category{width:118px;min-width:118px;max-width:118px}
+thead th:nth-child(5),thead th:nth-child(6),td.link{width:72px;min-width:72px;max-width:72px}
+thead th:nth-child(7),thead th:nth-child(8),thead th:nth-child(9),thead th:nth-child(10),td.metric{width:72px;min-width:72px;max-width:72px}
+thead th:nth-child(11),tbody td:nth-child(11){width:96px;min-width:96px;max-width:96px}
+thead th:nth-child(12),tbody td:nth-child(12){width:126px;min-width:126px;max-width:126px}
+thead th:nth-child(13),tbody td:nth-child(13){width:112px;min-width:112px;max-width:112px}
+.row-actions{gap:5px}.open-btn{padding:0 10px}.delete-row{flex:0 0 40px}
+
+@media(max-width:760px){
+  th,td{padding-left:6px;padding-right:6px}
+  thead th:nth-child(1),tbody td.id{width:52px;min-width:52px;max-width:52px}
+  thead th:nth-child(2),tbody td.nome{left:52px;width:132px;min-width:132px;max-width:132px}
+  .name-btn{max-width:116px;width:116px}
+}
+'''
+
+          if '/* clienti-sticky-columns-v1 */' not in s:
+              s = s.replace('</style>', css + '\n</style>', 1)
+
+          s = s.replace(
+              '<button id="confirmNo" class="confirm-no" type="button">NO</button><button id="confirmYes" class="confirm-yes" type="button">SÌ</button>',
+              '<button id="confirmNo" class="confirm-no" type="button">Annulla</button><button id="confirmYes" class="confirm-yes" type="button">Elimina definitivamente</button>',
+              1
+          )
+
+          s = s.replace(
+              'confirmClientName.textContent=`${c.nome||"Cliente"} (ID ${c.id})`;',
+              'confirmClientName.textContent=`ID ${c.id} — ${c.nome||"Cliente"}`;',
+              1
+          )
+
+          old_delete = '<button class="delete-row" data-delete="${escapeAttr(c.id)}" type="button" title="Elimina cliente">❌</button>'
+          new_delete = '<button class="delete-row" data-delete="${escapeAttr(c.id)}" type="button" title="Elimina cliente ID ${escapeAttr(c.id)}" aria-label="Elimina cliente ID ${escapeAttr(c.id)} - ${escapeAttr(c.nome)}">❌</button>'
+          s = s.replace(old_delete, new_delete, 1)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
+          grep -q 'clienti-sticky-columns-v1' clienti.html
+          grep -q 'Elimina definitivamente' clienti.html
+          grep -q 'ID ${c.id} —' clienti.html
+
+      - name: Salva modifica
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add clienti.html
+          git diff --cached --quiet || git commit -m "Compatta e blocca ID e nome nella tabella clienti"
+          git push
