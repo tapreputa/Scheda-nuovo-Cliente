@@ -1,367 +1,61 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#003d33">
-  <title>Tap NFC · Gestione clienti</title>
-  <style>
-    :root{
-      --green-950:#003c33;
-      --green-700:#007f69;
-      --green-600:#009477;
-      --green-100:#dff4ef;
-      --ink:#0f2824;
-      --white:#fff;
-      --shadow:0 18px 45px rgba(12,45,39,.08);
-    }
-    *{box-sizing:border-box}
-    html,body{
-      margin:0;min-height:100%;
-      font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      color:var(--ink)
-    }
-    body{
-      background:linear-gradient(180deg,#f5f9f8 0%,#eff6f3 100%);
-      -webkit-font-smoothing:antialiased
-    }
-    .topbar{
-      height:96px;background:var(--green-950);color:#fff;display:flex;
-      align-items:center;justify-content:space-between;padding:0 28px
-    }
-    .brand{display:flex;align-items:center;gap:16px}
-    .brand-icon{
-      width:54px;height:54px;border-radius:14px;
-      background:linear-gradient(145deg,#009b7d,#007963);
-      display:grid;place-items:center
-    }
-    .brand-icon svg{width:31px;height:31px}
-    .brand-title{font-size:20px;font-weight:800}
-    .brand-sub{font-size:15px;color:#b9cbc7;margin-top:7px}
-    .user-pill{
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.08);
-      border-radius:999px;padding:13px 20px;
-      font-size:15px;font-weight:650
-    }
-    .top-actions{display:flex;align-items:center;gap:12px}
-    .clients-top{
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      min-height:46px;padding:0 18px;border:1px solid rgba(255,255,255,.30);
-      border-radius:999px;background:#fff;color:#003c33;text-decoration:none;
-      font-size:14px;font-weight:850;white-space:nowrap;
-      box-shadow:0 8px 22px rgba(0,0,0,.12)
-    }
-
-    .wrap{max-width:1190px;margin:0 auto;padding:50px 36px 80px}
-    .eyebrow{
-      color:var(--green-700);font-size:14px;letter-spacing:.22em;
-      font-weight:850;text-transform:uppercase;margin-bottom:22px
-    }
-    h1{
-      font-size:48px;line-height:1.05;letter-spacing:-.04em;
-      font-weight:500;margin:0 0 50px
-    }
-    .steps{
-      display:grid;grid-template-columns:auto 1fr auto 1fr auto;
-      align-items:center;gap:16px;margin-bottom:30px;
-      color:#a2aaa7;font-size:15px;font-weight:750
-    }
-    .step.active{color:var(--green-700)}
-    .rule{height:1px;background:#cdd8d4}
-
-    .card{
-      background:#fff;border:1px solid #dbe3e0;border-radius:28px;
-      padding:46px 38px 38px;box-shadow:var(--shadow)
-    }
-    .card-head{
-      display:flex;align-items:flex-start;gap:18px;margin-bottom:38px
-    }
-    .card-icon{
-      width:62px;height:62px;border-radius:20px;background:var(--green-100);
-      display:grid;place-items:center;flex:0 0 auto
-    }
-    .card-icon svg{width:32px;height:32px;stroke:var(--green-700)}
-    .card-head h2{
-      margin:0;font-size:32px;line-height:1.1;
-      font-weight:500;letter-spacing:-.025em
-    }
-
-    .field{margin-bottom:24px}
-    label{
-      display:block;font-size:15px;font-weight:800;margin:0 0 10px
-    }
-    input{
-      width:100%;height:62px;border:2px solid #d1dbd7;border-radius:16px;
-      background:#fff;color:#19312c;padding:0 18px;
-      font:inherit;font-size:16px;outline:none
-    }
-    input::placeholder{color:#9ba3a1;font-weight:600}
-    input:focus{
-      border-color:#0c9b80;
-      box-shadow:0 0 0 4px rgba(12,155,128,.10)
-    }
-
-
-    .place-finder-btn{
-      width:100%;height:58px;border:1px solid #0a8e75;border-radius:15px;
-      background:#effaf7;color:#08735f;text-decoration:none;
-      display:flex;align-items:center;justify-content:center;
-      margin:-4px 0 24px;font-size:16px;font-weight:800
-    }
-    .place-finder-btn:active{transform:translateY(1px)}
-
-    .primary{
-      width:100%;height:67px;border:0;border-radius:16px;
-      background:var(--green-600);color:#fff;
-      display:flex;align-items:center;justify-content:center;gap:11px;
-      font-size:17px;font-weight:800;cursor:pointer
-    }
-    .primary svg{width:23px;height:23px}
-
-    .result{
-      display:none;margin-top:24px;padding:20px;
-      border:1px solid #cfe0db;border-radius:18px;background:#f8fbfa
-    }
-    .result.show{display:block}
-    .result-title{
-      font-size:15px;font-weight:800;margin-bottom:10px
-    }
-    .result-link{
-      padding:14px 16px;border:2px solid #d1dbd7;border-radius:14px;
-      background:#fff;word-break:break-all;font-size:14px;line-height:1.45
-    }
-    .copy-btn,.continue-btn{
-      width:100%;height:60px;border-radius:15px;
-      margin-top:13px;font:inherit;font-size:16px;font-weight:800;cursor:pointer
-    }
-    .copy-btn{
-      border:1px solid #0a8e75;background:#effaf7;color:#08735f
-    }
-    .continue-btn{
-      border:0;background:#003c33;color:#fff
-    }
-
-    .message{
-      display:none;margin-top:16px;padding:14px 16px;border-radius:14px;font-size:14px
-    }
-    .message.show{display:block}
-    .message.warn{background:#fff7e8;color:#7b5410;border:1px solid #f0d6a4}
-    .message.ok{background:#eaf8f4;color:#096450;border:1px solid #b8e4d8}
-
-    @media(max-width:760px){
-      .topbar{height:84px;padding:0 18px}
-      .brand{gap:12px}
-      .brand-icon{width:46px;height:46px;border-radius:13px}
-      .brand-title{font-size:18px}
-      .brand-sub{font-size:13px;margin-top:5px}
-      .user-pill{padding:10px 14px;font-size:13px}
-      .clients-top{min-height:42px;padding:0 14px;font-size:13px}
-      .top-actions{gap:8px}
-      .wrap{padding:34px 18px 55px}
-      .eyebrow{font-size:12px;margin-bottom:18px}
-      h1{font-size:39px;margin-bottom:36px}
-      .steps{gap:8px;font-size:12px;margin-bottom:22px}
-      .step span{display:none}
-      .card{border-radius:23px;padding:28px 20px 24px}
-      .card-head{gap:14px;margin-bottom:28px}
-      .card-icon{width:52px;height:52px;border-radius:17px}
-      .card-head h2{font-size:26px}
-      input{height:58px}
-      .primary{height:61px}
-    }
-    @media(max-width:440px){
-      .user-pill{display:none}
-      h1{font-size:36px}
-    }
-    
-.brand-home{display:block;flex:0 0 auto;text-decoration:none;border-radius:14px}
-.brand-home:focus-visible{outline:3px solid rgba(255,255,255,.72);outline-offset:3px}
-.brand-icon{background:#fff!important;overflow:hidden;box-shadow:0 7px 18px rgba(0,0,0,.16)}
-.brand-icon img{width:100%;height:100%;display:block;object-fit:contain;padding:5px}
-
-
-/* tapreputa-brand-v2 */
-.brand-home{display:block;flex:0 0 auto;text-decoration:none;border-radius:16px}
-.brand-icon{width:58px!important;height:58px!important;border-radius:15px!important;background:#fff!important;overflow:hidden!important;box-shadow:0 8px 20px rgba(0,0,0,.18)!important;padding:0!important}
-.brand-icon img{width:100%!important;height:100%!important;display:block!important;object-fit:contain!important;padding:0!important;margin:0!important}
-.brand-sub strong{color:#fff;font-weight:900}
-@media(max-width:760px){.brand-icon{width:50px!important;height:50px!important;border-radius:13px!important}}
-
-
-.tap-logo-svg{width:100%;height:100%;display:block}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#003d33">
+<title>Tap NFC · Gestione clienti</title>
+<style>
+:root{--green-950:#003c33;--green-700:#007f69;--green-600:#009477;--green-100:#dff4ef;--ink:#0f2824;--shadow:0 18px 45px rgba(12,45,39,.08)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink)}body{background:linear-gradient(180deg,#f5f9f8,#eff6f3);-webkit-font-smoothing:antialiased}
+.topbar{min-height:96px;background:var(--green-950);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 28px}.brand{display:flex;align-items:center;gap:16px}.brand-icon{width:58px;height:58px;border-radius:15px;background:#fff;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.18)}.brand-icon svg{width:100%;height:100%;display:block}.brand-title{font-size:20px;font-weight:850}.brand-sub{font-size:14px;color:#bdd0cb;margin-top:6px}.brand-sub strong{color:#fff}.top-actions{display:flex;align-items:center;gap:10px}.clients-top{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border:1px solid rgba(255,255,255,.30);border-radius:999px;background:#fff;color:#003c33;text-decoration:none;font-size:14px;font-weight:850}.user-pill{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);border-radius:999px;padding:13px 18px;font-size:14px;font-weight:750}.logout{border:1px solid rgba(255,255,255,.24);background:transparent;color:#fff;border-radius:999px;padding:12px 14px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.wrap{max-width:1190px;margin:0 auto;padding:50px 36px 80px}.eyebrow{color:var(--green-700);font-size:14px;letter-spacing:.22em;font-weight:850;text-transform:uppercase;margin-bottom:22px}h1{font-size:48px;line-height:1.05;letter-spacing:-.04em;font-weight:500;margin:0 0 50px}.steps{display:grid;grid-template-columns:auto 1fr auto 1fr auto;align-items:center;gap:16px;margin-bottom:30px;color:#a2aaa7;font-size:15px;font-weight:750}.step.active{color:var(--green-700)}.rule{height:1px;background:#cdd8d4}
+.card{background:#fff;border:1px solid #dbe3e0;border-radius:28px;padding:46px 38px 38px;box-shadow:var(--shadow)}.card-head{display:flex;align-items:flex-start;gap:18px;margin-bottom:38px}.card-icon{width:62px;height:62px;border-radius:20px;background:var(--green-100);display:grid;place-items:center;flex:0 0 auto}.card-icon svg{width:32px;height:32px;stroke:var(--green-700)}.card-head h2{margin:0;font-size:32px;line-height:1.1;font-weight:500;letter-spacing:-.025em}.field{margin-bottom:24px}label{display:block;font-size:15px;font-weight:800;margin:0 0 10px}input{width:100%;height:62px;border:2px solid #d1dbd7;border-radius:16px;background:#fff;color:#19312c;padding:0 18px;font:inherit;font-size:16px;outline:none}input::placeholder{color:#9ba3a1;font-weight:600}input:focus{border-color:#0c9b80;box-shadow:0 0 0 4px rgba(12,155,128,.10)}.place-finder-btn{width:100%;height:58px;border:1px solid #0a8e75;border-radius:15px;background:#effaf7;color:#08735f;text-decoration:none;display:flex;align-items:center;justify-content:center;margin:-4px 0 24px;font-size:16px;font-weight:800}.primary{width:100%;height:67px;border:0;border-radius:16px;background:var(--green-600);color:#fff;display:flex;align-items:center;justify-content:center;gap:11px;font-size:17px;font-weight:800;cursor:pointer}.result{display:none;margin-top:24px;padding:20px;border:1px solid #cfe0db;border-radius:18px;background:#f8fbfa}.result.show{display:block}.result-title{font-size:15px;font-weight:800;margin-bottom:10px}.result-link{padding:14px 16px;border:2px solid #d1dbd7;border-radius:14px;background:#fff;word-break:break-all;font-size:14px;line-height:1.45}.copy-btn,.continue-btn{width:100%;height:60px;border-radius:15px;margin-top:13px;font:inherit;font-size:16px;font-weight:800;cursor:pointer}.copy-btn{border:1px solid #0a8e75;background:#effaf7;color:#08735f}.continue-btn{border:0;background:#003c33;color:#fff}.message{display:none;margin-top:16px;padding:14px 16px;border-radius:14px;font-size:14px}.message.show{display:block}.message.warn{background:#fff7e8;color:#7b5410;border:1px solid #f0d6a4}.message.ok{background:#eaf8f4;color:#096450;border:1px solid #b8e4d8}
+@media(max-width:760px){.topbar{min-height:84px;padding:14px 18px}.brand{gap:12px}.brand-icon{width:50px;height:50px}.brand-title{font-size:18px}.brand-sub{font-size:12px}.user-pill{display:none}.clients-top{min-height:42px;padding:0 13px;font-size:12px}.logout{padding:10px 12px}.wrap{padding:34px 18px 55px}.eyebrow{font-size:12px;margin-bottom:18px}h1{font-size:39px;margin-bottom:36px}.steps{gap:8px;font-size:12px;margin-bottom:22px}.step span{display:none}.card{border-radius:23px;padding:28px 20px 24px}.card-head{gap:14px;margin-bottom:28px}.card-icon{width:52px;height:52px}.card-head h2{font-size:26px}input{height:58px}.primary{height:61px}}
 </style>
 </head>
-<body>
-
+<body data-auth="required">
 <header class="topbar">
   <div class="brand">
-    <a class="brand-home" href="index.html" aria-label="Vai alla home"><div class="brand-icon"><svg class="tap-logo-svg" viewBox="0 0 100 100" role="img" aria-label="Tapreputa" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="14" fill="#fff"/><path d="M31 12 L88 50 L16 92 L48 56 L66 50 L25 23 Z" fill="#071d35"/><path d="M18 31 L50 50 L39 60 L8 40 Z" fill="#071d35"/><path d="M15 90 L27 57 L39 64 Z" fill="#e6a019"/></svg></div></a>
-    <div>
-      <div class="brand-title">Tap NFC</div>
-      <div class="brand-sub">Powered by <strong>Tapreputa</strong></div>
-    </div>
+    <a href="index.html" aria-label="Vai alla home"><div class="brand-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="14" fill="#fff"/><path d="M31 12 L88 50 L16 92 L48 56 L66 50 L25 23 Z" fill="#071d35"/><path d="M18 31 L50 50 L39 60 L8 40 Z" fill="#071d35"/><path d="M15 90 L27 57 L39 64 Z" fill="#e6a019"/></svg></div></a>
+    <div><div class="brand-title">Tap NFC</div><div class="brand-sub">Powered by <strong>Tapreputa</strong></div></div>
   </div>
   <div class="top-actions">
     <a class="clients-top" href="clienti.html">👥 I miei clienti</a>
-    <div class="user-pill">Francesco Terreno</div>
+    <div class="user-pill" data-operator-name>Operatore</div>
+    <button class="logout" type="button" data-logout>Esci</button>
   </div>
 </header>
 
 <main class="wrap">
-
   <div class="eyebrow">Nuovo cliente</div>
   <h1>Nuovo cliente</h1>
-
-  <div class="steps" aria-label="Avanzamento">
-    <div class="step active">1. <span>Attività</span></div>
-    <div class="rule"></div>
-    <div class="step">2. <span>Personalizza</span></div>
-    <div class="rule"></div>
-    <div class="step">3. <span>Consegna</span></div>
-  </div>
+  <div class="steps"><div class="step active">1. <span>Attività</span></div><div class="rule"></div><div class="step">2. <span>Personalizza</span></div><div class="rule"></div><div class="step">3. <span>Consegna</span></div></div>
 
   <section class="card">
     <div class="card-head">
-      <div class="card-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z" stroke-width="1.8"/>
-          <circle cx="12" cy="9" r="2.4" stroke-width="1.8"/>
-        </svg>
-      </div>
-      <div>
-        <h2>Nuovo cliente</h2>
-      </div>
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z" stroke-width="1.8"/><circle cx="12" cy="9" r="2.4" stroke-width="1.8"/></svg></div>
+      <div><h2>Nuovo cliente</h2></div>
     </div>
 
-    <div class="field">
-      <label for="business">Nome attività</label>
-      <input id="business" autocomplete="organization" placeholder="Es. Maxim Bar">
-    </div>
-
+    <div class="field"><label for="business">Nome attività</label><input id="business" autocomplete="organization" placeholder="Es. Maxim Bar"></div>
     <a class="place-finder-btn" href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" rel="noopener noreferrer">Place ID Finder</a>
-
-    <div class="field">
-      <label for="placeid">Google Place ID</label>
-      <input id="placeid" autocomplete="off" placeholder="Es. ChIJ... oppure incolla il link completo">
-    </div>
-
-    <button class="primary" id="generateBtn" type="button">
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M10.5 13.5 13.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
-        <path d="M8.2 15.8 6.5 17.5a3.2 3.2 0 0 1-4.5-4.5l3.2-3.2a3.2 3.2 0 0 1 4.5 0" stroke="white" stroke-width="2" stroke-linecap="round"/>
-        <path d="m15.8 8.2 1.7-1.7A3.2 3.2 0 0 1 22 11l-3.2 3.2a3.2 3.2 0 0 1-4.5 0" stroke="white" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-      Genera link
-    </button>
-
+    <div class="field"><label for="placeid">Google Place ID</label><input id="placeid" autocomplete="off" placeholder="Es. ChIJ... oppure incolla il link completo"></div>
+    <button class="primary" id="generateBtn" type="button">Genera link</button>
     <div id="msg" class="message"></div>
-
-    <div id="result" class="result">
-      <div class="result-title">Link recensioni generato</div>
-      <div id="generatedLink" class="result-link"></div>
-      <button id="copyBtn" class="copy-btn" type="button">Copia link</button>
-      <button id="continueBtn" class="continue-btn" type="button">Continua a Personalizza →</button>
-    </div>
-
+    <div id="result" class="result"><div class="result-title">Link recensioni generato</div><div id="generatedLink" class="result-link"></div><button id="copyBtn" class="copy-btn" type="button">Copia link</button><button id="continueBtn" class="continue-btn" type="button">Continua a Personalizza →</button></div>
   </section>
-
 </main>
 
+<script src="tap-auth.js"></script>
 <script>
-  const BASE_REVIEW_URL = 'https://search.google.com/local/writereview?placeid=';
-
-  const business = document.getElementById('business');
-  const placeid = document.getElementById('placeid');
-  const msg = document.getElementById('msg');
-  const result = document.getElementById('result');
-  const generatedLink = document.getElementById('generatedLink');
-  const copyBtn = document.getElementById('copyBtn');
-  const continueBtn = document.getElementById('continueBtn');
-
-  let reviewUrl = '';
-
-  function normalizePlaceIdInput(value) {
-    let current = String(value || '').trim();
-
-    for (let i = 0; i < 5; i++) {
-      const match = current.match(/[?&]placeid=([^&#]+)/i);
-      if (!match) break;
-
-      let next = match[1];
-      try { next = decodeURIComponent(next); } catch {}
-      next = next.trim();
-
-      if (!next || next === current) break;
-      current = next;
-    }
-
-    return current;
-  }
-
-  document.getElementById('generateBtn').addEventListener('click', () => {
-    let placeIdValue = normalizePlaceIdInput(placeid.value);
-
-    if (!placeIdValue) {
-      msg.className = 'message show warn';
-      msg.textContent = 'Inserisci il Google Place ID.';
-      result.classList.remove('show');
-      return;
-    }
-
-    if (/^https?:\/\//i.test(placeIdValue)) {
-      msg.className = 'message show warn';
-      msg.textContent = 'Il valore inserito non contiene un Place ID valido.';
-      result.classList.remove('show');
-      return;
-    }
-
-    placeid.value = placeIdValue;
-    reviewUrl = BASE_REVIEW_URL + placeIdValue;
-
-    generatedLink.textContent = reviewUrl;
-    result.classList.add('show');
-
-    msg.className = 'message show ok';
-    msg.textContent = 'Link recensioni generato correttamente.';
-  });
-
-  copyBtn.addEventListener('click', async () => {
-    if (!reviewUrl) return;
-
-    try {
-      await navigator.clipboard.writeText(reviewUrl);
-      copyBtn.textContent = 'Link copiato ✓';
-    } catch {
-      const temp = document.createElement('textarea');
-      temp.value = reviewUrl;
-      document.body.appendChild(temp);
-      temp.select();
-      document.execCommand('copy');
-      temp.remove();
-      copyBtn.textContent = 'Link copiato ✓';
-    }
-
-    setTimeout(() => {
-      copyBtn.textContent = 'Copia link';
-    }, 1800);
-  });
-
-  continueBtn.addEventListener('click', () => {
-    if (!reviewUrl) return;
-
-    const params = new URLSearchParams();
-    params.set('reviewurl', reviewUrl);
-
-    const businessValue = business.value.trim();
-    if (businessValue) params.set('business', businessValue);
-
-    const placeIdValue = placeid.value.trim();
-    if (placeIdValue) params.set('placeid', placeIdValue);
-
-    window.location.href = 'personalizza.html?' + params.toString();
-  });
+const BASE_REVIEW_URL='https://search.google.com/local/writereview?placeid=';
+const business=document.getElementById('business'),placeid=document.getElementById('placeid'),msg=document.getElementById('msg'),result=document.getElementById('result'),generatedLink=document.getElementById('generatedLink'),copyBtn=document.getElementById('copyBtn'),continueBtn=document.getElementById('continueBtn');
+let reviewUrl='';
+function normalizePlaceIdInput(value){let current=String(value||'').trim();for(let i=0;i<5;i++){const match=current.match(/[?&]placeid=([^&#]+)/i);if(!match)break;let next=match[1];try{next=decodeURIComponent(next)}catch{}next=next.trim();if(!next||next===current)break;current=next}return current}
+document.getElementById('generateBtn').addEventListener('click',()=>{const businessValue=business.value.trim();let placeIdValue=normalizePlaceIdInput(placeid.value);if(!businessValue){msg.className='message show warn';msg.textContent='Inserisci il nome dell’attività.';result.classList.remove('show');return}if(!placeIdValue){msg.className='message show warn';msg.textContent='Inserisci il Google Place ID.';result.classList.remove('show');return}if(/^https?:\/\//i.test(placeIdValue)){msg.className='message show warn';msg.textContent='Il valore inserito non contiene un Place ID valido.';result.classList.remove('show');return}placeid.value=placeIdValue;reviewUrl=BASE_REVIEW_URL+placeIdValue;generatedLink.textContent=reviewUrl;result.classList.add('show');msg.className='message show ok';msg.textContent='Link recensioni generato correttamente.'});
+copyBtn.addEventListener('click',async()=>{if(!reviewUrl)return;try{await navigator.clipboard.writeText(reviewUrl)}catch{const temp=document.createElement('textarea');temp.value=reviewUrl;document.body.appendChild(temp);temp.select();document.execCommand('copy');temp.remove()}copyBtn.textContent='Link copiato ✓';setTimeout(()=>copyBtn.textContent='Copia link',1800)});
+continueBtn.addEventListener('click',()=>{if(!reviewUrl)return;const params=new URLSearchParams();params.set('reviewurl',reviewUrl);const businessValue=business.value.trim();if(businessValue)params.set('business',businessValue);const placeIdValue=placeid.value.trim();if(placeIdValue)params.set('placeid',placeIdValue);location.href='personalizza.html?'+params.toString()});
 </script>
-
 </body>
 </html>
