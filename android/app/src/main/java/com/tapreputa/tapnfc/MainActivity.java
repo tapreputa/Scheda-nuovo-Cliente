@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
-import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -84,17 +83,18 @@ public class MainActivity extends Activity {
             @Override
             public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
                 WebView popup = new WebView(MainActivity.this);
+                popup.getSettings().setJavaScriptEnabled(true);
+                popup.getSettings().setDomStorageEnabled(true);
+
                 popup.setWebViewClient(new WebViewClient() {
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                        openExternal(request.getUrl());
-                        return true;
+                        return handlePopupNavigation(request.getUrl());
                     }
 
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                        openExternal(Uri.parse(url));
-                        return true;
+                        return handlePopupNavigation(Uri.parse(url));
                     }
                 });
 
@@ -113,6 +113,12 @@ public class MainActivity extends Activity {
     }
 
     private boolean handleNavigation(Uri uri) {
+        String scheme = uri.getScheme();
+
+        if ("blob".equalsIgnoreCase(scheme) || "data".equalsIgnoreCase(scheme) || "about".equalsIgnoreCase(scheme)) {
+            return false;
+        }
+
         String host = uri.getHost();
         String path = uri.getPath();
 
@@ -121,6 +127,22 @@ public class MainActivity extends Activity {
                 && path.startsWith("/Scheda-nuovo-Cliente/");
 
         if (isTapreputaManager) {
+            return false;
+        }
+
+        openExternal(uri);
+        return true;
+    }
+
+    private boolean handlePopupNavigation(Uri uri) {
+        String scheme = uri.getScheme();
+
+        if ("blob".equalsIgnoreCase(scheme) || "data".equalsIgnoreCase(scheme)) {
+            webView.loadUrl(uri.toString());
+            return true;
+        }
+
+        if ("about".equalsIgnoreCase(scheme)) {
             return false;
         }
 
