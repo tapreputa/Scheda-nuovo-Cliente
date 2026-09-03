@@ -44,6 +44,14 @@
       border-radius:999px;padding:13px 20px;
       font-size:15px;font-weight:650
     }
+    .top-actions{display:flex;align-items:center;gap:12px}
+    .clients-top{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      min-height:46px;padding:0 18px;border:1px solid rgba(255,255,255,.30);
+      border-radius:999px;background:#fff;color:#003c33;text-decoration:none;
+      font-size:14px;font-weight:850;white-space:nowrap;
+      box-shadow:0 8px 22px rgba(0,0,0,.12)
+    }
 
     .wrap{max-width:1190px;margin:0 auto;padding:50px 36px 80px}
     .eyebrow{
@@ -139,6 +147,8 @@
       .brand-title{font-size:18px}
       .brand-sub{font-size:13px;margin-top:5px}
       .user-pill{padding:10px 14px;font-size:13px}
+      .clients-top{min-height:42px;padding:0 14px;font-size:13px}
+      .top-actions{gap:8px}
       .wrap{padding:34px 18px 55px}
       .eyebrow{font-size:12px;margin-bottom:18px}
       h1{font-size:39px;margin-bottom:36px}
@@ -154,24 +164,6 @@
     @media(max-width:440px){
       .user-pill{display:none}
       h1{font-size:36px}
-    }
-  
-    .clients-link{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:9px;
-      width:100%;
-      min-height:60px;
-      margin-top:18px;
-      padding:0 20px;
-      border:1px solid #0a8e75;
-      border-radius:16px;
-      background:#effaf7;
-      color:#08735f;
-      text-decoration:none;
-      font-size:16px;
-      font-weight:800;
     }
     </style>
 </head>
@@ -193,7 +185,10 @@
       <div class="brand-sub">Gestione clienti</div>
     </div>
   </div>
-  <div class="user-pill">Francesco Terreno</div>
+  <div class="top-actions">
+    <a class="clients-top" href="clienti.html">👥 I miei clienti</a>
+    <div class="user-pill">Francesco Terreno</div>
+  </div>
 </header>
 
 <main class="wrap">
@@ -252,9 +247,6 @@
 
   </section>
 
-  <a class="clients-link" href="clienti.html">
-    👥 I miei clienti
-  </a>
 </main>
 
 <script>

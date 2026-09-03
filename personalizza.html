@@ -14,7 +14,7 @@ body{background:linear-gradient(180deg,#f5f9f8 0%,#eff6f3 100%);-webkit-font-smo
 .brand{display:flex;align-items:center;gap:16px}
 .brand-icon{width:54px;height:54px;border-radius:14px;background:linear-gradient(145deg,#009b7d,#007963);display:grid;place-items:center}
 .brand-title{font-size:20px;font-weight:800} .brand-sub{font-size:15px;color:#b9cbc7;margin-top:7px}
-.user-pill{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);border-radius:999px;padding:13px 20px;font-size:15px;font-weight:650}
+.user-pill{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);border-radius:999px;padding:13px 20px;font-size:15px;font-weight:650}.top-actions{display:flex;align-items:center;gap:12px}.clients-top{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 18px;border:1px solid rgba(255,255,255,.30);border-radius:999px;background:#fff;color:#003c33;text-decoration:none;font-size:14px;font-weight:850;white-space:nowrap;box-shadow:0 8px 22px rgba(0,0,0,.12)}
 .wrap{max-width:1190px;margin:0 auto;padding:50px 36px 80px}
 .eyebrow{color:var(--green-700);font-size:14px;letter-spacing:.22em;font-weight:850;text-transform:uppercase;margin-bottom:22px}
 h1{font-size:48px;line-height:1.05;letter-spacing:-.04em;font-weight:500;margin:0 0 50px}
@@ -41,7 +41,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 .message.show{display:block} .message.warn{background:#fff7e8;color:#7b5410;border:1px solid #f0d6a4} .message.ok{background:#eaf8f4;color:#096450;border:1px solid #b8e4d8}
 @media(max-width:760px){
 .topbar{height:84px;padding:0 18px} .brand{gap:12px} .brand-icon{width:46px;height:46px} .brand-title{font-size:18px} .brand-sub{font-size:13px}
-.user-pill{display:none} .wrap{padding:34px 18px 55px} .eyebrow{font-size:12px} h1{font-size:39px;margin-bottom:36px}
+.user-pill{display:none} .clients-top{min-height:42px;padding:0 14px;font-size:13px}.top-actions{gap:8px} .wrap{padding:34px 18px 55px} .eyebrow{font-size:12px} h1{font-size:39px;margin-bottom:36px}
 .steps{gap:8px;font-size:12px;margin-bottom:22px} .step span{display:none} .card{border-radius:23px;padding:28px 20px 24px}
 .card-head h2{font-size:26px} .card-head p{font-size:16px} .actions{flex-direction:column} .secondary,.primary{width:100%}
 }
@@ -141,7 +141,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <div class="brand-icon" style="color:white;font-size:28px">◔</div>
 <div><div class="brand-title">Targa NFC</div><div class="brand-sub">Gestione clienti</div></div>
 </div>
-<div class="user-pill">Francesco Terreno</div>
+<div class="top-actions"><a class="clients-top" href="clienti.html">👥 I miei clienti</a><div class="user-pill">Francesco Terreno</div></div>
 </header>
 
 <main class="wrap">
