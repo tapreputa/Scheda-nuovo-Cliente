@@ -102,6 +102,15 @@
       box-shadow:0 0 0 4px rgba(12,155,128,.10)
     }
 
+
+    .place-finder-btn{
+      width:100%;height:58px;border:1px solid #0a8e75;border-radius:15px;
+      background:#effaf7;color:#08735f;text-decoration:none;
+      display:flex;align-items:center;justify-content:center;
+      margin:-4px 0 24px;font-size:16px;font-weight:800
+    }
+    .place-finder-btn:active{transform:translateY(1px)}
+
     .primary{
       width:100%;height:67px;border:0;border-radius:16px;
       background:var(--green-600);color:#fff;
@@ -229,6 +238,8 @@
       <label for="business">Nome attività</label>
       <input id="business" autocomplete="organization" placeholder="Es. Maxim Bar">
     </div>
+
+    <a class="place-finder-btn" href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" rel="noopener noreferrer">Place ID Finder</a>
 
     <div class="field">
       <label for="placeid">Google Place ID</label>
