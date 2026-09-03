@@ -1,0 +1,66 @@
+name: Correggi sequenza ID e blocco quantità
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-client-sequence-owner-lock.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Applica correzioni elenco clienti
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('clienti.html')
+          text = p.read_text(encoding='utf-8')
+          original = text
+
+          old = ".metric-input.money{width:68px}.metric-input:focus{outline:none;border-color:#0c9b80;box-shadow:0 0 0 3px rgba(12,155,128,.10)}"
+          new = ".metric-input.money{width:68px}.metric-input:disabled{background:#edf1ef;color:#9aa5a1;border-color:#d8e0dd;cursor:not-allowed;opacity:1}.metric-input:focus{outline:none;border-color:#0c9b80;box-shadow:0 0 0 3px rgba(12,155,128,.10)}"
+          if old not in text:
+              raise SystemExit('CSS metric-input non trovato')
+          text = text.replace(old, new, 1)
+
+          old = "const displayId=c=>String(c.client_no||'').padStart(3,'0');"
+          new = "const displayId=c=>{const index=clienti.findIndex(x=>x.id===c.id);return String(index>=0?index+1:0).padStart(4,'0')};"
+          if old not in text:
+              raise SystemExit('displayId non trovato')
+          text = text.replace(old, new, 1)
+
+          old = "  document.querySelectorAll('[data-field]').forEach(i=>i.onchange=()=>{const f=i.dataset.field;let v=Number(i.value||0);if(!Number.isFinite(v))v=0;v=f==='spesa'?Math.max(0,Math.round(v*100)/100):Math.max(0,Math.floor(v));i.value=v;patchField(i.dataset.id,f,v)});"
+          new = """  document.querySelectorAll('[data-field]').forEach(i=>{\n    const c=getClient(i.dataset.id);\n    const protectedQuantity=['targhe','carte','adesivi'].includes(i.dataset.field);\n    const isOwner=c && TapNfc.operatorName(user)===c.operatore;\n    if(protectedQuantity && !isOwner){\n      i.disabled=true;\n      i.title='Solo '+(c?.operatore||'l’operatore proprietario')+' può modificare questo valore.';\n      i.setAttribute('aria-label',i.dataset.field+' non modificabile: cliente di '+(c?.operatore||'altro operatore'));\n      return;\n    }\n    i.onchange=()=>{const f=i.dataset.field;let v=Number(i.value||0);if(!Number.isFinite(v))v=0;v=f==='spesa'?Math.max(0,Math.round(v*100)/100):Math.max(0,Math.floor(v));i.value=v;patchField(i.dataset.id,f,v)};\n  });"""
+          if old not in text:
+              raise SystemExit('binding quantità non trovato')
+          text = text.replace(old, new, 1)
+
+          old = "async function renumber(){const ordered=[...clienti].sort((a,b)=>Number(a.client_no)-Number(b.client_no));for(let i=0;i<ordered.length;i++){const wanted=i+1;if(Number(ordered[i].client_no)!==wanted){await TapNfc.updateClient(ordered[i].id,{client_no:wanted,updated_by:user.id});ordered[i].client_no=wanted}}clienti=ordered}\n"
+          if old not in text:
+              raise SystemExit('funzione renumber non trovata')
+          text = text.replace(old, '', 1)
+
+          old = "await TapNfc.deleteClient(uuid);clienti=clienti.filter(x=>x.id!==uuid);await renumber();overlay.classList.remove('show');render();notice('Cliente eliminato dal database condiviso.')"
+          new = "await TapNfc.deleteClient(uuid);clienti=clienti.filter(x=>x.id!==uuid);overlay.classList.remove('show');render();notice('Cliente eliminato. La numerazione è stata aggiornata automaticamente.')"
+          if old not in text:
+              raise SystemExit('deleteById non trovato')
+          text = text.replace(old, new, 1)
+
+          if text == original:
+              raise SystemExit('Nessuna modifica applicata')
+
+          p.write_text(text, encoding='utf-8')
+          PY
+      - name: Salva modifica
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add clienti.html
+          git commit -m "Rende consecutivi gli ID e protegge le quantità per operatore"
+          git push
