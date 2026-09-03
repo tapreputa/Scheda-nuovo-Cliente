@@ -243,6 +243,7 @@ let logoDataUrl = "";
 const incomingParams = new URLSearchParams(window.location.search);
 const incomingReviewUrl = incomingParams.get("reviewurl");
 const incomingBusiness = incomingParams.get("business");
+const incomingCategory = incomingParams.get("category");
 
 if (incomingReviewUrl) {
   destinationUrl.value = incomingReviewUrl;
@@ -256,11 +257,18 @@ if (incomingBusiness) {
 activityType.addEventListener("change", () => {
   if (activityType.value === "bar") {
     templateInfo.innerHTML = "<strong>Bar / Caffetterie — TEMPLATE MASTER ATTIVO</strong><span>Sfondobar fisso + layout Indexbar + testo fisso + pulsante con chicchi animati + 5 stelle + Powered by Tapreputa.</span>";
+  } else if (activityType.value === "ristorante") {
+    templateInfo.innerHTML = "<strong>Ristoranti — TEMPLATE MASTER ATTIVO</strong><span>Sfondoristorante fisso + layout elegante + testo fisso + pulsante Recensione Google + 5 stelle + Powered by Tapreputa.</span>";
   } else {
     const label = activityType.options[activityType.selectedIndex].text;
     templateInfo.innerHTML = "<strong>" + label + "</strong><span>Template master non ancora configurato.</span>";
   }
 });
+
+if (incomingCategory) {
+  activityType.value = incomingCategory;
+  activityType.dispatchEvent(new Event("change"));
+}
 
 logoFile.addEventListener("change", () => {
   const file = logoFile.files[0];
@@ -301,7 +309,7 @@ document.getElementById("generateBtn").onclick = () => {
   const businessName = incomingBusiness || "";
 
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (type !== "bar") return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (type !== "bar" && type !== "ristorante") return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (!logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
   if (!businessName) return warn("Nome attività non disponibile. Torna indietro e inseriscilo.");
@@ -321,12 +329,12 @@ document.getElementById("generateBtn").onclick = () => {
 
 
 
-async function loadBarBackgroundDataUrl() {
-  const backgroundUrl = new URL("Sfondobar.png", window.location.href).href;
+async function loadBackgroundDataUrl(fileName) {
+  const backgroundUrl = new URL(fileName, window.location.href).href;
   const response = await fetch(backgroundUrl, { cache: "no-store" });
 
   if (!response.ok) {
-    throw new Error("Sfondobar.png non trovato");
+    throw new Error(fileName + " non trovato");
   }
 
   const blob = await response.blob();
@@ -344,7 +352,7 @@ previewBtn.addEventListener("click", async () => {
   const reviewUrl = destinationUrl.value.trim();
 
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (type !== "bar") return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (type !== "bar" && type !== "ristorante") return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (!logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
 
@@ -352,18 +360,17 @@ previewBtn.addEventListener("click", async () => {
     msg.className = "message show ok";
     msg.textContent = "Preparazione anteprima...";
 
-    const backgroundDataUrl = await loadBarBackgroundDataUrl();
-    const previewHtml = buildBarTemplate(
-      logoDataUrl,
-      reviewUrl,
-      backgroundDataUrl
-    );
+    let previewHtml = "";
 
-    const blob = new Blob(
-      [previewHtml],
-      { type: "text/html;charset=utf-8" }
-    );
+    if (type === "bar") {
+      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobar.png");
+      previewHtml = buildBarTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
+    } else if (type === "ristorante") {
+      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondoristorante.png");
+      previewHtml = buildRestaurantTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
+    }
 
+    const blob = new Blob([previewHtml], { type: "text/html;charset=utf-8" });
     const previewUrl = URL.createObjectURL(blob);
     const win = window.open(previewUrl, "_blank");
 
@@ -373,12 +380,12 @@ previewBtn.addEventListener("click", async () => {
     }
 
     msg.className = "message show ok";
-    msg.textContent = "Anteprima aperta con sfondo incorporato.";
+    msg.textContent = "Anteprima aperta correttamente.";
 
     setTimeout(() => URL.revokeObjectURL(previewUrl), 120000);
   } catch (err) {
     console.error(err);
-    warn("Non riesco a caricare Sfondobar.png. Verifica che il file sia presente accanto a personalizza.html.");
+    warn("Non riesco a caricare lo sfondo della categoria. Verifica che il file sia presente accanto a personalizza.html.");
   }
 });
 
@@ -475,6 +482,135 @@ function warn(text) {
 
 function escapeHtml(s) {
   return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+}
+
+
+function buildRestaurantTemplate(logo, reviewUrl, backgroundDataUrl) {
+const safeUrl = escapeHtml(reviewUrl);
+return `<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#3e2415">
+<title>Recensioni</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{
+  min-height:100vh;
+  color:#fff;
+  background:
+    linear-gradient(rgba(16,10,8,.42), rgba(16,10,8,.42)),
+    url("${backgroundDataUrl}") center center / cover no-repeat fixed;
+}
+.pagina{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+.card{
+  width:min(100%, 540px);
+  background:rgba(23,15,12,.42);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:30px;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  box-shadow:0 24px 70px rgba(0,0,0,.28);
+  text-align:center;
+  padding:34px 26px 28px;
+}
+.logo{
+  display:block;
+  width:min(230px, 72%);
+  max-height:130px;
+  object-fit:contain;
+  margin:0 auto 28px;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.25));
+}
+.eyebrow{
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  font-size:14px;
+  font-weight:900;
+  color:#f7e2c0;
+  margin:0 0 18px;
+}
+.messaggio-box{
+  background:rgba(255,248,240,.88);
+  color:#3a281f;
+  border-radius:20px;
+  padding:18px 18px;
+  margin:0 auto 24px;
+  box-shadow:0 12px 30px rgba(0,0,0,.12);
+}
+.messaggio{
+  margin:0;
+  font-size:18px;
+  line-height:1.55;
+  font-weight:600;
+}
+.bottone-google{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:60px;
+  width:100%;
+  border-radius:18px;
+  text-decoration:none;
+  color:#fff;
+  font-weight:900;
+  font-size:17px;
+  letter-spacing:.01em;
+  padding:14px 18px;
+  background:linear-gradient(135deg,#8a5532,#5e3119);
+  box-shadow:0 16px 35px rgba(51,24,10,.35);
+}
+.stelle{
+  margin-top:18px;
+  font-size:28px;
+  letter-spacing:.16em;
+  color:#ffd56a;
+  text-shadow:0 2px 6px rgba(0,0,0,.28);
+}
+footer{
+  margin-top:24px;
+  font-size:13px;
+  color:rgba(255,255,255,.84);
+}
+footer strong{color:#f7e2c0}
+@media(max-width:640px){
+  .card{padding:28px 20px 24px;border-radius:24px}
+  .logo{max-height:110px;margin-bottom:24px}
+  .messaggio{font-size:17px}
+  .eyebrow{font-size:13px}
+  .bottone-google{min-height:58px;font-size:16px}
+  .stelle{font-size:26px}
+}
+</style>
+</head>
+<body>
+<main class="pagina">
+  <section class="card">
+    <img class="logo" src="${logo}" alt="Logo attività">
+    <div class="eyebrow">La tua opinione conta</div>
+    <div class="messaggio-box">
+      <p class="messaggio">
+        Il tuo feedback ci aiuta a rendere ogni esperienza a tavola ancora migliore.
+        Dicci la tua! Bastano 2 secondi!
+      </p>
+    </div>
+    <a class="bottone-google" href="${safeUrl}" target="_blank" rel="noopener noreferrer" aria-label="Lascia una recensione Google">
+      Recensione Google
+    </a>
+    <div class="stelle" aria-label="5 stelle">★★★★★</div>
+    <footer>Powered by <strong>Tapreputa</strong></footer>
+  </section>
+</main>
+</body>
+</html>`;
 }
 
 const BAR_CSS = `
