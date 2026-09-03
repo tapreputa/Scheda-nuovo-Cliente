@@ -1,0 +1,25 @@
+name: Applica correzione link recensioni
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-review-link-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Applica patch
+        run: python3 tools/fix_review_links.py
+      - name: Salva modifiche
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html personalizza.html
+          git diff --cached --quiet || git commit -m "Correggi link recensioni e apertura standard"
+          git push
