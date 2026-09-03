@@ -1,4 +1,4 @@
-name: Correggi logo Tapreputa inline
+name: Aggiorna brand Tap NFC
 
 on:
   push:
@@ -14,28 +14,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Inserisci logo vettoriale inline
+      - name: Sostituisci Targa NFC con Tap NFC in tutte le pagine
         shell: bash
         run: |
           python3 <<'PY'
           from pathlib import Path
-          old = '<img src="tapreputa-logo.webp?v=2" alt="Tapreputa">'
-          svg = '''<svg class="tap-logo-svg" viewBox="0 0 100 100" role="img" aria-label="Tapreputa" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="14" fill="#fff"/><path d="M31 12 L88 50 L16 92 L48 56 L66 50 L25 23 Z" fill="#071d35"/><path d="M18 31 L50 50 L39 60 L8 40 Z" fill="#071d35"/><path d="M15 90 L27 57 L39 64 Z" fill="#e6a019"/></svg>'''
-          for filename in ['index.html','personalizza.html','clienti.html']:
-              p=Path(filename)
-              s=p.read_text(encoding='utf-8')
-              if old not in s and 'class="tap-logo-svg"' not in s:
-                  raise SystemExit('Logo corrente non trovato in '+filename)
-              s=s.replace(old,svg,1)
-              if '.tap-logo-svg{' not in s:
-                  s=s.replace('</style>','\n.tap-logo-svg{width:100%;height:100%;display:block}\n</style>',1)
-              p.write_text(s,encoding='utf-8')
+          files = ['index.html','personalizza.html','clienti.html']
+          for filename in files:
+              p = Path(filename)
+              s = p.read_text(encoding='utf-8')
+              s = s.replace('Targa NFC', 'Tap NFC')
+              p.write_text(s, encoding='utf-8')
           PY
-          grep -q 'class="tap-logo-svg"' index.html
-          grep -q 'class="tap-logo-svg"' personalizza.html
-          grep -q 'class="tap-logo-svg"' clienti.html
+          ! grep -R -n --include='*.html' 'Targa NFC' .
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html personalizza.html clienti.html
-          git diff --cached --quiet || git commit -m "Correggi logo Tapreputa con SVG inline"
+          git diff --cached --quiet || git commit -m "Sostituisci Targa NFC con Tap NFC in tutte le pagine"
           git push
