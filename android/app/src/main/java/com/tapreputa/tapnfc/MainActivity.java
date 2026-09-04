@@ -46,6 +46,11 @@ public class MainActivity extends Activity {
         settings.setSupportMultipleWindows(true);
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
+        // Tap NFC viene aggiornato frequentemente da GitHub Pages: evita che il WebView
+        // continui a mostrare vecchie copie di clienti.html, risultati.html e altri file.
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webView.clearCache(true);
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -85,6 +90,7 @@ public class MainActivity extends Activity {
                 WebView popup = new WebView(MainActivity.this);
                 popup.getSettings().setJavaScriptEnabled(true);
                 popup.getSettings().setDomStorageEnabled(true);
+                popup.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 
                 popup.setWebViewClient(new WebViewClient() {
                     @Override
