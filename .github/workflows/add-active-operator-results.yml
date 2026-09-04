@@ -1,0 +1,44 @@
+name: Aggiungi operatore attivo a Risultati
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-active-operator-results.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aggiorna risultati.html
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('risultati.html')
+          s=p.read_text()
+          css_anchor='.subtitle{color:var(--muted);font-size:15px;margin-top:13px}.refresh{'
+          css_new='.subtitle{color:var(--muted);font-size:15px;margin-top:13px}.logged-operator{display:flex;justify-content:flex-end;align-items:center;gap:5px;margin:-14px 2px 20px;color:#006e5b;font-size:15px;font-weight:900;letter-spacing:.01em}.logged-operator span{color:#003c33}.refresh{'
+          if css_anchor not in s:
+              raise SystemExit('CSS anchor non trovato')
+          s=s.replace(css_anchor,css_new,1)
+          mobile_anchor='.headline{align-items:flex-start}.headline h1{font-size:39px}.refresh{'
+          mobile_new='.headline{align-items:flex-start}.headline h1{font-size:39px}.logged-operator{justify-content:flex-start;margin:-12px 0 18px;font-size:14px}.refresh{'
+          if mobile_anchor not in s:
+              raise SystemExit('Mobile anchor non trovato')
+          s=s.replace(mobile_anchor,mobile_new,1)
+          html_anchor='<div class="headline"><div><h1>Risultati</h1><div class="subtitle">Totali aggiornati dal database condiviso</div></div><button id="refreshBtn" class="refresh" type="button">↻ Aggiorna</button></div>\n<div id="status" class="status"></div>'
+          html_new='<div class="headline"><div><h1>Risultati</h1><div class="subtitle">Totali aggiornati dal database condiviso</div></div><button id="refreshBtn" class="refresh" type="button">↻ Aggiorna</button></div>\n<div class="logged-operator">🔥 <span data-operator-name>Operatore</span></div>\n<div id="status" class="status"></div>'
+          if html_anchor not in s:
+              raise SystemExit('HTML anchor non trovato')
+          s=s.replace(html_anchor,html_new,1)
+          p.write_text(s)
+          PY
+          git config user.name "tapreputa-bot"
+          git config user.email "tapreputa-bot@users.noreply.github.com"
+          git add risultati.html
+          git commit -m "Mostra operatore loggato nella pagina Risultati"
+          git push
