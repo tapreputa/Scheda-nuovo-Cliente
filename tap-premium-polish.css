@@ -241,12 +241,11 @@ html[data-tap-page="index.html"] .steps,
 html[data-tap-page="personalizza.html"] .steps{
   grid-template-columns:auto 1fr auto!important;
 }
-html[data-tap-page="index.html"] .steps > .rule:nth-child(4),
-html[data-tap-page="personalizza.html"] .steps > .rule:nth-child(4),
-html[data-tap-page="index.html"] .steps > .step:last-child,
-html[data-tap-page="personalizza.html"] .steps > .step:last-child{
-  display:none!important;
-}
+
+/* Ordine header coerente su tutte le pagine */
+.top-actions .clients-top{order:1!important}
+.top-actions .chat-top{order:2!important}
+.top-actions .logout{order:3!important}
 
 /* Evita qualsiasi animazione se richiesta dal sistema */
 @media(prefers-reduced-motion:reduce){
