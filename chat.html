@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07152b">
+<title>Tap NFC · Chat interna</title>
+<link rel="stylesheet" href="tap-premium-theme.css?v=1">
+<link rel="stylesheet" href="tap-premium-polish.css?v=3">
+<link rel="stylesheet" href="chat.css?v=1">
+</head>
+<body data-auth="required">
+<header class="topbar">
+  <div class="brand">
+    <a href="index.html" aria-label="Vai alla home">
+      <div class="brand-icon">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="14" fill="#fff"/><path d="M31 12 L88 50 L16 92 L48 56 L66 50 L25 23 Z" fill="#071d35"/><path d="M18 31 L50 50 L39 60 L8 40 Z" fill="#071d35"/><path d="M15 90 L27 57 L39 64 Z" fill="#e6a019"/></svg>
+      </div>
+    </a>
+    <div><div class="brand-title">Tap NFC</div><div class="brand-sub">Powered by <strong>Tapreputa</strong></div></div>
+  </div>
+  <div class="top-actions">
+    <a class="back" href="clienti.html">← Clienti</a>
+    <button class="logout" type="button" data-logout>Esci</button>
+  </div>
+</header>
+
+<main class="chat-shell">
+  <div class="chat-hero">
+    <div>
+      <div class="chat-kicker">Comunicazione interna</div>
+      <h1 class="chat-title">Chat</h1>
+      <p class="chat-subtitle">Messaggi privati tra Francesco e Gisberto, sincronizzati in tempo reale.</p>
+    </div>
+    <div class="chat-security">🔒 Solo operatori Tap NFC</div>
+  </div>
+
+  <section class="chat-card" aria-label="Chat operatori">
+    <div class="chat-peer">
+      <div class="peer-avatar" id="peerAvatar">TG</div>
+      <div class="peer-copy">
+        <div class="peer-name" id="peerName">Operatore</div>
+        <div class="peer-note" id="peerNote">Chat interna privata</div>
+      </div>
+      <div class="realtime-state" id="realtimeState"><span class="realtime-dot"></span><span id="realtimeText">Connessione…</span></div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages" aria-live="polite">
+      <div class="chat-empty"><div><div class="chat-empty-icon">💬</div><strong>Caricamento chat…</strong><span>Sto recuperando i messaggi.</span></div></div>
+    </div>
+
+    <div class="chat-error" id="chatError"></div>
+
+    <div class="attachment-preview" id="attachmentPreview" hidden>
+      <img id="attachmentThumb" class="attachment-thumb" alt="Anteprima allegato">
+      <div class="attachment-copy"><div class="attachment-name" id="attachmentName"></div><div class="attachment-size" id="attachmentSize"></div></div>
+      <button class="attachment-remove" id="removeAttachment" type="button" aria-label="Rimuovi allegato">×</button>
+    </div>
+
+    <form class="chat-composer" id="chatForm">
+      <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
+      <button class="attach-btn" id="attachBtn" type="button" aria-label="Allega immagine o screenshot" title="Allega immagine">🖼️</button>
+      <textarea class="composer-text" id="messageInput" rows="1" maxlength="3000" placeholder="Scrivi un messaggio…" aria-label="Scrivi un messaggio"></textarea>
+      <button class="send-btn" id="sendBtn" type="submit">Invia</button>
+    </form>
+  </section>
+</main>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Immagine ingrandita">
+  <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Chiudi">×</button>
+  <img id="lightboxImage" alt="Immagine condivisa">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="tap-auth.js"></script>
+<script src="chat.js?v=1"></script>
+</body>
+</html>
