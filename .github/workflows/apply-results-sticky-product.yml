@@ -1,0 +1,37 @@
+name: Applica colonna Prodotto fissa
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-results-sticky-product.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aggiorna risultati.html
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('risultati.html')
+          s=p.read_text()
+          old="table{width:100%;min-width:620px;border-collapse:collapse;table-layout:fixed}th,td{border-bottom:1px solid #e5ece9;padding:18px 16px;text-align:right}th:first-child,td:first-child{text-align:left;width:30%}thead th{background:#f7faf9;color:#687671;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:900}"
+          new="table{width:100%;min-width:600px;border-collapse:separate;border-spacing:0;table-layout:fixed}th,td{border-bottom:1px solid #e5ece9;padding:18px 14px;text-align:right}th:first-child,td:first-child{text-align:left;width:128px;min-width:128px;max-width:128px;position:sticky;left:0;z-index:5;background:#fff;box-shadow:8px 0 12px -12px rgba(0,60,51,.55)}thead th:first-child{z-index:8;background:#f7faf9}thead th{background:#f7faf9;color:#687671;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:900}"
+          if old not in s:
+              raise SystemExit('Blocco tabella non trovato')
+          s=s.replace(old,new,1)
+          s=s.replace(".money-row td{background:#fbfdfc}",".money-row td{background:#fbfdfc}.money-row td:first-child{background:#fbfdfc}",1)
+          s=s.replace("th,td{padding:15px 12px}","th,td{padding:15px 10px}th:first-child,td:first-child{width:118px;min-width:118px;max-width:118px}",1)
+          s=s.replace("th,td{padding:10px 14px}","th,td{padding:10px 11px}th:first-child,td:first-child{width:120px;min-width:120px;max-width:120px}",1)
+          p.write_text(s)
+          PY
+          git config user.name "tapreputa-bot"
+          git config user.email "tapreputa-bot@users.noreply.github.com"
+          git add risultati.html
+          git commit -m "Riduci spazio e blocca colonna Prodotto nei risultati"
+          git push
