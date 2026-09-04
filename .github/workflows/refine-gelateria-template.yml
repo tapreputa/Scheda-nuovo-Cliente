@@ -1,0 +1,27 @@
+name: Refine Gelateria Template
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/refine_gelateria_template.py'
+      - '.github/workflows/refine-gelateria-template.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply Gelateria refinement
+        run: python3 .github/scripts/refine_gelateria_template.py
+      - name: Commit changes
+        run: |
+          git config user.name "tapreputa"
+          git config user.email "tapreputa@gmail.com"
+          git add personalizza.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Rifinisce template Gelateria e personalizza coppette"
+          git push
