@@ -14,102 +14,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Aggiorna indicatore globale operatore
+      - name: Applica operatore globale
         run: |
           python - <<'PY'
           from pathlib import Path
 
-          p=Path('tap-auth.js')
-          s=p.read_text()
-          anchor="  function decoratePage(user) {\n"
-          fn=r'''  function installGlobalOperatorBadge(name) {
-    if (!name || PAGE_NAME === 'login.html' || !document.body?.dataset?.auth) return;
-
-    let style = document.getElementById('tap-active-operator-style');
-    if (!style) {
-      style = document.createElement('style');
-      style.id = 'tap-active-operator-style';
-      style.textContent = `
-        #tap-active-operator{
-          position:absolute;
-          z-index:35;
-          display:flex;
-          align-items:center;
-          justify-content:flex-end;
-          white-space:nowrap;
-          color:#003c33;
-          font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-          font-size:15px;
-          line-height:1;
-          font-weight:900;
-          letter-spacing:.01em;
-          pointer-events:none;
-          text-shadow:0 1px 0 rgba(255,255,255,.85);
-        }
-        @media(max-width:760px){
-          #tap-active-operator{font-size:14px}
-        }
-        @media(orientation:landscape) and (max-height:680px){
-          #tap-active-operator{font-size:13px}
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    let badge = document.getElementById('tap-active-operator');
-    if (!badge) {
-      badge = document.createElement('div');
-      badge.id = 'tap-active-operator';
-      badge.setAttribute('aria-label', 'Operatore collegato: ' + name);
-      document.body.appendChild(badge);
-    }
-    badge.textContent = '🔥 ' + name;
-    badge.setAttribute('aria-label', 'Operatore collegato: ' + name);
-
-    const positionBadge = () => {
-      const header = document.querySelector('header, .topbar');
-      const content = document.querySelector('main, .wrap, .container');
-      const headerBottom = header ? header.getBoundingClientRect().bottom + window.scrollY : 0;
-      const contentRect = content?.getBoundingClientRect();
-      const rightGap = contentRect ? Math.max(18, window.innerWidth - contentRect.right + 18) : 20;
-      badge.style.top = Math.round(headerBottom + (window.innerHeight < 700 ? 14 : 20)) + 'px';
-      badge.style.right = Math.round(rightGap) + 'px';
-    };
-
-    positionBadge();
-    requestAnimationFrame(positionBadge);
-    if (badge.dataset.positionBound !== '1') {
-      badge.dataset.positionBound = '1';
-      window.addEventListener('resize', positionBadge, { passive: true });
-      window.addEventListener('orientationchange', () => setTimeout(positionBadge, 80), { passive: true });
-    }
-  }
-
-'''
-          if 'function installGlobalOperatorBadge(name)' not in s:
-              if anchor not in s:
-                  raise SystemExit('decoratePage non trovato')
-              s=s.replace(anchor,fn+anchor,1)
-
-          old="  function decoratePage(user) {\n    const name = operatorName(user);\n"
-          new="  function decoratePage(user) {\n    const name = operatorName(user);\n    installGlobalOperatorBadge(name);\n"
+          p = Path('tap-auth.js')
+          s = p.read_text()
+          old = "    const name = operatorName(user);\n    document.querySelectorAll('[data-operator-name], .user-pill').forEach(el => {"
+          new = "    const name = operatorName(user);\n    document.body.dataset.tapOperator = name || '';\n    const operatorHost = document.querySelector('main');\n    if (operatorHost) operatorHost.dataset.tapOperator = name || '';\n    document.querySelectorAll('[data-operator-name], .user-pill').forEach(el => {"
           if new not in s:
               if old not in s:
-                  raise SystemExit('inizio decoratePage non trovato')
-              s=s.replace(old,new,1)
+                  raise SystemExit('decoratePage non trovato')
+              s = s.replace(old, new, 1)
           p.write_text(s)
 
-          r=Path('risultati.html')
+          css = Path('landscape.css')
+          c = css.read_text()
+          marker = '/* TAP ACTIVE OPERATOR */'
+          if marker not in c:
+              c += '''\n\n/* TAP ACTIVE OPERATOR */\nmain[data-tap-operator]{position:relative}\nmain[data-tap-operator]::after{content:"🔥 " attr(data-tap-operator);position:absolute;top:18px;right:24px;z-index:40;white-space:nowrap;color:#003c33;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1;font-weight:900;letter-spacing:.01em;pointer-events:none;text-shadow:0 1px 0 rgba(255,255,255,.9)}\n@media(max-width:760px){main[data-tap-operator]::after{top:16px;right:18px;font-size:14px}}\n@media(orientation:landscape) and (max-height:680px){main[data-tap-operator]::after{top:10px;right:20px;font-size:13px}}\n'''
+              css.write_text(c)
+
+          r = Path('risultati.html')
           if r.exists():
-              x=r.read_text()
+              x = r.read_text()
               import re
-              x=re.sub(r'\.logged-operator\{[^}]*\}\.logged-operator span\{[^}]*\}', '', x, count=1)
-              x=re.sub(r'\.logged-operator\{justify-content:flex-start;margin:-12px 0 18px;font-size:14px\}', '', x, count=1)
-              x=x.replace('\n<div class="logged-operator">🔥 <span data-operator-name>Operatore</span></div>','',1)
+              x = re.sub(r'\.logged-operator\{[^}]*\}\.logged-operator span\{[^}]*\}', '', x, count=1)
+              x = re.sub(r'\.logged-operator\{justify-content:flex-start;margin:-12px 0 18px;font-size:14px\}', '', x, count=1)
+              x = x.replace('\n<div class="logged-operator">🔥 <span data-operator-name>Operatore</span></div>', '', 1)
               r.write_text(x)
           PY
           git config user.name "tapreputa-bot"
           git config user.email "tapreputa-bot@users.noreply.github.com"
-          git add tap-auth.js risultati.html
+          git add tap-auth.js landscape.css risultati.html
           git commit -m "Mostra operatore loggato su tutte le pagine"
           git push
