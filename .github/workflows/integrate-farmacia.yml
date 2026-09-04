@@ -1,0 +1,41 @@
+name: Integra Farmacia
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch personalizza
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('personalizza.html')
+          s=p.read_text(encoding='utf-8')
+
+          if '<option value="farmacia">Farmacie</option>' not in s:
+              s=s.replace('<option value="detersivi">Detersivi e casalinghi</option>', '<option value="detersivi">Detersivi e casalinghi</option>\n<option value="farmacia">Farmacie</option>', 1)
+
+          meta='    detersivi: ["Detersivi e casalinghi", "Sfondo pulito e luminoso + layout dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."]'
+          if 'farmacia: ["Farmacie"' not in s:
+              s=s.replace(meta, meta + ',\n    farmacia: ["Farmacie", "Sfondo farmacia luminoso + stile professionale + pulsante recensioni + 5 stelle + Powered by Tapreputa."]', 1)
+
+          s=s.replace('"yogurteria","detersivi"]', '"yogurteria","detersivi","farmacia"]')
+
+          cfg='        detersivi: {file:"Sfondodetersivi.jpg", title:"Hai trovato tutto ciò che cercavi?", accent:"#1fa9b8", accent2:"#0b6f7d", theme:"#0d7884", box:"rgba(255,255,255,.84)", text:"#123b42", message:"La tua opinione ci aiuta a migliorare assortimento, qualità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-18px)", footerSize:"9px", footerStrong:"18px"}'
+          if 'farmacia: {file:"Sfondofarmacia.jpg"' not in s:
+              newcfg=cfg + ',\n        farmacia: {file:"Sfondofarmacia.jpg", title:"La tua esperienza è importante per noi", accent:"#16a085", accent2:"#0b6f61", theme:"#0b7668", box:"rgba(255,255,255,.88)", text:"#16473f", message:"La tua opinione ci aiuta a migliorare ogni giorno accoglienza, disponibilità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-10px)", footerSize:"9px", footerStrong:"18px"}'
+              s=s.replace(cfg,newcfg,1)
+
+          p.write_text(s,encoding='utf-8')
+      - name: Commit
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add personalizza.html
+          git commit -m "Integra categoria Farmacia" || true
+          git push
