@@ -1,0 +1,30 @@
+name: Fix preview header mobile
+on:
+  push:
+    paths: ['.github/workflows/fix-preview-header.yml']
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('personalizza.html')
+          s=p.read_text()
+          old='topbar.style.cssText = "height:64px;flex:0 0 64px;background:#003c33;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-family:Arial,Helvetica,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.18);";'
+          new='topbar.style.cssText = "min-height:76px;flex:0 0 auto;background:#003c33;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 16px;font-family:Arial,Helvetica,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.18);position:relative;z-index:2;";'
+          s=s.replace(old,new)
+          s=s.replace('title.style.cssText = "font-size:17px;";','title.style.cssText = "font-size:17px;line-height:1.15;flex:0 1 auto;white-space:nowrap;";')
+          s=s.replace('close.style.cssText = "border:1px solid rgba(255,255,255,.35);background:#fff;color:#003c33;border-radius:999px;padding:10px 14px;font-weight:800;font-size:13px;cursor:pointer;";','close.style.cssText = "border:1px solid rgba(255,255,255,.35);background:#fff;color:#003c33;border-radius:999px;padding:10px 14px;font-weight:800;font-size:13px;line-height:1.15;cursor:pointer;flex:0 1 220px;min-width:0;white-space:normal;text-align:center;";')
+          p.write_text(s)
+          PY
+          rm .github/workflows/fix-preview-header.yml
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add personalizza.html .github/workflows/fix-preview-header.yml
+          git commit -m 'Correggi barra anteprima su mobile'
+          git push
