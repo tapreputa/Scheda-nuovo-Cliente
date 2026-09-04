@@ -1,0 +1,27 @@
+name: Enable Standard Preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/enable_standard_preview.py'
+      - '.github/workflows/enable-standard-preview.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply Standard preview
+        run: python3 .github/scripts/enable_standard_preview.py
+      - name: Commit changes
+        run: |
+          git config user.name "tapreputa"
+          git config user.email "tapreputa@gmail.com"
+          git add personalizza.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Abilita anteprima link per tipologia Standard"
+          git push
