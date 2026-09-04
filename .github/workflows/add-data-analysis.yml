@@ -18,58 +18,39 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-
-          p = Path('risultati.html')
-          s = p.read_text()
-
-          css_anchor = '\n@media(max-width:760px)'
-          css = r'''
-.analysis-section{margin-top:44px;padding-top:36px;border-top:2px solid #dbe7e3}.analysis-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}.analysis-card{background:#fff;border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow);padding:22px}.analysis-summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:18px;margin-bottom:20px;border-bottom:1px solid #e4ece9}.analysis-leader-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--green-700);font-weight:900}.analysis-leader{margin-top:5px;font-size:22px;font-weight:900;color:var(--green-950)}.analysis-leader-note{margin-top:4px;color:var(--muted);font-size:12px}.analysis-total{flex:0 0 auto;min-width:84px;border-radius:16px;background:#eff8f5;padding:12px 14px;text-align:center}.analysis-total strong{display:block;font-size:24px;color:var(--green-950)}.analysis-total span{display:block;margin-top:2px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#6f807b;font-weight:800}.category-chart{display:grid;gap:14px}.category-row{display:grid;grid-template-columns:minmax(110px,180px) minmax(180px,1fr) 92px;align-items:center;gap:14px}.category-label{min-width:0}.category-rank{display:inline-block;min-width:26px;color:#7d8a86;font-size:11px;font-weight:900}.category-name{font-size:13px;font-weight:850;color:#173b34;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.category-row.leader .category-name{color:#006e5b}.category-track{height:24px;border-radius:999px;background:#eaf1ef;overflow:hidden;position:relative}.category-fill{height:100%;min-width:5px;border-radius:999px;background:linear-gradient(90deg,#006d5a,#00a486);box-shadow:inset 0 0 0 1px rgba(0,60,51,.05);transition:width .35s ease}.category-row.leader .category-fill{background:linear-gradient(90deg,#003c33,#00866f)}.category-value{text-align:right;font-size:13px;font-weight:900;color:#173b34;white-space:nowrap}.category-value small{display:block;margin-top:2px;color:#7a8883;font-size:10px;font-weight:750}.analysis-empty{padding:28px 10px;text-align:center;color:#7d8985;font-size:13px}
-'''
+          p=Path('risultati.html')
+          s=p.read_text()
+          css_anchor='\n@media(max-width:760px)'
+          css='''.analysis-section{margin-top:44px;padding-top:36px;border-top:2px solid #dbe7e3}.analysis-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}.analysis-card{background:#fff;border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow);padding:22px}.analysis-summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:18px;margin-bottom:20px;border-bottom:1px solid #e4ece9}.analysis-leader-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--green-700);font-weight:900}.analysis-leader{margin-top:5px;font-size:22px;font-weight:900;color:var(--green-950)}.analysis-leader-note{margin-top:4px;color:var(--muted);font-size:12px}.analysis-total{flex:0 0 auto;min-width:84px;border-radius:16px;background:#eff8f5;padding:12px 14px;text-align:center}.analysis-total strong{display:block;font-size:24px;color:var(--green-950)}.analysis-total span{display:block;margin-top:2px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#6f807b;font-weight:800}.category-chart{display:grid;gap:14px}.category-row{display:grid;grid-template-columns:minmax(110px,180px) minmax(180px,1fr) 92px;align-items:center;gap:14px}.category-label{min-width:0;display:flex;align-items:center}.category-rank{display:inline-block;min-width:30px;color:#7d8a86;font-size:11px;font-weight:900}.category-name{font-size:13px;font-weight:850;color:#173b34;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.category-row.leader .category-name{color:#006e5b}.category-track{height:24px;border-radius:999px;background:#eaf1ef;overflow:hidden;position:relative}.category-fill{height:100%;min-width:5px;border-radius:999px;background:linear-gradient(90deg,#006d5a,#00a486);box-shadow:inset 0 0 0 1px rgba(0,60,51,.05);transition:width .35s ease}.category-row.leader .category-fill{background:linear-gradient(90deg,#003c33,#00866f)}.category-value{text-align:right;font-size:13px;font-weight:900;color:#173b34;white-space:nowrap}.category-value small{display:block;margin-top:2px;color:#7a8883;font-size:10px;font-weight:750}.analysis-empty{padding:28px 10px;text-align:center;color:#7d8985;font-size:13px}'''
           if '.analysis-section{' not in s:
-              if css_anchor not in s:
-                  raise SystemExit('CSS anchor non trovato')
-              s = s.replace(css_anchor, '\n' + css + css_anchor, 1)
-
-          mobile_anchor = '@media(max-width:430px){'
-          mobile_css = '@media(max-width:760px){.analysis-section{margin-top:34px;padding-top:28px}.analysis-head{display:block}.analysis-card{padding:16px;border-radius:21px}.analysis-summary{align-items:flex-start}.analysis-leader{font-size:19px}.analysis-total{min-width:72px;padding:10px}.analysis-total strong{font-size:21px}.category-row{grid-template-columns:104px minmax(150px,1fr) 76px;gap:9px}.category-name{font-size:12px}.category-track{height:21px}.category-value{font-size:12px}}\n'
+              if css_anchor not in s: raise SystemExit('CSS anchor non trovato')
+              s=s.replace(css_anchor,'\n'+css+css_anchor,1)
+          mobile_anchor='@media(max-width:430px){'
+          mobile_css='@media(max-width:760px){.analysis-section{margin-top:34px;padding-top:28px}.analysis-head{display:block}.analysis-card{padding:16px;border-radius:21px}.analysis-summary{align-items:flex-start}.analysis-leader{font-size:19px}.analysis-total{min-width:72px;padding:10px}.analysis-total strong{font-size:21px}.category-row{grid-template-columns:104px minmax(150px,1fr) 76px;gap:9px}.category-name{font-size:12px}.category-track{height:21px}.category-value{font-size:12px}}\n'
           if mobile_css not in s:
-              if mobile_anchor not in s:
-                  raise SystemExit('Mobile anchor non trovato')
-              s = s.replace(mobile_anchor, mobile_css + mobile_anchor, 1)
-
-          html_anchor = '''<div id="monthlyEmpty" class="monthly-empty"></div>\n</div>\n</section>\n</div>\n</main>'''
-          html_new = '''<div id="monthlyEmpty" class="monthly-empty"></div>\n</div>\n</section>\n\n<section class="analysis-section">\n<div class="analysis-head"><div><div class="section-kicker">Visione complessiva</div><h2 class="section-title">Analisi dati</h2></div></div>\n<div class="analysis-card">\n<div class="analysis-summary"><div><div class="analysis-leader-label">Categoria più presente</div><div id="categoryLeader" class="analysis-leader">—</div><div id="categoryLeaderNote" class="analysis-leader-note"></div></div><div class="analysis-total"><strong id="analysisClientTotal">0</strong><span>Clienti</span></div></div>\n<div id="categoryChart" class="category-chart"></div>\n</div>\n</section>\n</div>\n</main>'''
+              if mobile_anchor not in s: raise SystemExit('Mobile anchor non trovato')
+              s=s.replace(mobile_anchor,mobile_css+mobile_anchor,1)
+          html_anchor='<div id="monthlyEmpty" class="monthly-empty"></div>\n</div>\n</section>\n</div>\n</main>'
+          html_new='<div id="monthlyEmpty" class="monthly-empty"></div>\n</div>\n</section>\n\n<section class="analysis-section">\n<div class="analysis-head"><div><div class="section-kicker">Visione complessiva</div><h2 class="section-title">Analisi dati</h2></div></div>\n<div class="analysis-card">\n<div class="analysis-summary"><div><div class="analysis-leader-label">Categoria più presente</div><div id="categoryLeader" class="analysis-leader">—</div><div id="categoryLeaderNote" class="analysis-leader-note"></div></div><div class="analysis-total"><strong id="analysisClientTotal">0</strong><span>Clienti</span></div></div>\n<div id="categoryChart" class="category-chart"></div>\n</div>\n</section>\n</div>\n</main>'
           if '<section class="analysis-section">' not in s:
-              if html_anchor not in s:
-                  raise SystemExit('HTML anchor non trovato')
-              s = s.replace(html_anchor, html_new, 1)
-
-          js_anchor = 'function render(clienti){allClients=clienti;renderTotals(clienti);renderYears();renderMonthButtons();renderMonthly();'
-          js_new = r'''function renderCategoryAnalysis(clienti){
-  const chart=document.getElementById('categoryChart');
-  const leader=document.getElementById('categoryLeader');
-  const leaderNote=document.getElementById('categoryLeaderNote');
-  const totalEl=document.getElementById('analysisClientTotal');
+              if html_anchor not in s: raise SystemExit('HTML anchor non trovato')
+              s=s.replace(html_anchor,html_new,1)
+          js_anchor='function render(clienti){allClients=clienti;renderTotals(clienti);renderYears();renderMonthButtons();renderMonthly();'
+          js_new='''function renderCategoryAnalysis(clienti){
+  const chart=document.getElementById('categoryChart'),leader=document.getElementById('categoryLeader'),leaderNote=document.getElementById('categoryLeaderNote'),totalEl=document.getElementById('analysisClientTotal');
   if(!chart||!leader||!leaderNote||!totalEl)return;
-  chart.innerHTML='';
-  const total=clienti.length;
-  totalEl.textContent=total;
+  chart.innerHTML='';const total=clienti.length;totalEl.textContent=total;
   if(!total){leader.textContent='Nessun dato';leaderNote.textContent='Aggiungi clienti per visualizzare la classifica.';const e=document.createElement('div');e.className='analysis-empty';e.textContent='Nessuna categoria disponibile.';chart.appendChild(e);return}
-  const counts=new Map();
-  for(const c of clienti){const raw=String(c.categoria||c.categoria_codice||'').trim();const name=raw||'Non specificata';counts.set(name,(counts.get(name)||0)+1)}
+  const counts=new Map();for(const c of clienti){const raw=String(c.categoria||c.categoria_codice||'').trim(),name=raw||'Non specificata';counts.set(name,(counts.get(name)||0)+1)}
   const ranking=[...counts.entries()].map(([name,count])=>({name,count,share:count/total*100})).sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'it'));
-  const max=Math.max(...ranking.map(x=>x.count),1),top=ranking[0];
-  leader.textContent=top.name;
-  leaderNote.textContent=top.count+' '+(top.count===1?'cliente':'clienti')+' · '+top.share.toLocaleString('it-IT',{maximumFractionDigits:1})+'% del totale';
+  const max=Math.max(...ranking.map(x=>x.count),1),top=ranking[0];leader.textContent=top.name;leaderNote.textContent=top.count+' '+(top.count===1?'cliente':'clienti')+' · '+top.share.toLocaleString('it-IT',{maximumFractionDigits:1})+'% del totale';
   ranking.forEach((item,index)=>{const row=document.createElement('div');row.className='category-row'+(index===0?' leader':'');const label=document.createElement('div');label.className='category-label';const rank=document.createElement('span');rank.className='category-rank';rank.textContent=index===0?'🏆':'#'+(index+1);const name=document.createElement('span');name.className='category-name';name.textContent=item.name;label.append(rank,name);const track=document.createElement('div');track.className='category-track';track.setAttribute('role','img');track.setAttribute('aria-label',item.name+': '+item.count+' clienti, '+item.share.toFixed(1)+'%');const fill=document.createElement('div');fill.className='category-fill';fill.style.width=Math.max(4,item.count/max*100)+'%';track.appendChild(fill);const value=document.createElement('div');value.className='category-value';value.textContent=item.count+' '+(item.count===1?'cliente':'clienti');const small=document.createElement('small');small.textContent=item.share.toLocaleString('it-IT',{maximumFractionDigits:1})+'%';value.appendChild(small);row.append(label,track,value);chart.appendChild(row)})
 }
 '''
           if 'function renderCategoryAnalysis(clienti)' not in s:
-              if js_anchor not in s:
-                  raise SystemExit('JS anchor non trovato')
-              s = s.replace(js_anchor, js_new + js_anchor.replace('renderMonthly();','renderMonthly();renderCategoryAnalysis(clienti);'), 1)
-
+              if js_anchor not in s: raise SystemExit('JS anchor non trovato')
+              replacement=js_new+js_anchor.replace('renderMonthly();','renderMonthly();renderCategoryAnalysis(clienti);')
+              s=s.replace(js_anchor,replacement,1)
           p.write_text(s)
           PY
           git config user.name "tapreputa-bot"
