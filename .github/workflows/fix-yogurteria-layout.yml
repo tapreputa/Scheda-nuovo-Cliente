@@ -1,0 +1,32 @@
+name: Correggi layout Yogurteria
+on:
+  push:
+    paths: ['.github/workflows/fix-yogurteria-layout.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Migliora posizione logo e leggibilita testo Yogurteria
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('personalizza.html')
+          s=p.read_text()
+          start=s.index('function buildYogurteriaTemplate')
+          end=s.index('function buildGelateriaTemplate', start)
+          block=s[start:end]
+          block=block.replace('padding:clamp(104px,12vh,160px) 16px max(92px,calc(env(safe-area-inset-bottom) + 76px))','padding:clamp(28px,4.5vh,56px) 16px max(92px,calc(env(safe-area-inset-bottom) + 76px))')
+          block=block.replace('margin:0 auto 20px;max-width:440px;font-size:clamp(15px,3.6vw,19px);line-height:1.42;font-weight:700;color:#0b4f59;text-shadow:0 1px 8px rgba(255,255,255,.95)','margin:0 auto 20px;max-width:440px;font-size:clamp(15px,3.6vw,19px);line-height:1.42;font-weight:760;color:#073f49;background:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.72);border-radius:18px;padding:14px 16px;box-shadow:0 8px 22px rgba(0,77,87,.16);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);text-shadow:none')
+          block=block.replace('.pagina{padding-top:clamp(98px,11.5vh,142px);padding-bottom:max(90px,calc(env(safe-area-inset-bottom) + 72px))}', '.pagina{padding-top:clamp(24px,4vh,44px);padding-bottom:max(90px,calc(env(safe-area-inset-bottom) + 72px))}')
+          s=s[:start]+block+s[end:]
+          p.write_text(s)
+          PY
+          rm .github/workflows/fix-yogurteria-layout.yml
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add personalizza.html .github/workflows/fix-yogurteria-layout.yml
+          git commit -m 'Yogurteria alza logo e migliora leggibilita testo' || exit 0
+          git push
