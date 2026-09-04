@@ -1,0 +1,163 @@
+/* Tap NFC — Premium Polish v2
+   Solo rifiniture visuali. Nessuna logica o comportamento. */
+
+/* Coerenza cromatica residua */
+.metric-label,.value,.money-row .metric-label,.money-row .value,
+.category-name,.category-value,.detail,.detail div,
+.remember-row,.data-note,.monthly-empty,.analysis-empty{
+  color:#10294c!important;
+}
+.category-row:not(.leader) .category-name{color:#17385f!important}
+.category-row.leader .category-name{color:#9a6d1e!important}
+.category-value small{color:#7a8698!important}
+
+/* Badge operatore globale */
+main[data-tap-operator]::after{
+  color:#0b2142!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(249,246,236,.88))!important;
+  border:1px solid rgba(213,168,71,.38)!important;
+  border-radius:999px!important;
+  padding:8px 12px!important;
+  box-shadow:0 8px 24px rgba(7,21,43,.09),inset 0 1px rgba(255,255,255,.9)!important;
+  text-shadow:none!important;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+
+/* Header mobile: brand sempre leggibile e compatto */
+@media(max-width:760px){
+  .topbar{
+    gap:8px!important;
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+  .topbar .brand{
+    min-width:0!important;
+    flex:1 1 auto!important;
+    gap:10px!important;
+  }
+  .topbar .brand > div:last-child{
+    min-width:0!important;
+    flex:1 1 auto!important;
+  }
+  .brand-title{
+    white-space:nowrap!important;
+    font-size:17px!important;
+    line-height:1.05!important;
+  }
+  .brand-sub{
+    white-space:nowrap!important;
+    font-size:10.5px!important;
+    line-height:1.12!important;
+    margin-top:4px!important;
+  }
+  .brand-icon,.logo{
+    flex:0 0 auto!important;
+  }
+  .top-actions{
+    flex:0 0 auto!important;
+    gap:7px!important;
+  }
+  .clients-top{
+    width:auto!important;
+    max-width:116px!important;
+    min-height:42px!important;
+    padding:0 11px!important;
+    font-size:11.5px!important;
+    line-height:1.08!important;
+    text-align:center!important;
+    white-space:normal!important;
+  }
+  .logout,.back{
+    min-height:42px!important;
+    padding:9px 11px!important;
+    font-size:11.5px!important;
+  }
+  main[data-tap-operator]::after{
+    top:14px!important;
+    right:14px!important;
+    font-size:12.5px!important;
+    padding:7px 10px!important;
+  }
+}
+
+/* Personalizza: header e card più equilibrati su smartphone */
+@media(max-width:760px){
+  html[data-tap-page="personalizza.html"] .topbar{
+    height:auto!important;
+    min-height:86px!important;
+  }
+  html[data-tap-page="personalizza.html"] .brand-title{
+    font-size:16.5px!important;
+  }
+  html[data-tap-page="personalizza.html"] .brand-sub{
+    font-size:10px!important;
+  }
+  html[data-tap-page="personalizza.html"] .clients-top{
+    max-width:112px!important;
+    font-size:11px!important;
+  }
+  html[data-tap-page="personalizza.html"] .card-head{
+    gap:14px!important;
+    align-items:flex-start!important;
+  }
+  html[data-tap-page="personalizza.html"] .card-head h2{
+    font-size:25px!important;
+    line-height:1.08!important;
+  }
+  html[data-tap-page="personalizza.html"] .card-head p{
+    margin-top:9px!important;
+    font-size:14.5px!important;
+    line-height:1.45!important;
+  }
+  html[data-tap-page="personalizza.html"] .card-icon{
+    width:54px!important;
+    height:54px!important;
+    border-radius:17px!important;
+    flex:0 0 54px!important;
+  }
+}
+
+/* Risultati: tabella e dati allineati al nuovo linguaggio visivo */
+html[data-tap-page="risultati.html"] .metric-label,
+html[data-tap-page="risultati.html"] .value{
+  color:#123459!important;
+}
+html[data-tap-page="risultati.html"] .team-col{
+  color:#174b9d!important;
+}
+html[data-tap-page="risultati.html"] .category-row:not(.leader) .category-name,
+html[data-tap-page="risultati.html"] .category-row:not(.leader) .category-value{
+  color:#17385f!important;
+}
+
+/* Login: solo pulizia, senza cambiare la composizione riuscita */
+html[data-tap-page="login.html"] .remember-row{
+  color:#32445f!important;
+}
+html[data-tap-page="login.html"] .foot{
+  color:#7c8798!important;
+}
+
+/* Piccoli dettagli interattivi premium */
+button,a,input,select{
+  -webkit-tap-highlight-color:transparent;
+}
+.primary,.clients-top,.back,.results-link,.refresh,.place-finder-btn{
+  will-change:transform;
+}
+@media(hover:none){
+  .primary:active,.clients-top:active,.back:active,.results-link:active,.refresh:active,.place-finder-btn:active{
+    transform:scale(.985)!important;
+  }
+}
+
+/* Evita qualsiasi animazione se richiesta dal sistema */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
+}
