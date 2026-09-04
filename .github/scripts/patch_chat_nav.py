@@ -1,0 +1,99 @@
+from pathlib import Path
+
+path = Path('tap-auth.js')
+src = path.read_text()
+
+if 'data-tap-chat-nav' not in src:
+    needle = "  const SUPABASE_URL = 'https://rqzgdgdoulgjwlxtdxhi.supabase.co';"
+    block = """  if (PAGE_NAME !== 'login.html' && !document.querySelector('link[data-tap-chat-nav]')) {
+    const chatNavLink = document.createElement('link');
+    chatNavLink.rel = 'stylesheet';
+    chatNavLink.href = 'chat-nav.css?v=1';
+    chatNavLink.dataset.tapChatNav = '1';
+    document.head.appendChild(chatNavLink);
+  }
+
+"""
+    if needle not in src:
+        raise SystemExit('SUPABASE_URL marker not found')
+    src = src.replace(needle, block + needle, 1)
+
+if 'async function getUnreadChatCount' not in src:
+    marker = '  function decoratePage(user) {'
+    functions = """  async function getUnreadChatCount(user) {
+    const email = String(user?.email || '').toLowerCase();
+    if (!email || !OPERATORS[email]) return 0;
+    const response = await rest('chat_messages?select=id&recipient_email=eq.' + encodeURIComponent(email) + '&read_at=is.null&limit=100');
+    if (!response.ok) return 0;
+    const rows = await response.json().catch(() => []);
+    return Array.isArray(rows) ? rows.length : 0;
+  }
+
+  async function refreshChatBadge(user = window.__tapChatUser) {
+    const badge = document.querySelector('.chat-badge');
+    if (!badge || !user) return 0;
+    try {
+      const count = await getUnreadChatCount(user);
+      badge.textContent = count > 99 ? '99+' : String(count);
+      badge.hidden = count < 1;
+      const link = badge.closest('.chat-top');
+      if (link) link.setAttribute('aria-label', count ? 'Chat, ' + count + ' messaggi non letti' : 'Chat');
+      return count;
+    } catch {
+      badge.hidden = true;
+      return 0;
+    }
+  }
+
+  function installChatNav(user) {
+    if (!user || PAGE_NAME === 'login.html') return;
+    window.__tapChatUser = user;
+    const topActions = document.querySelector('.top-actions');
+    if (!topActions) return;
+
+    let link = topActions.querySelector('.chat-top');
+    if (!link) {
+      link = document.createElement('a');
+      link.className = 'chat-top';
+      link.href = 'chat.html';
+      link.innerHTML = '<span class=\"chat-top-icon\" aria-hidden=\"true\">💬</span><span class=\"chat-top-label\">Chat</span><span class=\"chat-badge\" hidden>0</span>';
+      link.setAttribute('aria-label','Chat');
+      if (PAGE_NAME === 'chat.html') link.setAttribute('aria-current','page');
+      const logoutButton = topActions.querySelector('[data-logout]');
+      if (logoutButton) topActions.insertBefore(link, logoutButton);
+      else topActions.appendChild(link);
+    }
+
+    refreshChatBadge(user).catch(() => {});
+    if (!window.__tapChatBadgeTimer) {
+      window.__tapChatBadgeTimer = setInterval(() => {
+        if (document.visibilityState !== 'hidden') refreshChatBadge().catch(() => {});
+      }, 20000);
+    }
+    if (!window.__tapChatVisibilityBound) {
+      window.__tapChatVisibilityBound = true;
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') refreshChatBadge().catch(() => {});
+      });
+    }
+  }
+
+"""
+    if marker not in src:
+        raise SystemExit('decoratePage marker not found')
+    src = src.replace(marker, functions + marker, 1)
+
+call_marker = "    document.body.dataset.tapOperator = name || '';"
+if '    installChatNav(user);' not in src:
+    if call_marker not in src:
+        raise SystemExit('decorate call marker not found')
+    src = src.replace(call_marker, call_marker + "\n    installChatNav(user);", 1)
+
+export_old = '    migrateLocalClients, rest\n  };'
+export_new = '    migrateLocalClients, rest, refreshChatBadge\n  };'
+if export_old in src:
+    src = src.replace(export_old, export_new, 1)
+elif 'refreshChatBadge' not in src.split('window.TapNfc =',1)[-1].split('};',1)[0]:
+    raise SystemExit('TapNfc export marker not found')
+
+path.write_text(src)
