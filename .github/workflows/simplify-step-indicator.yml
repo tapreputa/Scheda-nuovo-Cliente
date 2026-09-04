@@ -1,0 +1,106 @@
+name: Simplify step indicator
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/simplify-step-indicator.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace flow with single premium step badge
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          css_path = Path('tap-premium-polish.css')
+          css = css_path.read_text(encoding='utf-8')
+
+          start = css.find('/* Flusso operativo definitivo: 1. Attività → 2. Personalizza */')
+          end = css.find('/* Ordine header coerente su tutte le pagine */')
+          if start != -1 and end != -1 and end > start:
+              new_block = '''/* Indicatore fase minimale: solo numero corrente */
+html[data-tap-page="index.html"] .steps,
+html[data-tap-page="personalizza.html"] .steps{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  min-height:48px!important;
+  margin-bottom:30px!important;
+  gap:0!important;
+}
+html[data-tap-page="index.html"] .steps > *,
+html[data-tap-page="personalizza.html"] .steps > *{
+  display:none!important;
+}
+html[data-tap-page="index.html"] .steps::before,
+html[data-tap-page="personalizza.html"] .steps::before{
+  width:46px!important;
+  height:46px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:50%!important;
+  background:linear-gradient(145deg,#0b2142,#174b9d)!important;
+  border:2px solid rgba(218,177,82,.92)!important;
+  color:#fff!important;
+  font-size:20px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  letter-spacing:0!important;
+  box-shadow:0 8px 20px rgba(7,21,43,.18),inset 0 1px rgba(255,255,255,.18)!important;
+}
+html[data-tap-page="index.html"] .steps::before{content:"1"!important}
+html[data-tap-page="personalizza.html"] .steps::before{content:"2"!important}
+@media(max-width:760px){
+  html[data-tap-page="index.html"] .steps,
+  html[data-tap-page="personalizza.html"] .steps{
+    min-height:44px!important;
+    margin-bottom:22px!important;
+  }
+  html[data-tap-page="index.html"] .steps::before,
+  html[data-tap-page="personalizza.html"] .steps::before{
+    width:42px!important;
+    height:42px!important;
+    font-size:18px!important;
+  }
+}
+
+'''
+              css = css[:start] + new_block + css[end:]
+          elif '/* Indicatore fase minimale: solo numero corrente */' not in css:
+              marker = '/* Ordine header coerente su tutte le pagine */'
+              new_block = '''/* Indicatore fase minimale: solo numero corrente */
+html[data-tap-page="index.html"] .steps,
+html[data-tap-page="personalizza.html"] .steps{display:flex!important;align-items:center!important;justify-content:flex-start!important;min-height:48px!important;margin-bottom:30px!important;gap:0!important}
+html[data-tap-page="index.html"] .steps > *,html[data-tap-page="personalizza.html"] .steps > *{display:none!important}
+html[data-tap-page="index.html"] .steps::before,html[data-tap-page="personalizza.html"] .steps::before{width:46px!important;height:46px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:50%!important;background:linear-gradient(145deg,#0b2142,#174b9d)!important;border:2px solid rgba(218,177,82,.92)!important;color:#fff!important;font-size:20px!important;font-weight:900!important;line-height:1!important;box-shadow:0 8px 20px rgba(7,21,43,.18),inset 0 1px rgba(255,255,255,.18)!important}
+html[data-tap-page="index.html"] .steps::before{content:"1"!important}
+html[data-tap-page="personalizza.html"] .steps::before{content:"2"!important}
+@media(max-width:760px){html[data-tap-page="index.html"] .steps,html[data-tap-page="personalizza.html"] .steps{min-height:44px!important;margin-bottom:22px!important}html[data-tap-page="index.html"] .steps::before,html[data-tap-page="personalizza.html"] .steps::before{width:42px!important;height:42px!important;font-size:18px!important}}
+
+'''
+              css = css.replace(marker, new_block + marker)
+
+          css_path.write_text(css, encoding='utf-8')
+
+          for filename in ('index.html','personalizza.html'):
+              p = Path(filename)
+              text = p.read_text(encoding='utf-8')
+              text = text.replace('tap-premium-polish.css?v=6', 'tap-premium-polish.css?v=7')
+              p.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "tapreputa"
+          git config user.email "tapreputa@gmail.com"
+          git add tap-premium-polish.css index.html personalizza.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Sostituisci flusso con indicatore fase minimale"
+          git push
