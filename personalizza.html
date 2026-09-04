@@ -29,6 +29,7 @@ select,input[type="url"]{width:100%;height:62px;border:2px solid #d1dbd7;border-
 select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px rgba(12,155,128,.10)}
 .template-info{border:1px solid #dce5e2;background:#f8fbfa;border-radius:16px;padding:18px;margin-bottom:26px}
 .template-info strong{display:block;margin-bottom:6px} .template-info span{color:#6f7c78;font-size:14px;line-height:1.5}
+.selected-type{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:-4px 2px 24px;padding:0;color:#6f7c78}.selected-type[hidden]{display:none!important}.selected-type span{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#7c8798}.selected-type strong{font-size:17px;font-weight:850;color:#0b2142;text-align:right}
 .upload-box{border:2px dashed #c9d9d4;border-radius:18px;padding:22px;background:#f8fbfa}
 .upload-box input{width:100%} .hint{font-size:14px;color:#848d8a;margin-top:10px}
 .logo-preview{margin-top:16px;display:none;align-items:center;gap:16px;padding:14px;border:1px solid #dce5e2;border-radius:16px;background:#fff}
@@ -151,7 +152,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 .tap-logo-svg{width:100%;height:100%;display:block}
 </style>
 <link rel="stylesheet" href="tap-premium-theme.css?v=1">
-<link rel="stylesheet" href="tap-premium-polish.css?v=8">
+<link rel="stylesheet" href="tap-premium-polish.css?v=9">
 </head>
 <body data-auth="required">
 <header class="topbar">
@@ -177,14 +178,11 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <div><h2>Template attività</h2><p>Scegli la categoria. Il relativo script master viene applicato automaticamente.</p></div>
 </div>
 
-<div class="field">
-<label for="operatorSelect">Operatore</label>
-<select id="operatorSelect">
+<select id="operatorSelect" hidden aria-hidden="true">
 <option value="" selected disabled>Seleziona operatore</option>
 <option value="Francesco">Francesco</option>
 <option value="Gisberto">Gisberto</option>
 </select>
-</div>
 
 <div class="field">
 <label for="activityType">Tipologia di attività</label>
@@ -203,10 +201,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 </select>
 </div>
 
-<div class="template-info" id="templateInfo">
-<strong>Template non selezionato</strong>
-<span>Seleziona una categoria: ogni attività utilizza il proprio template master definitivo.</span>
-</div>
+<div class="selected-type" id="templateInfo" hidden></div>
 
 <div class="field">
 <label for="logoFile">Logo attività</label>
@@ -220,11 +215,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 </div>
 </div>
 
-<div class="field">
-<label for="destinationUrl">Link recensioni Google</label>
-<input id="destinationUrl" type="url" placeholder="https://search.google.com/local/writereview?placeid=...">
-<div class="hint">Questo sarà il collegamento del pulsante “Recensione Google”.</div>
-</div>
+<input id="destinationUrl" type="hidden">
 
 <div class="actions">
 <button class="secondary" id="backBtn" type="button">← Indietro</button>
@@ -318,7 +309,13 @@ activityType.addEventListener("change", () => {
     centroestetico: ["Centri estetici", "Sfondo wellness luminoso + stile raffinato + pulsante premium + 5 stelle + Powered by Tapreputa."]
   };
   const item = templates[activityType.value];
-  if (item) templateInfo.innerHTML = `<strong>${item[0]} — TEMPLATE MASTER ATTIVO</strong><span>${item[1]}</span>`;
+  if (item) {
+    templateInfo.hidden = false;
+    templateInfo.innerHTML = `<span>Tipologia selezionata</span><strong>${item[0]}</strong>`;
+  } else {
+    templateInfo.hidden = true;
+    templateInfo.innerHTML = "";
+  }
 
   const isStandard = activityType.value === "standard";
   const logoField = logoFile.closest(".field");
@@ -458,6 +455,20 @@ function openInlinePreview(previewHtml) {
   }
 
   const frame = document.getElementById("tapPreviewFrame");
+  const previewSafeFooterStyle = `<style id="tap-preview-safe-footer">
+    @media (max-width:760px){
+      footer{
+        bottom:max(82px,calc(env(safe-area-inset-bottom) + 68px))!important;
+        right:max(18px,env(safe-area-inset-right))!important;
+        z-index:999!important;
+        max-width:calc(100vw - 36px)!important;
+      }
+    }
+    @media (orientation:landscape) and (max-height:680px){
+      footer{bottom:max(58px,calc(env(safe-area-inset-bottom) + 46px))!important;z-index:999!important}
+    }
+  </style>`;
+  if (previewHtml.includes("</head>")) previewHtml = previewHtml.replace("</head>", previewSafeFooterStyle + "</head>");
   frame.srcdoc = previewHtml;
   overlay.style.display = "flex";
   document.body.style.overflow = "hidden";
