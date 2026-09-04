@@ -152,7 +152,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 .tap-logo-svg{width:100%;height:100%;display:block}
 </style>
 <link rel="stylesheet" href="tap-premium-theme.css?v=1">
-<link rel="stylesheet" href="tap-premium-polish.css?v=9">
+<link rel="stylesheet" href="tap-premium-polish.css?v=10">
 </head>
 <body data-auth="required">
 <header class="topbar">
@@ -215,7 +215,11 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 </div>
 </div>
 
-<input id="destinationUrl" type="hidden">
+<div class="field">
+<label for="destinationUrl">Link recensioni Google</label>
+<input id="destinationUrl" type="url" placeholder="https://search.google.com/local/writereview?placeid=...">
+<div class="hint">Questo sarà il collegamento del pulsante “Recensione Google”.</div>
+</div>
 
 <div class="actions">
 <button class="secondary" id="backBtn" type="button">← Indietro</button>
