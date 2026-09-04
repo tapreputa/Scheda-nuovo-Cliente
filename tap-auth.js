@@ -11,6 +11,14 @@
     document.head.appendChild(responsiveLink);
   }
 
+  if (PAGE_NAME !== 'login.html' && !document.querySelector('link[data-tap-chat-nav]')) {
+    const chatNavLink = document.createElement('link');
+    chatNavLink.rel = 'stylesheet';
+    chatNavLink.href = 'chat-nav.css?v=1';
+    chatNavLink.dataset.tapChatNav = '1';
+    document.head.appendChild(chatNavLink);
+  }
+
   const SUPABASE_URL = 'https://rqzgdgdoulgjwlxtdxhi.supabase.co';
   const PUBLISHABLE_KEY = 'sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
   const SESSION_KEY = 'tapnfc_supabase_session_v1';
@@ -303,9 +311,68 @@
     return { migrated };
   }
 
+  async function getUnreadChatCount(user) {
+    const email = String(user?.email || '').toLowerCase();
+    if (!email || !OPERATORS[email]) return 0;
+    const response = await rest('chat_messages?select=id&recipient_email=eq.' + encodeURIComponent(email) + '&read_at=is.null&limit=100');
+    if (!response.ok) return 0;
+    const rows = await response.json().catch(() => []);
+    return Array.isArray(rows) ? rows.length : 0;
+  }
+
+  async function refreshChatBadge(user = window.__tapChatUser) {
+    const badge = document.querySelector('.chat-badge');
+    if (!badge || !user) return 0;
+    try {
+      const count = await getUnreadChatCount(user);
+      badge.textContent = count > 99 ? '99+' : String(count);
+      badge.hidden = count < 1;
+      const link = badge.closest('.chat-top');
+      if (link) link.setAttribute('aria-label', count ? 'Chat, ' + count + ' messaggi non letti' : 'Chat');
+      return count;
+    } catch {
+      badge.hidden = true;
+      return 0;
+    }
+  }
+
+  function installChatNav(user) {
+    if (!user || PAGE_NAME === 'login.html') return;
+    window.__tapChatUser = user;
+    const topActions = document.querySelector('.top-actions');
+    if (!topActions) return;
+
+    let link = topActions.querySelector('.chat-top');
+    if (!link) {
+      link = document.createElement('a');
+      link.className = 'chat-top';
+      link.href = 'chat.html';
+      link.innerHTML = '<span class="chat-top-icon" aria-hidden="true">💬</span><span class="chat-top-label">Chat</span><span class="chat-badge" hidden>0</span>';
+      link.setAttribute('aria-label','Chat');
+      if (PAGE_NAME === 'chat.html') link.setAttribute('aria-current','page');
+      const logoutButton = topActions.querySelector('[data-logout]');
+      if (logoutButton) topActions.insertBefore(link, logoutButton);
+      else topActions.appendChild(link);
+    }
+
+    refreshChatBadge(user).catch(() => {});
+    if (!window.__tapChatBadgeTimer) {
+      window.__tapChatBadgeTimer = setInterval(() => {
+        if (document.visibilityState !== 'hidden') refreshChatBadge().catch(() => {});
+      }, 20000);
+    }
+    if (!window.__tapChatVisibilityBound) {
+      window.__tapChatVisibilityBound = true;
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') refreshChatBadge().catch(() => {});
+      });
+    }
+  }
+
   function decoratePage(user) {
     const name = operatorName(user);
     document.body.dataset.tapOperator = name || '';
+    installChatNav(user);
     const operatorHost = document.querySelector('main');
     if (operatorHost) operatorHost.dataset.tapOperator = name || '';
     document.querySelectorAll('[data-operator-name], .user-pill').forEach(el => {
@@ -415,7 +482,7 @@
   window.TapNfc = {
     login, logout, getUser, requireAuth, operatorName, decoratePage,
     listClients, createClient, updateClient, deleteClient, upsertBusinessClient,
-    migrateLocalClients, rest
+    migrateLocalClients, rest, refreshChatBadge
   };
 
   if (document.readyState === 'loading') {
