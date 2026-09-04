@@ -465,16 +465,16 @@ function openInlinePreview(previewHtml) {
     overlay.style.cssText = "position:fixed;inset:0;z-index:999999;background:#fff;display:none;flex-direction:column;";
 
     const topbar = document.createElement("div");
-    topbar.style.cssText = "height:64px;flex:0 0 64px;background:#003c33;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-family:Arial,Helvetica,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.18);";
+    topbar.style.cssText = "min-height:76px;flex:0 0 auto;background:#003c33;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 16px;font-family:Arial,Helvetica,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.18);position:relative;z-index:2;";
 
     const title = document.createElement("strong");
     title.textContent = "Anteprima pagina";
-    title.style.cssText = "font-size:17px;";
+    title.style.cssText = "font-size:17px;line-height:1.15;flex:0 1 auto;white-space:nowrap;";
 
     const close = document.createElement("button");
     close.type = "button";
     close.textContent = "← Torna a Personalizza";
-    close.style.cssText = "border:1px solid rgba(255,255,255,.35);background:#fff;color:#003c33;border-radius:999px;padding:10px 14px;font-weight:800;font-size:13px;cursor:pointer;";
+    close.style.cssText = "border:1px solid rgba(255,255,255,.35);background:#fff;color:#003c33;border-radius:999px;padding:10px 14px;font-weight:800;font-size:13px;line-height:1.15;cursor:pointer;flex:0 1 220px;min-width:0;white-space:normal;text-align:center;";
     close.addEventListener("click", closeInlinePreview);
 
     topbar.appendChild(title);
