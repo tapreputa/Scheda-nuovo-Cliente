@@ -1,0 +1,144 @@
+name: Polish premium Tap NFC v2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/premium-polish-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Applica rifiniture estetiche
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          css_path = Path('tap-premium-theme.css')
+          css = css_path.read_text()
+          marker = '/* TAP PREMIUM POLISH V2 */'
+          if marker not in css:
+              css += r'''
+
+/* TAP PREMIUM POLISH V2 */
+/* Rifiniture derivate dai test reali su smartphone. Solo presentazione. */
+.metric-label,
+.category-name,
+.category-value,
+.value{
+  color:#132d4e!important;
+}
+.category-row.leader .category-name{
+  color:#8f661d!important;
+}
+
+/* Badge operatore: più integrato nell'identità premium */
+main[data-tap-operator]::after{
+  color:#132d4e!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(249,245,232,.96))!important;
+  border:1px solid rgba(213,168,71,.42)!important;
+  border-radius:999px!important;
+  padding:8px 12px!important;
+  box-shadow:0 8px 22px rgba(7,21,43,.10),inset 0 1px rgba(255,255,255,.9)!important;
+  text-shadow:none!important;
+}
+
+/* Personalizza: header mobile compatto e sempre su una riga */
+@media(max-width:760px){
+  html[data-tap-page="personalizza.html"] .topbar{
+    height:auto!important;
+    min-height:84px!important;
+    padding:14px 10px!important;
+    gap:7px!important;
+  }
+  html[data-tap-page="personalizza.html"] .brand{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    gap:8px!important;
+  }
+  html[data-tap-page="personalizza.html"] .brand-icon{
+    width:46px!important;
+    height:46px!important;
+    min-width:46px!important;
+    flex:0 0 46px!important;
+  }
+  html[data-tap-page="personalizza.html"] .brand>div:last-child{
+    min-width:0!important;
+  }
+  html[data-tap-page="personalizza.html"] .brand-title{
+    font-size:15px!important;
+    line-height:1.05!important;
+    white-space:nowrap!important;
+  }
+  html[data-tap-page="personalizza.html"] .brand-sub{
+    font-size:9.5px!important;
+    line-height:1.15!important;
+    margin-top:3px!important;
+    white-space:nowrap!important;
+  }
+  html[data-tap-page="personalizza.html"] .brand-sub strong{
+    display:inline!important;
+  }
+  html[data-tap-page="personalizza.html"] .top-actions{
+    flex:0 0 auto!important;
+    gap:6px!important;
+  }
+  html[data-tap-page="personalizza.html"] .clients-top{
+    min-height:40px!important;
+    padding:0 9px!important;
+    font-size:10.5px!important;
+    white-space:nowrap!important;
+  }
+  html[data-tap-page="personalizza.html"] .logout{
+    min-height:40px!important;
+    padding:9px 9px!important;
+    font-size:10.5px!important;
+  }
+  main[data-tap-operator]::after{
+    top:14px!important;
+    right:14px!important;
+    font-size:12px!important;
+    padding:7px 10px!important;
+  }
+}
+
+@media(max-width:390px){
+  html[data-tap-page="personalizza.html"] .brand-sub{
+    font-size:8.5px!important;
+  }
+  html[data-tap-page="personalizza.html"] .clients-top{
+    padding:0 8px!important;
+    font-size:10px!important;
+  }
+}
+'''
+              css_path.write_text(css)
+
+          # Allinea esclusivamente i colori nativi dell'APK alla nuova palette.
+          activity = Path('android/app/src/main/java/com/tapreputa/tapnfc/MainActivity.java')
+          s = activity.read_text()
+          s = s.replace('getWindow().setStatusBarColor(Color.rgb(0, 60, 51));',
+                        'getWindow().setStatusBarColor(Color.rgb(5, 12, 25));')
+          s = s.replace('getWindow().setNavigationBarColor(Color.rgb(0, 60, 51));',
+                        'getWindow().setNavigationBarColor(Color.rgb(7, 21, 43));')
+          s = s.replace('webView.setBackgroundColor(Color.rgb(245, 249, 248));',
+                        'webView.setBackgroundColor(Color.rgb(248, 249, 252));')
+          activity.write_text(s)
+
+          # Incremento versione solo per consentire l'installazione dell'APK estetica sopra la precedente.
+          gradle = Path('android/app/build.gradle')
+          g = gradle.read_text()
+          g = g.replace("versionCode 2", "versionCode 3")
+          g = g.replace("versionName '1.0.1'", "versionName '1.0.2'")
+          gradle.write_text(g)
+          PY
+          git config user.name "tapreputa-bot"
+          git config user.email "tapreputa-bot@users.noreply.github.com"
+          git add tap-premium-theme.css android/app/src/main/java/com/tapreputa/tapnfc/MainActivity.java android/app/build.gradle
+          git commit -m "Rifinisci tema premium e colori nativi Android"
+          git push
