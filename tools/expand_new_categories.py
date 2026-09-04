@@ -5,13 +5,13 @@ ROOT = Path(__file__).resolve().parents[1]
 HTML_PATH = ROOT / "personalizza.html"
 
 ASSET_STAGE = {
-    "Sfondopanificio.webp": ROOT / "tools/newcat-assets/Sfondopanificio.webp.b64",
-    "Sfondoyogurteria.webp": ROOT / "tools/newcat-assets/Sfondoyogurteria.webp.b64",
-    "Sfondodetersivi.webp": ROOT / "tools/newcat-assets/Sfondodetersivi.webp.b64",
-    "Sfondofarmacia.webp": ROOT / "tools/newcat-assets/Sfondofarmacia.webp.b64",
-    "Sfondofitness.webp": ROOT / "tools/newcat-assets/Sfondofitness.webp.b64",
-    "Sfondopasticceria.webp": ROOT / "tools/newcat-assets/Sfondopasticceria.webp.b64",
-    "Sfondopub.webp": ROOT / "tools/newcat-assets/Sfondopub.webp.b64",
+    "Sfondopanificio.webp": "Sfondopanificio.webp.b64",
+    "Sfondoyogurteria.webp": "Sfondoyogurteria.webp.b64",
+    "Sfondodetersivi.webp": "Sfondodetersivi.webp.b64",
+    "Sfondofarmacia.webp": "Sfondofarmacia.webp.b64",
+    "Sfondofitness.webp": "Sfondofitness.webp.b64",
+    "Sfondopasticceria.webp": "Sfondopasticceria.webp.b64",
+    "Sfondopub.webp": "Sfondopub.webp.b64",
 }
 
 
@@ -28,9 +28,12 @@ def insert_after(text, marker, addition, label):
 
 
 def write_assets():
-    for name, stage in ASSET_STAGE.items():
-        require(stage.exists(), f"Staging mancante: {stage}")
-        raw = base64.b64decode(stage.read_text(encoding="ascii").strip())
+    stage_dir = ROOT / "tools/newcat-assets"
+    for name, prefix in ASSET_STAGE.items():
+        parts = sorted(stage_dir.glob(prefix + ".part*"))
+        require(parts, f"Staging mancante per: {name}")
+        data = "".join(p.read_text(encoding="ascii").strip() for p in parts)
+        raw = base64.b64decode(data)
         require(raw[:4] == b"RIFF" and raw[8:12] == b"WEBP", f"Asset WebP non valido: {name}")
         require(len(raw) > 20000, f"Asset troppo piccolo: {name}")
         (ROOT / name).write_bytes(raw)
