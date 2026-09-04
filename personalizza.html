@@ -154,7 +154,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 .tap-logo-svg{width:100%;height:100%;display:block}
 </style>
 <link rel="stylesheet" href="tap-premium-theme.css?v=1">
-<link rel="stylesheet" href="tap-premium-polish.css?v=12">
+<link rel="stylesheet" href="tap-premium-polish.css?v=13">
 </head>
 <body data-auth="required">
 <header class="topbar">
@@ -323,7 +323,7 @@ activityType.addEventListener("change", () => {
   if (isStandard) logoPreview.classList.remove("show");
 
   const previewButton = document.getElementById("previewBtn");
-  if (previewButton) previewButton.textContent = "Anteprima pagina";
+  if (previewButton) previewButton.textContent = isStandard ? "Anteprima link" : "Anteprima pagina";
 });
 
 if (incomingCategory) {
@@ -381,11 +381,14 @@ function syncNfcMode() {
     finalNfcUrl = reviewUrl;
     finalLinkValue.textContent = finalNfcUrl;
     finalLinkBox.classList.add("show");
+    previewBtn.textContent = "Anteprima link";
+    previewBtn.classList.add("show");
     addClientBtn.classList.add("show");
     return;
   }
 
   finalLinkLabel.textContent = "Link pagina personalizzata da scrivere sulla NFC";
+  previewBtn.textContent = "Anteprima pagina";
 }
 
 activityType.addEventListener("change", syncNfcMode);
