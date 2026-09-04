@@ -99,6 +99,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 
 
 .preview-final{
+  display:none;
   width:100%;
   min-height:58px;
   border:0;
@@ -112,6 +113,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
   font-weight:800;
   cursor:pointer;
 }
+.preview-final.show{display:block}
 .copy-wide{
   width:100%;
   margin-top:10px;
@@ -152,7 +154,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 .tap-logo-svg{width:100%;height:100%;display:block}
 </style>
 <link rel="stylesheet" href="tap-premium-theme.css?v=1">
-<link rel="stylesheet" href="tap-premium-polish.css?v=10">
+<link rel="stylesheet" href="tap-premium-polish.css?v=12">
 </head>
 <body data-auth="required">
 <header class="topbar">
@@ -215,11 +217,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 </div>
 </div>
 
-<div class="field">
-<label for="destinationUrl">Link recensioni Google</label>
-<input id="destinationUrl" type="url" placeholder="https://search.google.com/local/writereview?placeid=...">
-<div class="hint">Questo sarà il collegamento del pulsante “Recensione Google”.</div>
-</div>
+<input id="destinationUrl" type="hidden">
 
 <div class="actions">
 <button class="secondary" id="backBtn" type="button">← Indietro</button>
@@ -228,19 +226,16 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 
 
 <div id="finalLinkBox" class="final-link-box">
-  <span class="final-link-label">Link finale da scrivere sulla NFC</span>
+  <span class="final-link-label">Link da scrivere sulla NFC</span>
   <div class="final-link-row">
     <div id="finalLinkValue" class="final-link-value"></div>
   </div>
-
-  <button id="previewBtn" class="preview-final" type="button">
-    Anteprima pagina
-  </button>
-
   <button id="copyFinalBtn" class="copy-final copy-wide" type="button">
     Copia link
   </button>
 </div>
+
+<button id="previewBtn" class="preview-final" type="button">Anteprima pagina</button>
 
 <button id="addClientBtn" class="add-client" type="button">
   + Aggiungi cliente
@@ -328,10 +323,7 @@ activityType.addEventListener("change", () => {
   if (isStandard) logoPreview.classList.remove("show");
 
   const previewButton = document.getElementById("previewBtn");
-  if (previewButton) previewButton.textContent = isStandard ? "Apri pagina recensioni" : "Anteprima pagina";
-
-  const finalLabel = document.querySelector(".final-link-label");
-  if (finalLabel) finalLabel.textContent = isStandard ? "Link diretto da scrivere sulla NFC" : "Link finale da scrivere sulla NFC";
+  if (previewButton) previewButton.textContent = "Anteprima pagina";
 });
 
 if (incomingCategory) {
@@ -360,7 +352,44 @@ const finalLinkValue = document.getElementById("finalLinkValue");
 const copyFinalBtn = document.getElementById("copyFinalBtn");
 const previewBtn = document.getElementById("previewBtn");
 const addClientBtn = document.getElementById("addClientBtn");
+const generateBtn = document.getElementById("generateBtn");
+const finalLinkLabel = document.querySelector(".final-link-label");
 let finalNfcUrl = "";
+
+function syncNfcMode() {
+  const type = activityType.value;
+  const reviewUrl = normalizeReviewUrl(destinationUrl.value);
+  destinationUrl.value = reviewUrl;
+
+  finalNfcUrl = "";
+  finalLinkValue.textContent = "";
+  finalLinkBox.classList.remove("show");
+  addClientBtn.classList.remove("show");
+  addClientBtn.disabled = false;
+  addClientBtn.textContent = "+ Aggiungi cliente";
+  previewBtn.classList.remove("show");
+  generateBtn.style.display = "";
+  msg.className = "message";
+  msg.textContent = "";
+
+  if (!type) return;
+
+  if (type === "standard") {
+    generateBtn.style.display = "none";
+    finalLinkLabel.textContent = "Link diretto Google da scrivere sulla NFC";
+    if (!reviewUrl) return warn("Link recensioni non disponibile. Torna alla pagina precedente.");
+    finalNfcUrl = reviewUrl;
+    finalLinkValue.textContent = finalNfcUrl;
+    finalLinkBox.classList.add("show");
+    addClientBtn.classList.add("show");
+    return;
+  }
+
+  finalLinkLabel.textContent = "Link pagina personalizzata da scrivere sulla NFC";
+}
+
+activityType.addEventListener("change", syncNfcMode);
+syncNfcMode();
 
 function slugifyBusinessName(name) {
   return String(name || "")
@@ -372,7 +401,7 @@ function slugifyBusinessName(name) {
     .replace(/^-+|-+$/g, "");
 }
 
-document.getElementById("generateBtn").onclick = () => {
+generateBtn.onclick = () => {
   const type = activityType.value;
   const reviewUrl = normalizeReviewUrl(destinationUrl.value);
   destinationUrl.value = reviewUrl;
@@ -395,11 +424,9 @@ document.getElementById("generateBtn").onclick = () => {
 
   finalLinkValue.textContent = finalNfcUrl;
   finalLinkBox.classList.add("show");
-
-  msg.className = "message show ok";
-  msg.textContent = type === "standard"
-    ? "Link diretto alle recensioni pronto. Copialo e scrivilo sulla NFC."
-    : "Link finale generato. Copialo e incollalo in NFC Tools.";
+  previewBtn.classList.toggle("show", type !== "standard");
+  msg.className = "message";
+  msg.textContent = "";
   addClientBtn.classList.add("show");
 };
 
