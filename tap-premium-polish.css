@@ -241,8 +241,8 @@ html[data-tap-page="index.html"] .steps,
 html[data-tap-page="personalizza.html"] .steps{
   grid-template-columns:auto 1fr auto!important;
 }
-html[data-tap-page="index.html"] .steps > .rule:nth-of-type(2),
-html[data-tap-page="personalizza.html"] .steps > .rule:nth-of-type(2),
+html[data-tap-page="index.html"] .steps > .rule:nth-child(4),
+html[data-tap-page="personalizza.html"] .steps > .rule:nth-child(4),
 html[data-tap-page="index.html"] .steps > .step:last-child,
 html[data-tap-page="personalizza.html"] .steps > .step:last-child{
   display:none!important;
