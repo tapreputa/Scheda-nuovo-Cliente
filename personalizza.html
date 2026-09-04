@@ -555,6 +555,9 @@ previewBtn.addEventListener("click", async () => {
     } else if (type === "panificio") {
       const backgroundDataUrl = await loadBackgroundDataUrl("Sfondopanificio.webp");
       previewHtml = buildPanificioTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
+    } else if (type === "yogurteria") {
+      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondoyogurteria.jpg");
+      previewHtml = buildYogurteriaTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
     } else if (type === "gelateria") {
       const backgroundDataUrl = await loadBackgroundDataUrl("Sfondogelateria.jpg");
       previewHtml = buildGelateriaTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
