@@ -202,6 +202,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <option value="centroestetico">Centri estetici</option>
 <option value="panificio">Panificio / Biscottificio</option>
 <option value="yogurteria">Yogurterie</option>
+<option value="detersivi">Detersivi e casalinghi</option>
 </select>
 </div>
 
@@ -309,7 +310,8 @@ activityType.addEventListener("change", () => {
     barbershop: ["Barber Shop", "Sfondo barber moderno + stile deciso + pulsante premium + 5 stelle + Powered by Tapreputa."],
     centroestetico: ["Centri estetici", "Sfondo wellness luminoso + stile raffinato + pulsante premium + 5 stelle + Powered by Tapreputa."],
     panificio: ["Panificio / Biscottificio", "Sfondo artigianale caldo + layout dedicato senza crop + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
-    yogurteria: ["Yogurterie", "Sfondo luminoso turchese + layout fresco dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."]
+    yogurteria: ["Yogurterie", "Sfondo luminoso turchese + layout fresco dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
+    detersivi: ["Detersivi e casalinghi", "Sfondo pulito e luminoso + layout dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."]
   };
   const item = templates[activityType.value];
   if (item) {
@@ -416,7 +418,7 @@ generateBtn.onclick = () => {
 
   if (!operatorSelect.value) return warn("Seleziona l’operatore.");
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico","panificio","yogurteria"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico","panificio","yogurteria","detersivi"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
   if (!businessName) return warn("Nome attività non disponibile. Torna indietro e inseriscilo.");
@@ -526,7 +528,7 @@ previewBtn.addEventListener("click", async () => {
   destinationUrl.value = reviewUrl;
 
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico","panificio","yogurteria"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico","panificio","yogurteria","detersivi"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
 
@@ -567,7 +569,8 @@ previewBtn.addEventListener("click", async () => {
         stabilimento: {file:"Sfondostabilimento.jpg", title:"Ti è piaciuta la tua giornata al mare?", accent:"#1689a6", accent2:"#075f78", theme:"#087b96", box:"rgba(247,253,255,.60)", text:"#123d4a", message:"Aiutaci a rendere ogni giornata al mare ancora più speciale. Dicci la tua! Bastano 2 secondi!"},
         parrucchiere: {file:"Sfondoparrucchiere.jpg", title:"Ti è piaciuto il tuo nuovo look?", accent:"#9b6b45", accent2:"#5d3b28", theme:"#6c4a34", box:"rgba(255,250,245,.62)", text:"#39291f", message:"La tua opinione ci aiuta a valorizzare ogni dettaglio del nostro lavoro. Dicci la tua! Bastano 2 secondi!"},
         barbershop: {file:"Sfondobarbershop.jpg", title:"Ti è piaciuto il tuo nuovo stile?", accent:"#313131", accent2:"#111111", theme:"#171717", box:"rgba(245,241,234,.62)", text:"#25211d", message:"Il tuo feedback ci aiuta a perfezionare stile, servizio ed esperienza. Dicci la tua! Bastano 2 secondi!"},
-        centroestetico: {file:"Sfondocentroestetico.jpg", title:"Ti è piaciuto il tuo momento di benessere?", accent:"#b58b63", accent2:"#8b6548", theme:"#a57c59", box:"rgba(255,253,249,.70)", text:"#493b31", message:"Il tuo feedback ci aiuta a prenderci cura di ogni dettaglio della tua esperienza. Dicci la tua! Bastano 2 secondi!"}
+        centroestetico: {file:"Sfondocentroestetico.jpg", title:"Ti è piaciuto il tuo momento di benessere?", accent:"#b58b63", accent2:"#8b6548", theme:"#a57c59", box:"rgba(255,253,249,.70)", text:"#493b31", message:"Il tuo feedback ci aiuta a prenderci cura di ogni dettaglio della tua esperienza. Dicci la tua! Bastano 2 secondi!"},
+        detersivi: {file:"Sfondodetersivi.jpg", title:"Hai trovato tutto ciò che cercavi?", accent:"#1fa9b8", accent2:"#0b6f7d", theme:"#0d7884", box:"rgba(255,255,255,.84)", text:"#123b42", message:"La tua opinione ci aiuta a migliorare assortimento, qualità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!"}
       };
       const cfg = configs[type];
       const backgroundDataUrl = await loadBackgroundDataUrl(cfg.file);
