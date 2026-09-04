@@ -15,6 +15,36 @@
 @media(max-width:760px){.analysis-section{margin-top:34px;padding-top:28px}.analysis-head{display:block}.analysis-card{padding:16px;border-radius:21px}.analysis-summary{align-items:flex-start}.analysis-leader{font-size:19px}.analysis-total{min-width:72px;padding:10px}.analysis-total strong{font-size:21px}.category-row{grid-template-columns:104px minmax(150px,1fr) 76px;gap:9px}.category-name{font-size:12px}.category-track{height:21px}.category-value{font-size:12px}}
 @media(max-width:430px){.team-value{font-size:34px}.team-badge{display:none}.team-total{padding:19px 18px}.operator-total{font-size:23px}.section-head{display:block}.year-control{display:flex;margin-top:14px;align-items:center}.year-control label{margin:0}.monthly-box .operator-total{font-size:21px}}
 @media(orientation:landscape) and (max-height:680px){.topbar{min-height:68px;padding:9px 18px}.brand-icon{width:46px;height:46px}.wrap{max-width:1120px;padding:22px 24px calc(36px + env(safe-area-inset-bottom))}.eyebrow{margin-bottom:8px}.headline{margin-bottom:15px}.headline h1{font-size:36px}.subtitle{margin-top:8px}.summary-grid{margin-bottom:10px}.operator-card{padding:13px 18px}.operator-total{font-size:25px}.team-total{margin-bottom:12px;padding:14px 20px}.team-label{font-size:11px}.team-value{font-size:30px}.team-note{margin-top:3px}.team-badge{width:46px;height:46px;font-size:22px}.table-card{border-radius:18px}th,td{padding:10px 11px}th:first-child,td:first-child{width:120px;min-width:120px;max-width:120px}.value{font-size:17px}.money-row .metric-label,.money-row .value{font-size:18px}.data-note{margin-top:10px}.monthly-section{margin-top:26px;padding-top:22px}.section-title{font-size:27px}.months{padding-bottom:8px}.monthly-box{padding:12px 14px}.monthly-box .operator-card{padding:11px 15px}.monthly-box .team-total{padding:12px 18px}}
+
+/* ANALISI DATI MOBILE FIX */
+@media(max-width:760px){
+  .analysis-card{overflow:hidden}
+  .category-chart{gap:18px}
+  .category-row{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:"label value" "bar bar";
+    gap:8px 12px;
+    align-items:center;
+    width:100%;
+    min-width:0
+  }
+  .category-label{grid-area:label;min-width:0;display:flex;align-items:center;overflow:visible}
+  .category-rank{flex:0 0 auto;min-width:32px}
+  .category-name{font-size:13px;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.2;word-break:normal}
+  .category-track{grid-area:bar;width:100%;min-width:0;height:22px}
+  .category-value{grid-area:value;text-align:right;font-size:13px;line-height:1.05;white-space:nowrap;align-self:center}
+  .category-value small{margin-top:3px;font-size:10px}
+}
+@media(max-width:430px){
+  .analysis-card{padding:15px}
+  .category-row{gap:7px 10px}
+  .category-name{font-size:12px}
+  .category-rank{min-width:29px}
+  .category-value{font-size:12px}
+  .category-track{height:20px}
+}
+
 </style>
 </head>
 <body data-auth="required">
