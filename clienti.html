@@ -81,6 +81,8 @@ function bindRows(){
   document.querySelectorAll('[data-field]').forEach(i=>{
     const c=getClient(i.dataset.id);
     if(!isOwner(c)){i.disabled=true;i.title='Riga in sola lettura: cliente di '+(c?.operatore||'altro operatore')+'.';return}
+    i.onfocus=()=>{if(Number(i.value)===0)i.value=''};
+    i.onblur=()=>{if(String(i.value).trim()==='')i.value='0'};
     i.onchange=()=>{const f=i.dataset.field;let v=Number(i.value||0);if(!Number.isFinite(v))v=0;v=f==='spesa'?Math.max(0,Math.round(v*100)/100):Math.max(0,Math.floor(v));i.value=v;patchField(i.dataset.id,f,v)};
   });
 }
