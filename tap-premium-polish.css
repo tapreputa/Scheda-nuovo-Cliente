@@ -226,6 +226,16 @@ button,a,input,select{
   }
 }
 
+/* Android / WebView: evita sovrapposizione con orario e icone della status bar */
+@media(max-width:760px){
+  html:not([data-tap-page="login.html"]) .topbar{
+    padding-top:max(34px,calc(env(safe-area-inset-top) + 12px))!important;
+    padding-bottom:14px!important;
+    min-height:110px!important;
+    align-items:center!important;
+  }
+}
+
 /* Evita qualsiasi animazione se richiesta dal sistema */
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{
