@@ -297,3 +297,29 @@ html[data-tap-page="personalizza.html"] .steps::before{content:"2"!important}
     scroll-behavior:auto!important;
   }
 }
+
+/* Fase premium centrata e compatta */
+html[data-tap-page="index.html"] h1,
+html[data-tap-page="personalizza.html"] h1{
+  margin-bottom:18px!important;
+}
+html[data-tap-page="index.html"] .steps,
+html[data-tap-page="personalizza.html"] .steps{
+  justify-content:center!important;
+  min-height:46px!important;
+  margin-top:0!important;
+  margin-bottom:14px!important;
+}
+@media(max-width:760px){
+  html[data-tap-page="index.html"] h1,
+  html[data-tap-page="personalizza.html"] h1{
+    margin-bottom:12px!important;
+  }
+  html[data-tap-page="index.html"] .steps,
+  html[data-tap-page="personalizza.html"] .steps{
+    justify-content:center!important;
+    min-height:42px!important;
+    margin-top:-2px!important;
+    margin-bottom:10px!important;
+  }
+}
