@@ -14,82 +14,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Replace flow with single premium step badge
+      - name: Patch phase indicator
         run: |
           python3 - <<'PY'
           from pathlib import Path
-
+          import base64
           css_path = Path('tap-premium-polish.css')
           css = css_path.read_text(encoding='utf-8')
-
+          block = base64.b64decode('LyogSW5kaWNhdG9yZSBmYXNlIG1pbmltYWxlOiBzb2xvIG51bWVybyBjb3JyZW50ZSAqLwpodG1sW2RhdGEtdGFwLXBhZ2U9ImluZGV4Lmh0bWwiXSAuc3RlcHMsCmh0bWxbZGF0YS10YXAtcGFnZT0icGVyc29uYWxpenphLmh0bWwiXSAuc3RlcHN7CiAgZGlzcGxheTpmbGV4IWltcG9ydGFudDsKICBhbGlnbi1pdGVtczpjZW50ZXIhaW1wb3J0YW50OwogIGp1c3RpZnktY29udGVudDpmbGV4LXN0YXJ0IWltcG9ydGFudDsKICBtaW4taGVpZ2h0OjQ4cHghaW1wb3J0YW50OwogIG1hcmdpbi1ib3R0b206MzBweCFpbXBvcnRhbnQ7CiAgZ2FwOjAhaW1wb3J0YW50Owp9Cmh0bWxbZGF0YS10YXAtcGFnZT0iaW5kZXguaHRtbCJdIC5zdGVwcyA+ICosCmh0bWxbZGF0YS10YXAtcGFnZT0icGVyc29uYWxpenphLmh0bWwiXSAuc3RlcHMgPiAqewogIGRpc3BsYXk6bm9uZSFpbXBvcnRhbnQ7Cn0KaHRtbFtkYXRhLXRhcC1wYWdlPSJpbmRleC5odG1sIl0gLnN0ZXBzOjpiZWZvcmUsCmh0bWxbZGF0YS10YXAtcGFnZT0icGVyc29uYWxpenphLmh0bWwiXSAuc3RlcHM6OmJlZm9yZXsKICB3aWR0aDo0NnB4IWltcG9ydGFudDsKICBoZWlnaHQ6NDZweCFpbXBvcnRhbnQ7CiAgZGlzcGxheTppbmxpbmUtZmxleCFpbXBvcnRhbnQ7CiAgYWxpZ24taXRlbXM6Y2VudGVyIWltcG9ydGFudDsKICBqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyIWltcG9ydGFudDsKICBib3JkZXItcmFkaXVzOjUwJSFpbXBvcnRhbnQ7CiAgYmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoMTQ1ZGVnLCMwYjIxNDIsIzE3NGI5ZCkhaW1wb3J0YW50OwogIGJvcmRlcjoycHggc29saWQgcmdiYSgyMTgsMTc3LDgyLC45MikhaW1wb3J0YW50OwogIGNvbG9yOiNmZmYhaW1wb3J0YW50OwogIGZvbnQtc2l6ZToyMHB4IWltcG9ydGFudDsKICBmb250LXdlaWdodDo5MDAhaW1wb3J0YW50OwogIGxpbmUtaGVpZ2h0OjEhaW1wb3J0YW50OwogIGxldHRlci1zcGFjaW5nOjAhaW1wb3J0YW50OwogIGJveC1zaGFkb3c6MCA4cHggMjBweCByZ2JhKDcsMjEsNDMsLjE4KSxpbnNldCAwIDFweCByZ2JhKDI1NSwyNTUsMjU1LC4xOCkhaW1wb3J0YW50Owp9Cmh0bWxbZGF0YS10YXAtcGFnZT0iaW5kZXguaHRtbCJdIC5zdGVwczo6YmVmb3Jle2NvbnRlbnQ6IjEiIWltcG9ydGFudH0KaHRtbFtkYXRhLXRhcC1wYWdlPSJwZXJzb25hbGl6emEuaHRtbCJdIC5zdGVwczo6YmVmb3Jle2NvbnRlbnQ6IjIiIWltcG9ydGFudH0KQG1lZGlhKG1heC13aWR0aDo3NjBweCl7CiAgaHRtbFtkYXRhLXRhcC1wYWdlPSJpbmRleC5odG1sIl0gLnN0ZXBzLAogIGh0bWxbZGF0YS10YXAtcGFnZT0icGVyc29uYWxpenphLmh0bWwiXSAuc3RlcHN7CiAgICBtaW4taGVpZ2h0OjQ0cHghaW1wb3J0YW50OwogICAgbWFyZ2luLWJvdHRvbToyMnB4IWltcG9ydGFudDsKICB9CiAgaHRtbFtkYXRhLXRhcC1wYWdlPSJpbmRleC5odG1sIl0gLnN0ZXBzOjpiZWZvcmUsCiAgaHRtbFtkYXRhLXRhcC1wYWdlPSJwZXJzb25hbGl6emEuaHRtbCJdIC5zdGVwczo6YmVmb3JlewogICAgd2lkdGg6NDJweCFpbXBvcnRhbnQ7CiAgICBoZWlnaHQ6NDJweCFpbXBvcnRhbnQ7CiAgICBmb250LXNpemU6MThweCFpbXBvcnRhbnQ7CiAgfQp9Cgo=').decode('utf-8')
           start = css.find('/* Flusso operativo definitivo: 1. Attività → 2. Personalizza */')
           end = css.find('/* Ordine header coerente su tutte le pagine */')
           if start != -1 and end != -1 and end > start:
-              new_block = '''/* Indicatore fase minimale: solo numero corrente */
-html[data-tap-page="index.html"] .steps,
-html[data-tap-page="personalizza.html"] .steps{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-start!important;
-  min-height:48px!important;
-  margin-bottom:30px!important;
-  gap:0!important;
-}
-html[data-tap-page="index.html"] .steps > *,
-html[data-tap-page="personalizza.html"] .steps > *{
-  display:none!important;
-}
-html[data-tap-page="index.html"] .steps::before,
-html[data-tap-page="personalizza.html"] .steps::before{
-  width:46px!important;
-  height:46px!important;
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  border-radius:50%!important;
-  background:linear-gradient(145deg,#0b2142,#174b9d)!important;
-  border:2px solid rgba(218,177,82,.92)!important;
-  color:#fff!important;
-  font-size:20px!important;
-  font-weight:900!important;
-  line-height:1!important;
-  letter-spacing:0!important;
-  box-shadow:0 8px 20px rgba(7,21,43,.18),inset 0 1px rgba(255,255,255,.18)!important;
-}
-html[data-tap-page="index.html"] .steps::before{content:"1"!important}
-html[data-tap-page="personalizza.html"] .steps::before{content:"2"!important}
-@media(max-width:760px){
-  html[data-tap-page="index.html"] .steps,
-  html[data-tap-page="personalizza.html"] .steps{
-    min-height:44px!important;
-    margin-bottom:22px!important;
-  }
-  html[data-tap-page="index.html"] .steps::before,
-  html[data-tap-page="personalizza.html"] .steps::before{
-    width:42px!important;
-    height:42px!important;
-    font-size:18px!important;
-  }
-}
-
-'''
-              css = css[:start] + new_block + css[end:]
+              css = css[:start] + block + css[end:]
           elif '/* Indicatore fase minimale: solo numero corrente */' not in css:
               marker = '/* Ordine header coerente su tutte le pagine */'
-              new_block = '''/* Indicatore fase minimale: solo numero corrente */
-html[data-tap-page="index.html"] .steps,
-html[data-tap-page="personalizza.html"] .steps{display:flex!important;align-items:center!important;justify-content:flex-start!important;min-height:48px!important;margin-bottom:30px!important;gap:0!important}
-html[data-tap-page="index.html"] .steps > *,html[data-tap-page="personalizza.html"] .steps > *{display:none!important}
-html[data-tap-page="index.html"] .steps::before,html[data-tap-page="personalizza.html"] .steps::before{width:46px!important;height:46px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:50%!important;background:linear-gradient(145deg,#0b2142,#174b9d)!important;border:2px solid rgba(218,177,82,.92)!important;color:#fff!important;font-size:20px!important;font-weight:900!important;line-height:1!important;box-shadow:0 8px 20px rgba(7,21,43,.18),inset 0 1px rgba(255,255,255,.18)!important}
-html[data-tap-page="index.html"] .steps::before{content:"1"!important}
-html[data-tap-page="personalizza.html"] .steps::before{content:"2"!important}
-@media(max-width:760px){html[data-tap-page="index.html"] .steps,html[data-tap-page="personalizza.html"] .steps{min-height:44px!important;margin-bottom:22px!important}html[data-tap-page="index.html"] .steps::before,html[data-tap-page="personalizza.html"] .steps::before{width:42px!important;height:42px!important;font-size:18px!important}}
-
-'''
-              css = css.replace(marker, new_block + marker)
-
+              css = css.replace(marker, block + marker)
           css_path.write_text(css, encoding='utf-8')
-
           for filename in ('index.html','personalizza.html'):
               p = Path(filename)
               text = p.read_text(encoding='utf-8')
