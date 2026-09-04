@@ -1,4 +1,4 @@
-name: Aggiungi pagina Risultati
+name: Aggiungi pulsante Risultati
 
 on:
   push:
@@ -14,145 +14,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Crea pagina risultati e collegamento clienti
-        shell: bash
+      - name: Inserisci collegamento Risultati
         run: |
-          python3 <<'PY'
+          python3 - <<'PY'
           from pathlib import Path
-
-          p = Path('clienti.html')
-          s = p.read_text(encoding='utf-8')
-
-          css = '''
-.results-link-wrap{display:flex;justify-content:center;margin:28px 0 0}.results-link{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:250px;min-height:58px;padding:0 26px;border-radius:18px;background:#003c33;color:#fff;text-decoration:none;font-size:16px;font-weight:900;box-shadow:0 14px 30px rgba(0,60,51,.18);transition:transform .18s ease,box-shadow .18s ease}.results-link:hover{transform:translateY(-1px);box-shadow:0 18px 34px rgba(0,60,51,.22)}.results-link:active{transform:scale(.98)}.results-link-icon{font-size:20px}@media(max-width:760px){.results-link-wrap{margin-top:24px}.results-link{width:min(82vw,320px);min-height:56px;font-size:16px}}\n'''
+          p=Path('clienti.html')
+          s=p.read_text(encoding='utf-8')
           if '.results-link-wrap{' not in s:
-              s = s.replace('</style>', css + '</style>', 1)
-
-          marker = '  <section class="card"><div id="loading" class="loading">Caricamento database condiviso...</div><div class="table-wrap" id="tableWrap" style="display:none"><table><thead><tr><th>ID</th><th>NOME</th><th>OPERATORE</th><th>CATEGORIA</th><th>LINK REC.</th><th>LINK NFC</th><th>TARGHE</th><th>CARTE</th><th>ADESIVI</th><th>€</th><th>DATA</th><th>STATO</th><th></th></tr></thead><tbody id="rows"></tbody></table></div><div id="empty" class="empty">Nessun cliente salvato.</div></section>'
-          addition = marker + '\n  <div class="results-link-wrap"><a class="results-link" href="risultati.html"><span class="results-link-icon">▥</span><span>Risultati</span></a></div>'
+              css='\n.results-link-wrap{display:flex;justify-content:center;margin:28px 0 0}.results-link{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:250px;min-height:58px;padding:0 26px;border-radius:18px;background:#003c33;color:#fff;text-decoration:none;font-size:16px;font-weight:900;box-shadow:0 14px 30px rgba(0,60,51,.18)}.results-link:active{transform:scale(.98)}.results-link-icon{font-size:20px}@media(max-width:760px){.results-link-wrap{margin-top:24px}.results-link{width:min(82vw,320px);min-height:56px}}\n'
+              s=s.replace('</style>',css+'</style>',1)
           if 'href="risultati.html"' not in s:
-              if marker not in s:
-                  raise SystemExit('Sezione tabella clienti non trovata')
-              s = s.replace(marker, addition, 1)
-
-          p.write_text(s, encoding='utf-8')
+              needle='</section>\n</main>'
+              repl='</section>\n  <div class="results-link-wrap"><a class="results-link" href="risultati.html"><span class="results-link-icon">▥</span><span>Risultati</span></a></div>\n</main>'
+              if needle not in s:
+                  raise SystemExit('Punto inserimento non trovato')
+              s=s.replace(needle,repl,1)
+          p.write_text(s,encoding='utf-8')
           PY
-
-          cat > risultati.html <<'HTML'
-          <!doctype html>
-          <html lang="it">
-          <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-          <meta name="theme-color" content="#003d33">
-          <title>Tap NFC · Risultati</title>
-          <style>
-          :root{--green-950:#003c33;--green-800:#005f50;--green-700:#007f69;--green-600:#009477;--green-100:#dff4ef;--ink:#0f2824;--muted:#73817d;--line:#dce5e2;--shadow:0 18px 45px rgba(12,45,39,.08);--gold:#f2b01e}
-          *{box-sizing:border-box}
-          html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink)}
-          body{background:linear-gradient(180deg,#f5f9f8 0%,#edf6f3 100%);-webkit-font-smoothing:antialiased}
-          .topbar{min-height:92px;background:var(--green-950);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 28px}
-          .brand{display:flex;align-items:center;gap:14px}.brand-icon{width:58px;height:58px;border-radius:15px;background:#fff;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.18)}.brand-icon svg{width:100%;height:100%;display:block}.brand-title{font-weight:850;font-size:20px}.brand-sub{margin-top:5px;color:#bdd0cb;font-size:14px}.brand-sub strong{color:#fff}.top-actions{display:flex;align-items:center;gap:9px}.user-pill{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);border-radius:999px;padding:11px 15px;font-size:13px;font-weight:800}.back,.logout{color:#fff;padding:11px 15px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);font:inherit;font-size:13px;font-weight:800;white-space:nowrap;text-decoration:none;cursor:pointer}.back{background:#fff;color:#003c33}
-          .wrap{max-width:1040px;margin:0 auto;padding:48px 24px 80px}.eyebrow{color:var(--green-700);font-size:13px;letter-spacing:.2em;font-weight:850;text-transform:uppercase;margin-bottom:16px}.headline{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:28px}h1{font-size:46px;line-height:1;margin:0;font-weight:520;letter-spacing:-.04em}.subtitle{color:var(--muted);font-size:15px;margin-top:13px}.refresh{border:1px solid #bed9d2;background:#fff;color:#086d5c;border-radius:13px;min-height:44px;padding:0 15px;font:inherit;font-size:13px;font-weight:850;cursor:pointer}
-          .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}.operator-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}.operator-name{font-size:13px;text-transform:uppercase;letter-spacing:.14em;color:var(--green-700);font-weight:900}.operator-total{margin-top:7px;font-size:32px;font-weight:900;color:var(--green-950)}.operator-caption{margin-top:4px;color:var(--muted);font-size:12px}
-          .table-card{background:#fff;border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow);overflow:hidden}.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}table{width:100%;min-width:620px;border-collapse:collapse;table-layout:fixed}th,td{border-bottom:1px solid #e5ece9;padding:18px 16px;text-align:right}th:first-child,td:first-child{text-align:left;width:30%}thead th{background:#f7faf9;color:#687671;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:900}thead th:not(:first-child){font-size:14px;text-transform:none;letter-spacing:0;color:#173b34}.metric-label{font-weight:850;color:#203d37}.value{font-size:20px;font-weight:850;color:#173b34}.money-row td{background:#fbfdfc}.money-row .metric-label,.money-row .value{font-size:22px;color:var(--green-950)}.team-col{background:#f0faf7!important;color:#006e5b!important}.team-total{margin-top:20px;border-radius:24px;padding:26px 28px;background:linear-gradient(135deg,#003c33,#007f69);color:#fff;box-shadow:0 20px 42px rgba(0,60,51,.22);display:flex;align-items:center;justify-content:space-between;gap:20px}.team-label{font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:900;color:#c6e6de}.team-value{font-size:42px;line-height:1;font-weight:950;letter-spacing:-.03em}.team-note{margin-top:7px;color:#d3ebe5;font-size:13px}.team-badge{width:58px;height:58px;border-radius:18px;background:rgba(255,255,255,.13);display:grid;place-items:center;font-size:27px;flex:0 0 auto}.status{display:none;margin:0 0 16px;padding:12px 14px;border-radius:12px;background:#fff0ed;border:1px solid #efc0b8;color:#8c2d21;font-size:13px}.status.show{display:block}.loading{padding:54px 20px;text-align:center;color:#65736f}.data-note{text-align:center;color:#7d8985;font-size:12px;margin-top:17px}
-          @media(max-width:760px){.topbar{min-height:82px;padding:14px 12px}.brand-icon{width:50px;height:50px}.brand-title{font-size:17px}.brand-sub{font-size:11px}.user-pill{display:none}.back,.logout{font-size:11px;padding:9px 10px}.wrap{padding:32px 12px 56px}.headline{align-items:flex-start}.headline h1{font-size:39px}.refresh{min-height:40px;padding:0 12px}.summary-grid{grid-template-columns:1fr 1fr;gap:10px}.operator-card{padding:17px 14px;border-radius:18px}.operator-total{font-size:26px}.operator-name{font-size:11px}.table-card{border-radius:20px}th,td{padding:15px 12px}.value{font-size:18px}.money-row .metric-label,.money-row .value{font-size:19px}.team-total{padding:22px 20px;border-radius:20px}.team-value{font-size:35px}.team-badge{display:none}}
-          @media(orientation:landscape) and (max-height:680px){.topbar{min-height:68px;padding:9px 18px}.brand-icon{width:46px;height:46px}.wrap{max-width:1120px;padding:22px 24px 36px}.eyebrow{margin-bottom:8px}.headline{margin-bottom:15px}.headline h1{font-size:36px}.subtitle{margin-top:8px}.summary-grid{grid-template-columns:1fr 1fr;margin-bottom:12px}.operator-card{padding:13px 18px}.operator-total{font-size:25px}.table-card{border-radius:18px}th,td{padding:10px 14px}.value{font-size:17px}.money-row .metric-label,.money-row .value{font-size:18px}.team-total{margin-top:12px;padding:15px 20px}.team-value{font-size:30px}.team-note{margin-top:4px}.data-note{margin-top:10px}}
-          </style>
-          </head>
-          <body data-auth="required">
-          <header class="topbar">
-            <div class="brand"><a href="index.html" aria-label="Home"><div class="brand-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="14" fill="#fff"/><path d="M31 12 L88 50 L16 92 L48 56 L66 50 L25 23 Z" fill="#071d35"/><path d="M18 31 L50 50 L39 60 L8 40 Z" fill="#071d35"/><path d="M15 90 L27 57 L39 64 Z" fill="#e6a019"/></svg></div></a><div><div class="brand-title">Tap NFC</div><div class="brand-sub">Powered by <strong>Tapreputa</strong></div></div></div>
-            <div class="top-actions"><a class="back" href="clienti.html">← Clienti</a><div class="user-pill" data-operator-name>Operatore</div><button class="logout" type="button" data-logout>Esci</button></div>
-          </header>
-
-          <main class="wrap">
-            <div class="eyebrow">Andamento vendite</div>
-            <div class="headline"><div><h1>Risultati</h1><div class="subtitle">Totali aggiornati dal database condiviso</div></div><button id="refreshBtn" class="refresh" type="button">↻ Aggiorna</button></div>
-            <div id="status" class="status"></div>
-            <div id="loading" class="loading">Calcolo risultati...</div>
-
-            <div id="content" style="display:none">
-              <div class="summary-grid">
-                <article class="operator-card"><div class="operator-name">Francesco</div><div id="frTotalTop" class="operator-total">€ 0,00</div><div class="operator-caption">Vendite personali</div></article>
-                <article class="operator-card"><div class="operator-name">Gisberto</div><div id="giTotalTop" class="operator-total">€ 0,00</div><div class="operator-caption">Vendite personali</div></article>
-              </div>
-
-              <section class="table-card"><div class="table-wrap"><table>
-                <thead><tr><th>Prodotto</th><th>Francesco</th><th>Gisberto</th><th class="team-col">Team</th></tr></thead>
-                <tbody>
-                  <tr><td class="metric-label">Targhe</td><td id="frTarghe" class="value">0</td><td id="giTarghe" class="value">0</td><td id="teamTarghe" class="value team-col">0</td></tr>
-                  <tr><td class="metric-label">Card</td><td id="frCarte" class="value">0</td><td id="giCarte" class="value">0</td><td id="teamCarte" class="value team-col">0</td></tr>
-                  <tr><td class="metric-label">Adesivi</td><td id="frAdesivi" class="value">0</td><td id="giAdesivi" class="value">0</td><td id="teamAdesivi" class="value team-col">0</td></tr>
-                  <tr class="money-row"><td class="metric-label">Totale €</td><td id="frEuro" class="value">€ 0,00</td><td id="giEuro" class="value">€ 0,00</td><td id="teamEuroTable" class="value team-col">€ 0,00</td></tr>
-                </tbody>
-              </table></div></section>
-
-              <section class="team-total"><div><div class="team-label">Totale vendite Team</div><div id="teamTotal" class="team-value">€ 0,00</div><div id="teamNote" class="team-note">Francesco + Gisberto</div></div><div class="team-badge">↗</div></section>
-              <div id="dataNote" class="data-note"></div>
-            </div>
-          </main>
-
-          <script src="tap-auth.js"></script>
-          <script>
-          const euro = new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'});
-          const num = value => { const n = Number(value); return Number.isFinite(n) ? Math.max(0,n) : 0; };
-          const int = value => Math.max(0,Math.floor(num(value)));
-          const emptyTotals = () => ({targhe:0,carte:0,adesivi:0,euro:0});
-
-          function calculate(clienti){
-            const totals={Francesco:emptyTotals(),Gisberto:emptyTotals()};
-            for(const c of clienti){
-              if(!totals[c.operatore]) continue;
-              const t=totals[c.operatore];
-              t.targhe += int(c.targhe);
-              t.carte += int(c.carte);
-              t.adesivi += int(c.adesivi);
-              t.euro += num(c.spesa);
-            }
-            return totals;
-          }
-
-          function setText(id,value){const el=document.getElementById(id);if(el)el.textContent=value}
-          function render(clienti){
-            const t=calculate(clienti), f=t.Francesco, g=t.Gisberto;
-            const team={targhe:f.targhe+g.targhe,carte:f.carte+g.carte,adesivi:f.adesivi+g.adesivi,euro:f.euro+g.euro};
-            setText('frTarghe',f.targhe); setText('giTarghe',g.targhe); setText('teamTarghe',team.targhe);
-            setText('frCarte',f.carte); setText('giCarte',g.carte); setText('teamCarte',team.carte);
-            setText('frAdesivi',f.adesivi); setText('giAdesivi',g.adesivi); setText('teamAdesivi',team.adesivi);
-            setText('frEuro',euro.format(f.euro)); setText('giEuro',euro.format(g.euro)); setText('teamEuroTable',euro.format(team.euro));
-            setText('frTotalTop',euro.format(f.euro)); setText('giTotalTop',euro.format(g.euro)); setText('teamTotal',euro.format(team.euro));
-            setText('dataNote',(clienti.length===1?'Calcolato su 1 cliente':'Calcolato su '+clienti.length+' clienti')+' · aggiornato '+new Date().toLocaleString('it-IT',{dateStyle:'short',timeStyle:'short'}));
-            document.getElementById('loading').style.display='none';
-            document.getElementById('content').style.display='block';
-          }
-
-          async function load(){
-            const status=document.getElementById('status');
-            const refresh=document.getElementById('refreshBtn');
-            status.className='status';
-            refresh.disabled=true;
-            try{
-              const user=await TapNfc.requireAuth();
-              if(!user)return;
-              TapNfc.decoratePage(user);
-              const clienti=await TapNfc.listClients();
-              render(clienti);
-            }catch(err){
-              document.getElementById('loading').style.display='none';
-              status.textContent='Non riesco a caricare i risultati: '+(err.message||'riprova.');
-              status.className='status show';
-            }finally{refresh.disabled=false}
-          }
-          document.getElementById('refreshBtn').addEventListener('click',load);
-          load();
-          </script>
-          </body>
-          </html>
-          HTML
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add clienti.html risultati.html
-          git diff --cached --quiet || git commit -m "Aggiungi dashboard Risultati vendite"
+          git add clienti.html
+          git diff --cached --quiet || git commit -m "Aggiungi pulsante Risultati ai clienti"
           git push
