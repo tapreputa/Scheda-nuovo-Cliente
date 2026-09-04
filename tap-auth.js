@@ -305,6 +305,9 @@
 
   function decoratePage(user) {
     const name = operatorName(user);
+    document.body.dataset.tapOperator = name || '';
+    const operatorHost = document.querySelector('main');
+    if (operatorHost) operatorHost.dataset.tapOperator = name || '';
     document.querySelectorAll('[data-operator-name], .user-pill').forEach(el => {
       el.textContent = name || 'Operatore';
     });
