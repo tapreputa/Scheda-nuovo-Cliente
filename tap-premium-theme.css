@@ -320,3 +320,26 @@ main>.summary-grid{animation-delay:.04s}main>.team-total{animation-delay:.08s}ma
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+
+/* TAP PREMIUM POLISH V2 */
+.metric-label,.category-name,.category-value,.value{color:#132d4e!important}
+.category-row.leader .category-name{color:#8f661d!important}
+main[data-tap-operator]::after{color:#132d4e!important;background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(249,245,232,.96))!important;border:1px solid rgba(213,168,71,.42)!important;border-radius:999px!important;padding:8px 12px!important;box-shadow:0 8px 22px rgba(7,21,43,.10),inset 0 1px rgba(255,255,255,.9)!important;text-shadow:none!important}
+@media(max-width:760px){
+  html[data-tap-page="personalizza.html"] .topbar{height:auto!important;min-height:84px!important;padding:14px 10px!important;gap:7px!important}
+  html[data-tap-page="personalizza.html"] .brand{flex:1 1 auto!important;min-width:0!important;gap:8px!important}
+  html[data-tap-page="personalizza.html"] .brand-icon{width:46px!important;height:46px!important;min-width:46px!important;flex:0 0 46px!important}
+  html[data-tap-page="personalizza.html"] .brand>div:last-child{min-width:0!important}
+  html[data-tap-page="personalizza.html"] .brand-title{font-size:15px!important;line-height:1.05!important;white-space:nowrap!important}
+  html[data-tap-page="personalizza.html"] .brand-sub{font-size:9.5px!important;line-height:1.15!important;margin-top:3px!important;white-space:nowrap!important}
+  html[data-tap-page="personalizza.html"] .brand-sub strong{display:inline!important}
+  html[data-tap-page="personalizza.html"] .top-actions{flex:0 0 auto!important;gap:6px!important}
+  html[data-tap-page="personalizza.html"] .clients-top{min-height:40px!important;padding:0 9px!important;font-size:10.5px!important;white-space:nowrap!important}
+  html[data-tap-page="personalizza.html"] .logout{min-height:40px!important;padding:9px!important;font-size:10.5px!important}
+  main[data-tap-operator]::after{top:14px!important;right:14px!important;font-size:12px!important;padding:7px 10px!important}
+}
+@media(max-width:390px){
+  html[data-tap-page="personalizza.html"] .brand-sub{font-size:8.5px!important}
+  html[data-tap-page="personalizza.html"] .clients-top{padding:0 8px!important;font-size:10px!important}
+}

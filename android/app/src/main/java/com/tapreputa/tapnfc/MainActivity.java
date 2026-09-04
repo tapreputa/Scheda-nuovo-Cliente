@@ -27,11 +27,11 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().setStatusBarColor(Color.rgb(0, 60, 51));
-        getWindow().setNavigationBarColor(Color.rgb(0, 60, 51));
+        getWindow().setStatusBarColor(Color.rgb(5, 12, 25));
+        getWindow().setNavigationBarColor(Color.rgb(7, 21, 43));
 
         webView = new WebView(this);
-        webView.setBackgroundColor(Color.rgb(245, 249, 248));
+        webView.setBackgroundColor(Color.rgb(248, 249, 252));
         setContentView(webView);
 
         WebSettings settings = webView.getSettings();
