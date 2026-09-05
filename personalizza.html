@@ -193,6 +193,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <option value="standard">Standard — collegamento diretto</option>
 <option value="bar">Bar / Caffetterie</option>
 <option value="barbershop">Barber Shop</option>
+<option value="cartolibreria">Cartolibreria</option>
 <option value="centroestetico">Centri estetici</option>
 <option value="detersivi">Detersivi e casalinghi</option>
 <option value="farmacia">Farmacie</option>
@@ -317,6 +318,7 @@ activityType.addEventListener("change", () => {
     strumentimusicali: ["Strumenti musicali", "Sfondo negozio di strumenti musicali + stile caldo e deciso + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     parrucchiere: ["Parrucchieri", "Sfondo salone moderno + stile elegante + pulsante premium + 5 stelle + Powered by Tapreputa."],
     barbershop: ["Barber Shop", "Sfondo barber moderno + stile deciso + pulsante premium + 5 stelle + Powered by Tapreputa."],
+    cartolibreria: ["Cartolibreria", "Sfondo cartolibreria caldo + layout dedicato + logo con bordi leggermente sfumati + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     centroestetico: ["Centri estetici", "Sfondo wellness luminoso + stile raffinato + pulsante premium + 5 stelle + Powered by Tapreputa."],
     panificio: ["Panificio / Biscottificio", "Sfondo artigianale caldo + layout dedicato senza crop + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     svapostore: ["Svapo Store", "Sfondo fotografico premium teal/viola + layout moderno dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
@@ -432,7 +434,7 @@ generateBtn.onclick = () => {
 
   if (!operatorSelect.value) return warn("Seleziona l’operatore.");
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
   if (!businessName) return warn("Nome attività non disponibile. Torna indietro e inseriscilo.");
@@ -548,7 +550,7 @@ previewBtn.addEventListener("click", async () => {
   destinationUrl.value = reviewUrl;
 
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
 
@@ -596,6 +598,7 @@ previewBtn.addEventListener("click", async () => {
         pizzeria: {file:"Sfondopizzeria.jpg", title:"Ti è piaciuta la nostra pizza?", accent:"#c24b22", accent2:"#7d2415", theme:"#5b2418", box:"rgba(255,247,235,.62)", text:"#402015", message:"Il tuo feedback è l’ingrediente che ci aiuta a migliorare ogni giorno. Dicci la tua! Bastano 2 secondi!"},
         stabilimento: {file:"Sfondostabilimento.jpg", title:"Ti è piaciuta la tua giornata al mare?", accent:"#1689a6", accent2:"#075f78", theme:"#087b96", box:"rgba(247,253,255,.60)", text:"#123d4a", message:"Aiutaci a rendere ogni giornata al mare ancora più speciale. Dicci la tua! Bastano 2 secondi!"},
         parrucchiere: {file:"Sfondoparrucchiere.jpg", title:"Ti è piaciuto il tuo nuovo look?", accent:"#9b6b45", accent2:"#5d3b28", theme:"#6c4a34", box:"rgba(255,250,245,.62)", text:"#39291f", message:"La tua opinione ci aiuta a valorizzare ogni dettaglio del nostro lavoro. Dicci la tua! Bastano 2 secondi!"},
+        cartolibreria: {file:"Sfondocartolibreria.png", title:"Hai trovato quello che cercavi?", accent:"#9a5b2e", accent2:"#5b321d", theme:"#4a2c1c", box:"rgba(38,24,16,.62)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno assortimento, disponibilità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-8px)", footerSize:"8px", footerStrong:"16px"},
         barbershop: {file:"Sfondobarbershop.jpg", title:"Ti è piaciuto il tuo nuovo stile?", accent:"#313131", accent2:"#111111", theme:"#171717", box:"rgba(245,241,234,.62)", text:"#25211d", message:"Il tuo feedback ci aiuta a perfezionare stile, servizio ed esperienza. Dicci la tua! Bastano 2 secondi!"},
         centroestetico: {file:"Sfondocentroestetico.jpg", title:"Ti è piaciuto il tuo momento di benessere?", accent:"#b58b63", accent2:"#8b6548", theme:"#a57c59", box:"rgba(255,253,249,.70)", text:"#493b31", message:"Il tuo feedback ci aiuta a prenderci cura di ogni dettaglio della tua esperienza. Dicci la tua! Bastano 2 secondi!"},
         detersivi: {file:"Sfondodetersivi.jpg", title:"Hai trovato tutto ciò che cercavi?", accent:"#1fa9b8", accent2:"#0b6f7d", theme:"#0d7884", box:"rgba(255,255,255,.84)", text:"#123b42", message:"La tua opinione ci aiuta a migliorare assortimento, qualità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-18px)", footerSize:"9px", footerStrong:"18px"},
@@ -608,6 +611,9 @@ previewBtn.addEventListener("click", async () => {
       const cfg = configs[type];
       const backgroundDataUrl = await loadBackgroundDataUrl(cfg.file);
       previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, cfg);
+      if (type === "cartolibreria") {
+        previewHtml = previewHtml.replace("</head>", '<style id="cartolibreria-logo-fade">.logo{-webkit-mask-image:radial-gradient(ellipse at center,#000 70%,rgba(0,0,0,.94) 82%,transparent 100%)!important;mask-image:radial-gradient(ellipse at center,#000 70%,rgba(0,0,0,.94) 82%,transparent 100%)!important;border:none!important;box-shadow:none!important;background:transparent!important}</style>' + "</head>");
+      }
     }
 
     openInlinePreview(previewHtml);
