@@ -11,6 +11,9 @@
 
   if (!activity || !generate || !preview) return;
 
+  const legacyHamburgeria = activity.querySelector('option[value="hamburgeria"]');
+  if (legacyHamburgeria) legacyHamburgeria.remove();
+
   function ensureOption(value, label) {
     if (activity.querySelector(`option[value="${value}"]`)) return;
     const option = document.createElement('option');
