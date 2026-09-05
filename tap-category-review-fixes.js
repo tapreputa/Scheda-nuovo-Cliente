@@ -107,8 +107,11 @@
           }
           .messaggio-box{
             top:185px!important;
-            background:rgba(245,241,234,.40)!important;
-            border-color:rgba(255,255,255,.34)!important;
+            background:rgba(245,241,234,.44)!important;
+            border-color:rgba(255,255,255,.42)!important;
+            color:#171411!important;
+            font-weight:850!important;
+            text-shadow:0 1px 1px rgba(255,255,255,.72)!important;
             backdrop-filter:blur(.8px)!important;
             -webkit-backdrop-filter:blur(.8px)!important;
             box-shadow:0 7px 18px rgba(0,0,0,.12)!important;
