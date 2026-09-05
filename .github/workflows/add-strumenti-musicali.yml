@@ -29,13 +29,14 @@ jobs:
           once('    stabilimento: ["Stabilimenti balneari", "Sfondo mare al tramonto + stile tropicale + pulsante premium + 5 stelle + Powered by Tapreputa."],\n',
                '    stabilimento: ["Stabilimenti balneari", "Sfondo mare al tramonto + stile tropicale + pulsante premium + 5 stelle + Powered by Tapreputa."],\n    strumentimusicali: ["Strumenti musicali", "Sfondo negozio di strumenti musicali + stile caldo e deciso + pulsante recensioni + 5 stelle + Powered by Tapreputa."],\n', 'descrizione')
 
-          old='["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","ottica"]'
-          if old not in s:
-              old='["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico","panificio","ottica","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub"]'
-          c=s.count(old)
-          assert c==2, f'liste categorie: atteso 2, trovato {c}'
-          new=old[:-1] + ',"strumentimusicali"]'
-          s=s.replace(old,new)
+          lines=s.splitlines()
+          changed=0
+          for i,line in enumerate(lines):
+              if '.includes(type)' in line and '"standard"' in line and '"pub"' in line and '"strumentimusicali"' not in line:
+                  lines[i]=line.replace('].includes(type)', ',"strumentimusicali"].includes(type)')
+                  changed+=1
+          assert changed==2, f'liste categorie modificate: {changed}'
+          s='\n'.join(lines)+'\n'
 
           marker='    } else if (type === "svapostore") {\n      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondosvapostore.png");\n      previewHtml = buildSvapoStoreTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);\n'
           c=s.count(marker)
