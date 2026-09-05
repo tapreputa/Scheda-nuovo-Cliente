@@ -105,30 +105,30 @@
       };
 
       let html = buildPremiumTemplate(hasLogo ? logoDataUrl : placeholderPixel, reviewUrl, backgroundDataUrl, cfg);
-      const vetCss = `<style id="veterinario-final-v4">
+      const vetCss = `<style id="veterinario-final-v5">
         body{background-size:cover!important;background-position:left top!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
         .pagina{padding-top:${hasLogo ? '22px' : '68px'}!important;padding-bottom:96px!important;transform:none!important}
         .card{padding-top:0!important}
         .logo{${hasLogo ? 'width:min(210px,62%)!important;max-height:118px!important;margin-bottom:34px!important;padding:0!important;background:transparent!important;border:none!important;box-shadow:none!important;filter:drop-shadow(0 7px 18px rgba(0,0,0,.32))!important;' : 'display:none!important;'} }
         .eyebrow{max-width:560px!important;margin:0 auto!important;font-size:clamp(24px,6vw,36px)!important;line-height:1.08!important;letter-spacing:.055em!important;color:#fff!important;text-shadow:0 3px 12px rgba(0,0,0,.78)!important}
         .messaggio-box{display:none!important}
-        .bottone-google{margin-top:72px!important;min-height:60px!important;background:linear-gradient(135deg,#3f8f73,#23644f 60%,#3f8f73)!important;border:1px solid rgba(255,255,255,.28)!important}
-        .stelle{margin-top:34px!important}
+        .bottone-google{margin-top:195px!important;min-height:60px!important;background:linear-gradient(135deg,#3f8f73,#23644f 60%,#3f8f73)!important;border:1px solid rgba(255,255,255,.28)!important}
+        .stelle{margin-top:38px!important}
         footer{font-size:8px!important}footer strong{font-size:16px!important}
         @media(max-width:640px){
           body{background-position:left top!important}
           .pagina{padding-top:${hasLogo ? '16px' : '58px'}!important}
           .logo{${hasLogo ? 'width:min(195px,60%)!important;max-height:108px!important;margin-bottom:28px!important;' : ''}}
           .eyebrow{font-size:clamp(25px,7.3vw,34px)!important;line-height:1.08!important;letter-spacing:.045em!important}
-          .bottone-google{margin-top:68px!important;min-height:58px!important}
-          .stelle{margin-top:32px!important}
+          .bottone-google{margin-top:190px!important;min-height:58px!important}
+          .stelle{margin-top:38px!important}
         }
         @media(max-width:340px) and (max-height:600px){
           .pagina{padding-top:${hasLogo ? '6px' : '32px'}!important;padding-bottom:64px!important}
           .logo{${hasLogo ? 'width:160px!important;max-height:78px!important;margin-bottom:15px!important;' : ''}}
           .eyebrow{font-size:21px!important;line-height:1.05!important}
-          .bottone-google{margin-top:34px!important;min-height:46px!important}
-          .stelle{margin-top:16px!important;font-size:23px!important}
+          .bottone-google{margin-top:72px!important;min-height:46px!important}
+          .stelle{margin-top:18px!important;font-size:23px!important}
         }
       </style>`;
       html = html.replace('</head>', vetCss + '</head>');
