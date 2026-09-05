@@ -1,0 +1,75 @@
+name: Evidenzia stelle Yogurteria
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/refine-yogurteria-stars.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Evidenzia solo le stelle Yogurteria
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('personalizza.html')
+          text = p.read_text(encoding='utf-8')
+          start_marker = 'function buildYogurteriaTemplate'
+          end_marker = 'function buildGelateriaTemplate'
+
+          if start_marker not in text or end_marker not in text:
+              raise SystemExit('Template Yogurteria non trovato')
+
+          before, tail = text.split(start_marker, 1)
+          section, after = tail.split(end_marker, 1)
+          original = section
+
+          old_stars = '.stars{margin:10px 0 0;font-size:28px;letter-spacing:5px;color:#ffc84a;text-shadow:0 2px 6px rgba(73,91,0,.25)}'
+          new_stars = '.stars{display:inline-flex;align-items:center;justify-content:center;margin:12px auto 0;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.48);border:1px solid rgba(255,255,255,.58);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);box-shadow:0 6px 16px rgba(0,77,87,.14);font-size:28px;line-height:1;letter-spacing:5px;color:#ffc43d;text-shadow:0 2px 5px rgba(91,68,0,.42)}'
+          old_mobile = '.stars{font-size:25px}'
+          new_mobile = '.stars{font-size:25px;padding:7px 13px;margin-top:10px}'
+          old_tiny = '.stars{margin-top:9px!important;font-size:23px!important;line-height:1!important}'
+          new_tiny = '.stars{margin-top:9px!important;font-size:23px!important;line-height:1!important;padding:6px 11px!important}'
+
+          for old, new, label in [
+              (old_stars, new_stars, 'stile stelle'),
+              (old_mobile, new_mobile, 'stile stelle mobile'),
+              (old_tiny, new_tiny, 'stile stelle tiny')
+          ]:
+              if old not in section:
+                  raise SystemExit(f'{label} non trovato')
+              section = section.replace(old, new, 1)
+
+          if section == original:
+              raise SystemExit('Nessuna modifica applicata')
+
+          # Controlli: la modifica deve restare confinata al template Yogurteria.
+          required = [
+              'background:rgba(255,255,255,.48)',
+              'border-radius:999px',
+              'backdrop-filter:blur(4px)',
+              'padding:7px 14px'
+          ]
+          for item in required:
+              if item not in section:
+                  raise SystemExit(f'Controllo fallito: {item}')
+
+          p.write_text(before + start_marker + section + end_marker + after, encoding='utf-8')
+          PY
+
+      - name: Salva modifica e rimuovi workflow temporaneo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/refine-yogurteria-stars.yml
+          git add personalizza.html
+          git commit -m "Evidenzia stelle Yogurteria"
+          git push
