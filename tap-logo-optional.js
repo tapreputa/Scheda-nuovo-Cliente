@@ -5,7 +5,8 @@
 
   const activity = document.getElementById('activityType');
   const generate = document.getElementById('generateBtn');
-  if (!activity || !generate) return;
+  const preview = document.getElementById('previewBtn');
+  if (!activity || !generate || !preview) return;
 
   const NO_LOGO_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
   window.tapLogoSkipped = false;
@@ -44,25 +45,47 @@
     });
   }
 
-  generate.addEventListener('click', event => {
+  function currentType() {
     const registry = window.TapCategories;
-    const type = registry ? registry.normalizeId(activity.value) : activity.value;
-    const realLogo = Boolean(window.logoDataUrl || (typeof logoDataUrl !== 'undefined' && logoDataUrl)) && !window.tapLogoSkipped;
-    if (!type || type === 'standard' || realLogo || window.tapLogoSkipped) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    confirmMissingLogo().then(ok => {
-      if (!ok) return;
-      window.tapLogoSkipped = true;
-      try { logoDataUrl = NO_LOGO_PIXEL; } catch (_) { window.logoDataUrl = NO_LOGO_PIXEL; }
-      generate.click();
-    });
-  }, true);
+    return registry ? registry.normalizeId(activity.value) : activity.value;
+  }
+
+  function hasRealLogo() {
+    let value = '';
+    try { value = logoDataUrl; } catch (_) { value = window.logoDataUrl || ''; }
+    return Boolean(value) && value !== NO_LOGO_PIXEL && !window.tapLogoSkipped;
+  }
+
+  function applyNoLogoState() {
+    window.tapLogoSkipped = true;
+    try { logoDataUrl = NO_LOGO_PIXEL; } catch (_) { window.logoDataUrl = NO_LOGO_PIXEL; }
+    window.dispatchEvent(new CustomEvent('tap-logo-skip-change', { detail: { skipped: true } }));
+  }
+
+  function guardWithoutLogo(button) {
+    button.addEventListener('click', event => {
+      const type = currentType();
+      if (!type || type === 'standard' || hasRealLogo() || window.tapLogoSkipped) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      confirmMissingLogo().then(ok => {
+        if (!ok) return;
+        applyNoLogoState();
+        button.click();
+      });
+    }, true);
+  }
+
+  guardWithoutLogo(preview);
+  guardWithoutLogo(generate);
 
   const logoInput = document.getElementById('logoFile');
   if (logoInput) {
     logoInput.addEventListener('change', () => {
-      if (logoInput.files && logoInput.files[0]) window.tapLogoSkipped = false;
+      if (logoInput.files && logoInput.files[0]) {
+        window.tapLogoSkipped = false;
+        window.dispatchEvent(new CustomEvent('tap-logo-skip-change', { detail: { skipped: false } }));
+      }
     });
   }
 
