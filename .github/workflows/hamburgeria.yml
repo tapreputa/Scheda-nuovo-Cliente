@@ -1,0 +1,36 @@
+name: Hamburgeria
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('personalizza.html')
+          s=p.read_text()
+          s=s.replace('<option value="gelateria">Gelaterie</option>','<option value="gelateria">Gelaterie</option>\n<option value="hamburgeria">Hamburgeria</option>',1)
+          s=s.replace('    ottica: [','    hamburgeria: ["Hamburgeria", "Sfondo hamburgeria premium + pulsante recensioni + 5 stelle + Powered by Tapreputa."],\n    ottica: [',1)
+          s=s.replace('"gelateria","ottica"','"gelateria","hamburgeria","ottica"')
+          needle='    } else if (type === "gelateria") {'
+          pos=s.find(needle)
+          if pos<0: raise SystemExit('gelateria missing')
+          end=s.find('    } else {',pos)
+          if end<0: raise SystemExit('end missing')
+          block='''    } else if (type === "hamburgeria") {
+      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondohamburgeria.png");
+      previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {title:"Ti è piaciuto il nostro burger?", accent:"#d88b28", accent2:"#9b4f12", theme:"#3b1d0d", box:"rgba(24,12,7,.58)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno gusto, qualità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-4px)", footerSize:"8px", footerStrong:"16px"});
+      previewHtml = previewHtml.replace("</head>", `<style>.logo{background:transparent!important;border:none!important;box-shadow:none!important;backdrop-filter:none!important;padding:0!important;border-radius:0!important;filter:none!important}</style>` + "</head>");
+'''
+          s=s[:end]+block+s[end:]
+          assert 'Sfondohamburgeria.png' in s and '<option value="hamburgeria">' in s
+          p.write_text(s)
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add personalizza.html
+          git commit -m 'Aggiunge Hamburgeria'
+          git push
