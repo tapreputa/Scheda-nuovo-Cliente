@@ -207,6 +207,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <option value="ristorante">Ristoranti</option>
 <option value="ristorantemare">Ristoranti Mare</option>
 <option value="stabilimento">Stabilimenti balneari</option>
+<option value="strumentimusicali">Strumenti musicali</option>
 <option value="svapostore">Svapo Store</option>
 <option value="yogurteria">Yogurterie</option>
 </select>
@@ -313,6 +314,7 @@ activityType.addEventListener("change", () => {
     gelateria: ["Gelaterie", "Sfondo gelateria luminoso + stile fresco + pulsante premium + 5 stelle + Powered by Tapreputa."],
     ottica: ["Ottica / vendita occhiali", "Sfondo ottica moderno + layout elegante + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     stabilimento: ["Stabilimenti balneari", "Sfondo mare al tramonto + stile tropicale + pulsante premium + 5 stelle + Powered by Tapreputa."],
+    strumentimusicali: ["Strumenti musicali", "Sfondo negozio di strumenti musicali + stile caldo e deciso + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     parrucchiere: ["Parrucchieri", "Sfondo salone moderno + stile elegante + pulsante premium + 5 stelle + Powered by Tapreputa."],
     barbershop: ["Barber Shop", "Sfondo barber moderno + stile deciso + pulsante premium + 5 stelle + Powered by Tapreputa."],
     centroestetico: ["Centri estetici", "Sfondo wellness luminoso + stile raffinato + pulsante premium + 5 stelle + Powered by Tapreputa."],
@@ -430,7 +432,7 @@ generateBtn.onclick = () => {
 
   if (!operatorSelect.value) return warn("Seleziona l’operatore.");
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
   if (!businessName) return warn("Nome attività non disponibile. Torna indietro e inseriscilo.");
@@ -546,7 +548,7 @@ previewBtn.addEventListener("click", async () => {
   destinationUrl.value = reviewUrl;
 
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
 
@@ -581,6 +583,9 @@ previewBtn.addEventListener("click", async () => {
     } else if (type === "svapostore") {
       const backgroundDataUrl = await loadBackgroundDataUrl("Sfondosvapostore.png");
       previewHtml = buildSvapoStoreTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
+    } else if (type === "strumentimusicali") {
+      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondostrumentimusicali.png");
+      previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {title:"Ti è piaciuta la tua esperienza nel nostro negozio?", accent:"#c9822f", accent2:"#70411f", theme:"#2b1a10", box:"rgba(31,20,12,.66)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno assortimento, consulenza e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-8px)", footerSize:"8px", footerStrong:"16px"});
     } else if (type === "gelateria") {
       const backgroundDataUrl = await loadBackgroundDataUrl("Sfondogelateria.jpg");
       previewHtml = buildGelateriaTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
