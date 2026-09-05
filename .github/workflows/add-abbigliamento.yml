@@ -1,0 +1,39 @@
+name: Aggiunge categoria Abbigliamento
+on:
+  push:
+    paths:
+      - '.github/workflows/add-abbigliamento.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Aggiunge Abbigliamento
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('personalizza.html')
+          s=p.read_text()
+          reps=[
+          ('<option value="autolavaggio">Autolavaggio</option>', '<option value="abbigliamento">Abbigliamento</option>\n<option value="autolavaggio">Autolavaggio</option>'),
+          ('autolavaggio: ["Autolavaggio",', 'abbigliamento: ["Abbigliamento", "Sfondo fotografico boutique premium + layout moda dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."],\n    autolavaggio: ["Autolavaggio",'),
+          ('["standard","autolavaggio","bar"', '["standard","abbigliamento","autolavaggio","bar"'),
+          ('} else if (type === "autolavaggio") {', '} else if (type === "abbigliamento") {\n      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondoabbigliamento.png");\n      previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {title:"Il tuo stile merita 5 stelle?", accent:"#c79762", accent2:"#8c623d", theme:"#3a2b22", box:"rgba(24,19,16,.62)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno stile, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-4px)", footerSize:"8px", footerStrong:"16px"});\n    } else if (type === "autolavaggio") {')
+          ]
+          for a,b in reps:
+              if a not in s: raise SystemExit('pattern missing: '+a[:60])
+              s=s.replace(a,b)
+          p.write_text(s)
+          PY
+      - name: Pubblica e pulisci
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/add-abbigliamento.yml
+          git add personalizza.html
+          git commit -m "Aggiunge categoria Abbigliamento"
+          git push origin main
