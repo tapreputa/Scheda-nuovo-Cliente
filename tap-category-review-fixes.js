@@ -11,7 +11,7 @@
     const type = window.TapCategories ? window.TapCategories.normalizeId(activity.value) : activity.value;
 
     if (type === 'autolavaggio' && typeof html === 'string') {
-      html = html.replace('</head>', `<style id="tap-review-autolavaggio-title-v1">
+      html = html.replace('</head>', `<style id="tap-review-autolavaggio-title-v2">
         .eyebrow{
           display:inline-block!important;
           max-width:92%!important;
@@ -30,6 +30,7 @@
           backdrop-filter:blur(2px)!important;
           -webkit-backdrop-filter:blur(2px)!important;
         }
+        .bottone-google{margin-top:12px!important}
       </style></head>`);
     }
 
