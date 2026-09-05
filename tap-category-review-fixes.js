@@ -90,7 +90,7 @@
     }
 
     if (type === 'barbershop' && typeof html === 'string') {
-      html = html.replace('</head>', `<style id="tap-review-barbershop-v6">
+      html = html.replace('</head>', `<style id="tap-review-barbershop-v7">
         .eyebrow,.messaggio-box{
           position:relative!important;
         }
@@ -123,10 +123,33 @@
           backdrop-filter:blur(1px)!important;
           -webkit-backdrop-filter:blur(1px)!important;
         }
+        body:not(.tap-no-logo) .logo-wrap,
+        body:not(.tap-no-logo) .logo-box,
+        body:not(.tap-no-logo) .logo-container{
+          background:transparent!important;
+          border:0!important;
+          box-shadow:none!important;
+          backdrop-filter:none!important;
+          -webkit-backdrop-filter:none!important;
+        }
+        body:not(.tap-no-logo) .logo{
+          background:transparent!important;
+          border:0!important;
+          box-shadow:none!important;
+          padding:0!important;
+        }
+        body:not(.tap-no-logo) .eyebrow{top:-12px!important}
+        body:not(.tap-no-logo) .messaggio-box{top:-2px!important}
+        body:not(.tap-no-logo) .bottone-google{top:18px!important}
+        body:not(.tap-no-logo) .stelle{top:24px!important}
         @media(max-width:640px){
           .eyebrow{top:56px!important;font-size:clamp(1.18rem,5.6vw,1.55rem)!important}
           .messaggio-box{top:82px!important}
           .bottone-google,.stelle{top:132px!important}
+          body:not(.tap-no-logo) .eyebrow{top:-18px!important}
+          body:not(.tap-no-logo) .messaggio-box{top:-8px!important}
+          body:not(.tap-no-logo) .bottone-google{top:12px!important}
+          body:not(.tap-no-logo) .stelle{top:16px!important}
         }
         @media(max-width:340px) and (max-height:600px){
           .eyebrow{top:32px!important;font-size:1.08rem!important}
