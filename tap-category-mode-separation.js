@@ -147,7 +147,13 @@
           letter-spacing:.10em!important;
           text-shadow:0 3px 9px rgba(0,0,0,.38)!important;
         }
-        .messaggio-box{top:44px!important}
+        .messaggio-box{
+          top:44px!important;
+          background:rgba(255,255,255,.48)!important;
+          border-color:rgba(255,255,255,.36)!important;
+          backdrop-filter:blur(.45px)!important;
+          -webkit-backdrop-filter:blur(.45px)!important;
+        }
         .bottone-google{top:54px!important}
         .stelle{top:58px!important}
         @media(max-width:640px){
