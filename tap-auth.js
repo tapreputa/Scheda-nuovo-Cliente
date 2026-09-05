@@ -467,6 +467,14 @@
     button.addEventListener('click', event => handlePersonalizzaAddClient(event, user), true);
   }
 
+  function loadVeterinarioSupport() {
+    if (PAGE_NAME !== 'personalizza.html' || document.querySelector('script[data-tap-veterinario]')) return;
+    const script = document.createElement('script');
+    script.src = 'tap-veterinario.js?v=1';
+    script.dataset.tapVeterinario = '1';
+    document.body.appendChild(script);
+  }
+
   async function autoProtect() {
     const body = document.body;
     if (!body || body.dataset.auth !== 'required') return;
@@ -476,6 +484,7 @@
     try { await migrateLocalClients(user); } catch (err) { console.warn('Migrazione locale non completata:', err); }
     if ((location.pathname.split('/').pop() || '') === 'personalizza.html') {
       installPersonalizzaBridge(user);
+      loadVeterinarioSupport();
     }
   }
 
