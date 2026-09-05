@@ -1,0 +1,36 @@
+name: Rifinisce box Ottica
+on:
+  push:
+    paths:
+      - '.github/workflows/refine-ottica-box.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Modifica solo box Ottica
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('personalizza.html')
+          s=p.read_text()
+          pattern=r'(ottica:\s*\{[^\n]*?box:")rgba\([^\"]+\)("[^\n]*\})'
+          m=re.search(pattern,s)
+          assert m, 'Config ottica non trovata'
+          s,n=re.subn(pattern,r'\1rgba(255,255,255,.38)\2',s,count=1)
+          assert n==1
+          p.write_text(s)
+          PY
+      - name: Salva e pulisci
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/refine-ottica-box.yml
+          git add personalizza.html
+          git commit -m "Riduce opacità box Ottica"
+          git push
