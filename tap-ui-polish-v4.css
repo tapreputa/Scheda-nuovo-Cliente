@@ -1,0 +1,140 @@
+/* Tapreputa / Tap NFC — UI Polish v4
+   Rifinitura puramente visuale. Non modifica template cliente, dati o logica. */
+
+:root{
+  --tap-radius-sm:12px;
+  --tap-radius-md:16px;
+  --tap-radius-lg:24px;
+  --tap-space-1:6px;
+  --tap-space-2:10px;
+  --tap-space-3:16px;
+  --tap-space-4:24px;
+  --tap-focus:0 0 0 4px rgba(58,124,255,.14);
+  --tap-line:#d8e1ed;
+  --tap-muted:#6f7c90;
+  --tap-navy:#07152b;
+  --tap-blue:#1f64f2;
+}
+
+/* Gerarchia e ritmo generale */
+html[data-tap-page] body{letter-spacing:-.004em}
+html[data-tap-page] .wrap{scroll-margin-top:20px}
+html[data-tap-page] h1{letter-spacing:-.045em!important}
+html[data-tap-page] label{letter-spacing:.005em}
+html[data-tap-page] .card,
+html[data-tap-page] .modal{overflow:clip}
+html[data-tap-page] .card-head p{max-width:760px}
+
+/* Focus visibile e accessibilità tastiera */
+html[data-tap-page] :is(button,a,input,select,textarea):focus-visible{
+  outline:none!important;
+  box-shadow:var(--tap-focus)!important;
+}
+html[data-tap-page] :is(button,a){touch-action:manipulation}
+html[data-tap-page] button:disabled{filter:saturate(.65)}
+
+/* Coerenza pulsanti */
+html[data-tap-page] :is(.primary,.secondary,.preview-final,.add-client,.copy-final,.clients-top,.back,.logout,.action,.open-btn,.results-link,.place-finder-btn){
+  min-height:48px;
+  border-radius:14px!important;
+  font-weight:850!important;
+  letter-spacing:-.01em;
+}
+html[data-tap-page] :is(.primary,.preview-final,.add-client,.results-link){
+  box-shadow:0 14px 30px rgba(31,100,242,.20),inset 0 1px rgba(255,255,255,.26)!important;
+}
+
+/* Form più leggibili */
+html[data-tap-page] :is(input,select,textarea){font-size:16px}
+html[data-tap-page] select{background-position:right 14px center}
+html[data-tap-page] .hint{line-height:1.45}
+html[data-tap-page] .message,
+html[data-tap-page] .sync{line-height:1.45;border-radius:14px!important}
+
+/* Personalizza: densità, allineamenti e CTA */
+html[data-tap-page="personalizza.html"] .card{
+  max-width:760px;
+  margin-left:auto;
+  margin-right:auto;
+}
+html[data-tap-page="personalizza.html"] .field{margin-bottom:24px!important}
+html[data-tap-page="personalizza.html"] .upload-box{padding:20px!important}
+html[data-tap-page="personalizza.html"] .logo-preview{min-height:96px}
+html[data-tap-page="personalizza.html"] .tap-field-status{margin-top:10px!important;line-height:1.35}
+html[data-tap-page="personalizza.html"] .tap-category-search{margin-bottom:10px!important}
+html[data-tap-page="personalizza.html"] #previewBtn,
+html[data-tap-page="personalizza.html"] #generateBtn,
+html[data-tap-page="personalizza.html"] #addClientBtn{
+  min-height:62px!important;
+  font-size:16px!important;
+}
+html[data-tap-page="personalizza.html"] #previewBtn{margin-top:20px!important}
+html[data-tap-page="personalizza.html"] #generateBtn{margin-top:12px!important}
+html[data-tap-page="personalizza.html"] .final-link-box{
+  border-radius:20px!important;
+  padding:20px!important;
+  box-shadow:0 12px 32px rgba(7,21,43,.06);
+}
+html[data-tap-page="personalizza.html"] .final-link-label{font-size:15px!important}
+html[data-tap-page="personalizza.html"] .final-link-value{font-size:15px!important}
+html[data-tap-page="personalizza.html"] .tap-logo-tools{gap:10px!important}
+html[data-tap-page="personalizza.html"] .tap-logo-tool{min-height:44px!important;border-radius:12px!important}
+
+/* Clienti: filtri e tabella più ordinati */
+html[data-tap-page="clienti.html"] .client-search{box-shadow:0 9px 24px rgba(7,21,43,.055)!important}
+html[data-tap-page="clienti.html"] .client-filters,
+html[data-tap-page="clienti.html"] .tap-client-filters{
+  gap:10px!important;
+}
+html[data-tap-page="clienti.html"] .card{border-radius:22px!important}
+html[data-tap-page="clienti.html"] tbody tr:last-child td{border-bottom:0!important}
+html[data-tap-page="clienti.html"] .open-btn,
+html[data-tap-page="clienti.html"] .delete-row,
+html[data-tap-page="clienti.html"] .link-chip{transition:transform .14s ease,box-shadow .14s ease,background .14s ease}
+html[data-tap-page="clienti.html"] :is(.open-btn,.delete-row,.link-chip):active{transform:scale(.96)}
+html[data-tap-page="clienti.html"] .modal{border-radius:24px!important}
+html[data-tap-page="clienti.html"] .detail{border-radius:13px!important}
+
+/* Mobile: meno dispersione verticale, target comodi */
+@media(max-width:760px){
+  html[data-tap-page] .wrap{padding-left:14px!important;padding-right:14px!important;padding-bottom:max(48px,calc(env(safe-area-inset-bottom) + 30px))!important}
+  html[data-tap-page] .eyebrow{letter-spacing:.16em!important}
+  html[data-tap-page] h1{line-height:1.02!important}
+  html[data-tap-page] :is(button,a,.primary,.secondary,.preview-final,.add-client,.copy-final,.clients-top,.back,.logout,.action){min-height:48px}
+
+  html[data-tap-page="personalizza.html"] .card{padding:25px 18px 22px!important;border-radius:22px!important}
+  html[data-tap-page="personalizza.html"] .card-head{margin-bottom:26px!important}
+  html[data-tap-page="personalizza.html"] .field{margin-bottom:22px!important}
+  html[data-tap-page="personalizza.html"] .upload-box{padding:16px!important;border-radius:17px!important}
+  html[data-tap-page="personalizza.html"] .logo-preview{padding:12px!important;gap:12px!important}
+  html[data-tap-page="personalizza.html"] .logo-preview img{width:66px!important;height:66px!important}
+  html[data-tap-page="personalizza.html"] .tap-logo-tools{display:grid!important;grid-template-columns:1fr 1fr!important}
+  html[data-tap-page="personalizza.html"] .tap-logo-state{grid-column:1/-1!important;width:auto!important;margin:0!important;padding-top:2px}
+  html[data-tap-page="personalizza.html"] #previewBtn,
+  html[data-tap-page="personalizza.html"] #generateBtn,
+  html[data-tap-page="personalizza.html"] #addClientBtn{min-height:58px!important;font-size:16px!important;border-radius:16px!important}
+  html[data-tap-page="personalizza.html"] .final-link-box{padding:17px!important;border-radius:18px!important}
+
+  html[data-tap-page="clienti.html"] .headline{margin-bottom:20px!important}
+  html[data-tap-page="clienti.html"] .client-search{height:50px!important;border-radius:14px!important}
+  html[data-tap-page="clienti.html"] .card{border-radius:18px!important}
+  html[data-tap-page="clienti.html"] .modal{padding:18px!important;margin:12px auto!important;border-radius:20px!important}
+  html[data-tap-page="clienti.html"] .modal h2{font-size:25px!important}
+  html[data-tap-page="clienti.html"] .action{min-height:50px!important}
+}
+
+/* Telefoni piccoli */
+@media(max-width:390px){
+  html[data-tap-page] .wrap{padding-left:10px!important;padding-right:10px!important}
+  html[data-tap-page="personalizza.html"] .card{padding-left:15px!important;padding-right:15px!important}
+  html[data-tap-page="personalizza.html"] .tap-logo-tool{padding-left:8px!important;padding-right:8px!important;font-size:11.5px!important}
+}
+
+/* Motion sobrio */
+@media(prefers-reduced-motion:no-preference){
+  html[data-tap-page] .card{animation:tapCardIn .28s ease-out both}
+  @keyframes tapCardIn{from{opacity:.94;transform:translateY(5px)}to{opacity:1;transform:none}}
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-tap-page] .card{animation:none!important}
+}
