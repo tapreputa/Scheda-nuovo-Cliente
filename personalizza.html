@@ -577,7 +577,7 @@ previewBtn.addEventListener("click", async () => {
       const backgroundDataUrl = await loadBackgroundDataUrl("Sfondoyogurteria.jpg");
       previewHtml = buildYogurteriaTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
     } else if (type === "svapostore") {
-      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondosvapostore.jpg");
+      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondosvapostore.png");
       previewHtml = buildSvapoStoreTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
     } else if (type === "gelateria") {
       const backgroundDataUrl = await loadBackgroundDataUrl("Sfondogelateria.jpg");
@@ -593,7 +593,7 @@ previewBtn.addEventListener("click", async () => {
         farmacia: {file:"Sfondofarmacia.jpg", title:"La tua esperienza è importante per noi", accent:"#16a085", accent2:"#0b6f61", theme:"#0b7668", box:"rgba(255,255,255,.88)", text:"#16473f", message:"La tua opinione ci aiuta a migliorare ogni giorno accoglienza, disponibilità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-10px)", footerSize:"8px", footerStrong:"16px"},
         fitness: {file:"Sfondofitness.jpg", title:"Ti è piaciuto allenarti con noi?", accent:"#e45b22", accent2:"#b42f14", theme:"#232323", box:"rgba(20,20,20,.72)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno ambiente, attrezzature e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-12px)", footerSize:"8px", footerStrong:"16px"},
         pasticceria: {file:"Sfondopasticceria.jpg", title:"Ti sono piaciute le nostre dolcezze?", accent:"#d58a3a", accent2:"#9b5528", theme:"#6b3d26", box:"rgba(255,250,244,.86)", text:"#4b2d1f", message:"La tua opinione ci aiuta a rendere ogni dolce ancora più speciale. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(40px)", footerSize:"8px", footerStrong:"16px"},
-        svapostore: {file:"Sfondosvapostore.jpg", title:"Ti è piaciuta la tua esperienza nel nostro store?", accent:"#19c7c8", accent2:"#7044c7", theme:"#0b1722", box:"rgba(8,20,31,.78)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno accoglienza, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-8px)", footerSize:"8px", footerStrong:"16px"},
+        svapostore: {file:"Sfondosvapostore.png", title:"Ti è piaciuta la tua esperienza nel nostro store?", accent:"#19c7c8", accent2:"#7044c7", theme:"#0b1722", box:"rgba(8,20,31,.78)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno accoglienza, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-8px)", footerSize:"8px", footerStrong:"16px"},
         pub: {file:"Sfondopub.jpg", title:"Ti sono piaciuti i nostri cocktail?", accent:"#d88a2b", accent2:"#9a5719", theme:"#18263f", box:"rgba(10,18,35,.74)", text:"#ffffff", message:"La tua opinione ci aiuta a rendere ogni serata ancora più speciale. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(10px)", footerSize:"8px", footerStrong:"16px"}
       };
       const cfg = configs[type];
