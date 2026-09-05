@@ -475,6 +475,19 @@
     document.body.appendChild(script);
   }
 
+  function loadPageTools() {
+    const modules = {
+      'index.html': 'tap-index-tools.js',
+      'clienti.html': 'tap-clienti-tools.js'
+    };
+    const src = modules[PAGE_NAME];
+    if (!src || document.querySelector(`script[data-tap-page-tools="${src}"]`)) return;
+    const script = document.createElement('script');
+    script.src = src + '?v=1';
+    script.dataset.tapPageTools = src;
+    document.body.appendChild(script);
+  }
+
   async function autoProtect() {
     const body = document.body;
     if (!body || body.dataset.auth !== 'required') return;
@@ -496,7 +509,9 @@
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', autoProtect);
+    document.addEventListener('DOMContentLoaded', loadPageTools);
   } else {
     autoProtect();
+    loadPageTools();
   }
 })();
