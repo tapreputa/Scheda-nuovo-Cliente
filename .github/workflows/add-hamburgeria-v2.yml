@@ -1,0 +1,41 @@
+name: Corregge categoria Hamburgeria
+on:
+  push:
+    paths:
+      - '.github/workflows/add-hamburgeria-v2.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('personalizza.html'); s=p.read_text()
+          def once(a,b):
+              global s
+              if a not in s: raise SystemExit('Manca pattern: '+a[:80])
+              s=s.replace(a,b,1)
+          once('<option value="gelateria">Gelaterie</option>', '<option value="gelateria">Gelaterie</option>\n<option value="hamburgeria">Hamburgeria</option>')
+          # templates: insert immediately before ottica entry
+          once('    ottica: ["Ottica / vendita occhiali",', '    hamburgeria: ["Hamburgeria", "Sfondo fotografico hamburger premium + layout dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."],\n    ottica: ["Ottica / vendita occhiali",')
+          # add to every existing allowlist occurrence by anchoring gelateria -> ottica where present
+          s=s.replace('"gelateria", "ottica"', '"gelateria", "hamburgeria", "ottica"')
+          s=s.replace('"gelateria","ottica"', '"gelateria","hamburgeria","ottica"')
+          # preview branch before ottica branch
+          marker='    } else if (type === "ottica") {'
+          branch='''    } else if (type === "hamburgeria") {\n      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondohamburgeria.png");\n      previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {\n        title:"Ti è piaciuto il nostro burger?", accent:"#d88b28", accent2:"#9b4f12", theme:"#3b1d0d", box:"rgba(24,12,7,.58)", text:"#ffffff",\n        message:"La tua opinione ci aiuta a migliorare ogni giorno gusto, qualità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!",\n        shift:"translateY(-4px)", footerSize:"8px", footerStrong:"16px"\n      });\n      previewHtml = previewHtml.replace("</head>", `<style id="hamburgeria-logo-clean">.logo,.logo-wrap,.logo-box,.logo-container{background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border:none!important;filter:none!important}.logo{padding:0!important;border-radius:0!important}.logo-wrap:before,.logo-wrap:after,.logo-box:before,.logo-box:after,.logo-container:before,.logo-container:after{display:none!important}</style>` + "</head>");\n'''
+          once(marker, branch+marker)
+          p.write_text(s)
+          PY
+      - run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/add-hamburgeria-v2.yml
+          git add personalizza.html
+          git commit -m "Aggiunge correttamente categoria Hamburgeria"
+          git push origin main
