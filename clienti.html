@@ -15,6 +15,15 @@
 @media(max-width:760px){.topbar{min-height:82px;padding:14px 12px}.brand-icon{width:50px;height:50px}.brand-title{font-size:17px}.brand-sub{font-size:11px}.user-pill{display:none}.back,.logout{font-size:11px;padding:9px 10px}.wrap{padding:32px 10px 55px}.headline{display:block}h1{font-size:38px}.count{margin-top:10px}.card{border-radius:20px}.modal{margin:15px auto;padding:21px}.action-grid{grid-template-columns:1fr}thead th:nth-child(1),tbody td.id{width:52px;min-width:52px;max-width:52px}thead th:nth-child(2),tbody td.nome{left:52px;width:132px;min-width:132px;max-width:132px}.name-btn{width:116px}}
 
 .results-link-wrap{display:flex;justify-content:center;margin:28px 0 0}.results-link{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:250px;min-height:58px;padding:0 26px;border-radius:18px;background:#003c33;color:#fff;text-decoration:none;font-size:16px;font-weight:900;box-shadow:0 14px 30px rgba(0,60,51,.18)}.results-link:active{transform:scale(.98)}.results-link-icon{font-size:20px}@media(max-width:760px){.results-link-wrap{margin-top:24px}.results-link{width:min(82vw,320px);min-height:56px}}
+
+/* clienti-live-search-v1 */
+.client-search{display:flex;align-items:center;gap:10px;width:min(520px,100%);margin:-8px 0 20px;padding:0 16px;height:54px;border:1px solid #d2dfdb;border-radius:16px;background:#fff;box-shadow:0 8px 24px rgba(12,45,39,.06)}
+.client-search-icon{font-size:18px;color:#6b7a75;flex:0 0 auto}
+.client-search input{width:100%;height:100%;border:0;outline:0;background:transparent;color:#17332d;font:inherit;font-size:15px}
+.client-search input::placeholder{color:#8a9692}
+.client-search:focus-within{border-color:#0c9b80;box-shadow:0 0 0 4px rgba(12,155,128,.10)}
+@media(max-width:760px){.client-search{width:100%;margin:-4px 0 16px;height:52px;border-radius:14px}}
+
 </style>
 <link rel="stylesheet" href="tap-premium-theme.css?v=1">
 <link rel="stylesheet" href="tap-premium-polish.css?v=2">
@@ -27,6 +36,10 @@
 <main class="wrap">
   <div class="eyebrow">Database condiviso</div>
   <div class="headline"><h1>I miei clienti</h1><div id="count" class="count"></div></div>
+  <div class="client-search" role="search">
+    <span class="client-search-icon" aria-hidden="true">⌕</span>
+    <input id="clientSearch" type="search" inputmode="search" autocomplete="off" placeholder="Cerca attività per nome…" aria-label="Cerca attività per nome">
+  </div>
   <div id="sync" class="sync"></div>
   <section class="card"><div id="loading" class="loading">Caricamento database condiviso...</div><div class="table-wrap" id="tableWrap" style="display:none"><table><thead><tr><th>ID</th><th>NOME</th><th>OPERATORE</th><th>CATEGORIA</th><th>LINK REC.</th><th>LINK NFC</th><th>TARGHE</th><th>CARTE</th><th>ADESIVI</th><th>€</th><th>DATA</th><th>STATO</th><th></th></tr></thead><tbody id="rows"></tbody></table></div><div id="empty" class="empty">Nessun cliente salvato.</div></section>
   <div class="results-link-wrap"><a class="results-link" href="risultati.html"><span class="results-link-icon">▥</span><span>Risultati</span></a></div>
@@ -37,10 +50,11 @@
 <script src="tap-auth.js"></script>
 <script>
 let user=null,clienti=[],currentId=null;
-const rows=document.getElementById('rows'),empty=document.getElementById('empty'),tableWrap=document.getElementById('tableWrap'),loading=document.getElementById('loading'),count=document.getElementById('count'),sync=document.getElementById('sync'),overlay=document.getElementById('overlay');
+const rows=document.getElementById('rows'),empty=document.getElementById('empty'),tableWrap=document.getElementById('tableWrap'),loading=document.getElementById('loading'),count=document.getElementById('count'),sync=document.getElementById('sync'),overlay=document.getElementById('overlay'),clientSearch=document.getElementById('clientSearch');
 const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const displayId=c=>{const index=clienti.findIndex(x=>x.id===c.id);return String(index>=0?index+1:0).padStart(4,'0')};
 const dateIt=value=>{if(!value)return '-';const d=new Date(value);return Number.isNaN(d.getTime())?'-':d.toLocaleDateString('it-IT')};
+const normalizeSearch=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('it-IT');
 function notice(text,error=false){sync.textContent=text;sync.className='sync show'+(error?' error':'');setTimeout(()=>{if(sync.textContent===text)sync.className='sync'},3500)}
 function getClient(uuid){return clienti.find(c=>c.id===uuid)}
 function isOwner(c){return !!(c&&user&&c.created_by===user.id)}
@@ -52,10 +66,16 @@ async function loadClients(){
   }catch(err){loading.style.display='none';notice('Errore caricamento database: '+(err.message||'riprova.'),true)}
 }
 function render(){
-  loading.style.display='none';rows.innerHTML='';count.textContent=clienti.length===1?'1 cliente condiviso':clienti.length+' clienti condivisi';
-  if(!clienti.length){tableWrap.style.display='none';empty.classList.add('show');return}
-  tableWrap.style.display='';empty.classList.remove('show');
-  clienti.forEach(c=>{
+  loading.style.display='none';rows.innerHTML='';
+  const query=normalizeSearch(clientSearch?.value||'').trim();
+  const visibleClienti=query?clienti.filter(c=>normalizeSearch(c.nome).includes(query)):clienti;
+  count.textContent=query
+    ? `${visibleClienti.length} ${visibleClienti.length===1?'risultato':'risultati'} su ${clienti.length}`
+    : (clienti.length===1?'1 cliente condiviso':clienti.length+' clienti condivisi');
+  if(!clienti.length){tableWrap.style.display='none';empty.textContent='Nessun cliente salvato.';empty.classList.add('show');return}
+  if(!visibleClienti.length){tableWrap.style.display='none';empty.textContent='Nessuna attività trovata.';empty.classList.add('show');return}
+  tableWrap.style.display='';empty.textContent='Nessun cliente salvato.';empty.classList.remove('show');
+  visibleClienti.forEach(c=>{
     const tr=document.createElement('tr');
     tr.innerHTML=`<td class="id">${esc(displayId(c))}</td><td class="nome"><button class="name-btn" data-rename="${esc(c.id)}" type="button" title="Rinomina cliente">${esc(c.nome)}</button></td><td class="operator">${esc(c.operatore||'-')}</td><td class="category">${esc(c.categoria||'-')}</td><td class="link"><button class="link-chip" data-link="review" data-id="${esc(c.id)}" type="button">🔗</button></td><td class="link"><button class="link-chip" data-link="nfc" data-id="${esc(c.id)}" type="button">🔗</button></td><td class="metric"><input class="metric-input" data-field="targhe" data-id="${esc(c.id)}" type="number" min="0" step="1" value="${esc(c.targhe??0)}"></td><td class="metric"><input class="metric-input" data-field="carte" data-id="${esc(c.id)}" type="number" min="0" step="1" value="${esc(c.carte??0)}"></td><td class="metric"><input class="metric-input" data-field="adesivi" data-id="${esc(c.id)}" type="number" min="0" step="1" value="${esc(c.adesivi??0)}"></td><td class="metric"><input class="metric-input money" data-field="spesa" data-id="${esc(c.id)}" type="number" min="0" step="0.01" value="${esc(c.spesa??0)}"></td><td>${esc(dateIt(c.created_at))}</td><td><select class="status-select" data-status="${esc(c.id)}">${['Da completare','Da consegnare','Consegnato','Attivo'].map(s=>`<option ${c.stato===s?'selected':''}>${s}</option>`).join('')}</select></td><td><div class="row-actions"><button class="open-btn" data-open="${esc(c.id)}" type="button">Apri</button><button class="delete-row" data-delete="${esc(c.id)}" type="button">🗑️</button></div></td>`;
     rows.appendChild(tr);
@@ -100,6 +120,8 @@ function openLink(uuid,kind){const c=getClient(uuid);if(!c)return;const url=kind
 function openClient(uuid){const c=getClient(uuid);if(!c)return;currentId=uuid;mName.textContent=c.nome||'';mId.textContent=displayId(c);mOperator.textContent=c.operatore||'-';mCategory.textContent=c.categoria||'-';mPlace.textContent=c.place_id||'-';mReview.textContent=c.link_recensioni||'-';mNfc.textContent=c.link_nfc||'-';mDate.textContent=dateIt(c.created_at);mStatus.textContent=c.stato||'-';const owner=isOwner(c);const editBtn=document.getElementById('edit'),deleteBtn=document.getElementById('delete');editBtn.disabled=!owner;deleteBtn.disabled=!owner;editBtn.title=owner?'':'Solo '+(c.operatore||'l’operatore proprietario')+' può modificare questo cliente.';deleteBtn.title=owner?'':'Solo '+(c.operatore||'l’operatore proprietario')+' può eliminare questo cliente.';overlay.classList.add('show')}
 async function deleteById(uuid){const c=getClient(uuid);if(!c)return;if(!isOwner(c))return notice('Solo '+(c.operatore||'l’operatore proprietario')+' può eliminare questo cliente.',true);if(!confirm(`Eliminare definitivamente ID ${displayId(c)} — ${c.nome}?`))return;try{await TapNfc.deleteClient(uuid);clienti=clienti.filter(x=>x.id!==uuid);overlay.classList.remove('show');render();notice('Cliente eliminato. La numerazione è stata aggiornata automaticamente.')}catch(err){notice('Eliminazione non riuscita: '+(err.message||'errore.'),true)}}
 async function copyText(text,button){if(!text||text==='-')return;try{await navigator.clipboard.writeText(text)}catch{const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}const old=button.textContent;button.textContent='Copiato ✓';setTimeout(()=>button.textContent=old,1400)}
+
+if(clientSearch)clientSearch.addEventListener('input',render);
 
 document.getElementById('close').onclick=()=>overlay.classList.remove('show');overlay.onclick=e=>{if(e.target===overlay)overlay.classList.remove('show')};
 document.getElementById('copyReview').onclick=function(){const c=getClient(currentId);if(c)copyText(c.link_recensioni,this)};
