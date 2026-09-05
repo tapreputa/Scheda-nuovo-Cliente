@@ -90,10 +90,18 @@
     }
 
     if (type === 'barbershop' && typeof html === 'string') {
-      html = html.replace('</head>', `<style id="tap-review-barbershop-v4">
+      html = html.replace('</head>', `<style id="tap-review-barbershop-v5">
         .eyebrow,.messaggio-box{
           position:relative!important;
           top:88px!important;
+        }
+        .eyebrow{
+          font-size:clamp(1.22rem,5.7vw,1.72rem)!important;
+          line-height:1.16!important;
+          font-weight:950!important;
+          letter-spacing:.11em!important;
+          color:#fff!important;
+          text-shadow:0 3px 10px rgba(0,0,0,.98),0 0 5px rgba(0,0,0,.72)!important;
         }
         .messaggio-box{
           background:rgba(245,241,234,.40)!important;
@@ -116,10 +124,12 @@
         }
         @media(max-width:640px){
           .eyebrow,.messaggio-box{top:82px!important}
+          .eyebrow{font-size:clamp(1.18rem,5.6vw,1.55rem)!important}
           .bottone-google,.stelle{top:132px!important}
         }
         @media(max-width:340px) and (max-height:600px){
           .eyebrow,.messaggio-box{top:46px!important}
+          .eyebrow{font-size:1.08rem!important}
           .bottone-google,.stelle{top:78px!important}
         }
       </style></head>`);
