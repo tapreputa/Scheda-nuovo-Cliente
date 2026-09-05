@@ -38,6 +38,7 @@
       await loadScript('tap-personalizza-reliability.js');
       await loadScript('tap-preview-refresh.js');
       await loadScript('tap-category-review-fixes.js');
+      await loadScript('tap-category-mode-separation.js');
     } catch (error) {
       console.error('Tapreputa: inizializzazione moduli Personalizza non riuscita.', error);
     }
