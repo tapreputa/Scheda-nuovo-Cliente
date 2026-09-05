@@ -1,0 +1,44 @@
+name: Corregge template Svapo Store
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-svapo-template.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Applica template dedicato
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('personalizza.html')
+          s=p.read_text()
+          marker='function buildGelateriaTemplate(logo, reviewUrl, backgroundDataUrl) {'
+          assert marker in s
+          fn=r'''function buildSvapoStoreTemplate(logo, reviewUrl, backgroundDataUrl) {
+  const safeUrl = escapeHtml(reviewUrl);
+  return `<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Svapo Store · Recensioni</title><style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,Arial,sans-serif}body{overflow-x:hidden;background:#08131d;color:#fff}.scene-original{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:0;pointer-events:none}.shade{position:fixed;inset:0;z-index:1;background:linear-gradient(180deg,rgba(3,10,18,.20) 0%,rgba(3,10,18,.22) 45%,rgba(3,10,18,.34) 100%);pointer-events:none}.pagina{position:relative;z-index:2;min-height:100vh;min-height:100dvh;display:flex;align-items:flex-start;justify-content:center;padding:18px 16px max(92px,calc(env(safe-area-inset-bottom) + 76px));}.card{width:min(100%,520px);text-align:center;padding:0 8px 12px}.logo{display:block;width:min(280px,76%);max-height:150px;object-fit:contain;margin:0 auto 16px;padding:7px 10px;border-radius:22px;background:rgba(10,22,32,.40);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);filter:drop-shadow(0 8px 22px rgba(0,0,0,.48))}.title{margin:0 auto 14px;max-width:480px;font-size:clamp(25px,5.6vw,36px);line-height:1.08;font-weight:950;letter-spacing:-.02em;color:#fff;text-shadow:0 3px 14px rgba(0,0,0,.88)}.text{margin:0 auto 16px;max-width:470px;font-size:clamp(14px,3.4vw,17px);line-height:1.38;font-weight:760;color:#fff;background:rgba(8,20,31,.72);border:1px solid rgba(255,255,255,.28);border-radius:20px;padding:14px 16px;box-shadow:0 10px 26px rgba(0,0,0,.24);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;padding:0 22px;border-radius:18px;text-decoration:none;background:linear-gradient(135deg,#19c7c8 0%,#7044c7 58%,#19c7c8 100%);color:#fff;font-size:17px;font-weight:900;box-shadow:0 14px 30px rgba(15,92,124,.36),inset 0 1px 0 rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.28)}.stars{margin-top:17px;font-size:29px;letter-spacing:.15em;color:#ffd35d;text-shadow:0 3px 10px rgba(0,0,0,.7)}footer{position:fixed;z-index:4;right:max(18px,env(safe-area-inset-right));bottom:max(22px,env(safe-area-inset-bottom));font-size:9px;font-weight:700;color:#fff;text-align:right;text-shadow:0 3px 10px rgba(0,0,0,.9)}footer strong{display:block;font-size:18px;line-height:1.05;font-weight:950;color:#d9fbff}@media(max-width:640px){.pagina{padding-top:14px}.logo{width:min(250px,72%);max-height:135px;margin-bottom:13px}.title{font-size:clamp(24px,6.3vw,31px);margin-bottom:12px}.text{font-size:15px;line-height:1.34;padding:12px 14px;margin-bottom:14px}.btn{min-height:52px;font-size:16px}.stars{font-size:27px;margin-top:15px}}@media(max-width:340px) and (max-height:600px){.pagina{padding:8px 10px 70px!important}.logo{width:min(210px,72%)!important;max-height:105px!important;margin-bottom:8px!important}.title{font-size:22px!important;margin-bottom:8px!important}.text{font-size:13px!important;line-height:1.28!important;padding:9px 10px!important;margin-bottom:9px!important}.btn{min-height:46px!important;font-size:14px!important}.stars{font-size:23px!important;margin-top:8px!important}footer{font-size:8px!important;bottom:8px!important;right:8px!important}footer strong{font-size:15px!important}}</style></head><body><img class="scene-original" src="${backgroundDataUrl}" alt=""><div class="shade"></div><main class="pagina"><section class="card"><img class="logo" src="${logo}" alt="Logo attività"><h1 class="title">Ti è piaciuta la tua esperienza nel nostro store?</h1><p class="text">La tua opinione ci aiuta a migliorare ogni giorno accoglienza, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!</p><a class="btn" href="${safeUrl}" target="_blank" rel="noopener noreferrer">Recensione Google</a><div class="stars">★★★★★</div></section></main><footer>Powered by <strong>Tapreputa</strong></footer></body></html>`;
+}
+
+'''
+          s=s.replace(marker,fn+marker,1)
+          old='''    } else if (type === "gelateria") {\n      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondogelateria.jpg");\n      previewHtml = buildGelateriaTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);'''
+          new='''    } else if (type === "svapostore") {\n      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondosvapostore.jpg");\n      previewHtml = buildSvapoStoreTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);\n    } else if (type === "gelateria") {\n      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondogelateria.jpg");\n      previewHtml = buildGelateriaTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);'''
+          assert old in s
+          s=s.replace(old,new,1)
+          p.write_text(s)
+          PY
+      - name: Salva e pulisci
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/fix-svapo-template.yml
+          git add personalizza.html
+          git commit -m "Usa template dedicato per Svapo Store"
+          git push
