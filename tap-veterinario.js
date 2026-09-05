@@ -115,41 +115,9 @@
 
       if (activity.value === 'gioielleria') {
         const bg = await loadBackgroundDataUrl('Sfondogioielleria.png');
-        const cfg = {
-          title: 'La qualità e la cura dei nostri gioielli ti hanno conquistato?',
-          accent: '#b9975b',
-          accent2: '#7d6238',
-          theme: '#8a744a',
-          box: 'transparent',
-          text: '#ffffff',
-          message: '',
-          shift: 'none',
-          footerSize: '8px',
-          footerStrong: '16px'
-        };
+        const cfg = {title:'La qualità e la cura dei nostri gioielli ti hanno conquistato?',accent:'#b9975b',accent2:'#7d6238',theme:'#8a744a',box:'transparent',text:'#ffffff',message:'',shift:'none',footerSize:'8px',footerStrong:'16px'};
         html = buildPremiumTemplate(hasLogo ? logoDataUrl : placeholderPixel, reviewUrl, bg, cfg);
-        const css = `<style id="gioielleria-final-v2">
-          body{background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
-          .pagina{position:relative!important;min-height:100vh!important;padding:0!important;transform:none!important}
-          .card{position:static!important;padding:0!important;margin:0!important;min-height:100vh!important}
-          .logo{${hasLogo ? 'position:absolute!important;top:2.8vh!important;left:50%!important;transform:translateX(-50%)!important;width:min(185px,52vw)!important;max-height:100px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;filter:drop-shadow(0 5px 14px rgba(0,0,0,.28))!important;' : 'display:none!important;'}}
-          .eyebrow{position:absolute!important;top:${hasLogo ? '23vh' : '13vh'}!important;left:6%!important;right:6%!important;max-width:none!important;margin:0!important;font-size:clamp(23px,6.4vw,32px)!important;line-height:1.08!important;letter-spacing:.035em!important;color:#fff!important;text-shadow:0 3px 12px rgba(60,45,20,.72)!important}
-          .messaggio-box{display:none!important}
-          .bottone-google{position:absolute!important;top:65vh!important;left:6%!important;right:6%!important;width:auto!important;margin:0!important;min-height:57px!important;background:linear-gradient(135deg,#c4a56b,#8f7240 62%,#b18f55)!important;border:1px solid rgba(255,255,255,.42)!important;box-shadow:0 10px 26px rgba(70,50,20,.24)!important}
-          .stelle{position:absolute!important;top:76.5vh!important;left:0!important;right:0!important;margin:0!important}
-          footer{font-size:8px!important}footer strong{font-size:16px!important}
-          @media(max-width:640px){
-            .logo{${hasLogo ? 'top:2.5vh!important;width:min(174px,50vw)!important;max-height:94px!important;' : ''}}
-            .eyebrow{top:${hasLogo ? '22.5vh' : '12.5vh'}!important;font-size:clamp(22px,6.8vw,30px)!important}
-            .bottone-google{top:65.5vh!important;min-height:55px!important}
-            .stelle{top:77vh!important}
-          }
-          @media(max-height:690px){
-            .eyebrow{top:${hasLogo ? '21vh' : '11vh'}!important}
-            .bottone-google{top:63vh!important}
-            .stelle{top:75vh!important}
-          }
-        </style>`;
+        const css = `<style id="gioielleria-final-v2">body{background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important;background-attachment:fixed!important}.pagina{position:relative!important;min-height:100vh!important;padding:0!important;transform:none!important}.card{position:static!important;padding:0!important;margin:0!important;min-height:100vh!important}.logo{${hasLogo ? 'position:absolute!important;top:2.8vh!important;left:50%!important;transform:translateX(-50%)!important;width:min(185px,52vw)!important;max-height:100px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;filter:drop-shadow(0 5px 14px rgba(0,0,0,.28))!important;' : 'display:none!important;'}}.eyebrow{position:absolute!important;top:${hasLogo ? '23vh' : '13vh'}!important;left:6%!important;right:6%!important;max-width:none!important;margin:0!important;font-size:clamp(23px,6.4vw,32px)!important;line-height:1.08!important;letter-spacing:.035em!important;color:#fff!important;text-shadow:0 3px 12px rgba(60,45,20,.72)!important}.messaggio-box{display:none!important}.bottone-google{position:absolute!important;top:65vh!important;left:6%!important;right:6%!important;width:auto!important;margin:0!important;min-height:57px!important;background:linear-gradient(135deg,#c4a56b,#8f7240 62%,#b18f55)!important;border:1px solid rgba(255,255,255,.42)!important;box-shadow:0 10px 26px rgba(70,50,20,.24)!important}.stelle{position:absolute!important;top:76.5vh!important;left:0!important;right:0!important;margin:0!important}footer{font-size:8px!important}footer strong{font-size:16px!important}@media(max-width:640px){.logo{${hasLogo ? 'top:2.5vh!important;width:min(174px,50vw)!important;max-height:94px!important;' : ''}}.eyebrow{top:${hasLogo ? '22.5vh' : '12.5vh'}!important;font-size:clamp(22px,6.8vw,30px)!important}.bottone-google{top:65.5vh!important;min-height:55px!important}.stelle{top:77vh!important}}@media(max-height:690px){.eyebrow{top:${hasLogo ? '21vh' : '11vh'}!important}.bottone-google{top:63vh!important}.stelle{top:75vh!important}}</style>`;
         html = inject(html, css);
       } else if (activity.value === 'macelleria') {
         const bg = await loadBackgroundDataUrl('Sfondomacelleria.png');
@@ -159,40 +127,21 @@
         html = inject(html, css);
       } else if (activity.value === 'panineria_hamburgeria') {
         const bg = await loadBackgroundDataUrl('Sfondopanineria.png');
-        const cfg = {
-          title: 'Panini e hamburger preparati con gusto: ti abbiamo conquistato?',
-          accent: '#d9852f',
-          accent2: '#9f4d18',
-          theme: '#5b321d',
-          box: 'transparent',
-          text: '#ffffff',
-          message: '',
-          shift: 'none',
-          footerSize: '8px',
-          footerStrong: '16px'
-        };
+        const cfg = {title:'Panini e hamburger preparati con gusto: ti abbiamo conquistato?',accent:'#d9852f',accent2:'#9f4d18',theme:'#5b321d',box:'transparent',text:'#ffffff',message:'',shift:'none',footerSize:'8px',footerStrong:'16px'};
         html = buildPremiumTemplate(hasLogo ? logoDataUrl : placeholderPixel, reviewUrl, bg, cfg);
-        const css = `<style id="panineria-hamburgeria-v1">
-          body{background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
-          .pagina{position:relative!important;min-height:100vh!important;padding:0!important;transform:none!important}
+        const css = `<style id="panineria-hamburgeria-v2">
+          body{background-color:#15110d!important;background-size:100% auto!important;background-position:center center!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
+          .pagina{position:relative!important;min-height:100vh!important;padding:0!important;transform:none!important;overflow:hidden!important}
+          .pagina::before{content:""!important;position:absolute!important;z-index:1!important;top:0!important;left:0!important;width:30vw!important;height:17vh!important;pointer-events:none!important;background:radial-gradient(circle at 18% 14%,rgba(12,11,10,.98) 0 32%,rgba(12,11,10,.84) 45%,rgba(12,11,10,.38) 62%,rgba(12,11,10,0) 78%)!important}
           .card{position:static!important;padding:0!important;margin:0!important;min-height:100vh!important}
-          .logo{${hasLogo ? 'position:absolute!important;top:2.5vh!important;left:50%!important;transform:translateX(-50%)!important;width:min(185px,52vw)!important;max-height:100px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;filter:drop-shadow(0 5px 14px rgba(0,0,0,.42))!important;' : 'display:none!important;'}}
-          .eyebrow{position:absolute!important;top:${hasLogo ? '21vh' : '11vh'}!important;left:5%!important;right:5%!important;max-width:none!important;margin:0!important;font-size:clamp(23px,6.2vw,32px)!important;line-height:1.07!important;letter-spacing:.03em!important;color:#fff!important;text-shadow:0 3px 12px rgba(0,0,0,.9)!important}
+          .logo{${hasLogo ? 'position:absolute!important;z-index:3!important;top:2.5vh!important;left:50%!important;transform:translateX(-50%)!important;width:min(185px,52vw)!important;max-height:100px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;filter:drop-shadow(0 5px 14px rgba(0,0,0,.42))!important;' : 'display:none!important;'}}
+          .eyebrow{position:absolute!important;z-index:3!important;top:${hasLogo ? '21vh' : '11vh'}!important;left:5%!important;right:5%!important;max-width:none!important;margin:0!important;font-size:clamp(23px,6.2vw,32px)!important;line-height:1.07!important;letter-spacing:.03em!important;color:#fff!important;text-shadow:0 3px 12px rgba(0,0,0,.9)!important}
           .messaggio-box{display:none!important}
-          .bottone-google{position:absolute!important;top:63vh!important;left:5%!important;right:5%!important;width:auto!important;margin:0!important;min-height:57px!important;background:linear-gradient(135deg,#e39a45,#a95c21 62%,#c7742c)!important;border:1px solid rgba(255,255,255,.32)!important;box-shadow:0 10px 28px rgba(0,0,0,.3)!important}
-          .stelle{position:absolute!important;top:74.5vh!important;left:0!important;right:0!important;margin:0!important}
-          footer{font-size:8px!important}footer strong{font-size:16px!important}
-          @media(max-width:640px){
-            .logo{${hasLogo ? 'top:2.3vh!important;width:min(174px,50vw)!important;max-height:94px!important;' : ''}}
-            .eyebrow{top:${hasLogo ? '20.5vh' : '10.5vh'}!important;font-size:clamp(22px,6.8vw,30px)!important}
-            .bottone-google{top:63.5vh!important;min-height:55px!important}
-            .stelle{top:75vh!important}
-          }
-          @media(max-height:690px){
-            .eyebrow{top:${hasLogo ? '19.5vh' : '9.5vh'}!important}
-            .bottone-google{top:61vh!important}
-            .stelle{top:73vh!important}
-          }
+          .bottone-google{position:absolute!important;z-index:3!important;top:63vh!important;left:5%!important;right:5%!important;width:auto!important;margin:0!important;min-height:57px!important;background:linear-gradient(135deg,#e39a45,#a95c21 62%,#c7742c)!important;border:1px solid rgba(255,255,255,.32)!important;box-shadow:0 10px 28px rgba(0,0,0,.3)!important}
+          .stelle{position:absolute!important;z-index:3!important;top:74.5vh!important;left:0!important;right:0!important;margin:0!important}
+          footer{z-index:3!important;font-size:8px!important}footer strong{font-size:16px!important}
+          @media(max-width:640px){body{background-size:100% auto!important;background-position:center center!important}.pagina::before{width:32vw!important;height:18vh!important}.logo{${hasLogo ? 'top:2.3vh!important;width:min(174px,50vw)!important;max-height:94px!important;' : ''}}.eyebrow{top:${hasLogo ? '20.5vh' : '10.5vh'}!important;font-size:clamp(22px,6.8vw,30px)!important}.bottone-google{top:63.5vh!important;min-height:55px!important}.stelle{top:75vh!important}}
+          @media(max-height:690px){.eyebrow{top:${hasLogo ? '19.5vh' : '9.5vh'}!important}.bottone-google{top:61vh!important}.stelle{top:73vh!important}}
         </style>`;
         html = inject(html, css);
       } else {
