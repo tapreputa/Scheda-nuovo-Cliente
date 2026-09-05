@@ -56,14 +56,14 @@ jobs:
               seg = text[a:b]
               if 'qa-tiny-screen-v1' in seg:
                   return text
-              needle = '@media (orientation:landscape)'
-              pos = seg.find(needle)
+              pos = seg.find('@media (orientation:landscape)')
               if pos < 0:
-                  raise SystemExit(f'Media landscape non trovata in {start_marker}')
+                  pos = seg.rfind('</style>')
+              if pos < 0:
+                  raise SystemExit(f'Punto CSS non trovato in {start_marker}')
               seg = seg[:pos] + css + seg[pos:]
               return text[:a] + seg + text[b:]
 
-          # Hardening reale dei template alle risoluzioni mobili molto piccole.
           s = patch_segment(s, 'function buildPanificioTemplate', 'function buildYogurteriaTemplate', tiny_common)
           s = patch_segment(s, 'function buildYogurteriaTemplate', 'function buildGelateriaTemplate', tiny_yog)
           s = patch_segment(s, 'function buildGelateriaTemplate', 'function buildPremiumTemplate', tiny_common)
@@ -71,8 +71,6 @@ jobs:
           s = patch_segment(s, 'function buildSeaRestaurantTemplate', 'function buildRestaurantTemplate', tiny_common)
           s = patch_segment(s, 'function buildRestaurantTemplate', 'const BAR_CSS', tiny_common)
 
-          # L'overlay anteprima aveva un footer molto alto sui display 320x568:
-          # in quella sola fascia lo riportiamo in safe-area senza sovrapporre stelle/pulsante.
           marker = 'const previewSafeFooterStyle = `<style id="tap-preview-safe-footer">'
           a = s.find(marker)
           if a < 0:
