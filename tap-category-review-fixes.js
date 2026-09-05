@@ -192,6 +192,23 @@
       }
     }
 
+    if (type === 'cartolibreria' && typeof html === 'string' && window.tapLogoSkipped) {
+      html = html.replace('</head>', `<style id="tap-review-cartolibreria-no-logo-v1">
+        .logo,.logo-wrap,.logo-box,.logo-container{display:none!important}
+        .eyebrow,.messaggio-box,.bottone-google,.stelle{position:relative!important}
+        .eyebrow{top:84px!important}
+        .messaggio-box{top:108px!important}
+        .bottone-google{top:138px!important}
+        .stelle{top:150px!important}
+        @media(max-width:640px){
+          .eyebrow{top:78px!important}
+          .messaggio-box{top:102px!important}
+          .bottone-google{top:132px!important}
+          .stelle{top:144px!important}
+        }
+      </style></head>`);
+    }
+
     return originalOpenInlinePreview(html);
   };
 })();
