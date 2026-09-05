@@ -206,6 +206,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <option value="ristorante">Ristoranti</option>
 <option value="ristorantemare">Ristoranti Mare</option>
 <option value="stabilimento">Stabilimenti balneari</option>
+<option value="svapostore">Svapo Store</option>
 <option value="yogurteria">Yogurterie</option>
 </select>
 </div>
@@ -314,6 +315,7 @@ activityType.addEventListener("change", () => {
     barbershop: ["Barber Shop", "Sfondo barber moderno + stile deciso + pulsante premium + 5 stelle + Powered by Tapreputa."],
     centroestetico: ["Centri estetici", "Sfondo wellness luminoso + stile raffinato + pulsante premium + 5 stelle + Powered by Tapreputa."],
     panificio: ["Panificio / Biscottificio", "Sfondo artigianale caldo + layout dedicato senza crop + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
+    svapostore: ["Svapo Store", "Sfondo fotografico premium teal/viola + layout moderno dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     yogurteria: ["Yogurterie", "Sfondo luminoso turchese + layout fresco dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     detersivi: ["Detersivi e casalinghi", "Sfondo pulito e luminoso + layout dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     farmacia: ["Farmacie", "Sfondo farmacia luminoso + stile professionale + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
@@ -426,7 +428,7 @@ generateBtn.onclick = () => {
 
   if (!operatorSelect.value) return warn("Seleziona l’operatore.");
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico","panificio","yogurteria","detersivi","farmacia","fitness","pasticceria","pub"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
   if (!businessName) return warn("Nome attività non disponibile. Torna indietro e inseriscilo.");
@@ -542,7 +544,7 @@ previewBtn.addEventListener("click", async () => {
   destinationUrl.value = reviewUrl;
 
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico","panificio","yogurteria","detersivi","farmacia","fitness","pasticceria","pub"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
 
@@ -588,6 +590,7 @@ previewBtn.addEventListener("click", async () => {
         farmacia: {file:"Sfondofarmacia.jpg", title:"La tua esperienza è importante per noi", accent:"#16a085", accent2:"#0b6f61", theme:"#0b7668", box:"rgba(255,255,255,.88)", text:"#16473f", message:"La tua opinione ci aiuta a migliorare ogni giorno accoglienza, disponibilità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-10px)", footerSize:"8px", footerStrong:"16px"},
         fitness: {file:"Sfondofitness.jpg", title:"Ti è piaciuto allenarti con noi?", accent:"#e45b22", accent2:"#b42f14", theme:"#232323", box:"rgba(20,20,20,.72)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno ambiente, attrezzature e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-12px)", footerSize:"8px", footerStrong:"16px"},
         pasticceria: {file:"Sfondopasticceria.jpg", title:"Ti sono piaciute le nostre dolcezze?", accent:"#d58a3a", accent2:"#9b5528", theme:"#6b3d26", box:"rgba(255,250,244,.86)", text:"#4b2d1f", message:"La tua opinione ci aiuta a rendere ogni dolce ancora più speciale. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(40px)", footerSize:"8px", footerStrong:"16px"},
+        svapostore: {file:"Sfondosvapostore.jpg", title:"Ti è piaciuta la tua esperienza nel nostro store?", accent:"#19c7c8", accent2:"#7044c7", theme:"#0b1722", box:"rgba(8,20,31,.78)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno accoglienza, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-8px)", footerSize:"8px", footerStrong:"16px"},
         pub: {file:"Sfondopub.jpg", title:"Ti sono piaciuti i nostri cocktail?", accent:"#d88a2b", accent2:"#9a5719", theme:"#18263f", box:"rgba(10,18,35,.74)", text:"#ffffff", message:"La tua opinione ci aiuta a rendere ogni serata ancora più speciale. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(10px)", footerSize:"8px", footerStrong:"16px"}
       };
       const cfg = configs[type];
