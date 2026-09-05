@@ -191,6 +191,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <select id="activityType">
 <option value="" selected disabled>Seleziona la tipologia di attività</option>
 <option value="standard">Standard — collegamento diretto</option>
+<option value="autolavaggio">Autolavaggio</option>
 <option value="bar">Bar / Caffetterie</option>
 <option value="barbershop">Barber Shop</option>
 <option value="cartolibreria">Cartolibreria</option>
@@ -308,6 +309,7 @@ if (incomingBusiness) {
 activityType.addEventListener("change", () => {
   const templates = {
     standard: ["Standard", "Collegamento diretto alla pagina recensioni Google. Nessun logo e nessuna pagina personalizzata richiesta."],
+    autolavaggio: ["Autolavaggio", "Sfondo autolavaggio moderno + logo integrato nell’insegna superiore + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     bar: ["Bar / Caffetterie", "Sfondobar fisso + layout Indexbar + pulsante con chicchi animati + 5 stelle + Powered by Tapreputa."],
     ristorante: ["Ristoranti", "Sfondoristorante fisso + layout elegante premium + 5 stelle + Powered by Tapreputa."],
     ristorantemare: ["Ristoranti Mare", "Sfondoristorantemare fisso + stile mediterraneo + pulsante premium + 5 stelle + Powered by Tapreputa."],
@@ -434,7 +436,7 @@ generateBtn.onclick = () => {
 
   if (!operatorSelect.value) return warn("Seleziona l’operatore.");
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["standard","autolavaggio","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
   if (!businessName) return warn("Nome attività non disponibile. Torna indietro e inseriscilo.");
@@ -550,7 +552,7 @@ previewBtn.addEventListener("click", async () => {
   destinationUrl.value = reviewUrl;
 
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["standard","autolavaggio","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
 
@@ -585,6 +587,10 @@ previewBtn.addEventListener("click", async () => {
     } else if (type === "svapostore") {
       const backgroundDataUrl = await loadBackgroundDataUrl("Sfondosvapostore.png");
       previewHtml = buildSvapoStoreTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
+    } else if (type === "autolavaggio") {
+      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondoautolavaggio.png");
+      previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {title:"La tua auto splende come merita?", accent:"#1687c8", accent2:"#075a92", theme:"#063e63", box:"rgba(5,31,48,.60)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno qualità, cura e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(30px)", footerSize:"8px", footerStrong:"16px"});
+      previewHtml = previewHtml.replace("</head>", `<style id="autolavaggio-logo-insegna">.logo{position:fixed!important;z-index:8!important;top:6.8vh!important;left:50%!important;transform:translateX(-50%)!important;width:min(48vw,245px)!important;height:clamp(54px,9vh,82px)!important;max-height:none!important;object-fit:contain!important;margin:0!important;padding:4px 12px!important;border-radius:7px!important;background:rgba(7,20,28,.78)!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 4px 12px rgba(0,0,0,.30)!important;backdrop-filter:blur(2px)!important;-webkit-backdrop-filter:blur(2px)!important}@media(max-width:640px){.logo{top:7.2vh!important;width:min(50vw,215px)!important;height:clamp(50px,8.5vh,72px)!important}}@media(max-width:340px) and (max-height:600px){.logo{top:7vh!important;width:170px!important;height:52px!important}}.pagina{padding-top:clamp(145px,21vh,190px)!important}</style>` + "</head>");
     } else if (type === "strumentimusicali") {
       const backgroundDataUrl = await loadBackgroundDataUrl("Sfondostrumentimusicali.png");
       previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {title:"Ti è piaciuta la tua esperienza nel nostro negozio?", accent:"#c9822f", accent2:"#70411f", theme:"#2b1a10", box:"rgba(31,20,12,.66)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno assortimento, consulenza e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-8px)", footerSize:"8px", footerStrong:"16px"});
