@@ -93,7 +93,11 @@
     const originalOpenInlinePreview = openInlinePreview;
     openInlinePreview = function(html) {
       if (window.tapLogoSkipped && typeof html === 'string') {
-        html = html.replace('</head>', '<style id="tap-no-logo-global">.logo,.logo-wrap,.logo-box,.logo-container{display:none!important}</style></head>');
+        let extra = '.logo,.logo-wrap,.logo-box,.logo-container{display:none!important}';
+        if (currentType() === 'abbigliamento') {
+          extra += '.pagina{padding-top:244px!important}';
+        }
+        html = html.replace('</head>', '<style id="tap-no-logo-global">' + extra + '</style></head>');
       }
       return originalOpenInlinePreview(html);
     };
