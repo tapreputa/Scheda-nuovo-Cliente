@@ -200,6 +200,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <option value="detersivi">Detersivi e casalinghi</option>
 <option value="farmacia">Farmacie</option>
 <option value="gelateria">Gelaterie</option>
+<option value="hamburgeria">Hamburgeria</option>
 <option value="ottica">Ottica / vendita occhiali</option>
 <option value="fitness">Palestre / Fitness</option>
 <option value="panificio">Panificio / Biscottificio</option>
@@ -317,6 +318,7 @@ activityType.addEventListener("change", () => {
     ristorantemare: ["Ristoranti Mare", "Sfondoristorantemare fisso + stile mediterraneo + pulsante premium + 5 stelle + Powered by Tapreputa."],
     pizzeria: ["Pizzerie", "Sfondo pizzeria con forno a legna + stile caldo + pulsante premium + 5 stelle + Powered by Tapreputa."],
     gelateria: ["Gelaterie", "Sfondo gelateria luminoso + stile fresco + pulsante premium + 5 stelle + Powered by Tapreputa."],
+    hamburgeria: ["Hamburgeria", "Sfondo hamburgeria premium + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     ottica: ["Ottica / vendita occhiali", "Sfondo ottica moderno + layout elegante + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     stabilimento: ["Stabilimenti balneari", "Sfondo mare al tramonto + stile tropicale + pulsante premium + 5 stelle + Powered by Tapreputa."],
     strumentimusicali: ["Strumenti musicali", "Sfondo negozio di strumenti musicali + stile caldo e deciso + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
@@ -438,7 +440,7 @@ generateBtn.onclick = () => {
 
   if (!operatorSelect.value) return warn("Seleziona l’operatore.");
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["standard","abbigliamento","autolavaggio","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["standard","abbigliamento","autolavaggio","bar","ristorante","ristorantemare","pizzeria","gelateria","hamburgeria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
   if (!businessName) return warn("Nome attività non disponibile. Torna indietro e inseriscilo.");
@@ -554,7 +556,7 @@ previewBtn.addEventListener("click", async () => {
   destinationUrl.value = reviewUrl;
 
   if (!type) return warn("Seleziona la tipologia di attività.");
-  if (!["standard","abbigliamento","autolavaggio","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
+  if (!["standard","abbigliamento","autolavaggio","bar","ristorante","ristorantemare","pizzeria","gelateria","hamburgeria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
   if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
 
@@ -604,6 +606,10 @@ previewBtn.addEventListener("click", async () => {
     } else if (type === "gelateria") {
       const backgroundDataUrl = await loadBackgroundDataUrl("Sfondogelateria.jpg");
       previewHtml = buildGelateriaTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
+    } else if (type === "hamburgeria") {
+      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondohamburgeria.png");
+      previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {title:"Ti è piaciuto il nostro burger?", accent:"#d88b28", accent2:"#9b4f12", theme:"#3b1d0d", box:"rgba(24,12,7,.58)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno gusto, qualità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-4px)", footerSize:"8px", footerStrong:"16px"});
+      previewHtml = previewHtml.replace("</head>", `<style id="hamburgeria-logo-clean">.logo,.logo-wrap,.logo-box,.logo-container{background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border:none!important;filter:none!important}.logo{padding:0!important;border-radius:0!important}.logo-wrap:before,.logo-wrap:after,.logo-box:before,.logo-box:after,.logo-container:before,.logo-container:after{display:none!important}</style>` + "</head>");
     } else {
       const configs = {
         ottica: {file:"Sfondoottica.png", title:"Ti è piaciuta la tua esperienza da noi?", accent:"#b68a5b", accent2:"#6d4f38", theme:"#5f4b3d", box:"rgba(255,255,255,.38)", text:"#3f342b", message:"La tua opinione ci aiuta a migliorare ogni giorno scelta, consulenza e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-8px)", footerSize:"8px", footerStrong:"16px"},
