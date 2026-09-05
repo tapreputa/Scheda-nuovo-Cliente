@@ -33,6 +33,7 @@
       await loadScript('tap-personalizza-controller.js');
       await loadScript('tap-logo-optional.js');
       await loadScript('tap-custom-categories.js');
+      await loadScript('tap-personalizza-ux.js');
     } catch (error) {
       console.error('Tapreputa: inizializzazione moduli Personalizza non riuscita.', error);
     }
