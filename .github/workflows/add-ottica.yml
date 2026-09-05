@@ -1,0 +1,53 @@
+name: Aggiunge categoria Ottica
+on:
+  push:
+    paths:
+      - '.github/workflows/add-ottica.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inserisce Ottica
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('personalizza.html')
+          s=p.read_text()
+
+          old='<option value="gelateria">Gelaterie</option>\n<option value="fitness">Palestre / Fitness</option>'
+          new='<option value="gelateria">Gelaterie</option>\n<option value="ottica">Ottica / vendita occhiali</option>\n<option value="fitness">Palestre / Fitness</option>'
+          assert s.count(old)==1
+          s=s.replace(old,new,1)
+
+          old='    gelateria: ["Gelaterie", "Sfondo gelateria luminoso + stile fresco + pulsante premium + 5 stelle + Powered by Tapreputa."],\n    stabilimento:'
+          new='    gelateria: ["Gelaterie", "Sfondo gelateria luminoso + stile fresco + pulsante premium + 5 stelle + Powered by Tapreputa."],\n    ottica: ["Ottica / vendita occhiali", "Sfondo ottica moderno + layout elegante + pulsante recensioni + 5 stelle + Powered by Tapreputa."],\n    stabilimento:'
+          assert s.count(old)==1
+          s=s.replace(old,new,1)
+
+          old='["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub"]'
+          new='["standard","bar","ristorante","ristorantemare","pizzeria","gelateria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub"]'
+          assert s.count(old)==2
+          s=s.replace(old,new)
+
+          old='        pizzeria: {file:"Sfondopizzeria.jpg", title:"Ti è piaciuta la nostra pizza?", accent:"#c24b22", accent2:"#7d2415", theme:"#5b2418", box:"rgba(255,247,235,.62)", text:"#402015", message:"Il tuo feedback è l’ingrediente che ci aiuta a migliorare ogni giorno. Dicci la tua! Bastano 2 secondi!"},'
+          new='        ottica: {file:"Sfondoottica.png", title:"Ti è piaciuta la tua esperienza da noi?", accent:"#b68a5b", accent2:"#6d4f38", theme:"#5f4b3d", box:"rgba(255,255,255,.84)", text:"#3f342b", message:"La tua opinione ci aiuta a migliorare ogni giorno scelta, consulenza e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-8px)", footerSize:"8px", footerStrong:"16px"},\n        pizzeria: {file:"Sfondopizzeria.jpg", title:"Ti è piaciuta la nostra pizza?", accent:"#c24b22", accent2:"#7d2415", theme:"#5b2418", box:"rgba(255,247,235,.62)", text:"#402015", message:"Il tuo feedback è l’ingrediente che ci aiuta a migliorare ogni giorno. Dicci la tua! Bastano 2 secondi!"},'
+          assert s.count(old)==1
+          s=s.replace(old,new,1)
+
+          p.write_text(s)
+          PY
+      - name: Verifica e pubblica
+        shell: bash
+        run: |
+          grep -q 'value="ottica"' personalizza.html
+          grep -q 'Sfondoottica.png' personalizza.html
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/add-ottica.yml
+          git add personalizza.html
+          git commit -m "Aggiunge categoria Ottica"
+          git push
