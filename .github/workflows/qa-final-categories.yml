@@ -1,0 +1,121 @@
+name: QA finale categorie
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/qa-final-categories.yml'
+permissions:
+  contents: write
+jobs:
+  qa-hardening:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Hardening mobile e pulizia staging
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('personalizza.html')
+          s = p.read_text(encoding='utf-8')
+
+          tiny_common = r'''/* qa-tiny-screen-v1 */
+          @media(max-width:340px) and (max-height:600px){
+            .pagina{padding-top:8px!important;padding-bottom:70px!important;transform:none!important}
+            .card{padding:0 4px 8px!important}
+            .logo{width:min(220px,76%)!important;max-height:112px!important;margin-bottom:10px!important;padding:4px 7px!important}
+            .eyebrow{font-size:10px!important;line-height:1.2!important;margin-bottom:9px!important;letter-spacing:.10em!important}
+            .messaggio-box{padding:9px 10px!important;margin-bottom:10px!important;border-radius:14px!important}
+            .messaggio{font-size:13px!important;line-height:1.28!important}
+            .bottone-google{min-height:46px!important;font-size:14px!important;padding:8px 12px!important;border-radius:14px!important}
+            .stelle{margin-top:9px!important;font-size:23px!important;line-height:1!important}
+            footer{font-size:8px!important;bottom:8px!important;right:8px!important}
+            footer strong{font-size:15px!important}
+          }
+          '''
+
+          tiny_yog = r'''/* qa-tiny-screen-v1 */
+          @media(max-width:340px) and (max-height:600px){
+            .pagina{padding:12px 10px 70px!important}
+            .card{padding:0 4px 8px!important}
+            .logo{width:min(215px,74%)!important;max-height:112px!important;margin-bottom:9px!important;padding:4px 7px!important}
+            .title{font-size:23px!important;line-height:1.04!important;margin-bottom:8px!important}
+            .text{font-size:13px!important;line-height:1.28!important;padding:9px 10px!important;margin-bottom:10px!important;border-radius:14px!important}
+            .btn{min-width:min(290px,92vw)!important;min-height:48px!important;font-size:14px!important;padding:0 18px!important}
+            .stars{margin-top:9px!important;font-size:23px!important;line-height:1!important}
+            footer{font-size:8px!important;bottom:8px!important;right:8px!important;padding:4px 7px!important}
+          }
+          '''
+
+          def patch_segment(text, start_marker, end_marker, css):
+              a = text.find(start_marker)
+              if a < 0:
+                  raise SystemExit(f'Marker non trovato: {start_marker}')
+              b = text.find(end_marker, a) if end_marker else len(text)
+              if b < 0:
+                  raise SystemExit(f'Marker finale non trovato: {end_marker}')
+              seg = text[a:b]
+              if 'qa-tiny-screen-v1' in seg:
+                  return text
+              needle = '@media (orientation:landscape)'
+              pos = seg.find(needle)
+              if pos < 0:
+                  raise SystemExit(f'Media landscape non trovata in {start_marker}')
+              seg = seg[:pos] + css + seg[pos:]
+              return text[:a] + seg + text[b:]
+
+          # Hardening reale dei template alle risoluzioni mobili molto piccole.
+          s = patch_segment(s, 'function buildPanificioTemplate', 'function buildYogurteriaTemplate', tiny_common)
+          s = patch_segment(s, 'function buildYogurteriaTemplate', 'function buildGelateriaTemplate', tiny_yog)
+          s = patch_segment(s, 'function buildGelateriaTemplate', 'function buildPremiumTemplate', tiny_common)
+          s = patch_segment(s, 'function buildPremiumTemplate', 'function buildSeaRestaurantTemplate', tiny_common)
+          s = patch_segment(s, 'function buildSeaRestaurantTemplate', 'function buildRestaurantTemplate', tiny_common)
+          s = patch_segment(s, 'function buildRestaurantTemplate', 'const BAR_CSS', tiny_common)
+
+          # L'overlay anteprima aveva un footer molto alto sui display 320x568:
+          # in quella sola fascia lo riportiamo in safe-area senza sovrapporre stelle/pulsante.
+          marker = 'const previewSafeFooterStyle = `<style id="tap-preview-safe-footer">'
+          a = s.find(marker)
+          if a < 0:
+              raise SystemExit('previewSafeFooterStyle non trovato')
+          b = s.find('</style>`;', a)
+          if b < 0:
+              raise SystemExit('fine previewSafeFooterStyle non trovata')
+          preview_seg = s[a:b]
+          if 'qa-preview-tiny-v1' not in preview_seg:
+              extra = r'''
+            /* qa-preview-tiny-v1 */
+            @media(max-width:340px) and (max-height:600px){
+              footer{bottom:8px!important;right:8px!important;font-size:8px!important}
+              footer strong{font-size:15px!important}
+            }
+          '''
+              s = s[:b] + extra + s[b:]
+
+          p.write_text(s, encoding='utf-8')
+
+      - name: Rimuovi residui temporanei dei caricamenti categorie
+        run: |
+          git rm -r --ignore-unmatch bg64 tmp tools/newcat-assets tools/newcat-final tools/newcat-stage2
+
+      - name: Verifica invarianti categorie
+        shell: python
+        run: |
+          from pathlib import Path
+          s = Path('personalizza.html').read_text(encoding='utf-8')
+          cats = ['bar','ristorante','ristorantemare','pizzeria','gelateria','stabilimento','parrucchiere','barbershop','centroestetico','panificio','yogurteria','detersivi','farmacia','fitness','pasticceria','pub']
+          for c in cats:
+              assert f'value="{c}"' in s, c
+          files = ['Sfondobar.png','Sfondoristorante.png','Sfondoristorantemare.png','Sfondopizzeria.jpg','Sfondogelateria.jpg','Sfondostabilimento.jpg','Sfondoparrucchiere.jpg','Sfondobarbershop.jpg','Sfondocentroestetico.jpg','Sfondopanificio.webp','Sfondoyogurteria.jpg','Sfondodetersivi.jpg','Sfondofarmacia.jpg','Sfondofitness.jpg','Sfondopasticceria.jpg','Sfondopub.jpg']
+          for f in files:
+              assert Path(f).is_file(), f
+              assert f in s, f
+          assert s.count('qa-tiny-screen-v1') >= 6
+          assert 'qa-preview-tiny-v1' in s
+
+      - name: Salva QA finale
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add personalizza.html
+          git commit -m "QA finale categorie e hardening mobile" || true
+          git push
