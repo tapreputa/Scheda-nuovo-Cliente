@@ -89,6 +89,14 @@
       </style></head>`);
     }
 
+    if (type === 'barbershop' && typeof html === 'string') {
+      html = html.replace('</head>', `<style id="tap-review-barbershop-v1">
+        .pagina{padding-top:72px!important}
+        @media(max-width:640px){.pagina{padding-top:68px!important}}
+        @media(max-width:340px) and (max-height:600px){.pagina{padding-top:34px!important}}
+      </style></head>`);
+    }
+
     return originalOpenInlinePreview(html);
   };
 })();
