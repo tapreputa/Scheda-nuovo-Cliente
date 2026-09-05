@@ -135,6 +135,31 @@
       </style></head>`);
     }
 
+    if (!noLogo && type === 'detersivi' && typeof html === 'string') {
+      html = html.replace('</head>', `<style id="tap-detersivi-with-logo-review-v1">
+        .logo,.eyebrow,.messaggio-box,.bottone-google,.stelle{position:relative!important}
+        .logo{top:28px!important}
+        .eyebrow{
+          top:34px!important;
+          font-size:clamp(1.22rem,5.7vw,1.62rem)!important;
+          line-height:1.16!important;
+          font-weight:950!important;
+          letter-spacing:.10em!important;
+          text-shadow:0 3px 9px rgba(0,0,0,.38)!important;
+        }
+        .messaggio-box{top:44px!important}
+        .bottone-google{top:54px!important}
+        .stelle{top:58px!important}
+        @media(max-width:640px){
+          .logo{top:24px!important}
+          .eyebrow{top:30px!important;font-size:clamp(1.18rem,5.5vw,1.50rem)!important}
+          .messaggio-box{top:40px!important}
+          .bottone-google{top:50px!important}
+          .stelle{top:54px!important}
+        }
+      </style></head>`);
+    }
+
     return previousOpenInlinePreview(html);
   };
 })();
