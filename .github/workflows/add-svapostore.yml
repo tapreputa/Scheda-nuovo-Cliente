@@ -1,0 +1,83 @@
+name: Add Svapo Store category
+
+on:
+  push:
+    paths:
+      - ".github/workflows/add-svapostore.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Add Svapo Store category
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("personalizza.html")
+          s = path.read_text(encoding="utf-8")
+
+          def replace_once(old, new, label):
+              global s
+              if old not in s:
+                  raise SystemExit(f"Pattern not found: {label}")
+              s = s.replace(old, new, 1)
+
+          # 1. Dropdown: STANDARD remains first; Svapo Store is alphabetically before Yogurterie.
+          replace_once(
+              '<option value="stabilimento">Stabilimenti balneari</option>\n<option value="yogurteria">Yogurterie</option>',
+              '<option value="stabilimento">Stabilimenti balneari</option>\n<option value="svapostore">Svapo Store</option>\n<option value="yogurteria">Yogurterie</option>',
+              "dropdown"
+          )
+
+          # 2. Category description.
+          replace_once(
+              '    yogurteria: ["Yogurterie", "Sfondo luminoso turchese + layout fresco dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."],',
+              '    svapostore: ["Svapo Store", "Sfondo fotografico premium teal/viola + layout moderno dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."],\n'
+              '    yogurteria: ["Yogurterie", "Sfondo luminoso turchese + layout fresco dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."],',
+              "template description"
+          )
+
+          # 3. Enable the category in both generate and preview validation lists.
+          old_allowed = '"panificio","yogurteria"'
+          count_allowed = s.count(old_allowed)
+          if count_allowed != 2:
+              raise SystemExit(f"Expected 2 allowed-list patterns, found {count_allowed}")
+          s = s.replace(old_allowed, '"panificio","svapostore","yogurteria"')
+
+          # 4. Premium configuration used by the preview/final template builder.
+          marker = '        pub: {file:"Sfondopub.jpg"'
+          if marker not in s:
+              raise SystemExit("Config insertion marker not found")
+          svapo_cfg = (
+              '        svapostore: {file:"Sfondosvapostore.jpg", '
+              'title:"Ti è piaciuta la tua esperienza nel nostro store?", '
+              'accent:"#19c7c8", accent2:"#7044c7", theme:"#0b1722", '
+              'box:"rgba(8,20,31,.78)", text:"#ffffff", '
+              'message:"La tua opinione ci aiuta a migliorare ogni giorno accoglienza, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", '
+              'shift:"translateY(-8px)", footerSize:"8px", footerStrong:"16px"},\n'
+          )
+          s = s.replace(marker, svapo_cfg + marker, 1)
+
+          path.write_text(s, encoding="utf-8")
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Remove this one-shot workflow in the same final commit.
+          rm -f .github/workflows/add-svapostore.yml
+
+          git add personalizza.html Sfondosvapostore.jpg
+          git add -u .github/workflows/add-svapostore.yml
+          git commit -m "Aggiunge categoria Svapo Store"
+          git push origin main
