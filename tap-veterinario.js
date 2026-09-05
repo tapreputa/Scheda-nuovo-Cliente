@@ -127,26 +127,26 @@
           footerStrong: '16px'
         };
         html = buildPremiumTemplate(hasLogo ? logoDataUrl : placeholderPixel, reviewUrl, bg, cfg);
-        const css = `<style id="gioielleria-final-v1">
+        const css = `<style id="gioielleria-final-v2">
           body{background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
           .pagina{position:relative!important;min-height:100vh!important;padding:0!important;transform:none!important}
           .card{position:static!important;padding:0!important;margin:0!important;min-height:100vh!important}
           .logo{${hasLogo ? 'position:absolute!important;top:2.8vh!important;left:50%!important;transform:translateX(-50%)!important;width:min(185px,52vw)!important;max-height:100px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;filter:drop-shadow(0 5px 14px rgba(0,0,0,.28))!important;' : 'display:none!important;'}}
           .eyebrow{position:absolute!important;top:${hasLogo ? '23vh' : '13vh'}!important;left:6%!important;right:6%!important;max-width:none!important;margin:0!important;font-size:clamp(23px,6.4vw,32px)!important;line-height:1.08!important;letter-spacing:.035em!important;color:#fff!important;text-shadow:0 3px 12px rgba(60,45,20,.72)!important}
           .messaggio-box{display:none!important}
-          .bottone-google{position:absolute!important;top:69vh!important;left:6%!important;right:6%!important;width:auto!important;margin:0!important;min-height:57px!important;background:linear-gradient(135deg,#c4a56b,#8f7240 62%,#b18f55)!important;border:1px solid rgba(255,255,255,.42)!important;box-shadow:0 10px 26px rgba(70,50,20,.24)!important}
-          .stelle{position:absolute!important;top:80.5vh!important;left:0!important;right:0!important;margin:0!important}
+          .bottone-google{position:absolute!important;top:65vh!important;left:6%!important;right:6%!important;width:auto!important;margin:0!important;min-height:57px!important;background:linear-gradient(135deg,#c4a56b,#8f7240 62%,#b18f55)!important;border:1px solid rgba(255,255,255,.42)!important;box-shadow:0 10px 26px rgba(70,50,20,.24)!important}
+          .stelle{position:absolute!important;top:76.5vh!important;left:0!important;right:0!important;margin:0!important}
           footer{font-size:8px!important}footer strong{font-size:16px!important}
           @media(max-width:640px){
             .logo{${hasLogo ? 'top:2.5vh!important;width:min(174px,50vw)!important;max-height:94px!important;' : ''}}
             .eyebrow{top:${hasLogo ? '22.5vh' : '12.5vh'}!important;font-size:clamp(22px,6.8vw,30px)!important}
-            .bottone-google{top:69.5vh!important;min-height:55px!important}
-            .stelle{top:81vh!important}
+            .bottone-google{top:65.5vh!important;min-height:55px!important}
+            .stelle{top:77vh!important}
           }
           @media(max-height:690px){
             .eyebrow{top:${hasLogo ? '21vh' : '11vh'}!important}
-            .bottone-google{top:67vh!important}
-            .stelle{top:79vh!important}
+            .bottone-google{top:63vh!important}
+            .stelle{top:75vh!important}
           }
         </style>`;
         html = inject(html, css);
