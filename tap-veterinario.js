@@ -36,6 +36,7 @@
       await loadScript('tap-personalizza-ux.js');
       await loadScript('tap-personalizza-save.js');
       await loadScript('tap-personalizza-reliability.js');
+      await loadScript('tap-preview-refresh.js');
     } catch (error) {
       console.error('Tapreputa: inizializzazione moduli Personalizza non riuscita.', error);
     }
