@@ -17,8 +17,8 @@ jobs:
           p=Path('personalizza.html')
           s=p.read_text()
           old='''      previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {title:"Ti è piaciuta la tua esperienza nel nostro negozio?", accent:"#c9822f", accent2:"#70411f", theme:"#2b1a10", box:"rgba(31,20,12,.66)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno assortimento, consulenza e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-8px)", footerSize:"8px", footerStrong:"16px"});'''
-          new='''      previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {title:"Ti è piaciuta la tua esperienza nel nostro negozio?", accent:"#c9822f", accent2:"#70411f", theme:"#2b1a10", box:"rgba(31,20,12,.66)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno assortimento, consulenza e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-8px)", footerSize:"8px", footerStrong:"16px"});
-      previewHtml = previewHtml.replace("</head>", `<style id="strumenti-logo-clean">.logo,.brand,.logo-wrap,.logo-box,.logo-container{background:transparent!important;border:none!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.logo{padding:0!important;border-radius:0!important;filter:none!important}.brand::before,.brand::after,.logo-wrap::before,.logo-wrap::after,.logo-box::before,.logo-box::after,.logo-container::before,.logo-container::after{display:none!important;content:none!important}</style></head>`);'''
+          css='<style id="strumenti-logo-clean">.logo{background:transparent!important;border:none!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;padding:0!important;border-radius:0!important;filter:none!important}</style>'
+          new=old + '\n      previewHtml = previewHtml.replace("</head>", ' + repr(css) + ' + "</head>");'
           assert s.count(old)==1, f'blocco strumenti trovato {s.count(old)} volte'
           s=s.replace(old,new,1)
           p.write_text(s)
