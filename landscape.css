@@ -1,3 +1,5 @@
+@import url('tap-ui-polish-v4.css?v=1');
+
 /* Tap NFC — ottimizzazione orizzontale condivisa */
 
 @media (orientation: landscape) and (max-height: 680px) {
