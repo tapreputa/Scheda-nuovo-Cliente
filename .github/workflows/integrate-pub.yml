@@ -1,0 +1,41 @@
+name: Integra Pub Cocktail Bar
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch personalizza
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('personalizza.html')
+          s=p.read_text(encoding='utf-8')
+
+          if '<option value="pub">Pub / Cocktail bar</option>' not in s:
+              s=s.replace('<option value="pasticceria">Pasticcerie</option>', '<option value="pasticceria">Pasticcerie</option>\n<option value="pub">Pub / Cocktail bar</option>', 1)
+
+          meta='    pasticceria: ["Pasticcerie", "Sfondo elegante e goloso + stile caldo + pulsante recensioni + 5 stelle + Powered by Tapreputa."]'
+          if 'pub: ["Pub / Cocktail bar"' not in s:
+              s=s.replace(meta, meta + ',\n    pub: ["Pub / Cocktail bar", "Sfondo serale premium + stile blu/ambra + pulsante recensioni + 5 stelle + Powered by Tapreputa."]', 1)
+
+          s=s.replace('"yogurteria","detersivi","farmacia","fitness","pasticceria"]', '"yogurteria","detersivi","farmacia","fitness","pasticceria","pub"]')
+
+          cfg='        pasticceria: {file:"Sfondopasticceria.jpg", title:"Ti sono piaciute le nostre dolcezze?", accent:"#d58a3a", accent2:"#9b5528", theme:"#6b3d26", box:"rgba(255,250,244,.86)", text:"#4b2d1f", message:"La tua opinione ci aiuta a rendere ogni dolce ancora più speciale. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(40px)", footerSize:"8px", footerStrong:"16px"}'
+          if 'pub: {file:"Sfondopub.jpg"' not in s:
+              newcfg=cfg + ',\n        pub: {file:"Sfondopub.jpg", title:"Ti sono piaciuti i nostri cocktail?", accent:"#d88a2b", accent2:"#9a5719", theme:"#18263f", box:"rgba(10,18,35,.74)", text:"#ffffff", message:"La tua opinione ci aiuta a rendere ogni serata ancora più speciale. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(10px)", footerSize:"8px", footerStrong:"16px"}'
+              s=s.replace(cfg,newcfg,1)
+
+          p.write_text(s,encoding='utf-8')
+      - name: Commit
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add personalizza.html
+          git commit -m "Integra categoria Pub Cocktail Bar" || true
+          git push
