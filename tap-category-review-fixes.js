@@ -63,6 +63,32 @@
       </style></head>`);
     }
 
+    if (type === 'bar' && typeof html === 'string') {
+      html = html.replace('</head>', `<style id="tap-review-bar-v1">
+        .eyebrow{
+          font-size:clamp(1rem,4.8vw,1.35rem)!important;
+          line-height:1.22!important;
+          font-weight:900!important;
+          letter-spacing:.12em!important;
+          text-shadow:0 3px 10px rgba(0,0,0,.98)!important;
+        }
+        .messaggio-box{
+          background:rgba(18,7,2,.42)!important;
+          border-color:rgba(255,205,140,.16)!important;
+          backdrop-filter:blur(1.5px)!important;
+          -webkit-backdrop-filter:blur(1.5px)!important;
+          box-shadow:0 10px 28px rgba(0,0,0,.30)!important;
+        }
+        .recensione{
+          transform:translateY(-34px)!important;
+        }
+        @media(max-width:600px){
+          .eyebrow{font-size:clamp(1.02rem,5.1vw,1.28rem)!important}
+          .recensione{transform:translateY(-30px)!important}
+        }
+      </style></head>`);
+    }
+
     return originalOpenInlinePreview(html);
   };
 })();
