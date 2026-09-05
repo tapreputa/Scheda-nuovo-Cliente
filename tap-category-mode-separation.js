@@ -8,12 +8,19 @@
 
   const previousOpenInlinePreview = openInlinePreview;
 
+  const closedNoLogoCategories = new Set([
+    'abbigliamento',
+    'autolavaggio',
+    'bar',
+    'barbershop',
+    'cartolibreria'
+  ]);
+
   openInlinePreview = function(html) {
     const type = window.TapCategories ? window.TapCategories.normalizeId(activity.value) : activity.value;
+    const noLogo = !!window.tapLogoSkipped;
 
     if (type === 'barbershop' && typeof html === 'string') {
-      const noLogo = !!window.tapLogoSkipped;
-
       if (noLogo) {
         html = html.replace('</head>', `<style id="tap-barbershop-no-logo-final">
           .eyebrow,.messaggio-box,.bottone-google,.stelle{position:relative!important}
@@ -82,6 +89,29 @@
           }
         </style></head>`);
       }
+    }
+
+    if (noLogo && type && type !== 'standard' && !closedNoLogoCategories.has(type) && typeof html === 'string') {
+      html = html.replace('</head>', `<style id="tap-global-no-logo-review-layout">
+        .logo,.logo-wrap,.logo-box,.logo-container{display:none!important}
+        .eyebrow,.messaggio-box,.bottone-google,.stelle{position:relative!important}
+        .eyebrow{top:78px!important}
+        .messaggio-box{top:104px!important}
+        .bottone-google{top:138px!important}
+        .stelle{top:152px!important}
+        @media(min-width:641px){
+          .eyebrow{top:84px!important}
+          .messaggio-box{top:110px!important}
+          .bottone-google{top:144px!important}
+          .stelle{top:158px!important}
+        }
+        @media(max-width:340px) and (max-height:600px){
+          .eyebrow{top:42px!important}
+          .messaggio-box{top:60px!important}
+          .bottone-google{top:84px!important}
+          .stelle{top:94px!important}
+        }
+      </style></head>`);
     }
 
     return previousOpenInlinePreview(html);
