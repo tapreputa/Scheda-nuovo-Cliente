@@ -35,7 +35,7 @@
     hamburgeria: 'panineria_hamburgeria'
   });
 
-  const byId = Object.freeze(Object.fromEntries(categories.map(item => [item.id, Object.freeze({...item})])));
+  const byId = Object.freeze(Object.fromEntries(categories.map(item => [item.id, Object.freeze({version:'1.0', ...item})])));
   const sorted = Object.freeze(categories.slice().sort((a,b) => {
     if (a.id === 'standard') return -1;
     if (b.id === 'standard') return 1;
@@ -51,12 +51,17 @@
     return byId[normalizeId(id)] || null;
   }
 
+  function templateVersion(id) {
+    return get(id)?.version || '1.0';
+  }
+
   window.TapCategories = Object.freeze({
     list: sorted,
     byId,
     aliases,
     normalizeId,
     get,
+    templateVersion,
     ids: Object.freeze(sorted.map(item => item.id))
   });
 })();
