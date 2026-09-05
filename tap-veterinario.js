@@ -55,7 +55,6 @@
     const operator = document.getElementById('operatorSelect');
 
     if (!operator?.value) return warnVet('Seleziona l’operatore.');
-    if (!logoDataUrl) return warnVet('Carica il logo dell’attività.');
     if (!reviewUrl) return warnVet('Il link recensioni non è presente.');
     if (!businessName) return warnVet('Nome attività non disponibile. Torna indietro e inseriscilo.');
 
@@ -83,7 +82,6 @@
       ? normalizeReviewUrl(document.getElementById('destinationUrl')?.value || '')
       : (document.getElementById('destinationUrl')?.value || '').trim();
 
-    if (!logoDataUrl) return warnVet('Carica il logo dell’attività.');
     if (!reviewUrl) return warnVet('Il link recensioni non è presente.');
 
     try {
@@ -91,20 +89,50 @@
       msg.textContent = 'Preparazione anteprima...';
 
       const backgroundDataUrl = await loadBackgroundDataUrl('Sfondoveterinario.png');
+      const hasLogo = Boolean(logoDataUrl);
+      const placeholderPixel = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
       const cfg = {
-        title: 'Ti sei trovato bene con noi?',
-        accent: '#2b8f9f',
-        accent2: '#176b78',
-        theme: '#315e63',
-        box: 'rgba(255,255,255,.86)',
+        title: 'Il tuo amico a 4 zampe è stato bene con noi?',
+        accent: '#3f8f73',
+        accent2: '#23644f',
+        theme: '#315e52',
+        box: 'transparent',
         text: '#173b40',
-        message: 'La tua opinione ci aiuta a migliorare ogni giorno accoglienza, attenzione e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!',
-        shift: 'translateY(-10px)',
+        message: '',
+        shift: 'none',
         footerSize: '8px',
         footerStrong: '16px'
       };
 
-      const html = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, cfg);
+      let html = buildPremiumTemplate(hasLogo ? logoDataUrl : placeholderPixel, reviewUrl, backgroundDataUrl, cfg);
+      const vetCss = `<style id="veterinario-final-v3">
+        body{background-size:cover!important;background-position:42% top!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
+        .pagina{padding-top:${hasLogo ? '22px' : '68px'}!important;padding-bottom:96px!important;transform:none!important}
+        .card{padding-top:0!important}
+        .logo{${hasLogo ? 'width:min(245px,70%)!important;max-height:132px!important;margin-bottom:34px!important;padding:0!important;background:transparent!important;border:none!important;box-shadow:none!important;filter:drop-shadow(0 7px 18px rgba(0,0,0,.32))!important;' : 'display:none!important;'} }
+        .eyebrow{max-width:560px!important;margin:0 auto!important;font-size:clamp(24px,6vw,36px)!important;line-height:1.08!important;letter-spacing:.055em!important;color:#fff!important;text-shadow:0 3px 12px rgba(0,0,0,.78)!important}
+        .messaggio-box{display:none!important}
+        .bottone-google{margin-top:72px!important;min-height:60px!important;background:linear-gradient(135deg,#3f8f73,#23644f 60%,#3f8f73)!important;border:1px solid rgba(255,255,255,.28)!important}
+        .stelle{margin-top:34px!important}
+        footer{font-size:8px!important}footer strong{font-size:16px!important}
+        @media(max-width:640px){
+          body{background-position:40% top!important}
+          .pagina{padding-top:${hasLogo ? '16px' : '58px'}!important}
+          .logo{${hasLogo ? 'width:min(225px,68%)!important;max-height:120px!important;margin-bottom:28px!important;' : ''}}
+          .eyebrow{font-size:clamp(25px,7.3vw,34px)!important;line-height:1.08!important;letter-spacing:.045em!important}
+          .bottone-google{margin-top:68px!important;min-height:58px!important}
+          .stelle{margin-top:32px!important}
+        }
+        @media(max-width:340px) and (max-height:600px){
+          .pagina{padding-top:${hasLogo ? '6px' : '32px'}!important;padding-bottom:64px!important}
+          .logo{${hasLogo ? 'width:175px!important;max-height:82px!important;margin-bottom:15px!important;' : ''}}
+          .eyebrow{font-size:21px!important;line-height:1.05!important}
+          .bottone-google{margin-top:34px!important;min-height:46px!important}
+          .stelle{margin-top:16px!important;font-size:23px!important}
+        }
+      </style>`;
+      html = html.replace('</head>', vetCss + '</head>');
+
       openInlinePreview(html);
       msg.className = 'message show ok';
       msg.textContent = 'Anteprima aperta correttamente.';
