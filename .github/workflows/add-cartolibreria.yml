@@ -1,0 +1,45 @@
+name: Aggiunge categoria Cartolibreria
+on:
+  push:
+    paths:
+      - '.github/workflows/add-cartolibreria.yml'
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aggiunge Cartolibreria
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('personalizza.html')
+          s=p.read_text()
+          reps=[
+          ('<option value="barbershop">Barber Shop</option>\n<option value="centroestetico">Centri estetici</option>', '<option value="barbershop">Barber Shop</option>\n<option value="cartolibreria">Cartolibreria</option>\n<option value="centroestetico">Centri estetici</option>'),
+          ('barbershop: ["Barber Shop", "Sfondo barber moderno + stile deciso + pulsante premium + 5 stelle + Powered by Tapreputa."],', 'barbershop: ["Barber Shop", "Sfondo barber moderno + stile deciso + pulsante premium + 5 stelle + Powered by Tapreputa."],\n    cartolibreria: ["Cartolibreria", "Sfondo cartolibreria caldo + layout dedicato + logo con bordi leggermente sfumati + pulsante recensioni + 5 stelle + Powered by Tapreputa."],'),
+          ('"pub","strumentimusicali"].includes(type)', '"pub","strumentimusicali","cartolibreria"].includes(type)'),
+          ('barbershop: {file:"Sfondobarbershop.jpg", title:"Ti è piaciuto il tuo nuovo stile?",', 'cartolibreria: {file:"Sfondocartolibreria.png", title:"Hai trovato quello che cercavi?", accent:"#9a5b2e", accent2:"#5b321d", theme:"#4a2c1c", box:"rgba(38,24,16,.62)", text:"#ffffff", message:"La tua opinione ci aiuta a migliorare ogni giorno assortimento, disponibilità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"translateY(-8px)", footerSize:"8px", footerStrong:"16px"},\n        barbershop: {file:"Sfondobarbershop.jpg", title:"Ti è piaciuto il tuo nuovo stile?",')]
+          for old,new in reps:
+              c=s.count(old)
+              assert c>=1, f'Pattern non trovato: {old[:80]} count={c}'
+              if 'includes(type)' in old:
+                  s=s.replace(old,new)
+              else:
+                  s=s.replace(old,new,1)
+          # Applica la sfumatura esclusivamente al logo Cartolibreria dopo la costruzione del template premium.
+          needle='''      previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, cfg);'''
+          assert s.count(needle)==1, f'build premium finale trovato {s.count(needle)} volte'
+          repl=needle+'''\n      if (type === "cartolibreria") {\n        previewHtml = previewHtml.replace("</head>", '<style id="cartolibreria-logo-fade">.logo{-webkit-mask-image:radial-gradient(ellipse at center,#000 70%,rgba(0,0,0,.94) 82%,transparent 100%)!important;mask-image:radial-gradient(ellipse at center,#000 70%,rgba(0,0,0,.94) 82%,transparent 100%)!important;border:none!important;box-shadow:none!important;background:transparent!important}</style>' + "</head>");\n      }'''
+          s=s.replace(needle,repl,1)
+          p.write_text(s)
+          PY
+      - name: Pubblica e pulisci
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/add-cartolibreria.yml
+          git add personalizza.html
+          git commit -m "Aggiunge categoria Cartolibreria"
+          git push
