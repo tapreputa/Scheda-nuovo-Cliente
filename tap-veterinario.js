@@ -11,17 +11,29 @@
 
   if (!activity || !generate || !preview) return;
 
-  function ensureOption(value, label, beforeValue) {
+  function ensureOption(value, label) {
     if (activity.querySelector(`option[value="${value}"]`)) return;
     const option = document.createElement('option');
     option.value = value;
     option.textContent = label;
-    const before = beforeValue ? activity.querySelector(`option[value="${beforeValue}"]`) : null;
-    activity.insertBefore(option, before || null);
+    activity.appendChild(option);
   }
 
-  ensureOption('veterinario', 'Veterinario', 'yogurteria');
-  ensureOption('macelleria', 'Macelleria', 'veterinario');
+  function sortActivityOptions() {
+    const selected = activity.value;
+    const options = Array.from(activity.options);
+    const placeholders = options.filter(opt => !opt.value);
+    const realOptions = options.filter(opt => opt.value);
+    realOptions.sort((a, b) => a.textContent.trim().localeCompare(b.textContent.trim(), 'it', { sensitivity: 'base' }));
+    activity.innerHTML = '';
+    placeholders.forEach(opt => activity.appendChild(opt));
+    realOptions.forEach(opt => activity.appendChild(opt));
+    if (selected && activity.querySelector(`option[value="${CSS.escape(selected)}"]`)) activity.value = selected;
+  }
+
+  ensureOption('veterinario', 'Veterinario');
+  ensureOption('macelleria', 'Macelleria');
+  sortActivityOptions();
 
   function updateInfo() {
     if (!info) return;
@@ -105,7 +117,7 @@
       if (activity.value === 'macelleria') {
         const backgroundDataUrl = await loadBackgroundDataUrl('Sfondomacelleria.png');
         const cfg = {
-          title: 'Ti sei trovato bene con noi?',
+          title: 'Freschezza e qualità della nostra carne ti hanno soddisfatto?',
           accent: '#8f2f2f',
           accent2: '#5f1717',
           theme: '#4a241f',
@@ -118,26 +130,27 @@
         };
 
         let html = buildPremiumTemplate(hasLogo ? logoDataUrl : placeholderPixel, reviewUrl, backgroundDataUrl, cfg);
-        const css = `<style id="macelleria-final-v1">
+        const css = `<style id="macelleria-final-v2">
           body{background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
           .pagina{position:relative!important;min-height:100vh!important;padding:0!important;transform:none!important}
           .card{position:static!important;padding:0!important;margin:0!important;min-height:100vh!important}
           .logo{${hasLogo ? 'position:absolute!important;top:2.5vh!important;left:50%!important;transform:translateX(-50%)!important;width:min(190px,54vw)!important;max-height:105px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;filter:drop-shadow(0 5px 14px rgba(0,0,0,.45))!important;' : 'display:none!important;'}}
-          .eyebrow{position:absolute!important;top:${hasLogo ? '16.5vh' : '7vh'}!important;left:5%!important;right:5%!important;max-width:none!important;margin:0!important;font-size:clamp(24px,6.6vw,34px)!important;line-height:1.06!important;letter-spacing:.045em!important;color:#fff!important;text-shadow:0 3px 12px rgba(0,0,0,.88)!important}
+          .eyebrow{position:absolute!important;top:${hasLogo ? '22vh' : '12vh'}!important;left:5%!important;right:5%!important;max-width:none!important;margin:0!important;font-size:clamp(24px,6.4vw,33px)!important;line-height:1.06!important;letter-spacing:.035em!important;color:#fff!important;text-shadow:0 3px 12px rgba(0,0,0,.88)!important}
           .messaggio-box{display:none!important}
-          .bottone-google{position:absolute!important;top:69vh!important;left:5%!important;right:5%!important;width:auto!important;margin:0!important;min-height:58px!important;background:linear-gradient(135deg,#9d3b34,#651d19 62%,#8a2d28)!important;border:1px solid rgba(255,255,255,.28)!important;box-shadow:0 10px 28px rgba(0,0,0,.28)!important}
-          .stelle{position:absolute!important;top:80.5vh!important;left:0!important;right:0!important;margin:0!important}
+          .bottone-google{position:absolute!important;top:62vh!important;left:5%!important;right:5%!important;width:auto!important;margin:0!important;min-height:58px!important;background:linear-gradient(135deg,#9d3b34,#651d19 62%,#8a2d28)!important;border:1px solid rgba(255,255,255,.28)!important;box-shadow:0 10px 28px rgba(0,0,0,.28)!important}
+          .stelle{position:absolute!important;top:73.5vh!important;left:0!important;right:0!important;margin:0!important}
           footer{font-size:8px!important}footer strong{font-size:16px!important}
           @media(max-width:640px){
             body{background-position:center top!important}
             .logo{${hasLogo ? 'top:2.2vh!important;width:min(178px,52vw)!important;max-height:96px!important;' : ''}}
-            .eyebrow{top:${hasLogo ? '16vh' : '6.5vh'}!important;font-size:clamp(24px,7.1vw,32px)!important}
-            .bottone-google{top:70vh!important;min-height:56px!important}
-            .stelle{top:81.5vh!important}
+            .eyebrow{top:${hasLogo ? '21.5vh' : '11.5vh'}!important;font-size:clamp(23px,6.9vw,31px)!important}
+            .bottone-google{top:62.5vh!important;min-height:56px!important}
+            .stelle{top:74.5vh!important}
           }
           @media(max-height:690px){
-            .bottone-google{top:67vh!important}
-            .stelle{top:79vh!important}
+            .eyebrow{top:${hasLogo ? '20vh' : '10vh'}!important}
+            .bottone-google{top:60vh!important}
+            .stelle{top:72.5vh!important}
           }
         </style>`;
         html = html.replace('</head>', css + '</head>');
