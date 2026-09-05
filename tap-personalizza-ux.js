@@ -9,17 +9,21 @@
   const logoName = document.getElementById('logoName');
   const generateBtn = document.getElementById('generateBtn');
   const previewBtn = document.getElementById('previewBtn');
+  const backBtn = document.getElementById('backBtn');
   const finalLinkBox = document.getElementById('finalLinkBox');
   const finalLinkValue = document.getElementById('finalLinkValue');
   const copyBtn = document.getElementById('copyFinalBtn');
   const addClientBtn = document.getElementById('addClientBtn');
+  const templateInfo = document.getElementById('templateInfo');
   const msg = document.getElementById('msg');
   const card = document.querySelector('.card');
   if (!activity || !card) return;
 
   const style = document.createElement('style');
-  style.id = 'tap-personalizza-ux-v1';
+  style.id = 'tap-personalizza-ux-v2';
   style.textContent = `
+    #templateInfo{display:none!important}
+    #backBtn{display:none!important}
     .tap-category-search{margin:0 0 12px;position:relative}
     .tap-category-search input{width:100%;height:50px;border:1.5px solid #d5e0dc;border-radius:14px;background:#fbfdfc;padding:0 44px 0 15px;font:inherit;font-size:14px;color:#17342e;outline:none;transition:.18s ease}
     .tap-category-search input:focus{border-color:#0c9b80;box-shadow:0 0 0 4px rgba(12,155,128,.09);background:#fff}
@@ -31,11 +35,11 @@
     .tap-logo-tool.danger{color:#94403b;border-color:#e2c4c1;background:#fffafa}
     .tap-logo-state{font-size:12px;font-weight:800;color:#72817d;margin-left:auto}
     .tap-logo-state.ready{color:#08735f}
-    .tap-progress{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 24px}
-    .tap-progress-item{position:relative;padding:10px 8px;border-radius:12px;background:#f3f6f5;color:#8a9692;text-align:center;font-size:12px;font-weight:850;transition:.2s ease}
+    .tap-progress{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:0 0 24px}
+    .tap-progress-item{position:relative;padding:9px 5px;border-radius:11px;background:#f3f6f5;color:#8a9692;text-align:center;font-size:11px;font-weight:850;transition:.2s ease}
     .tap-progress-item.active{background:#e8f7f2;color:#08735f;box-shadow:inset 0 0 0 1px #c3e8dd}
     .tap-progress-item.done{background:#edf4f2;color:#42665e}
-    .tap-progress-item strong{display:inline-grid;place-items:center;width:21px;height:21px;border-radius:50%;background:rgba(255,255,255,.8);margin-right:5px;font-size:11px}
+    .tap-progress-item strong{display:inline-grid;place-items:center;width:19px;height:19px;border-radius:50%;background:rgba(255,255,255,.8);margin-right:3px;font-size:10px}
     .tap-ready-badge{display:inline-flex;align-items:center;gap:6px;margin-bottom:12px;padding:7px 10px;border-radius:999px;background:#eaf8f4;color:#08735f;font-size:12px;font-weight:900}
     .tap-button-busy{pointer-events:none!important;opacity:.78!important;position:relative!important}
     .tap-button-busy::after{content:'';display:inline-block;width:14px;height:14px;margin-left:9px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:-2px;animation:tapSpin .7s linear infinite}
@@ -45,19 +49,31 @@
     .primary:active,.secondary:active,.preview-final:active,.copy-final:active,.add-client:active{transform:translateY(0) scale(.995)}
     .final-link-box.show{animation:tapReveal .22s ease-out}
     @keyframes tapReveal{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+    #previewBtn.tap-preview-positioned{display:block;width:100%;margin:18px 0 10px}
+    #previewBtn.tap-preview-positioned:not(.tap-preview-enabled){opacity:.46;pointer-events:none}
+    .actions{margin-top:12px!important}
     @media(max-width:760px){
-      .topbar{height:72px!important;padding:0 14px!important}.brand-icon{width:44px!important;height:44px!important}.brand-sub{display:none!important}.brand-title{font-size:16px!important}.clients-top{min-height:38px!important;padding:0 11px!important;font-size:12px!important}.wrap{padding-top:24px!important}.tap-progress{margin-bottom:18px}.tap-progress-item{font-size:11px;padding:9px 4px}.tap-progress-item strong{display:none}.tap-logo-state{width:100%;margin-left:0}
+      .topbar{height:72px!important;padding:0 14px!important}.brand-icon{width:44px!important;height:44px!important}.brand-sub{display:none!important}.brand-title{font-size:16px!important}.clients-top{min-height:38px!important;padding:0 11px!important;font-size:12px!important}.wrap{padding-top:24px!important}.tap-progress{margin-bottom:18px;gap:4px}.tap-progress-item{font-size:10px;padding:8px 2px}.tap-progress-item strong{display:none}.tap-logo-state{width:100%;margin-left:0}
     }
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.final-link-box.show{animation:none!important}.tap-button-busy::after{animation:none!important}}
   `;
   document.head.appendChild(style);
 
-  // Percorso più chiaro: Attività > Personalizza > Anteprima.
+  if (templateInfo) {
+    templateInfo.hidden = true;
+    templateInfo.setAttribute('aria-hidden', 'true');
+  }
+  if (backBtn) {
+    backBtn.hidden = true;
+    backBtn.setAttribute('aria-hidden', 'true');
+    backBtn.tabIndex = -1;
+  }
+
   const oldSteps = document.querySelector('.steps');
   const progress = document.createElement('div');
   progress.className = 'tap-progress';
   progress.setAttribute('aria-label', 'Avanzamento creazione cliente');
-  progress.innerHTML = '<div class="tap-progress-item done" data-stage="1"><strong>1</strong>Attività</div><div class="tap-progress-item active" data-stage="2"><strong>2</strong>Personalizza</div><div class="tap-progress-item" data-stage="3"><strong>3</strong>Anteprima</div>';
+  progress.innerHTML = '<div class="tap-progress-item done"><strong>1</strong>Attività</div><div class="tap-progress-item active"><strong>2</strong>Logo</div><div class="tap-progress-item"><strong>3</strong>Anteprima</div><div class="tap-progress-item"><strong>4</strong>Link</div><div class="tap-progress-item"><strong>5</strong>Cliente</div>';
   if (oldSteps) oldSteps.replaceWith(progress);
   else card.insertAdjacentElement('beforebegin', progress);
 
@@ -69,7 +85,6 @@
     });
   }
 
-  // Ricerca categoria senza alterare il registro centrale.
   const activityField = activity.closest('.field');
   if (activityField && !document.getElementById('tapCategorySearch')) {
     const searchWrap = document.createElement('div');
@@ -110,7 +125,6 @@
     updateCategoryStatus();
   }
 
-  // Gestione logo più evidente: stato, cambia, rimuovi.
   if (logoFile) {
     const uploadBox = logoFile.closest('.upload-box');
     if (uploadBox && !uploadBox.querySelector('.tap-logo-tools')) {
@@ -147,11 +161,31 @@
         if (img) img.removeAttribute('src');
         if (logoName) logoName.textContent = '';
         syncLogoState();
+        setStage(2);
       });
-      logoFile.addEventListener('change', syncLogoState);
+      logoFile.addEventListener('change', () => {
+        syncLogoState();
+        if (logoFile.files && logoFile.files[0]) setStage(3);
+      });
       generateBtn?.addEventListener('click', () => setTimeout(syncLogoState, 0));
       syncLogoState();
     }
+  }
+
+  // Ordine operativo definitivo: attività > logo > anteprima > genera link > aggiungi cliente.
+  if (previewBtn && logoFile) {
+    const logoField = logoFile.closest('.field');
+    if (logoField) logoField.insertAdjacentElement('afterend', previewBtn);
+    previewBtn.classList.add('tap-preview-positioned');
+  }
+
+  function syncPreviewAvailability() {
+    if (!previewBtn) return;
+    const enabled = Boolean(activity.value);
+    previewBtn.classList.toggle('tap-preview-enabled', enabled);
+    previewBtn.classList.add('show');
+    previewBtn.disabled = !enabled;
+    if (enabled && !finalLinkBox?.classList.contains('show')) setStage(3);
   }
 
   function setBusy(button, text) {
@@ -167,23 +201,23 @@
     return clear;
   }
 
-  // Feedback durante le operazioni, senza cambiare la logica esistente.
   if (generateBtn) {
     generateBtn.addEventListener('click', () => {
       if (!activity.value) return;
       const clear = setBusy(generateBtn, 'Generazione');
+      setStage(4);
       setTimeout(clear, 650);
     });
   }
   if (previewBtn) {
     previewBtn.addEventListener('click', () => {
+      if (!activity.value) return;
       const clear = setBusy(previewBtn, 'Preparazione');
-      setTimeout(clear, 900);
       setStage(3);
+      setTimeout(clear, 900);
     });
   }
 
-  // Area risultato più leggibile e orientata all'azione.
   function decorateFinalLink() {
     if (!finalLinkBox || !finalLinkBox.classList.contains('show') || finalLinkBox.dataset.tapDecorated === '1') return;
     finalLinkBox.dataset.tapDecorated = '1';
@@ -191,7 +225,7 @@
     badge.className = 'tap-ready-badge';
     badge.innerHTML = '✓ Link NFC pronto';
     finalLinkBox.insertAdjacentElement('afterbegin', badge);
-    setStage(3);
+    setStage(4);
   }
   if (finalLinkBox) {
     new MutationObserver(decorateFinalLink).observe(finalLinkBox, { attributes:true, attributeFilter:['class'] });
@@ -208,19 +242,23 @@
     });
   }
 
-  // Segnale immediato se cambiano dati dopo la generazione del link.
+  if (addClientBtn) {
+    addClientBtn.addEventListener('click', () => setStage(5));
+  }
+
   activity.addEventListener('change', () => {
     if (finalLinkBox?.classList.contains('show')) {
       finalLinkBox.classList.remove('show');
-      previewBtn?.classList.remove('show');
       addClientBtn?.classList.remove('show');
       if (finalLinkValue) finalLinkValue.textContent = '';
       finalLinkBox.dataset.tapDecorated = '';
-      setStage(2);
       if (msg) {
         msg.className = 'message show warn';
-        msg.textContent = 'Categoria modificata: genera nuovamente il link finale.';
+        msg.textContent = 'Categoria modificata: controlla l’anteprima e genera nuovamente il link finale.';
       }
     }
+    syncPreviewAvailability();
   });
+
+  syncPreviewAvailability();
 })();
