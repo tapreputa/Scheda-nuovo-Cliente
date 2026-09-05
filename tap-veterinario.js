@@ -33,10 +33,11 @@
 
   ensureOption('gioielleria', 'Gioielleria');
   ensureOption('macelleria', 'Macelleria');
+  ensureOption('panineria_hamburgeria', 'Panineria/Hamburgeria');
   ensureOption('veterinario', 'Veterinario');
   sortActivityOptions();
 
-  const managed = new Set(['gioielleria','macelleria','veterinario']);
+  const managed = new Set(['gioielleria','macelleria','panineria_hamburgeria','veterinario']);
 
   function updateInfo() {
     if (!info || !managed.has(activity.value)) return;
@@ -156,6 +157,44 @@
         html = buildPremiumTemplate(hasLogo ? logoDataUrl : placeholderPixel, reviewUrl, bg, cfg);
         const css = `<style id="macelleria-final-v2">body{background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important;background-attachment:fixed!important}.pagina{position:relative!important;min-height:100vh!important;padding:0!important;transform:none!important}.card{position:static!important;padding:0!important;margin:0!important;min-height:100vh!important}.logo{${hasLogo ? 'position:absolute!important;top:2.5vh!important;left:50%!important;transform:translateX(-50%)!important;width:min(190px,54vw)!important;max-height:105px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;filter:drop-shadow(0 5px 14px rgba(0,0,0,.45))!important;' : 'display:none!important;'}}.eyebrow{position:absolute!important;top:${hasLogo ? '22vh' : '12vh'}!important;left:5%!important;right:5%!important;max-width:none!important;margin:0!important;font-size:clamp(24px,6.4vw,33px)!important;line-height:1.06!important;letter-spacing:.035em!important;color:#fff!important;text-shadow:0 3px 12px rgba(0,0,0,.88)!important}.messaggio-box{display:none!important}.bottone-google{position:absolute!important;top:62vh!important;left:5%!important;right:5%!important;width:auto!important;margin:0!important;min-height:58px!important;background:linear-gradient(135deg,#9d3b34,#651d19 62%,#8a2d28)!important;border:1px solid rgba(255,255,255,.28)!important}.stelle{position:absolute!important;top:73.5vh!important;left:0!important;right:0!important;margin:0!important}footer{font-size:8px!important}footer strong{font-size:16px!important}</style>`;
         html = inject(html, css);
+      } else if (activity.value === 'panineria_hamburgeria') {
+        const bg = await loadBackgroundDataUrl('Sfondopanineria.png');
+        const cfg = {
+          title: 'Panini e hamburger preparati con gusto: ti abbiamo conquistato?',
+          accent: '#d9852f',
+          accent2: '#9f4d18',
+          theme: '#5b321d',
+          box: 'transparent',
+          text: '#ffffff',
+          message: '',
+          shift: 'none',
+          footerSize: '8px',
+          footerStrong: '16px'
+        };
+        html = buildPremiumTemplate(hasLogo ? logoDataUrl : placeholderPixel, reviewUrl, bg, cfg);
+        const css = `<style id="panineria-hamburgeria-v1">
+          body{background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
+          .pagina{position:relative!important;min-height:100vh!important;padding:0!important;transform:none!important}
+          .card{position:static!important;padding:0!important;margin:0!important;min-height:100vh!important}
+          .logo{${hasLogo ? 'position:absolute!important;top:2.5vh!important;left:50%!important;transform:translateX(-50%)!important;width:min(185px,52vw)!important;max-height:100px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;filter:drop-shadow(0 5px 14px rgba(0,0,0,.42))!important;' : 'display:none!important;'}}
+          .eyebrow{position:absolute!important;top:${hasLogo ? '21vh' : '11vh'}!important;left:5%!important;right:5%!important;max-width:none!important;margin:0!important;font-size:clamp(23px,6.2vw,32px)!important;line-height:1.07!important;letter-spacing:.03em!important;color:#fff!important;text-shadow:0 3px 12px rgba(0,0,0,.9)!important}
+          .messaggio-box{display:none!important}
+          .bottone-google{position:absolute!important;top:63vh!important;left:5%!important;right:5%!important;width:auto!important;margin:0!important;min-height:57px!important;background:linear-gradient(135deg,#e39a45,#a95c21 62%,#c7742c)!important;border:1px solid rgba(255,255,255,.32)!important;box-shadow:0 10px 28px rgba(0,0,0,.3)!important}
+          .stelle{position:absolute!important;top:74.5vh!important;left:0!important;right:0!important;margin:0!important}
+          footer{font-size:8px!important}footer strong{font-size:16px!important}
+          @media(max-width:640px){
+            .logo{${hasLogo ? 'top:2.3vh!important;width:min(174px,50vw)!important;max-height:94px!important;' : ''}}
+            .eyebrow{top:${hasLogo ? '20.5vh' : '10.5vh'}!important;font-size:clamp(22px,6.8vw,30px)!important}
+            .bottone-google{top:63.5vh!important;min-height:55px!important}
+            .stelle{top:75vh!important}
+          }
+          @media(max-height:690px){
+            .eyebrow{top:${hasLogo ? '19.5vh' : '9.5vh'}!important}
+            .bottone-google{top:61vh!important}
+            .stelle{top:73vh!important}
+          }
+        </style>`;
+        html = inject(html, css);
       } else {
         const bg = await loadBackgroundDataUrl('Sfondoveterinario.png');
         const cfg = {title:'Il tuo amico a 4 zampe è stato bene con noi?',accent:'#3f8f73',accent2:'#23644f',theme:'#315e52',box:'transparent',text:'#173b40',message:'',shift:'none',footerSize:'8px',footerStrong:'16px'};
@@ -169,7 +208,12 @@
       msg.textContent = 'Anteprima aperta correttamente.';
     } catch (err) {
       console.error(err);
-      const files = {gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',veterinario:'Sfondoveterinario.png'};
+      const files = {
+        gioielleria:'Sfondogioielleria.png',
+        macelleria:'Sfondomacelleria.png',
+        panineria_hamburgeria:'Sfondopanineria.png',
+        veterinario:'Sfondoveterinario.png'
+      };
       warnCustom('Non riesco a caricare ' + files[activity.value] + '. Verifica che il file sia presente accanto a personalizza.html.');
     }
   }, true);
