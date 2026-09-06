@@ -235,6 +235,32 @@
       </style></head>`);
     }
 
+    if (!noLogo && type === 'gelateria' && typeof html === 'string') {
+      html = html.replace('</head>', `<style id="tap-gelateria-with-logo-review-v1">
+        .eyebrow{
+          font-size:clamp(1.20rem,5.6vw,1.54rem)!important;
+          line-height:1.14!important;
+          font-weight:950!important;
+          letter-spacing:.10em!important;
+          text-shadow:0 3px 10px rgba(0,0,0,.72)!important;
+        }
+        .messaggio-box{
+          background:rgba(255,255,255,.40)!important;
+          border-color:rgba(255,255,255,.28)!important;
+          backdrop-filter:blur(.30px)!important;
+          -webkit-backdrop-filter:blur(.30px)!important;
+        }
+        .stelle{
+          color:#ffd62a!important;
+          text-shadow:0 0 7px rgba(255,229,92,.98),0 0 15px rgba(255,196,32,.90),0 3px 8px rgba(0,0,0,.34)!important;
+          filter:brightness(1.18) saturate(1.22)!important;
+        }
+        @media(max-width:640px){
+          .eyebrow{font-size:clamp(1.16rem,5.4vw,1.46rem)!important}
+        }
+      </style></head>`);
+    }
+
     return previousOpenInlinePreview(html);
   };
 })();
