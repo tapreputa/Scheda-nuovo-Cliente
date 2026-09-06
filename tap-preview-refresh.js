@@ -3,7 +3,8 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const REOPEN_KEY = 'tap_preview_reopen_v2';
+  const BUILD_ID = '20260906-stable1';
+  const REOPEN_KEY = 'tap_preview_reopen_v3';
 
   function readLogoData() {
     try { return typeof logoDataUrl !== 'undefined' ? String(logoDataUrl || '') : String(window.logoDataUrl || ''); }
@@ -16,6 +17,7 @@
       category: activity?.value || '',
       logo: readLogoData(),
       skipped: Boolean(window.tapLogoSkipped),
+      build: BUILD_ID,
       savedAt: Date.now()
     };
     sessionStorage.setItem(REOPEN_KEY, JSON.stringify(state));
@@ -40,7 +42,10 @@
       savePreviewState();
       button.disabled = true;
       button.textContent = '…';
-      location.reload();
+      const url = new URL(location.href);
+      url.searchParams.set('_tapbuild', BUILD_ID);
+      url.searchParams.set('_taprefresh', Date.now().toString(36));
+      location.replace(url.href);
     });
 
     const close = Array.from(topbar.querySelectorAll('button')).find(el => el.textContent.includes('Torna a Personalizza'));
