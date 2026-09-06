@@ -17,7 +17,7 @@
     if (noLogo && isOttica && typeof html === 'string') {
       html = html.replace(/Ti\s+è\s+piaciuta\s+la\s+tua\s+esperienza\s+da\s+noi\?/i, 'Trova gli occhiali perfetti per te!');
 
-      html = html.replace('</head>', `<style id="tap-ottica-no-logo-review-v2">
+      html = html.replace('</head>', `<style id="tap-ottica-no-logo-review-v3">
         .eyebrow{
           font-size:clamp(1.34rem,6.2vw,1.78rem)!important;
           line-height:1.14!important;
@@ -27,8 +27,8 @@
           text-shadow:0 3px 10px rgba(0,0,0,.62)!important;
         }
         .messaggio-box{
-          background:rgba(238,232,224,.34)!important;
-          border-color:rgba(255,255,255,.28)!important;
+          background:rgba(238,232,224,.46)!important;
+          border-color:rgba(255,255,255,.34)!important;
           color:#342c27!important;
           font-weight:850!important;
           text-shadow:0 1px 1px rgba(255,255,255,.72),0 1px 2px rgba(0,0,0,.12)!important;
