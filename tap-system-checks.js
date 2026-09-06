@@ -3,9 +3,10 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = window.TapProjectConfig?.build || window.TapTemplateStability?.build || '20260906-stable4';
+  const BUILD_ID = window.TapProjectConfig?.build || window.TapTemplateStability?.build || '20260906-stable5';
   const registry = window.TapCategories;
   const project = window.TapProjectConfig;
+  const manifest = window.TapTemplateManifest;
   const msg = document.getElementById('msg');
   const activity = document.getElementById('activityType');
   const reviewInput = document.getElementById('destinationUrl');
@@ -43,6 +44,7 @@
       if (category.id !== 'standard' && !category.background) addWarning('Sfondo non registrato per la categoria ' + category.id + '.');
       if (category.id !== 'standard' && !category.closed) addWarning('Categoria non marcata come chiusa: ' + category.id);
       if (category.closed && !category.approvedAt) addWarning('Data approvazione mancante per la categoria ' + category.id);
+      if (manifest && !manifest.get(category.id)) addError('Template non presente nel manifest: ' + category.id + '.');
     });
 
     Object.entries(registry.aliases || {}).forEach(([alias, target]) => {
@@ -51,6 +53,8 @@
 
     if (!project) addWarning('Configurazione globale del progetto non disponibile.');
     else if (!project.globalRules?.preserveClosedLayouts) addWarning('Protezione layout categorie chiuse non attiva.');
+    if (!manifest) addError('Manifest template non disponibile.');
+    else if (manifest.entries.length !== registry.list.length) addError('Manifest template non allineato al registro categorie.');
 
     return errors.length === 0;
   }
@@ -69,6 +73,7 @@
     if (!categoryId || !category) return { ok:false, message:'Seleziona una categoria valida.' };
     if (!reviewUrl) return { ok:false, message:'Link recensioni non disponibile.' };
     if (!operator) return { ok:false, message:'Operatore non disponibile.' };
+    if (manifest && !manifest.get(categoryId)) return { ok:false, message:'Configurazione template non disponibile per questa categoria.' };
 
     if (categoryId !== 'standard') {
       const skipped = Boolean(window.tapLogoSkipped);
@@ -122,15 +127,17 @@
   }
 
   function report() {
-    const policy = project?.categoryPolicy?.(currentCategory()) || null;
+    const id = currentCategory();
+    const policy = project?.categoryPolicy?.(id) || null;
     return Object.freeze({
       build: BUILD_ID,
       registryOk: errors.length === 0,
       errors: Object.freeze(errors.slice()),
       warnings: Object.freeze(warnings.slice()),
       modules: moduleStatus(),
-      currentCategory: currentCategory(),
-      currentAsset: project?.categoryAsset?.(currentCategory()) || '',
+      currentCategory: id,
+      currentAsset: project?.categoryAsset?.(id) || '',
+      templateSignature: manifest?.signature?.(id) || '',
       categoryPolicy: policy,
       globalRules: project?.globalRules || null
     });
