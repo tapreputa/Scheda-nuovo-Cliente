@@ -3,6 +3,47 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
+  const BUILD_ID = '20260906-stable1';
+
+  const CORE_MODULES = Object.freeze([
+    'tap-categories.js',
+    'tap-personalizza-controller.js',
+    'tap-logo-optional.js',
+    'tap-custom-categories.js',
+    'tap-personalizza-ux.js',
+    'tap-personalizza-save.js',
+    'tap-personalizza-reliability.js',
+    'tap-preview-refresh.js',
+    'tap-global-stars.js',
+    'tap-category-review-fixes.js',
+    'tap-category-mode-separation.js'
+  ]);
+
+  const APPROVED_CATEGORY_MODULES = Object.freeze([
+    'tap-cartolibreria-review.js',
+    'tap-macelleria-review.js',
+    'tap-ottica-review.js',
+    'tap-panificio-review.js',
+    'tap-logo-autocrop.js',
+    'tap-panineria-review.js',
+    'tap-parrucchiere-review.js',
+    'tap-pasticceria-review.js',
+    'tap-pizzeria-review.js',
+    'tap-polli-review.js',
+    'tap-pub-review.js',
+    'tap-ristorante-review.js',
+    'tap-ristorantemare-review.js',
+    'tap-stabilimento-review.js',
+    'tap-strumentimusicali-review.js',
+    'tap-svapostore-review.js'
+  ]);
+
+  const FINAL_MODULES = Object.freeze([
+    'tap-template-stability.js'
+  ]);
+
+  const MODULES = Object.freeze([...CORE_MODULES, ...APPROVED_CATEGORY_MODULES, ...FINAL_MODULES]);
+
   function loadScript(src) {
     return new Promise((resolve, reject) => {
       const selector = `script[data-tap-module="${src}"]`;
@@ -15,22 +56,10 @@
       }
 
       const script = document.createElement('script');
-      const versions = {
-        'tap-custom-categories.js': '5',
-        'tap-macelleria-review.js': '3',
-        'tap-polli-review.js': '5',
-        'tap-pub-review.js': '1',
-        'tap-ristorante-review.js': '2',
-        'tap-ristorantemare-review.js': '1',
-        'tap-stabilimento-review.js': '1',
-        'tap-strumentimusicali-review.js': '1',
-        'tap-svapostore-review.js': '3',
-        'tap-logo-autocrop.js': '1'
-      };
-      const version = versions[src] || '1';
-      script.src = src + '?v=' + version;
+      script.src = `${src}?build=${encodeURIComponent(BUILD_ID)}`;
       script.async = false;
       script.dataset.tapModule = src;
+      script.dataset.tapBuild = BUILD_ID;
       script.addEventListener('load', () => {
         script.dataset.loaded = '1';
         resolve();
@@ -42,33 +71,14 @@
 
   (async () => {
     try {
-      await loadScript('tap-categories.js');
-      await loadScript('tap-personalizza-controller.js');
-      await loadScript('tap-logo-optional.js');
-      await loadScript('tap-custom-categories.js');
-      await loadScript('tap-personalizza-ux.js');
-      await loadScript('tap-personalizza-save.js');
-      await loadScript('tap-personalizza-reliability.js');
-      await loadScript('tap-preview-refresh.js');
-      await loadScript('tap-global-stars.js');
-      await loadScript('tap-category-review-fixes.js');
-      await loadScript('tap-category-mode-separation.js');
-      await loadScript('tap-cartolibreria-review.js');
-      await loadScript('tap-macelleria-review.js');
-      await loadScript('tap-ottica-review.js');
-      await loadScript('tap-panificio-review.js');
-      await loadScript('tap-logo-autocrop.js');
-      await loadScript('tap-panineria-review.js');
-      await loadScript('tap-parrucchiere-review.js');
-      await loadScript('tap-pasticceria-review.js');
-      await loadScript('tap-pizzeria-review.js');
-      await loadScript('tap-polli-review.js');
-      await loadScript('tap-pub-review.js');
-      await loadScript('tap-ristorante-review.js');
-      await loadScript('tap-ristorantemare-review.js');
-      await loadScript('tap-stabilimento-review.js');
-      await loadScript('tap-strumentimusicali-review.js');
-      await loadScript('tap-svapostore-review.js');
+      for (const src of MODULES) await loadScript(src);
+      document.documentElement.dataset.tapModulesBuild = BUILD_ID;
+      window.TapPersonalizzaBuild = Object.freeze({
+        id: BUILD_ID,
+        modules: MODULES,
+        core: CORE_MODULES,
+        approvedCategoryModules: APPROVED_CATEGORY_MODULES
+      });
     } catch (error) {
       console.error('Tapreputa: inizializzazione moduli Personalizza non riuscita.', error);
     }
