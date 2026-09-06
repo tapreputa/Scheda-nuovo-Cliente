@@ -15,18 +15,18 @@
     const noLogo = !!window.tapLogoSkipped || (typeof html === 'string' && html.includes(placeholderPixel));
 
     if (noLogo && type === 'svapostore' && typeof html === 'string') {
-      html = html.replace('</head>', `<style id="tap-svapostore-no-logo-review-v2">
-        .logo,.logo-wrap,.logo-box,.logo-container{display:none!important}
-        .eyebrow,.messaggio-box,.bottone-google,.stelle{position:relative!important}
-        .eyebrow{top:72px!important}
-        .messaggio-box{top:112px!important}
-        .bottone-google{top:158px!important}
-        .stelle{top:198px!important}
+      html = html.replace('</head>', `<style id="tap-svapostore-no-logo-review-v3">
+        .logo{display:none!important}
+        .title,.text,.btn,.stars{position:relative!important}
+        .title{top:62px!important}
+        .text{top:92px!important}
+        .btn{top:126px!important}
+        .stars{top:160px!important}
         @media(max-width:640px){
-          .eyebrow{top:68px!important}
-          .messaggio-box{top:106px!important}
-          .bottone-google{top:150px!important}
-          .stelle{top:188px!important}
+          .title{top:58px!important}
+          .text{top:88px!important}
+          .btn{top:122px!important}
+          .stars{top:156px!important}
         }
       </style></head>`);
     }
