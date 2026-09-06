@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20260906-stable3';
+  const BUILD_ID = '20260906-stable4';
   const SNAPSHOT_KEY = 'tapreputa_preview_snapshot_v1';
   const BINDING_KEY = 'tapreputa_generated_binding_v1';
   const activity = document.getElementById('activityType');
