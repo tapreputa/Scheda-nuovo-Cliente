@@ -49,6 +49,41 @@
       </style></head>`);
     }
 
+    if (!noLogo && isPizzeria && typeof html === 'string') {
+      html = html.replace('</head>', `<style id="tap-pizzeria-with-logo-review-v1">
+        .eyebrow{
+          font-size:clamp(1.34rem,6.15vw,1.82rem)!important;
+          line-height:1.12!important;
+          font-weight:950!important;
+          letter-spacing:.07em!important;
+          text-align:center!important;
+          text-shadow:0 3px 10px rgba(0,0,0,.76)!important;
+        }
+        .messaggio-box{
+          background:rgba(246,236,228,.53)!important;
+          border-color:rgba(255,255,255,.40)!important;
+          color:#3c211a!important;
+          font-weight:900!important;
+          text-shadow:0 1px 1px rgba(255,255,255,.84),0 1px 2px rgba(0,0,0,.13)!important;
+          backdrop-filter:blur(.30px)!important;
+          -webkit-backdrop-filter:blur(.30px)!important;
+        }
+        .bottone-google{
+          width:84%!important;
+          max-width:540px!important;
+          margin-left:auto!important;
+          margin-right:auto!important;
+          background:linear-gradient(135deg,#d67d61,#c66f57 58%,#d58a74)!important;
+          border-color:rgba(255,255,255,.32)!important;
+          box-shadow:0 7px 16px rgba(86,35,24,.14)!important;
+        }
+        @media(max-width:640px){
+          .eyebrow{font-size:clamp(1.28rem,5.95vw,1.62rem)!important}
+          .bottone-google{width:82%!important}
+        }
+      </style></head>`);
+    }
+
     return previousOpenInlinePreview(html);
   };
 })();
