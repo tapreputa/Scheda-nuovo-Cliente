@@ -15,7 +15,7 @@
     const noLogo = !!window.tapLogoSkipped;
 
     if (noLogo && isParrucchiere && typeof html === 'string') {
-      html = html.replace('</head>', `<style id="tap-parrucchiere-no-logo-review-v1">
+      html = html.replace('</head>', `<style id="tap-parrucchiere-no-logo-review-v2">
         .eyebrow{
           font-size:clamp(1.34rem,6.2vw,1.78rem)!important;
           line-height:1.14!important;
@@ -32,6 +32,11 @@
           text-shadow:0 1px 1px rgba(255,255,255,.68),0 1px 2px rgba(0,0,0,.10)!important;
           backdrop-filter:blur(.3px)!important;
           -webkit-backdrop-filter:blur(.3px)!important;
+        }
+        .bottone-google{
+          background:linear-gradient(135deg,#c49a78,#a97856 62%,#bd8f6d)!important;
+          border-color:rgba(255,255,255,.28)!important;
+          box-shadow:0 8px 18px rgba(56,37,24,.18)!important;
         }
         @media(max-width:640px){
           .eyebrow{font-size:clamp(1.26rem,5.9vw,1.62rem)!important}
