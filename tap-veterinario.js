@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20260906-stable5';
+  const BUILD_ID = '20260906-stable5.1';
 
   const CORE_MODULES = Object.freeze([
     'tap-categories.js',
