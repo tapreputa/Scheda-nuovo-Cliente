@@ -20,7 +20,7 @@
         'tap-macelleria-review.js': '3',
         'tap-polli-review.js': '5',
         'tap-pub-review.js': '1',
-        'tap-ristorante-review.js': '1',
+        'tap-ristorante-review.js': '2',
         'tap-logo-autocrop.js': '1'
       };
       const version = versions[src] || '1';
