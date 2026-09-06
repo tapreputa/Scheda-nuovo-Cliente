@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20260906-stable4';
+  const BUILD_ID = '20260906-stable5';
   const REOPEN_KEY = 'tap_preview_reopen_v3';
 
   function readLogoData() {
