@@ -15,7 +15,7 @@
     const noLogo = !!window.tapLogoSkipped;
 
     if (noLogo && isPasticceria && typeof html === 'string') {
-      html = html.replace('</head>', `<style id="tap-pasticceria-no-logo-review-v3">
+      html = html.replace('</head>', `<style id="tap-pasticceria-no-logo-review-v4">
         .eyebrow{
           font-size:clamp(1.36rem,6.25vw,1.82rem)!important;
           line-height:1.13!important;
@@ -45,17 +45,18 @@
         footer{
           position:absolute!important;
           right:4.5%!important;
-          bottom:7.2vh!important;
+          bottom:10.2vh!important;
           top:auto!important;
           left:auto!important;
           margin:0!important;
           text-align:right!important;
-          text-shadow:0 2px 5px rgba(0,0,0,.48)!important;
+          text-shadow:0 2px 5px rgba(0,0,0,.55)!important;
+          z-index:5!important;
         }
         @media(max-width:640px){
           .eyebrow{font-size:clamp(1.28rem,5.95vw,1.66rem)!important}
           .bottone-google{width:82%!important}
-          footer{right:4.5%!important;bottom:6.8vh!important;top:auto!important}
+          footer{right:4.5%!important;bottom:10vh!important;top:auto!important}
         }
       </style></head>`);
     }
