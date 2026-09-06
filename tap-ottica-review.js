@@ -56,7 +56,16 @@
 
     if (!noLogo && isOttica && typeof html === 'string') {
       html = html.replace(/Ti\s+è\s+piaciuta\s+la\s+tua\s+esperienza\s+da\s+noi\?/i, 'Trova gli occhiali perfetti per te!');
-      html = html.replace('</head>', `<style id="tap-ottica-with-logo-review-v1">
+      html = html.replace('</head>', `<style id="tap-ottica-with-logo-review-v2">
+        .eyebrow{
+          color:#ffffff!important;
+          font-size:clamp(1.26rem,5.8vw,1.60rem)!important;
+          line-height:1.14!important;
+          font-weight:950!important;
+          letter-spacing:.065em!important;
+          text-align:center!important;
+          text-shadow:0 3px 10px rgba(0,0,0,.92),0 0 4px rgba(0,0,0,.55)!important;
+        }
         .bottone-google{
           background:linear-gradient(135deg,#9b8d80,#75695f)!important;
           border-color:rgba(255,255,255,.30)!important;
