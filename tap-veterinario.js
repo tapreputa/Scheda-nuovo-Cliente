@@ -15,7 +15,13 @@
       }
 
       const script = document.createElement('script');
-      const version = src === 'tap-macelleria-review.js' ? '3' : (src === 'tap-polli-review.js' ? '2' : (src === 'tap-logo-autocrop.js' ? '1' : '1'));
+      const versions = {
+        'tap-custom-categories.js': '4',
+        'tap-macelleria-review.js': '3',
+        'tap-polli-review.js': '4',
+        'tap-logo-autocrop.js': '1'
+      };
+      const version = versions[src] || '1';
       script.src = src + '?v=' + version;
       script.async = false;
       script.dataset.tapModule = src;
