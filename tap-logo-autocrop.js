@@ -33,6 +33,81 @@
     return [sum[0] / count, sum[1] / count, sum[2] / count];
   }
 
+  function alphaBounds(d, w, h, alphaMin = 20) {
+    let minX = w, minY = h, maxX = -1, maxY = -1;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const i = (y * w + x) * 4;
+        if (d[i + 3] > alphaMin) {
+          if (x < minX) minX = x;
+          if (y < minY) minY = y;
+          if (x > maxX) maxX = x;
+          if (y > maxY) maxY = y;
+        }
+      }
+    }
+    return maxX < minX || maxY < minY ? null : { minX, minY, maxX, maxY };
+  }
+
+  function removeConnectedBackground(d, w, h, bg, threshold, bounds = null) {
+    if (!bg) return;
+    const seen = new Uint8Array(w * h);
+    const qx = new Int32Array(w * h);
+    const qy = new Int32Array(w * h);
+    let head = 0, tail = 0;
+
+    const minX = bounds ? bounds.minX : 0;
+    const minY = bounds ? bounds.minY : 0;
+    const maxX = bounds ? bounds.maxX : w - 1;
+    const maxY = bounds ? bounds.maxY : h - 1;
+
+    const isBackground = (x, y) => {
+      const i = (y * w + x) * 4;
+      if (d[i + 3] <= 18) return true;
+      return colorDistance([d[i], d[i + 1], d[i + 2]], bg) <= threshold;
+    };
+
+    const push = (x, y) => {
+      if (x < minX || x > maxX || y < minY || y > maxY) return;
+      const p = y * w + x;
+      if (seen[p] || !isBackground(x, y)) return;
+      seen[p] = 1;
+      qx[tail] = x; qy[tail] = y; tail++;
+    };
+
+    for (let x = minX; x <= maxX; x++) { push(x, minY); push(x, maxY); }
+    for (let y = minY; y <= maxY; y++) { push(minX, y); push(maxX, y); }
+
+    while (head < tail) {
+      const x = qx[head], y = qy[head]; head++;
+      const i = (y * w + x) * 4;
+      d[i + 3] = 0;
+      if (x > minX) push(x - 1, y);
+      if (x < maxX) push(x + 1, y);
+      if (y > minY) push(x, y - 1);
+      if (y < maxY) push(x, y + 1);
+    }
+  }
+
+  function sampleOpaqueBorderColor(d, w, h, b) {
+    const samples = [];
+    const stepX = Math.max(1, Math.floor((b.maxX - b.minX + 1) / 40));
+    const stepY = Math.max(1, Math.floor((b.maxY - b.minY + 1) / 40));
+    const take = (x, y) => {
+      const i = (y * w + x) * 4;
+      if (d[i + 3] > 180) samples.push([d[i], d[i + 1], d[i + 2]]);
+    };
+    for (let x = b.minX; x <= b.maxX; x += stepX) { take(x, b.minY); take(x, b.maxY); }
+    for (let y = b.minY; y <= b.maxY; y += stepY) { take(b.minX, y); take(b.maxX, y); }
+    if (!samples.length) return null;
+
+    // Median-like robust representative to avoid one bright logo detail influencing the background sample.
+    const avg = [0, 0, 0];
+    for (const s of samples) { avg[0] += s[0]; avg[1] += s[1]; avg[2] += s[2]; }
+    avg[0] /= samples.length; avg[1] /= samples.length; avg[2] /= samples.length;
+    return avg;
+  }
+
   function processLogoDataUrl(src) {
     if (!src || !/^data:image\/(png|jpeg|jpg|webp);base64,/i.test(src)) return Promise.resolve(src);
     if (cache.has(src)) return cache.get(src);
@@ -52,54 +127,22 @@
           const image = ctx.getImageData(0, 0, w, h);
           const d = image.data;
 
+          // Pass 1: remove the uniform color connected to the actual image edges.
           const bg = getCornerColor(d, w, h);
-          const threshold = 34;
-          const seen = new Uint8Array(w * h);
-          const qx = new Int32Array(w * h);
-          const qy = new Int32Array(w * h);
-          let head = 0, tail = 0;
+          removeConnectedBackground(d, w, h, bg, 34);
 
-          const isBackground = (x, y) => {
-            const i = (y * w + x) * 4;
-            if (d[i + 3] <= 18) return true;
-            if (!bg) return false;
-            return colorDistance([d[i], d[i + 1], d[i + 2]], bg) <= threshold;
-          };
-
-          const push = (x, y) => {
-            const p = y * w + x;
-            if (seen[p] || !isBackground(x, y)) return;
-            seen[p] = 1;
-            qx[tail] = x; qy[tail] = y; tail++;
-          };
-
-          for (let x = 0; x < w; x++) { push(x, 0); push(x, h - 1); }
-          for (let y = 0; y < h; y++) { push(0, y); push(w - 1, y); }
-
-          while (head < tail) {
-            const x = qx[head], y = qy[head]; head++;
-            const i = (y * w + x) * 4;
-            d[i + 3] = 0;
-            if (x > 0) push(x - 1, y);
-            if (x + 1 < w) push(x + 1, y);
-            if (y > 0) push(x, y - 1);
-            if (y + 1 < h) push(x, y + 1);
+          // Pass 2: handles logos with transparent rounded corners around a solid rectangle.
+          // After trimming the transparent exterior, sample the first opaque border and remove
+          // only the connected uniform area. This keeps the real logo artwork intact.
+          const firstBounds = alphaBounds(d, w, h);
+          if (firstBounds) {
+            const innerBg = sampleOpaqueBorderColor(d, w, h, firstBounds);
+            if (innerBg) removeConnectedBackground(d, w, h, innerBg, 28, firstBounds);
           }
 
-          let minX = w, minY = h, maxX = -1, maxY = -1;
-          for (let y = 0; y < h; y++) {
-            for (let x = 0; x < w; x++) {
-              const i = (y * w + x) * 4;
-              if (d[i + 3] > 20) {
-                if (x < minX) minX = x;
-                if (y < minY) minY = y;
-                if (x > maxX) maxX = x;
-                if (y > maxY) maxY = y;
-              }
-            }
-          }
-
-          if (maxX < minX || maxY < minY) return resolve(src);
+          const bounds = alphaBounds(d, w, h);
+          if (!bounds) return resolve(src);
+          let { minX, minY, maxX, maxY } = bounds;
 
           const padX = Math.max(4, Math.round((maxX - minX + 1) * 0.045));
           const padY = Math.max(4, Math.round((maxY - minY + 1) * 0.045));
@@ -143,7 +186,7 @@
     processLogoDataUrl(src).then((processed) => {
       let finalHtml = html;
       if (processed && processed !== src) finalHtml = finalHtml.split(src).join(processed);
-      finalHtml = finalHtml.replace('</head>', `<style id="tap-global-logo-harmony-v1">
+      finalHtml = finalHtml.replace('</head>', `<style id="tap-global-logo-harmony-v2">
         .logo-wrap,.logo-box,.logo-container{
           background:transparent!important;
           border:0!important;
