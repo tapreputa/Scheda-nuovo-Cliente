@@ -16,7 +16,7 @@
 
       const script = document.createElement('script');
       const versions = {
-        'tap-custom-categories.js': '4',
+        'tap-custom-categories.js': '5',
         'tap-macelleria-review.js': '3',
         'tap-polli-review.js': '4',
         'tap-logo-autocrop.js': '1'
