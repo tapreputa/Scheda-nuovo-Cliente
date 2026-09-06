@@ -24,7 +24,7 @@
         'tap-ristorantemare-review.js': '1',
         'tap-stabilimento-review.js': '1',
         'tap-strumentimusicali-review.js': '1',
-        'tap-svapostore-review.js': '2',
+        'tap-svapostore-review.js': '3',
         'tap-logo-autocrop.js': '1'
       };
       const version = versions[src] || '1';
