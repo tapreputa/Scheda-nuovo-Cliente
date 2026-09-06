@@ -136,6 +136,9 @@
     event.preventDefault();
     event.stopImmediatePropagation();
 
+    const formCheck = window.TapSystemChecks?.validateCurrentForm?.({ requireGenerated:true });
+    if (formCheck && !formCheck.ok) return warn(formCheck.message || 'Controlla i dati prima di salvare.');
+
     const stability = window.TapTemplateStability?.validateForSave?.();
     if (stability && !stability.ok) return warn(stability.message || 'Controlla nuovamente anteprima e link finale prima di salvare.');
 
