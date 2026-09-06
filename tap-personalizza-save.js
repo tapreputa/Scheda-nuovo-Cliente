@@ -136,6 +136,9 @@
     event.preventDefault();
     event.stopImmediatePropagation();
 
+    const stability = window.TapTemplateStability?.validateForSave?.();
+    if (stability && !stability.ok) return warn(stability.message || 'Controlla nuovamente anteprima e link finale prima di salvare.');
+
     const data = collect();
     if (!data.businessName) return warn('Nome attività non disponibile.');
     if (!data.reviewUrl) return warn('Link recensioni non disponibile.');
