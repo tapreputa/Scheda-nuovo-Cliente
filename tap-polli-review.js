@@ -16,7 +16,7 @@
     const noLogo = !!window.tapLogoSkipped || (typeof html === 'string' && html.includes(placeholderPixel));
 
     if (noLogo && isPolli && typeof html === 'string') {
-      html = html.replace('</head>', `<style id="tap-polli-no-logo-review-v3">
+      html = html.replace('</head>', `<style id="tap-polli-no-logo-review-v4">
         .logo,.logo-wrap,.logo-box,.logo-container{display:none!important}
         .eyebrow{
           position:absolute!important;
@@ -39,27 +39,30 @@
         }
         .bottone-google{
           position:absolute!important;
-          top:68vh!important;
-          left:7%!important;
-          right:7%!important;
-          width:auto!important;
+          top:72vh!important;
+          left:50%!important;
+          right:auto!important;
+          width:86vw!important;
+          max-width:590px!important;
           margin:0!important;
-          transform:none!important;
+          transform:translateX(-50%)!important;
+          box-sizing:border-box!important;
         }
         .stelle{
           position:absolute!important;
-          top:79vh!important;
-          left:0!important;
-          right:0!important;
-          width:100%!important;
+          top:83vh!important;
+          left:50%!important;
+          right:auto!important;
+          width:86vw!important;
           margin:0!important;
-          transform:none!important;
+          transform:translateX(-50%)!important;
           text-align:center!important;
+          box-sizing:border-box!important;
         }
         @media(max-width:640px){
           .eyebrow{top:20.5vh!important;width:84vw!important;font-size:clamp(22px,6.2vw,29px)!important}
-          .bottone-google{top:67.5vh!important}
-          .stelle{top:78.5vh!important}
+          .bottone-google{top:71.5vh!important;width:86vw!important}
+          .stelle{top:82.5vh!important;width:86vw!important}
         }
       </style></head>`);
     }
