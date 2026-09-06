@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20260906-stable4';
+  const BUILD_ID = '20260906-stable5';
   const SNAPSHOT_KEY = 'tapreputa_preview_snapshot_v1';
   const BINDING_KEY = 'tapreputa_generated_binding_v1';
   const activity = document.getElementById('activityType');
@@ -40,8 +40,10 @@
   function currentSignature() {
     const skipped = Boolean(window.tapLogoSkipped);
     const logo = skipped ? '' : readLogoData();
+    const category = currentCategory();
     return JSON.stringify({
-      category: currentCategory(),
+      category,
+      templateSignature: window.TapTemplateManifest?.signature?.(category) || '',
       mode: skipped ? 'no-logo' : 'logo',
       reviewUrl: String(reviewInput?.value || '').trim(),
       logoHash: skipped ? 'none' : hashText(logo)
@@ -104,10 +106,12 @@
   }
 
   function saveSnapshot(html) {
+    const category = currentCategory();
     const snapshot = Object.freeze({
       build: BUILD_ID,
-      category: currentCategory(),
-      closed: Boolean(window.TapCategories?.isClosed?.(currentCategory())),
+      category,
+      templateSignature: window.TapTemplateManifest?.signature?.(category) || '',
+      closed: Boolean(window.TapCategories?.isClosed?.(category)),
       mode: window.tapLogoSkipped ? 'no-logo' : 'logo',
       signature: currentSignature(),
       html: String(html || ''),
@@ -137,7 +141,7 @@
       return { ok:false, message:'Apri e controlla prima l’anteprima della categoria. Il link finale verrà associato esattamente a quella versione.' };
     }
     if (snapshot.signature !== currentSignature()) {
-      return { ok:false, message:'Categoria o logo sono cambiati dopo l’ultima anteprima. Apri nuovamente l’anteprima prima di generare il link finale.' };
+      return { ok:false, message:'Categoria, versione template o logo sono cambiati dopo l’ultima anteprima. Apri nuovamente l’anteprima prima di generare il link finale.' };
     }
     return { ok:true, snapshot };
   }
@@ -147,6 +151,7 @@
     const binding = {
       build: BUILD_ID,
       category: currentCategory(),
+      templateSignature: snapshot?.templateSignature || '',
       signature: currentSignature(),
       previewHash: snapshot?.htmlHash || '',
       finalUrl: String(url || ''),
@@ -191,6 +196,7 @@
 
   activity?.addEventListener('change', () => invalidate('categoria modificata'));
   logoFile?.addEventListener('change', () => invalidate('logo modificato'));
+  reviewInput?.addEventListener('input', () => invalidate('link recensioni modificato'));
   window.addEventListener('tap-logo-skip-change', () => invalidate('modalità logo modificata'));
 
   generateBtn?.addEventListener('click', event => {
