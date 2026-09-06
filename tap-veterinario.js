@@ -3,10 +3,11 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20260906-stable4';
+  const BUILD_ID = '20260906-stable5';
 
   const CORE_MODULES = Object.freeze([
     'tap-categories.js',
+    'tap-template-manifest.js',
     'tap-project-config.js',
     'tap-personalizza-controller.js',
     'tap-logo-optional.js',
