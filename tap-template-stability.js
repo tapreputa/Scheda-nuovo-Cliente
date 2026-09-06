@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20260906-stable5';
+  const BUILD_ID = '20260906-stable5.1';
   const SNAPSHOT_KEY = 'tapreputa_preview_snapshot_v1';
   const BINDING_KEY = 'tapreputa_generated_binding_v1';
   const activity = document.getElementById('activityType');
@@ -161,12 +161,26 @@
     return binding;
   }
 
+  function tryBindGeneratedLink() {
+    const url = String(finalLinkValue?.textContent || '').trim();
+    if (!url) return false;
+    const check = validateForGenerate();
+    if (!check.ok) return false;
+    bindGeneratedLink(url);
+    return true;
+  }
+
   function validateForSave() {
     if (currentCategory() === 'standard') return { ok:true };
     const preview = validateForGenerate();
     if (!preview.ok) return preview;
     let binding = null;
     try { binding = JSON.parse(sessionStorage.getItem(BINDING_KEY) || 'null'); } catch (_) {}
+    if (!binding || binding.build !== BUILD_ID) {
+      if (tryBindGeneratedLink()) {
+        try { binding = JSON.parse(sessionStorage.getItem(BINDING_KEY) || 'null'); } catch (_) {}
+      }
+    }
     if (!binding || binding.build !== BUILD_ID) {
       return { ok:false, message:'Genera nuovamente il link finale dopo aver controllato l’anteprima.' };
     }
@@ -207,11 +221,18 @@
       showWarning(check.message);
       return;
     }
-    setTimeout(() => {
-      const url = String(finalLinkValue?.textContent || '').trim();
-      if (url) bindGeneratedLink(url);
-    }, 0);
+    setTimeout(tryBindGeneratedLink, 0);
+    setTimeout(tryBindGeneratedLink, 80);
+    setTimeout(tryBindGeneratedLink, 250);
   }, true);
+
+  if (finalLinkValue) {
+    const linkObserver = new MutationObserver(() => {
+      tryBindGeneratedLink();
+    });
+    linkObserver.observe(finalLinkValue, { childList:true, characterData:true, subtree:true });
+    setTimeout(tryBindGeneratedLink, 0);
+  }
 
   window.TapTemplateStability = Object.freeze({
     build: BUILD_ID,
@@ -220,6 +241,7 @@
     validateForGenerate,
     validateForSave,
     bindGeneratedLink,
+    tryBindGeneratedLink,
     isClosed: id => Boolean(window.TapCategories?.isClosed?.(id)),
     getFinalPreviewHtml: () => getSnapshot()?.html || '',
     invalidate
