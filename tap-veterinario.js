@@ -49,6 +49,7 @@
       await loadScript('tap-panineria-review.js');
       await loadScript('tap-parrucchiere-review.js');
       await loadScript('tap-pasticceria-review.js');
+      await loadScript('tap-pizzeria-review.js');
     } catch (error) {
       console.error('Tapreputa: inizializzazione moduli Personalizza non riuscita.', error);
     }
