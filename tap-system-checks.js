@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = window.TapProjectConfig?.build || window.TapTemplateStability?.build || '20260906-stable3';
+  const BUILD_ID = window.TapProjectConfig?.build || window.TapTemplateStability?.build || '20260906-stable4';
   const registry = window.TapCategories;
   const project = window.TapProjectConfig;
   const msg = document.getElementById('msg');
@@ -40,6 +40,7 @@
       if (seen.has(category.id)) addError('ID categoria duplicato: ' + category.id);
       seen.add(category.id);
       if (!category.label) addError('Etichetta mancante per la categoria ' + category.id + '.');
+      if (category.id !== 'standard' && !category.background) addWarning('Sfondo non registrato per la categoria ' + category.id + '.');
       if (category.id !== 'standard' && !category.closed) addWarning('Categoria non marcata come chiusa: ' + category.id);
       if (category.closed && !category.approvedAt) addWarning('Data approvazione mancante per la categoria ' + category.id);
     });
@@ -114,6 +115,12 @@
     return { ok:missing.length === 0, checked:assets.length, missing };
   }
 
+  async function validateCurrentCategoryAsset() {
+    const id = currentCategory();
+    if (!id || id === 'standard' || !project?.validateCategoryAsset) return { ok:true, asset:'', reason:'' };
+    return project.validateCategoryAsset(id);
+  }
+
   function report() {
     const policy = project?.categoryPolicy?.(currentCategory()) || null;
     return Object.freeze({
@@ -123,6 +130,7 @@
       warnings: Object.freeze(warnings.slice()),
       modules: moduleStatus(),
       currentCategory: currentCategory(),
+      currentAsset: project?.categoryAsset?.(currentCategory()) || '',
       categoryPolicy: policy,
       globalRules: project?.globalRules || null
     });
@@ -136,6 +144,7 @@
     validateRegistry,
     validateCurrentForm,
     validatePreviewAssets,
+    validateCurrentCategoryAsset,
     moduleStatus,
     report
   });
