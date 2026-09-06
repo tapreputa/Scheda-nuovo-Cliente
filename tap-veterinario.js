@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20260906-stable1';
+  const BUILD_ID = '20260906-stable2';
 
   const CORE_MODULES = Object.freeze([
     'tap-categories.js',
@@ -39,7 +39,8 @@
   ]);
 
   const FINAL_MODULES = Object.freeze([
-    'tap-template-stability.js'
+    'tap-template-stability.js',
+    'tap-system-checks.js'
   ]);
 
   const MODULES = Object.freeze([...CORE_MODULES, ...APPROVED_CATEGORY_MODULES, ...FINAL_MODULES]);
@@ -51,7 +52,7 @@
       if (existing) {
         if (existing.dataset.loaded === '1') return resolve();
         existing.addEventListener('load', resolve, { once:true });
-        existing.addEventListener('error', reject, { once:true });
+        existing.addEventListener('error', () => reject(new Error('Modulo non caricato: ' + src)), { once:true });
         return;
       }
 
@@ -64,7 +65,7 @@
         script.dataset.loaded = '1';
         resolve();
       }, { once:true });
-      script.addEventListener('error', reject, { once:true });
+      script.addEventListener('error', () => reject(new Error('Modulo non caricato: ' + src)), { once:true });
       document.head.appendChild(script);
     });
   }
@@ -77,10 +78,16 @@
         id: BUILD_ID,
         modules: MODULES,
         core: CORE_MODULES,
-        approvedCategoryModules: APPROVED_CATEGORY_MODULES
+        approvedCategoryModules: APPROVED_CATEGORY_MODULES,
+        final: FINAL_MODULES
       });
     } catch (error) {
       console.error('Tapreputa: inizializzazione moduli Personalizza non riuscita.', error);
+      const msg = document.getElementById('msg');
+      if (msg) {
+        msg.className = 'message show warn';
+        msg.textContent = 'Un modulo dell’app non è stato caricato correttamente. Premi ↻ oppure riapri Personalizza prima di continuare.';
+      }
     }
   })();
 })();
