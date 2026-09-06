@@ -3,8 +3,9 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = window.TapTemplateStability?.build || '20260906-stable1';
+  const BUILD_ID = window.TapProjectConfig?.build || window.TapTemplateStability?.build || '20260906-stable3';
   const registry = window.TapCategories;
+  const project = window.TapProjectConfig;
   const msg = document.getElementById('msg');
   const activity = document.getElementById('activityType');
   const reviewInput = document.getElementById('destinationUrl');
@@ -40,11 +41,15 @@
       seen.add(category.id);
       if (!category.label) addError('Etichetta mancante per la categoria ' + category.id + '.');
       if (category.id !== 'standard' && !category.closed) addWarning('Categoria non marcata come chiusa: ' + category.id);
+      if (category.closed && !category.approvedAt) addWarning('Data approvazione mancante per la categoria ' + category.id);
     });
 
     Object.entries(registry.aliases || {}).forEach(([alias, target]) => {
       if (!registry.get(target)) addError(`Alias ${alias} punta a una categoria inesistente: ${target}`);
     });
+
+    if (!project) addWarning('Configurazione globale del progetto non disponibile.');
+    else if (!project.globalRules?.preserveClosedLayouts) addWarning('Protezione layout categorie chiuse non attiva.');
 
     return errors.length === 0;
   }
@@ -85,23 +90,41 @@
   }
 
   function moduleStatus() {
+    const expected = window.TapPersonalizzaBuild?.modules || [];
     const scripts = [...document.querySelectorAll('script[data-tap-module]')];
-    const missing = scripts.filter(script => script.dataset.loaded !== '1').map(script => script.dataset.tapModule);
+    const loadedNames = new Set(scripts.filter(script => script.dataset.loaded === '1').map(script => script.dataset.tapModule));
+    const missing = expected.length
+      ? expected.filter(name => !loadedNames.has(name))
+      : scripts.filter(script => script.dataset.loaded !== '1').map(script => script.dataset.tapModule);
     return {
-      total: scripts.length,
-      loaded: scripts.length - missing.length,
+      total: expected.length || scripts.length,
+      loaded: (expected.length || scripts.length) - missing.length,
       missing
     };
   }
 
+  async function validatePreviewAssets() {
+    const html = window.TapTemplateStability?.getFinalPreviewHtml?.() || '';
+    if (!html || !project?.extractPreviewAssets) return { ok:true, checked:0, missing:[] };
+    const assets = project.extractPreviewAssets(html);
+    const missing = [];
+    for (const asset of assets) {
+      if (!(await project.checkAsset(asset))) missing.push(asset);
+    }
+    return { ok:missing.length === 0, checked:assets.length, missing };
+  }
+
   function report() {
+    const policy = project?.categoryPolicy?.(currentCategory()) || null;
     return Object.freeze({
       build: BUILD_ID,
       registryOk: errors.length === 0,
       errors: Object.freeze(errors.slice()),
       warnings: Object.freeze(warnings.slice()),
       modules: moduleStatus(),
-      currentCategory: currentCategory()
+      currentCategory: currentCategory(),
+      categoryPolicy: policy,
+      globalRules: project?.globalRules || null
     });
   }
 
@@ -112,6 +135,7 @@
     build: BUILD_ID,
     validateRegistry,
     validateCurrentForm,
+    validatePreviewAssets,
     moduleStatus,
     report
   });
