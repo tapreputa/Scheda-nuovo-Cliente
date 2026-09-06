@@ -38,6 +38,7 @@
       await loadScript('tap-personalizza-save.js');
       await loadScript('tap-personalizza-reliability.js');
       await loadScript('tap-preview-refresh.js');
+      await loadScript('tap-global-stars.js');
       await loadScript('tap-category-review-fixes.js');
       await loadScript('tap-category-mode-separation.js');
       await loadScript('tap-cartolibreria-review.js');
