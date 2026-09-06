@@ -22,6 +22,7 @@
         'tap-pub-review.js': '1',
         'tap-ristorante-review.js': '2',
         'tap-ristorantemare-review.js': '1',
+        'tap-stabilimento-review.js': '1',
         'tap-logo-autocrop.js': '1'
       };
       const version = versions[src] || '1';
@@ -63,6 +64,7 @@
       await loadScript('tap-pub-review.js');
       await loadScript('tap-ristorante-review.js');
       await loadScript('tap-ristorantemare-review.js');
+      await loadScript('tap-stabilimento-review.js');
     } catch (error) {
       console.error('Tapreputa: inizializzazione moduli Personalizza non riuscita.', error);
     }
