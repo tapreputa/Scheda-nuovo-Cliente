@@ -18,7 +18,7 @@
       const versions = {
         'tap-custom-categories.js': '5',
         'tap-macelleria-review.js': '3',
-        'tap-polli-review.js': '4',
+        'tap-polli-review.js': '5',
         'tap-logo-autocrop.js': '1'
       };
       const version = versions[src] || '1';
