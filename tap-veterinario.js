@@ -42,6 +42,7 @@
       await loadScript('tap-category-mode-separation.js');
       await loadScript('tap-cartolibreria-review.js');
       await loadScript('tap-macelleria-review.js');
+      await loadScript('tap-ottica-review.js');
     } catch (error) {
       console.error('Tapreputa: inizializzazione moduli Personalizza non riuscita.', error);
     }
