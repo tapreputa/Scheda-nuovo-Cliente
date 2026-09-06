@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  const BUILD_ID = '20260906-stable3';
-  const GLOBAL_POLICY_VERSION = '1.0';
+  const BUILD_ID = '20260906-stable4';
+  const GLOBAL_POLICY_VERSION = '1.1';
 
   const GLOBAL_RULES = Object.freeze({
     luminousStars: true,
@@ -12,7 +12,9 @@
     previewBeforeGenerate: true,
     bindGeneratedLinkToPreview: true,
     validateBeforeSave: true,
-    cacheBustModulesByBuild: true
+    cacheBustModulesByBuild: true,
+    canonicalCategoryRegistry: true,
+    centralizedCategoryAssets: true
   });
 
   const IMMUTABLE_LAYOUT_FIELDS = Object.freeze([
@@ -36,6 +38,7 @@
     return Object.freeze({
       id: category.id,
       label: category.label,
+      background: category.background || '',
       templateVersion: category.version || '1.0',
       closed: Boolean(category.closed),
       approvedAt: category.approvedAt || '',
@@ -80,6 +83,17 @@
     }
   }
 
+  function categoryAsset(id) {
+    return window.TapCategories?.get(normalizeCategoryId(id))?.background || '';
+  }
+
+  async function validateCategoryAsset(id) {
+    const asset = categoryAsset(id);
+    if (!asset) return { ok:false, asset:'', reason:'missing-metadata' };
+    const ok = await checkAsset(asset);
+    return { ok, asset, reason:ok ? '' : 'not-found' };
+  }
+
   window.TapProjectConfig = Object.freeze({
     build: BUILD_ID,
     globalPolicyVersion: GLOBAL_POLICY_VERSION,
@@ -87,6 +101,8 @@
     immutableLayoutFields: IMMUTABLE_LAYOUT_FIELDS,
     categoryPolicy,
     mayChangeLayout,
+    categoryAsset,
+    validateCategoryAsset,
     extractPreviewAssets,
     checkAsset
   });
