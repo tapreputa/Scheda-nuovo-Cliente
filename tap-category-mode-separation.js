@@ -261,6 +261,50 @@
       </style></head>`);
     }
 
+    if (noLogo && type === 'gioielleria' && typeof html === 'string') {
+      html = html.replace('</head>', `<style id="tap-gioielleria-no-logo-review-v1">
+        .eyebrow{
+          display:block!important;
+          width:88%!important;
+          max-width:620px!important;
+          margin-left:auto!important;
+          margin-right:auto!important;
+          box-sizing:border-box!important;
+          white-space:normal!important;
+          overflow-wrap:anywhere!important;
+          text-align:center!important;
+          font-size:clamp(1.18rem,5.45vw,1.55rem)!important;
+          line-height:1.18!important;
+          font-weight:950!important;
+          letter-spacing:.065em!important;
+          text-shadow:0 3px 10px rgba(0,0,0,.64)!important;
+        }
+        .bottone-google{
+          display:block!important;
+          width:86%!important;
+          max-width:620px!important;
+          margin-left:auto!important;
+          margin-right:auto!important;
+          box-sizing:border-box!important;
+          left:auto!important;
+          right:auto!important;
+        }
+        .stelle{
+          margin-left:auto!important;
+          margin-right:auto!important;
+          text-align:center!important;
+        }
+        @media(max-width:640px){
+          .eyebrow{
+            width:86%!important;
+            font-size:clamp(1.12rem,5.2vw,1.42rem)!important;
+            letter-spacing:.055em!important;
+          }
+          .bottone-google{width:84%!important}
+        }
+      </style></head>`);
+    }
+
     return previousOpenInlinePreview(html);
   };
 })();
