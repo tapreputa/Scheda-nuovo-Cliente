@@ -15,7 +15,7 @@
       }
 
       const script = document.createElement('script');
-      const version = src === 'tap-macelleria-review.js' ? '3' : (src === 'tap-logo-autocrop.js' ? '1' : '1');
+      const version = src === 'tap-macelleria-review.js' ? '3' : (src === 'tap-polli-review.js' ? '2' : (src === 'tap-logo-autocrop.js' ? '1' : '1'));
       script.src = src + '?v=' + version;
       script.async = false;
       script.dataset.tapModule = src;
@@ -50,7 +50,7 @@
       await loadScript('tap-parrucchiere-review.js');
       await loadScript('tap-pasticceria-review.js');
       await loadScript('tap-pizzeria-review.js');
-      await loadScript('tap-polli-spiedo-review.js');
+      await loadScript('tap-polli-review.js');
     } catch (error) {
       console.error('Tapreputa: inizializzazione moduli Personalizza non riuscita.', error);
     }
