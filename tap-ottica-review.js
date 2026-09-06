@@ -54,6 +54,17 @@
       </style></head>`);
     }
 
+    if (!noLogo && isOttica && typeof html === 'string') {
+      html = html.replace(/Ti\s+è\s+piaciuta\s+la\s+tua\s+esperienza\s+da\s+noi\?/i, 'Trova gli occhiali perfetti per te!');
+      html = html.replace('</head>', `<style id="tap-ottica-with-logo-review-v1">
+        .bottone-google{
+          background:linear-gradient(135deg,#9b8d80,#75695f)!important;
+          border-color:rgba(255,255,255,.30)!important;
+          box-shadow:0 8px 20px rgba(60,48,40,.24)!important;
+        }
+      </style></head>`);
+    }
+
     return previousOpenInlinePreview(html);
   };
 })();
