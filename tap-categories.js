@@ -35,7 +35,9 @@
     hamburgeria: 'panineria_hamburgeria'
   });
 
-  const byId = Object.freeze(Object.fromEntries(categories.map(item => [item.id, Object.freeze({version:'1.0', ...item})])));
+  const CLOSED_IDS = Object.freeze(categories.filter(item => item.id !== 'standard').map(item => item.id));
+  const closedSet = new Set(CLOSED_IDS);
+  const byId = Object.freeze(Object.fromEntries(categories.map(item => [item.id, Object.freeze({version:'1.0', closed:closedSet.has(item.id), approvedAt:'2026-09-06', ...item})])));
   const sorted = Object.freeze(categories.slice().sort((a,b) => {
     if (a.id === 'standard') return -1;
     if (b.id === 'standard') return 1;
@@ -55,6 +57,10 @@
     return get(id)?.version || '1.0';
   }
 
+  function isClosed(id) {
+    return Boolean(get(id)?.closed);
+  }
+
   window.TapCategories = Object.freeze({
     list: sorted,
     byId,
@@ -62,6 +68,8 @@
     normalizeId,
     get,
     templateVersion,
+    isClosed,
+    closedIds: CLOSED_IDS,
     ids: Object.freeze(sorted.map(item => item.id))
   });
 })();
