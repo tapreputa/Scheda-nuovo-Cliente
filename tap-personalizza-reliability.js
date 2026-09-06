@@ -8,12 +8,13 @@
   const generateBtn = document.getElementById('generateBtn');
   const msg = document.getElementById('msg');
   const logoFile = document.getElementById('logoFile');
+  const reviewInput = document.getElementById('destinationUrl');
   if (!activity) return;
 
   const params = new URLSearchParams(location.search);
   const business = (params.get('business') || '').trim();
   const placeId = (params.get('placeid') || '').trim();
-  const draftKey = 'tapreputa_personalizza_draft_v1:' + (placeId || business.toLowerCase() || 'nuovo');
+  const draftKey = 'tapreputa_personalizza_draft_v2:' + (placeId || business.toLowerCase() || 'nuovo');
 
   function readDraft() {
     try {
@@ -28,6 +29,8 @@
       sessionStorage.setItem(draftKey, JSON.stringify({
         category: activity.value || '',
         logoSkipped: Boolean(window.tapLogoSkipped),
+        reviewUrl: String(reviewInput?.value || '').trim(),
+        templateSignature: window.TapTemplateManifest?.signature?.(activity.value) || '',
         updatedAt: Date.now()
       }));
     } catch {}
@@ -37,29 +40,28 @@
     try { sessionStorage.removeItem(draftKey); } catch {}
   }
 
-  // Ripristina la categoria solo se non è già stata definita dall'URL.
   const draft = readDraft();
   if (!params.get('category') && draft?.category && window.TapCategories?.get(draft.category)) {
     activity.value = window.TapCategories.normalizeId(draft.category);
     activity.dispatchEvent(new Event('change', { bubbles:true }));
   }
+  if (!params.get('reviewurl') && draft?.reviewUrl && reviewInput && !reviewInput.value) {
+    reviewInput.value = draft.reviewUrl;
+    reviewInput.dispatchEvent(new Event('input', { bubbles:true }));
+  }
+  if (draft?.logoSkipped === true && activity.value !== 'standard') {
+    window.tapLogoSkipped = true;
+    window.dispatchEvent(new CustomEvent('tap-logo-skip-change', { detail:{ skipped:true, restored:true } }));
+  }
 
   activity.addEventListener('change', writeDraft);
   logoFile?.addEventListener('change', writeDraft);
+  reviewInput?.addEventListener('input', writeDraft);
+  window.addEventListener('tap-logo-skip-change', writeDraft);
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') writeDraft();
   });
   window.addEventListener('pagehide', writeDraft);
-
-  // Versione tecnica uniforme dei template: utile per manutenzione e rollback futuri.
-  if (window.TapCategories && !window.TapCategories.templateVersion) {
-    try {
-      Object.defineProperty(window.TapCategories, 'templateVersion', {
-        value: id => window.TapCategories.get(id)?.version || '1.0',
-        enumerable: true
-      });
-    } catch {}
-  }
 
   const assetCache = new Map();
   async function validateBackground(category) {
@@ -81,13 +83,11 @@
     }
   }
 
-  // Pre-controllo discreto: nessun messaggio se tutto è corretto.
   activity.addEventListener('change', () => {
     const category = window.TapCategories?.get(activity.value);
     if (category?.background) validateBackground(category);
   });
 
-  // I pulsanti principali fanno un controllo rapido dell'asset prima dell'azione.
   async function preflight(event, button) {
     const category = window.TapCategories?.get(activity.value);
     if (!category?.background) return;
@@ -101,7 +101,6 @@
   previewBtn?.addEventListener('click', event => preflight(event, previewBtn), true);
   generateBtn?.addEventListener('click', event => preflight(event, generateBtn), true);
 
-  // Quando il cliente viene salvato con successo non serve più conservare la bozza.
   const addClientBtn = document.getElementById('addClientBtn');
   if (addClientBtn && msg) {
     new MutationObserver(() => {
@@ -114,7 +113,9 @@
   writeDraft();
 
   window.TapPersonalizzaReliability = Object.freeze({
+    draftVersion: 2,
     saveDraft: writeDraft,
+    readDraft,
     clearDraft,
     validateCurrent: () => validateBackground(window.TapCategories?.get(activity.value))
   });
