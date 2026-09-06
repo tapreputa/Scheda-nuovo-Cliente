@@ -45,12 +45,14 @@
     }
 
     if (!noLogo && isParrucchiere && typeof html === 'string') {
-      html = html.replace('</head>', `<style id="tap-parrucchiere-with-logo-review-v1">
+      html = html.replace('</head>', `<style id="tap-parrucchiere-with-logo-review-v2">
         .logo{
           position:relative!important;
           top:14px!important;
         }
         .eyebrow{
+          position:relative!important;
+          top:18px!important;
           font-size:clamp(1.38rem,6.35vw,1.86rem)!important;
           line-height:1.12!important;
           font-weight:950!important;
@@ -58,19 +60,24 @@
           text-align:center!important;
           text-shadow:0 3px 10px rgba(0,0,0,.76)!important;
         }
-        .bottone-google{
+        .messaggio-box{
           position:relative!important;
           top:18px!important;
         }
+        .bottone-google{
+          position:relative!important;
+          top:36px!important;
+        }
         .stelle{
           position:relative!important;
-          top:24px!important;
+          top:42px!important;
         }
         @media(max-width:640px){
           .logo{top:12px!important}
-          .eyebrow{font-size:clamp(1.30rem,6.05vw,1.68rem)!important}
-          .bottone-google{top:16px!important}
-          .stelle{top:22px!important}
+          .eyebrow{top:16px!important;font-size:clamp(1.30rem,6.05vw,1.68rem)!important}
+          .messaggio-box{top:16px!important}
+          .bottone-google{top:32px!important}
+          .stelle{top:38px!important}
         }
       </style></head>`);
     }
