@@ -15,7 +15,7 @@
     const noLogo = !!window.tapLogoSkipped;
 
     if (noLogo && isPizzeria && typeof html === 'string') {
-      html = html.replace('</head>', `<style id="tap-pizzeria-no-logo-review-v2">
+      html = html.replace('</head>', `<style id="tap-pizzeria-no-logo-review-v3">
         .eyebrow{
           font-size:clamp(1.46rem,6.65vw,1.96rem)!important;
           line-height:1.12!important;
@@ -25,13 +25,13 @@
           text-shadow:0 3px 10px rgba(0,0,0,.76)!important;
         }
         .messaggio-box{
-          background:rgba(242,232,224,.44)!important;
-          border-color:rgba(255,255,255,.34)!important;
-          color:#4a2b22!important;
-          font-weight:850!important;
-          text-shadow:0 1px 1px rgba(255,255,255,.70),0 1px 2px rgba(0,0,0,.10)!important;
-          backdrop-filter:blur(.25px)!important;
-          -webkit-backdrop-filter:blur(.25px)!important;
+          background:rgba(246,236,228,.58)!important;
+          border-color:rgba(255,255,255,.42)!important;
+          color:#3c211a!important;
+          font-weight:900!important;
+          text-shadow:0 1px 1px rgba(255,255,255,.86),0 1px 2px rgba(0,0,0,.14)!important;
+          backdrop-filter:blur(.35px)!important;
+          -webkit-backdrop-filter:blur(.35px)!important;
         }
         .bottone-google{
           width:84%!important;
