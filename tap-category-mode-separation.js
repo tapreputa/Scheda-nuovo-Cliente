@@ -193,6 +193,27 @@
       </style></head>`);
     }
 
+    if (!noLogo && type === 'farmacia' && typeof html === 'string') {
+      html = html.replace('</head>', `<style id="tap-farmacia-with-logo-review-v1">
+        .eyebrow{
+          font-size:clamp(1.18rem,5.5vw,1.50rem)!important;
+          line-height:1.14!important;
+          font-weight:950!important;
+          letter-spacing:.10em!important;
+          text-shadow:0 3px 10px rgba(0,0,0,.50)!important;
+        }
+        .messaggio-box{
+          background:rgba(255,255,255,.44)!important;
+          border-color:rgba(255,255,255,.30)!important;
+          backdrop-filter:blur(.35px)!important;
+          -webkit-backdrop-filter:blur(.35px)!important;
+        }
+        @media(max-width:640px){
+          .eyebrow{font-size:clamp(1.14rem,5.3vw,1.42rem)!important}
+        }
+      </style></head>`);
+    }
+
     return previousOpenInlinePreview(html);
   };
 })();
