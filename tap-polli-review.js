@@ -16,21 +16,22 @@
     const noLogo = !!window.tapLogoSkipped || (typeof html === 'string' && html.includes(placeholderPixel));
 
     if (noLogo && isPolli && typeof html === 'string') {
-      html = html.replace('</head>', `<style id="tap-polli-no-logo-review-v2">
+      html = html.replace('</head>', `<style id="tap-polli-no-logo-review-v3">
         .logo,.logo-wrap,.logo-box,.logo-container{display:none!important}
         .eyebrow{
           position:absolute!important;
-          top:15.5vh!important;
-          left:8%!important;
-          right:8%!important;
-          width:auto!important;
-          max-width:none!important;
+          top:21vh!important;
+          left:50%!important;
+          right:auto!important;
+          width:86vw!important;
+          max-width:620px!important;
           margin:0!important;
           padding:0!important;
-          transform:none!important;
+          transform:translateX(-50%)!important;
           text-align:center!important;
-          font-size:clamp(1.42rem,6.5vw,1.95rem)!important;
-          line-height:1.08!important;
+          box-sizing:border-box!important;
+          font-size:clamp(23px,6.1vw,31px)!important;
+          line-height:1.07!important;
           font-weight:950!important;
           letter-spacing:.025em!important;
           color:#fff!important;
@@ -38,7 +39,7 @@
         }
         .bottone-google{
           position:absolute!important;
-          top:58vh!important;
+          top:68vh!important;
           left:7%!important;
           right:7%!important;
           width:auto!important;
@@ -47,7 +48,7 @@
         }
         .stelle{
           position:absolute!important;
-          top:70.5vh!important;
+          top:79vh!important;
           left:0!important;
           right:0!important;
           width:100%!important;
@@ -56,9 +57,9 @@
           text-align:center!important;
         }
         @media(max-width:640px){
-          .eyebrow{top:15vh!important;left:7%!important;right:7%!important;font-size:clamp(1.34rem,6.2vw,1.78rem)!important}
-          .bottone-google{top:57.5vh!important}
-          .stelle{top:70vh!important}
+          .eyebrow{top:20.5vh!important;width:84vw!important;font-size:clamp(22px,6.2vw,29px)!important}
+          .bottone-google{top:67.5vh!important}
+          .stelle{top:78.5vh!important}
         }
       </style></head>`);
     }
