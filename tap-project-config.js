@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  const BUILD_ID = '20260906-stable4';
-  const GLOBAL_POLICY_VERSION = '1.1';
+  const BUILD_ID = '20260906-stable5';
+  const GLOBAL_POLICY_VERSION = '1.2';
 
   const GLOBAL_RULES = Object.freeze({
     luminousStars: true,
@@ -14,7 +14,9 @@
     validateBeforeSave: true,
     cacheBustModulesByBuild: true,
     canonicalCategoryRegistry: true,
-    centralizedCategoryAssets: true
+    centralizedCategoryAssets: true,
+    centralizedTemplateManifest: true,
+    persistentDraftState: true
   });
 
   const IMMUTABLE_LAYOUT_FIELDS = Object.freeze([
@@ -40,6 +42,7 @@
       label: category.label,
       background: category.background || '',
       templateVersion: category.version || '1.0',
+      templateSignature: window.TapTemplateManifest?.signature?.(category.id) || '',
       closed: Boolean(category.closed),
       approvedAt: category.approvedAt || '',
       layoutLocked: Boolean(category.closed && GLOBAL_RULES.preserveClosedLayouts),
