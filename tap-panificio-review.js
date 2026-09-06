@@ -43,6 +43,28 @@
       </style></head>`);
     }
 
+    if (!noLogo && isPanificio && typeof html === 'string') {
+      html = html.replace('</head>', `<style id="tap-panificio-with-logo-review-v1">
+        .eyebrow{
+          font-size:clamp(1.28rem,5.9vw,1.68rem)!important;
+          line-height:1.14!important;
+          font-weight:950!important;
+          letter-spacing:.07em!important;
+          text-align:center!important;
+          text-shadow:0 3px 10px rgba(0,0,0,.82),0 0 3px rgba(0,0,0,.45)!important;
+        }
+        .messaggio-box{
+          background:rgba(255,248,236,.40)!important;
+          border-color:rgba(255,255,255,.30)!important;
+          backdrop-filter:blur(.25px)!important;
+          -webkit-backdrop-filter:blur(.25px)!important;
+        }
+        @media(max-width:640px){
+          .eyebrow{font-size:clamp(1.20rem,5.6vw,1.52rem)!important}
+        }
+      </style></head>`);
+    }
+
     return previousOpenInlinePreview(html);
   };
 })();
