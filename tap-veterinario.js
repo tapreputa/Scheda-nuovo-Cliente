@@ -15,7 +15,8 @@
       }
 
       const script = document.createElement('script');
-      script.src = src + '?v=1';
+      const version = src === 'tap-macelleria-review.js' ? '3' : '1';
+      script.src = src + '?v=' + version;
       script.async = false;
       script.dataset.tapModule = src;
       script.addEventListener('load', () => {
