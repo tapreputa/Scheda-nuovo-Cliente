@@ -20,9 +20,54 @@ jobs:
           from pathlib import Path
           p = Path('risultati.html')
           s = p.read_text(encoding='utf-8')
-          marker = '/* TEAM TABLE MOBILE COMPACT V1 */'
+          marker = '/* TEAM TABLE MOBILE READABLE V2 */'
           if marker not in s:
-              css = "\n/* TEAM TABLE MOBILE COMPACT V1 */\n@media(max-width:760px){\n  .table-card{overflow:hidden}\n  .table-wrap{overflow-x:hidden!important}\n  table{width:100%!important;min-width:0!important;table-layout:fixed!important}\n  th,td{padding:14px 6px!important}\n  th:first-child,td:first-child{position:static!important;width:34%!important;min-width:34%!important;max-width:34%!important;box-shadow:none!important}\n  thead th:not(:first-child){font-size:12px!important}\n  .metric-label{font-size:14px!important}\n  .value{font-size:18px!important}\n  .money-row .metric-label,.money-row .value{font-size:18px!important}\n}\n@media(max-width:430px){\n  th,td{padding:13px 5px!important}\n  th:first-child,td:first-child{width:35%!important;min-width:35%!important;max-width:35%!important}\n  thead th:not(:first-child){font-size:11px!important}\n  .metric-label{font-size:13px!important}\n  .value{font-size:17px!important}\n  .money-row .metric-label,.money-row .value{font-size:17px!important}\n}\n"
+              css = """
+
+/* TEAM TABLE MOBILE READABLE V2 */
+@media(max-width:760px){
+  .table-card{overflow:hidden}
+  .table-wrap{overflow-x:hidden!important}
+  table{width:100%!important;min-width:0!important;table-layout:fixed!important}
+  th:nth-child(4),td:nth-child(4){display:none!important}
+  th,td{padding:14px 8px!important}
+  th:first-child,td:first-child{
+    position:static!important;
+    width:30%!important;
+    min-width:30%!important;
+    max-width:30%!important;
+    box-shadow:none!important
+  }
+  th:nth-child(2),td:nth-child(2),th:nth-child(3),td:nth-child(3){
+    width:35%!important;
+    min-width:35%!important;
+    max-width:35%!important
+  }
+  thead th:not(:first-child){font-size:13px!important;text-align:center!important;white-space:nowrap!important}
+  .metric-label{font-size:15px!important;white-space:nowrap!important}
+  .value{font-size:20px!important;text-align:center!important;white-space:nowrap!important}
+  .money-row .metric-label{font-size:17px!important}
+  .money-row .value{font-size:16px!important;letter-spacing:-.02em!important}
+}
+@media(max-width:430px){
+  th,td{padding:13px 6px!important}
+  th:first-child,td:first-child{
+    width:32%!important;
+    min-width:32%!important;
+    max-width:32%!important
+  }
+  th:nth-child(2),td:nth-child(2),th:nth-child(3),td:nth-child(3){
+    width:34%!important;
+    min-width:34%!important;
+    max-width:34%!important
+  }
+  thead th:not(:first-child){font-size:12px!important}
+  .metric-label{font-size:14px!important}
+  .value{font-size:19px!important}
+  .money-row .metric-label{font-size:16px!important}
+  .money-row .value{font-size:15px!important;letter-spacing:-.03em!important}
+}
+"""
               s = s.replace('</style>', css + '\n</style>', 1)
               p.write_text(s, encoding='utf-8')
           PY
@@ -32,5 +77,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add risultati.html
-          git commit -m "Fit Francesco and Gisberto columns on mobile results table"
+          git commit -m "Make mobile results table readable without horizontal scrolling"
           git push
