@@ -325,3 +325,25 @@ html[data-tap-page="personalizza.html"] .steps{
     margin-bottom:10px!important;
   }
 }
+
+/* ID clienti: annulla il duplicato grafico introdotto dal fallback mobile.
+   Mantiene una sola stringa reale nella cella, centrata e sempre leggibile. */
+html body #rows > tr > td.id{
+  color:#1f5fa3!important;
+  -webkit-text-fill-color:#1f5fa3!important;
+  text-shadow:none!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  position:sticky!important;
+  left:0!important;
+  z-index:45!important;
+  background:#fff!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+}
+html body #rows > tr > td.id::before,
+html body #rows > tr > td.id::after{
+  content:none!important;
+  display:none!important;
+}
