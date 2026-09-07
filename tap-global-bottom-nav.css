@@ -1,0 +1,40 @@
+/* Tapreputa — navigazione globale mobile
+   Barra fissa condivisa tra le pagine gestionali. */
+:root{--tap-nav-navy:#07152b;--tap-nav-blue:#1769ff;--tap-nav-muted:#7a8799}
+.tap-global-bottom-nav{display:none}
+@media(max-width:820px){
+  body{padding-bottom:max(98px,calc(98px + env(safe-area-inset-bottom)))!important}
+  .bottom-nav{display:none!important}
+  .tap-global-bottom-nav{
+    position:fixed;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:9999;
+    height:72px;padding:6px;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;
+    border:1px solid rgba(203,214,229,.95);border-radius:23px;
+    background:rgba(255,255,255,.95);box-shadow:0 18px 44px rgba(7,21,43,.22),inset 0 1px rgba(255,255,255,.95);
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)
+  }
+  .tap-global-nav-item{
+    position:relative;overflow:hidden;border:0;background:transparent;color:var(--tap-nav-muted);text-decoration:none;
+    border-radius:17px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    font-size:9px;font-weight:950;line-height:1;letter-spacing:-.01em;-webkit-tap-highlight-color:transparent;
+    transition:transform .16s ease,color .2s ease,background .2s ease,box-shadow .2s ease
+  }
+  .tap-global-nav-item:active{transform:scale(.95)}
+  .tap-global-nav-ico{font-size:20px;line-height:1;transition:transform .22s ease}
+  .tap-global-nav-item[aria-current="page"]{color:#0e59c7;background:#edf3ff}
+  .tap-global-nav-item[aria-current="page"] .tap-global-nav-ico{transform:translateY(-1px)}
+  .tap-global-nav-item.tap-new{
+    color:#fff;background:linear-gradient(145deg,#0a48b6,#1769ff 62%,#3982ff);
+    box-shadow:0 9px 20px rgba(23,105,255,.27),inset 0 1px rgba(255,255,255,.20)
+  }
+  .tap-global-nav-item.tap-new::after{
+    content:"";position:absolute;inset:-40% -80%;pointer-events:none;
+    background:linear-gradient(110deg,transparent 36%,rgba(255,255,255,.34) 48%,transparent 60%);
+    transform:translateX(-60%) rotate(8deg);animation:tapNavShine 5.5s ease-in-out infinite
+  }
+  @keyframes tapNavShine{0%,72%,100%{transform:translateX(-70%) rotate(8deg);opacity:0}78%{opacity:1}90%{transform:translateX(70%) rotate(8deg);opacity:.85}}
+}
+@media(max-width:390px){
+  .tap-global-bottom-nav{left:7px;right:7px;height:69px;border-radius:21px}
+  .tap-global-nav-item{font-size:8.5px}.tap-global-nav-ico{font-size:19px}
+}
+@media(prefers-reduced-motion:reduce){.tap-global-nav-item,.tap-global-nav-ico{transition:none!important}.tap-global-nav-item.tap-new::after{animation:none!important}}
