@@ -91,14 +91,54 @@
 
     const style = document.createElement('style');
     style.textContent = `
-      .tap-eye-count{display:inline-flex;align-items:center;gap:4px;margin-left:5px;padding:4px 7px;border:1px solid #cce2dc;border-radius:999px;background:#f2faf8;color:#08735f;font-size:11px;font-weight:900;line-height:1;vertical-align:middle;white-space:nowrap}
+      .tap-eye-count{display:inline-flex;align-items:center;gap:4px;margin-left:5px;padding:4px 7px;border:1px solid #cce2dc;border-radius:999px;background:#f2faf8;color:#08735f;font-size:11px;font-weight:900;line-height:1;vertical-align:middle;white-space:nowrap;cursor:pointer;appearance:none;font-family:inherit}
+      .tap-eye-count:hover{background:#e7f6f2;border-color:#a8d5c9}.tap-eye-count:focus-visible{outline:3px solid rgba(12,155,128,.18);outline-offset:2px}
       .tap-eye-count[data-zero="1"]{color:#82908c;background:#f7f9f8;border-color:#e0e6e4}
       td.nome{white-space:normal!important}.name-btn{vertical-align:middle}
+      .tap-stats-overlay{display:none;position:fixed;inset:0;background:rgba(0,25,20,.48);z-index:120;padding:18px;overflow:auto}.tap-stats-overlay.show{display:flex;align-items:flex-start;justify-content:center}.tap-stats-panel{width:min(520px,100%);margin:42px auto;background:#fff;border-radius:24px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.25)}
+      .tap-stats-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.tap-stats-eyebrow{color:#007f69;font-size:11px;letter-spacing:.16em;font-weight:900;text-transform:uppercase;margin-bottom:7px}.tap-stats-title{margin:0;font-size:28px;line-height:1.1;color:#17332d}.tap-stats-close{width:42px;height:42px;border-radius:50%;border:1px solid #d5dfdc;background:#fff;font-size:21px;cursor:pointer}
+      .tap-stats-total{margin:22px 0 14px;padding:18px;border-radius:18px;background:#f2faf8;border:1px solid #cce2dc}.tap-stats-total-label{font-size:12px;color:#6f7d78;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.tap-stats-total-value{margin-top:5px;font-size:36px;font-weight:950;color:#08735f}
+      .tap-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tap-stats-card{padding:14px 12px;border:1px solid #dde6e3;border-radius:15px;background:#fbfcfc}.tap-stats-card b{display:block;font-size:24px;color:#17332d}.tap-stats-card span{display:block;margin-top:5px;font-size:11px;color:#78847f;font-weight:800}
+      .tap-stats-note{margin-top:16px;padding-top:14px;border-top:1px solid #e7eeeb;color:#73807c;font-size:12px;line-height:1.45}
+      @media(max-width:560px){.tap-stats-panel{margin:16px auto;padding:20px}.tap-stats-title{font-size:24px}.tap-stats-grid{grid-template-columns:1fr}.tap-stats-card{display:flex;align-items:center;justify-content:space-between;gap:12px}.tap-stats-card span{margin:0}}
     `;
     document.head.appendChild(style);
 
+    const statsOverlay = document.createElement('div');
+    statsOverlay.className = 'tap-stats-overlay';
+    statsOverlay.innerHTML = `
+      <div class="tap-stats-panel" role="dialog" aria-modal="true" aria-labelledby="tapStatsTitle">
+        <div class="tap-stats-top">
+          <div><div class="tap-stats-eyebrow">Statistiche NFC</div><h2 id="tapStatsTitle" class="tap-stats-title">Cliente</h2></div>
+          <button class="tap-stats-close" type="button" aria-label="Chiudi">×</button>
+        </div>
+        <div class="tap-stats-total"><div class="tap-stats-total-label">Tap totali</div><div id="tapStatsTotal" class="tap-stats-total-value">0</div></div>
+        <div class="tap-stats-grid">
+          <div class="tap-stats-card"><b id="tapStatsToday">0</b><span>Oggi</span></div>
+          <div class="tap-stats-card"><b id="tapStats7">0</b><span>Ultimi 7 giorni</span></div>
+          <div class="tap-stats-card"><b id="tapStats30">0</b><span>Ultimi 30 giorni</span></div>
+        </div>
+        <div class="tap-stats-note">Il conteggio registra le aperture generate dal link NFC tracciato. I valori si aggiornano quando torni su questa pagina.</div>
+      </div>`;
+    document.body.appendChild(statsOverlay);
+    const statsClose = statsOverlay.querySelector('.tap-stats-close');
+    const closeStats = () => statsOverlay.classList.remove('show');
+    statsClose.addEventListener('click', closeStats);
+    statsOverlay.addEventListener('click', e => { if (e.target === statsOverlay) closeStats(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && statsOverlay.classList.contains('show')) closeStats(); });
+
     let counts = new Map();
     let applying = false;
+
+    function openStats(id, name) {
+      const data = counts.get(String(id)) || { total:0, today:0, last_7_days:0, last_30_days:0 };
+      statsOverlay.querySelector('#tapStatsTitle').textContent = name || 'Cliente';
+      statsOverlay.querySelector('#tapStatsTotal').textContent = Number(data.total || 0).toLocaleString('it-IT');
+      statsOverlay.querySelector('#tapStatsToday').textContent = Number(data.today || 0).toLocaleString('it-IT');
+      statsOverlay.querySelector('#tapStats7').textContent = Number(data.last_7_days || 0).toLocaleString('it-IT');
+      statsOverlay.querySelector('#tapStats30').textContent = Number(data.last_30_days || 0).toLocaleString('it-IT');
+      statsOverlay.classList.add('show');
+    }
 
     function apply() {
       if (applying) return;
@@ -110,14 +150,19 @@
         const data = counts.get(String(id)) || { total:0, today:0, last_7_days:0, last_30_days:0 };
         let badge = cell.querySelector('.tap-eye-count');
         if (!badge) {
-          badge = document.createElement('span');
+          badge = document.createElement('button');
+          badge.type = 'button';
           badge.className = 'tap-eye-count';
           cell.appendChild(badge);
         }
         const total = Number(data.total || 0);
         badge.dataset.zero = total ? '0' : '1';
         badge.textContent = '👁 ' + total.toLocaleString('it-IT');
-        badge.title = `Tap NFC — oggi ${Number(data.today||0)}, 7 giorni ${Number(data.last_7_days||0)}, 30 giorni ${Number(data.last_30_days||0)}, totale ${total}`;
+        badge.title = `Apri statistiche NFC — oggi ${Number(data.today||0)}, 7 giorni ${Number(data.last_7_days||0)}, 30 giorni ${Number(data.last_30_days||0)}, totale ${total}`;
+        badge.onclick = () => {
+          const name = cell.querySelector('.name-btn')?.textContent?.trim() || '';
+          openStats(id, name);
+        };
       });
       applying = false;
     }
