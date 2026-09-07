@@ -13,31 +13,34 @@
   let saving = false;
 
   const style = document.createElement('style');
-  style.id = 'tap-save-ux-v1';
+  style.id = 'tap-save-ux-v2';
   style.textContent = `
     .tap-save-overlay{display:none;position:fixed;inset:0;z-index:100000;background:rgba(3,22,19,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:18px}
     .tap-save-overlay.show{display:flex}
-    .tap-save-modal{width:min(94vw,470px);max-height:88vh;overflow:auto;background:#fff;border:1px solid #d8e5e1;border-radius:24px;padding:24px;box-shadow:0 26px 80px rgba(0,0,0,.28);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    .tap-save-modal{width:min(94vw,500px);max-height:90vh;overflow:auto;background:#fff;border:1px solid #d8e5e1;border-radius:24px;padding:24px;box-shadow:0 26px 80px rgba(0,0,0,.28);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
     .tap-save-icon{width:52px;height:52px;border-radius:16px;background:#eaf8f4;display:grid;place-items:center;font-size:24px;margin:0 auto 13px}
     .tap-save-modal h3{margin:0;text-align:center;color:#102d28;font-size:23px;line-height:1.2}
     .tap-save-modal p{margin:10px 0 18px;text-align:center;color:#65736f;font-size:14px;line-height:1.45}
-    .tap-save-summary{display:grid;gap:8px;margin:0 0 18px}
+    .tap-save-summary{display:grid;gap:8px;margin:0 0 16px}
     .tap-save-row{padding:11px 12px;border:1px solid #e0e8e5;border-radius:13px;background:#f8fbfa}
     .tap-save-row b{display:block;margin-bottom:3px;color:#74817d;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
     .tap-save-row span{display:block;color:#17342e;font-size:14px;font-weight:800;word-break:break-word}
+    .tap-save-order{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:0 0 16px}
+    .tap-save-field{display:grid;gap:6px}.tap-save-field.total{grid-column:1/-1}
+    .tap-save-field label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#74817d;font-weight:850}
+    .tap-save-input{width:100%;height:48px;border:1px solid #ccd9d5;border-radius:12px;background:#fff;color:#17342e;font:inherit;font-size:16px;font-weight:800;text-align:center;outline:none;padding:0 10px}
+    .tap-save-input:focus{border-color:#009477;box-shadow:0 0 0 3px rgba(0,148,119,.10)}
     .tap-save-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .tap-save-actions button,.tap-save-actions a{min-height:52px;border-radius:14px;font:inherit;font-size:14px;font-weight:850;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}
     .tap-save-cancel{border:1px solid #cbd8d4;background:#fff;color:#31544d}
     .tap-save-confirm{border:0;background:#009477;color:#fff}
     .tap-save-warning{margin:0 0 16px;padding:12px 13px;border-radius:13px;background:#fff7e8;border:1px solid #f0d6a4;color:#7b5410;font-size:13px;line-height:1.45}
     .tap-save-success{margin-top:16px;padding:18px;border:1px solid #b8e4d8;border-radius:18px;background:#f0fbf7;animation:tapSaveReveal .22s ease-out}
-    .tap-save-success h3{margin:0 0 6px;color:#08735f;font-size:19px}
-    .tap-save-success p{margin:0 0 14px;color:#5e716b;font-size:13px;line-height:1.45}
-    .tap-save-success-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .tap-save-success-actions a{min-height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13px;font-weight:900}
+    .tap-save-success h3{margin:0 0 6px;color:#08735f;font-size:19px}.tap-save-success p{margin:0 0 14px;color:#5e716b;font-size:13px;line-height:1.45}
+    .tap-save-success-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tap-save-success-actions a{min-height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13px;font-weight:900}
     .tap-new-client{background:#003c33;color:#fff}.tap-client-list{background:#fff;color:#08735f;border:1px solid #b8ddd3}
     @keyframes tapSaveReveal{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-    @media(max-width:520px){.tap-save-actions,.tap-save-success-actions{grid-template-columns:1fr}.tap-save-modal{padding:20px;border-radius:20px}}
+    @media(max-width:520px){.tap-save-actions,.tap-save-success-actions{grid-template-columns:1fr}.tap-save-modal{padding:20px;border-radius:20px}.tap-save-order{grid-template-columns:1fr 1fr 1fr}}
   `;
   document.head.appendChild(style);
 
@@ -75,13 +78,30 @@
     return overlay;
   }
 
-  function ask({title, text, rows = [], warning = '', confirmText = 'Conferma', icon = '✓'}) {
+  function clearZeroOnFocus(input) {
+    input.addEventListener('focus', () => {
+      if (String(input.value).trim() === '0' || String(input.value).trim() === '0.00') input.value = '';
+    });
+    input.addEventListener('blur', () => {
+      if (String(input.value).trim() === '') input.value = '0';
+    });
+  }
+
+  function ask({title, text, rows = [], warning = '', confirmText = 'Conferma', icon = '✓', orderFields = false}) {
     return new Promise(resolve => {
       const overlay = ensureOverlay();
-      overlay.innerHTML = `<div class="tap-save-modal" role="dialog" aria-modal="true"><div class="tap-save-icon">${esc(icon)}</div><h3>${esc(title)}</h3><p>${esc(text)}</p>${warning ? `<div class="tap-save-warning">${esc(warning)}</div>` : ''}<div class="tap-save-summary">${rows.map(r => `<div class="tap-save-row"><b>${esc(r[0])}</b><span>${esc(r[1] || '-')}</span></div>`).join('')}</div><div class="tap-save-actions"><button type="button" class="tap-save-cancel">Annulla</button><button type="button" class="tap-save-confirm">${esc(confirmText)}</button></div></div>`;
+      const fields = orderFields ? `
+        <div class="tap-save-order">
+          <div class="tap-save-field"><label>Targhe</label><input id="tapSaveTarghe" class="tap-save-input" type="number" min="0" step="1" inputmode="numeric" value="0"></div>
+          <div class="tap-save-field"><label>Cards</label><input id="tapSaveCards" class="tap-save-input" type="number" min="0" step="1" inputmode="numeric" value="0"></div>
+          <div class="tap-save-field"><label>Adesivi</label><input id="tapSaveAdesivi" class="tap-save-input" type="number" min="0" step="1" inputmode="numeric" value="0"></div>
+          <div class="tap-save-field total"><label>Totale €</label><input id="tapSaveTotal" class="tap-save-input" type="number" min="0" step="0.01" inputmode="decimal" value="0"></div>
+        </div>` : '';
+      overlay.innerHTML = `<div class="tap-save-modal" role="dialog" aria-modal="true"><div class="tap-save-icon">${esc(icon)}</div><h3>${esc(title)}</h3><p>${esc(text)}</p>${warning ? `<div class="tap-save-warning">${esc(warning)}</div>` : ''}<div class="tap-save-summary">${rows.map(r => `<div class="tap-save-row"><b>${esc(r[0])}</b><span>${esc(r[1] || '-')}</span></div>`).join('')}</div>${fields}<div class="tap-save-actions"><button type="button" class="tap-save-cancel">Annulla</button><button type="button" class="tap-save-confirm">${esc(confirmText)}</button></div></div>`;
       overlay.classList.add('show');
       const cancel = overlay.querySelector('.tap-save-cancel');
       const confirm = overlay.querySelector('.tap-save-confirm');
+      if (orderFields) overlay.querySelectorAll('.tap-save-input').forEach(clearZeroOnFocus);
       const finish = value => {
         overlay.classList.remove('show');
         document.removeEventListener('keydown', onKey);
@@ -89,10 +109,23 @@
       };
       const onKey = e => { if (e.key === 'Escape') finish(false); };
       cancel.onclick = () => finish(false);
-      confirm.onclick = () => finish(true);
+      confirm.onclick = () => {
+        if (!orderFields) return finish(true);
+        const safeNum = (selector, integer = false) => {
+          const n = Number(overlay.querySelector(selector)?.value || 0);
+          const safe = Number.isFinite(n) ? Math.max(0, n) : 0;
+          return integer ? Math.floor(safe) : safe;
+        };
+        finish({
+          targhe: safeNum('#tapSaveTarghe', true),
+          carte: safeNum('#tapSaveCards', true),
+          adesivi: safeNum('#tapSaveAdesivi', true),
+          spesa: safeNum('#tapSaveTotal', false)
+        });
+      };
       overlay.onclick = e => { if (e.target === overlay) finish(false); };
       document.addEventListener('keydown', onKey);
-      setTimeout(() => confirm.focus(), 0);
+      setTimeout(() => (orderFields ? overlay.querySelector('#tapSaveTarghe') : confirm)?.focus(), 0);
     });
   }
 
@@ -148,10 +181,11 @@
     if (!data.finalNfcUrl) return warn('Genera prima il link finale.');
     if (!data.categoryCode) return warn('Seleziona la tipologia di attività.');
 
-    const confirmed = await ask({
+    const order = await ask({
       title: 'Conferma salvataggio',
-      text: 'Controlla i dati principali prima di aggiungere il cliente.',
+      text: 'Controlla i dati principali e inserisci le quantità vendute.',
       confirmText: 'Salva cliente',
+      orderFields: true,
       rows: [
         ['Attività', data.businessName],
         ['Categoria', data.categoryText],
@@ -159,7 +193,7 @@
         ['Link NFC', data.finalNfcUrl]
       ]
     });
-    if (!confirmed) return;
+    if (!order) return;
 
     saving = true;
     addBtn.disabled = true;
@@ -201,7 +235,11 @@
         place_id: data.placeId,
         link_recensioni: data.reviewUrl,
         link_nfc: data.finalNfcUrl,
-        stato: 'Da consegnare'
+        stato: 'Da consegnare',
+        targhe: order.targhe,
+        carte: order.carte,
+        adesivi: order.adesivi,
+        spesa: order.spesa
       }, user);
 
       showSuccess(data, updateExisting);
