@@ -226,6 +226,17 @@
     new MutationObserver(() => applyCompactTable()).observe(rowsRoot, { childList:true });
   }
 
+  function bindZeroClear(input) {
+    if (!input || input.dataset.tapZeroClear === '1') return;
+    input.dataset.tapZeroClear = '1';
+    input.addEventListener('focus', () => {
+      if (Number(input.value) === 0) input.value = '';
+    });
+    input.addEventListener('blur', () => {
+      if (String(input.value).trim() === '') input.value = '0';
+    });
+  }
+
   function createEditPanel() {
     if (document.getElementById('tapEditOverlay')) return document.getElementById('tapEditOverlay');
     const host = document.createElement('div');
@@ -259,6 +270,7 @@
     });
     const editStatus = host.querySelector('#tapEditStatus');
     limitStatusSelect(editStatus, false);
+    ['#tapEditSpend','#tapEditTarghe','#tapEditCards','#tapEditAdesivi'].forEach(selector => bindZeroClear(host.querySelector(selector)));
     host.querySelector('.tap-edit-close').addEventListener('click', () => host.classList.remove('show'));
     host.querySelector('.tap-edit-cancel').addEventListener('click', () => host.classList.remove('show'));
     host.addEventListener('click', event => { if (event.target === host) host.classList.remove('show'); });
