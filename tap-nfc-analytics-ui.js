@@ -95,8 +95,9 @@
       .tap-eye-count:hover{background:#e7f6f2;border-color:#a8d5c9}.tap-eye-count:focus-visible{outline:3px solid rgba(12,155,128,.18);outline-offset:2px}
       .tap-eye-count[data-zero="1"]{color:#82908c;background:#f7f9f8;border-color:#e0e6e4}
       td.nome{white-space:normal!important}.name-btn{vertical-align:middle}
-      .status-select{width:70px!important;min-width:70px!important;height:44px!important;padding:0 23px 0 8px!important;text-align:center!important;text-align-last:center!important;font-size:25px!important;font-weight:950!important;line-height:1!important}
-      .tap-status-col,.tap-status-cell{width:90px!important;min-width:90px!important;text-align:center!important}
+      .status-select{width:82px!important;min-width:82px!important;height:46px!important;padding:0 26px 0 10px!important;text-align:center!important;text-align-last:center!important;font-family:Arial,"Segoe UI Symbol",sans-serif!important;font-size:22px!important;font-weight:900!important;line-height:46px!important;overflow:visible!important}
+      .status-select option{font-family:Arial,"Segoe UI Symbol",sans-serif!important;font-size:20px!important;font-weight:900!important}
+      .tap-status-col,.tap-status-cell{width:98px!important;min-width:98px!important;text-align:center!important;overflow:visible!important}
       .tap-status-red{background:#fff0ed!important;border-color:#efb8af!important;color:#c63327!important}
       .tap-status-green{background:#e9f8f1!important;border-color:#acdcca!important;color:#078267!important}
       .tap-stats-overlay{display:none;position:fixed;inset:0;background:rgba(0,25,20,.48);z-index:120;padding:18px;overflow:auto}.tap-stats-overlay.show{display:flex;align-items:flex-start;justify-content:center}.tap-stats-panel{width:min(520px,100%);margin:42px auto;background:#fff;border-radius:24px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.25)}
@@ -104,7 +105,7 @@
       .tap-stats-total{margin:22px 0 14px;padding:18px;border-radius:18px;background:#f2faf8;border:1px solid #cce2dc}.tap-stats-total-label{font-size:12px;color:#6f7d78;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.tap-stats-total-value{margin-top:5px;font-size:36px;font-weight:950;color:#08735f}
       .tap-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tap-stats-card{padding:14px 12px;border:1px solid #dde6e3;border-radius:15px;background:#fbfcfc}.tap-stats-card b{display:block;font-size:24px;color:#17332d}.tap-stats-card span{display:block;margin-top:5px;font-size:11px;color:#78847f;font-weight:800}
       .tap-stats-note{margin-top:16px;padding-top:14px;border-top:1px solid #e7eeeb;color:#73807c;font-size:12px;line-height:1.45}
-      @media(max-width:560px){.tap-stats-panel{margin:16px auto;padding:20px}.tap-stats-title{font-size:24px}.tap-stats-grid{grid-template-columns:1fr}.tap-stats-card{display:flex;align-items:center;justify-content:space-between;gap:12px}.tap-stats-card span{margin:0}}
+      @media(max-width:560px){.tap-stats-panel{margin:16px auto;padding:20px}.tap-stats-title{font-size:24px}.tap-stats-grid{grid-template-columns:1fr}.tap-stats-card{display:flex;align-items:center;justify-content:space-between;gap:12px}.tap-stats-card span{margin:0}.status-select{width:80px!important;min-width:80px!important;height:46px!important;font-size:21px!important;padding:0 25px 0 9px!important}.tap-status-col,.tap-status-cell{width:96px!important;min-width:96px!important}}
     `;
     document.head.appendChild(style);
 
@@ -113,12 +114,12 @@
       const current = String(select.value || '');
       Array.from(select.options).forEach(option => {
         const raw = String(option.value || option.textContent || '').trim();
-        if (raw === 'Da consegnare' || raw === '❌' || raw === '✕' || raw === '×') {
+        if (raw === 'Da consegnare' || raw === '❌' || raw === '✕' || raw === '✕︎' || raw === '×') {
           option.value = 'Da consegnare';
-          option.textContent = '✕';
-        } else if (raw === 'Consegnato' || raw === '✅' || raw === '✅️' || raw === '✓') {
+          option.textContent = '✕︎';
+        } else if (raw === 'Consegnato' || raw === '✅' || raw === '✅️' || raw === '✓' || raw === '✓︎') {
           option.value = 'Consegnato';
-          option.textContent = '✓';
+          option.textContent = '✓︎';
         }
       });
       if (current === 'Da consegnare' || current === 'Consegnato') select.value = current;
