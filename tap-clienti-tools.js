@@ -23,6 +23,34 @@
     try { return JSON.parse(value); } catch { return null; }
   }
 
+  function normalizeStatusValue(value) {
+    return String(value || '') === 'Consegnato' ? 'Consegnato' : 'Da consegnare';
+  }
+
+  function paintStatus(select) {
+    if (!select) return;
+    select.classList.toggle('tap-status-red', select.value === 'Da consegnare');
+    select.classList.toggle('tap-status-green', select.value === 'Consegnato');
+  }
+
+  function limitStatusSelect(select, includeAll = false) {
+    if (!select) return;
+    const previous = String(select.value || '');
+    const normalized = previous ? normalizeStatusValue(previous) : '';
+    select.innerHTML = includeAll
+      ? '<option value="">Tutti gli stati</option><option>Da consegnare</option><option>Consegnato</option>'
+      : '<option>Da consegnare</option><option>Consegnato</option>';
+    if (includeAll && !previous) select.value = '';
+    else select.value = normalized || 'Da consegnare';
+    paintStatus(select);
+    if (!select.dataset.tapStatusPaintBound) {
+      select.dataset.tapStatusPaintBound = '1';
+      select.addEventListener('change', () => paintStatus(select));
+    }
+  }
+
+  limitStatusSelect(filterStatus, true);
+
   function saveFilters() {
     const state = {
       search: search?.value || '',
@@ -47,8 +75,9 @@
     if (search) search.value = state.search || '';
     setIfAvailable(filterOperator, state.operator);
     setIfAvailable(filterCategory, state.category);
-    setIfAvailable(filterStatus, state.status);
+    if (state.status === 'Da consegnare' || state.status === 'Consegnato') setIfAvailable(filterStatus, state.status);
     setIfAvailable(filterOrder, state.order || 'id');
+    paintStatus(filterStatus);
     [search, filterOperator, filterCategory, filterStatus, filterOrder].forEach(el => {
       if (!el) return;
       el.dispatchEvent(new Event(el === search ? 'input' : 'change', { bubbles:true }));
@@ -123,6 +152,8 @@
     tbody td.id{z-index:6!important;background:#fff!important}
     thead th:nth-child(2),tbody td.nome{position:sticky!important;left:56px!important;z-index:8!important;background:#fff!important;box-shadow:9px 0 12px -12px rgba(0,45,37,.55)!important}
     tbody td.nome{z-index:6!important}
+    .tap-status-red{background:#fff0ed!important;border-color:#efb8af!important;color:#a72d20!important;font-weight:900!important}
+    .tap-status-green{background:#e9f8f1!important;border-color:#acdcca!important;color:#08735f!important;font-weight:900!important}
     .tap-edit-overlay{display:none;position:fixed;inset:0;background:rgba(0,25,20,.52);padding:18px;z-index:80;overflow:auto}.tap-edit-overlay.show{display:flex;align-items:flex-start;justify-content:center}.tap-edit-panel{width:min(680px,100%);margin:22px auto;background:#fff;border-radius:24px;padding:22px;box-shadow:0 28px 80px rgba(0,0,0,.28)}.tap-edit-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px}.tap-edit-top h2{margin:0;font-size:27px}.tap-edit-lock{font-size:12px;color:#70807a;margin-top:5px}.tap-edit-close{width:42px;height:42px;border-radius:50%;border:1px solid #d5dfdc;background:#fff;font-size:21px}.tap-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tap-edit-field{display:grid;gap:6px}.tap-edit-field.wide{grid-column:1/-1}.tap-edit-field label{font-size:11px;text-transform:uppercase;font-weight:850;color:#70807a;letter-spacing:.04em}.tap-edit-input,.tap-edit-select{width:100%;height:48px;border:1px solid #ccd9d5;border-radius:12px;background:#fff;color:#17332d;font:inherit;font-size:14px;padding:0 12px;outline:none}.tap-edit-input:focus,.tap-edit-select:focus{border-color:#0c9b80;box-shadow:0 0 0 3px rgba(12,155,128,.10)}.tap-edit-readonly{background:#f3f6f5!important;color:#70807a!important}.tap-edit-products{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tap-edit-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.tap-edit-save,.tap-edit-cancel{min-height:52px;border-radius:13px;font:inherit;font-weight:900;cursor:pointer}.tap-edit-save{border:0;background:#003c33;color:#fff}.tap-edit-cancel{border:1px solid #ccd9d5;background:#fff;color:#34544d}.tap-edit-msg{display:none;margin-top:12px;padding:11px 12px;border-radius:10px;font-size:13px}.tap-edit-msg.show{display:block}.tap-edit-msg.error{background:#fff0ed;color:#8c2d21;border:1px solid #efc0b8}.tap-edit-msg.ok{background:#eaf8f4;color:#096450;border:1px solid #b8e4d8}
     @media(max-width:760px){
       .tap-shortcut-hint{display:none}
@@ -179,6 +210,8 @@
     status?.classList.add('tap-status-cell');
     total?.classList.add('tap-total-cell');
     actions?.classList.add('tap-actions-cell');
+    const statusSelect = status?.querySelector('select');
+    if (statusSelect) limitStatusSelect(statusSelect, false);
     row.dataset.tapCompact = '1';
   }
 
@@ -200,12 +233,11 @@
     host.className = 'tap-edit-overlay';
     host.innerHTML = `
       <div class="tap-edit-panel" role="dialog" aria-modal="true" aria-labelledby="tapEditTitle">
-        <div class="tap-edit-top"><div><h2 id="tapEditTitle">Modifica cliente</h2><div class="tap-edit-lock">Nome attività e link restano bloccati.</div></div><button class="tap-edit-close" type="button" aria-label="Chiudi">×</button></div>
+        <div class="tap-edit-top"><div><h2 id="tapEditTitle">Modifica cliente</h2><div class="tap-edit-lock">Nome attività, operatore e link restano bloccati.</div></div><button class="tap-edit-close" type="button" aria-label="Chiudi">×</button></div>
         <div class="tap-edit-grid">
           <div class="tap-edit-field wide"><label>Nome attività</label><input id="tapEditName" class="tap-edit-input tap-edit-readonly" readonly></div>
-          <div class="tap-edit-field"><label>Operatore</label><select id="tapEditOperator" class="tap-edit-select"><option>Francesco</option><option>Gisberto</option></select></div>
           <div class="tap-edit-field"><label>Categoria</label><select id="tapEditCategory" class="tap-edit-select"></select></div>
-          <div class="tap-edit-field"><label>Stato</label><select id="tapEditStatus" class="tap-edit-select"><option>Da completare</option><option>Da consegnare</option><option>Consegnato</option><option>Attivo</option></select></div>
+          <div class="tap-edit-field"><label>Stato</label><select id="tapEditStatus" class="tap-edit-select"><option>Da consegnare</option><option>Consegnato</option></select></div>
           <div class="tap-edit-field"><label>Totale €</label><input id="tapEditSpend" class="tap-edit-input" type="number" min="0" step="0.01" inputmode="decimal"></div>
           <div class="tap-edit-products">
             <div class="tap-edit-field"><label>Targhe</label><input id="tapEditTarghe" class="tap-edit-input" type="number" min="0" step="1" inputmode="numeric"></div>
@@ -225,6 +257,8 @@
       option.textContent = label;
       categorySelect.appendChild(option);
     });
+    const editStatus = host.querySelector('#tapEditStatus');
+    limitStatusSelect(editStatus, false);
     host.querySelector('.tap-edit-close').addEventListener('click', () => host.classList.remove('show'));
     host.querySelector('.tap-edit-cancel').addEventListener('click', () => host.classList.remove('show'));
     host.addEventListener('click', event => { if (event.target === host) host.classList.remove('show'); });
@@ -243,7 +277,6 @@
     const host = createEditPanel();
     host.dataset.clientId = client.id || '';
     host.querySelector('#tapEditName').value = client.nome || '';
-    host.querySelector('#tapEditOperator').value = client.operatore || 'Francesco';
     const category = host.querySelector('#tapEditCategory');
     const categoryId = client.categoria_codice || '';
     if (categoryId && Array.from(category.options).some(o => o.value === categoryId)) category.value = categoryId;
@@ -251,7 +284,9 @@
       const option = Array.from(category.options).find(o => o.textContent === client.categoria);
       if (option) category.value = option.value;
     }
-    host.querySelector('#tapEditStatus').value = client.stato || 'Da consegnare';
+    const editStatus = host.querySelector('#tapEditStatus');
+    editStatus.value = normalizeStatusValue(client.stato);
+    paintStatus(editStatus);
     host.querySelector('#tapEditSpend').value = Number(client.spesa || 0);
     host.querySelector('#tapEditTarghe').value = Number(client.targhe || 0);
     host.querySelector('#tapEditCards').value = Number(client.carte || 0);
@@ -327,10 +362,9 @@
       const category = host.querySelector('#tapEditCategory');
       const selected = category.options[category.selectedIndex];
       const patch = {
-        operatore: host.querySelector('#tapEditOperator').value,
         categoria_codice: category.value || null,
         categoria: selected?.textContent || null,
-        stato: host.querySelector('#tapEditStatus').value,
+        stato: normalizeStatusValue(host.querySelector('#tapEditStatus').value),
         targhe: numberValue('tapEditTarghe', true),
         carte: numberValue('tapEditCards', true),
         adesivi: numberValue('tapEditAdesivi', true),
