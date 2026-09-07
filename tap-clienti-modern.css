@@ -1,0 +1,291 @@
+/* Tapreputa · Clienti modern UI
+   Solo presentazione: nessuna logica, database o struttura dati. */
+
+html[data-tap-page="clienti.html"]{
+  --tap-navy:#071b35;
+  --tap-navy-2:#0d2c52;
+  --tap-blue:#174b9d;
+  --tap-gold:#d8ad4d;
+  --tap-bg:#f3f6fa;
+  --tap-panel:rgba(255,255,255,.94);
+  --tap-line:#dbe4ed;
+  --tap-text:#10294c;
+  --tap-muted:#718096;
+}
+
+html[data-tap-page="clienti.html"] body{
+  background:
+    radial-gradient(circle at 8% 0%,rgba(23,75,157,.09),transparent 27rem),
+    linear-gradient(180deg,#f7f9fc 0%,#f1f5f9 100%)!important;
+  color:var(--tap-text)!important;
+}
+
+html[data-tap-page="clienti.html"] .topbar{
+  background:linear-gradient(135deg,#07182f 0%,#0b2446 58%,#10365f 100%)!important;
+  border-bottom:1px solid rgba(216,173,77,.32)!important;
+  box-shadow:0 12px 34px rgba(7,27,53,.18)!important;
+}
+html[data-tap-page="clienti.html"] .brand-icon{
+  border:1px solid rgba(216,173,77,.45)!important;
+  box-shadow:0 9px 24px rgba(0,0,0,.22)!important;
+}
+html[data-tap-page="clienti.html"] .back{
+  background:linear-gradient(145deg,#fff,#f7f2e5)!important;
+  color:#10294c!important;
+  border-color:rgba(216,173,77,.5)!important;
+}
+html[data-tap-page="clienti.html"] .logout{
+  background:rgba(255,255,255,.07)!important;
+  border-color:rgba(255,255,255,.18)!important;
+}
+
+html[data-tap-page="clienti.html"] .wrap{
+  max-width:1280px!important;
+  padding-top:38px!important;
+}
+html[data-tap-page="clienti.html"] .eyebrow{
+  color:#174b9d!important;
+  letter-spacing:.16em!important;
+  font-size:11px!important;
+  margin-bottom:10px!important;
+}
+html[data-tap-page="clienti.html"] .headline{
+  align-items:center!important;
+  margin-bottom:20px!important;
+}
+html[data-tap-page="clienti.html"] h1{
+  color:#0b2142!important;
+  font-size:42px!important;
+  font-weight:780!important;
+  letter-spacing:-.035em!important;
+}
+html[data-tap-page="clienti.html"] .count{
+  padding:8px 12px!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  border:1px solid #dce5ee!important;
+  box-shadow:0 7px 18px rgba(16,41,76,.06)!important;
+  color:#50627c!important;
+  font-weight:800!important;
+}
+
+html[data-tap-page="clienti.html"] .tools{
+  position:sticky!important;
+  top:10px!important;
+  z-index:15!important;
+  padding:12px!important;
+  margin:0 0 14px!important;
+  border:1px solid rgba(207,219,231,.92)!important;
+  border-radius:20px!important;
+  background:rgba(248,250,253,.86)!important;
+  box-shadow:0 13px 34px rgba(16,41,76,.08)!important;
+  backdrop-filter:blur(14px)!important;
+  -webkit-backdrop-filter:blur(14px)!important;
+}
+html[data-tap-page="clienti.html"] .client-search,
+html[data-tap-page="clienti.html"] .filter-select,
+html[data-tap-page="clienti.html"] .reset-filters{
+  height:48px!important;
+  border-radius:13px!important;
+  border:1px solid #d6e0ea!important;
+  box-shadow:none!important;
+}
+html[data-tap-page="clienti.html"] .client-search:focus-within,
+html[data-tap-page="clienti.html"] .filter-select:focus{
+  border-color:#4f79b9!important;
+  box-shadow:0 0 0 3px rgba(23,75,157,.09)!important;
+}
+html[data-tap-page="clienti.html"] .reset-filters.active{
+  color:#8a651c!important;
+  border-color:#e2c97c!important;
+  background:#fff9e8!important;
+}
+
+html[data-tap-page="clienti.html"] .quick-summary{
+  margin:0 0 14px!important;
+  gap:7px!important;
+}
+html[data-tap-page="clienti.html"] .quick-chip{
+  border-color:#d8e2ec!important;
+  color:#5e7089!important;
+  box-shadow:0 6px 16px rgba(16,41,76,.04)!important;
+}
+html[data-tap-page="clienti.html"] .quick-chip strong{color:#174b9d!important}
+
+html[data-tap-page="clienti.html"] .card{
+  border-radius:22px!important;
+  border:1px solid #d9e3ed!important;
+  box-shadow:0 20px 48px rgba(16,41,76,.09)!important;
+  background:var(--tap-panel)!important;
+}
+html[data-tap-page="clienti.html"] th{
+  background:#f3f6fa!important;
+  color:#60738d!important;
+  border-bottom-color:#d6e0ea!important;
+  padding-top:13px!important;
+  padding-bottom:13px!important;
+}
+html[data-tap-page="clienti.html"] td{
+  border-bottom-color:#e7edf3!important;
+  color:#203a5f!important;
+}
+html[data-tap-page="clienti.html"] tbody tr{
+  transition:background .16s ease,transform .16s ease!important;
+}
+@media(hover:hover){
+  html[data-tap-page="clienti.html"] tbody tr:hover td{background:#f9fbfd!important}
+  html[data-tap-page="clienti.html"] tbody tr:hover td.id,
+  html[data-tap-page="clienti.html"] tbody tr:hover td.nome{background:#f9fbfd!important}
+}
+html[data-tap-page="clienti.html"] tbody td.id{
+  color:#174b9d!important;
+  background:#fff!important;
+}
+html[data-tap-page="clienti.html"] tbody td.nome{background:#fff!important}
+html[data-tap-page="clienti.html"] .name-btn{
+  color:#10294c!important;
+  font-weight:900!important;
+}
+html[data-tap-page="clienti.html"] .name-btn:hover{
+  background:#edf3fb!important;
+  color:#174b9d!important;
+}
+html[data-tap-page="clienti.html"] .open-btn{
+  background:linear-gradient(145deg,#123e78,#174b9d)!important;
+  box-shadow:0 7px 15px rgba(23,75,157,.18)!important;
+}
+html[data-tap-page="clienti.html"] .link-chip{
+  border-color:#ccd9ea!important;
+  background:#f2f6fb!important;
+  color:#174b9d!important;
+}
+html[data-tap-page="clienti.html"] .status-select{
+  font-weight:850!important;
+  border-radius:999px!important;
+  text-align:center!important;
+}
+html[data-tap-page="clienti.html"] .status-select[data-status="Da consegnare"],
+html[data-tap-page="clienti.html"] .status-select.status-pending{
+  color:#a73c32!important;
+  background:#fff0ee!important;
+  border-color:#efc4bf!important;
+}
+html[data-tap-page="clienti.html"] .status-select[data-status="Consegnato"],
+html[data-tap-page="clienti.html"] .status-select.status-delivered{
+  color:#08735f!important;
+  background:#eaf8f4!important;
+  border-color:#b9e1d7!important;
+}
+
+html[data-tap-page="clienti.html"] .overlay{
+  background:rgba(4,18,36,.60)!important;
+  backdrop-filter:blur(7px)!important;
+  -webkit-backdrop-filter:blur(7px)!important;
+}
+html[data-tap-page="clienti.html"] .modal{
+  border:1px solid rgba(216,173,77,.30)!important;
+  border-radius:24px!important;
+  box-shadow:0 30px 80px rgba(4,18,36,.32)!important;
+  padding:28px!important;
+}
+html[data-tap-page="clienti.html"] .modal h2{
+  color:#0b2142!important;
+  font-weight:820!important;
+  letter-spacing:-.025em!important;
+}
+html[data-tap-page="clienti.html"] .close{
+  color:#17385f!important;
+  background:#f7f9fc!important;
+}
+html[data-tap-page="clienti.html"] .detail{
+  background:#f7f9fc!important;
+  border-color:#dce5ee!important;
+  border-radius:13px!important;
+}
+html[data-tap-page="clienti.html"] .detail b{
+  color:#718096!important;
+  letter-spacing:.08em!important;
+}
+html[data-tap-page="clienti.html"] .action{
+  border-color:#cdd9e7!important;
+  background:#f4f7fb!important;
+  color:#174b9d!important;
+  border-radius:13px!important;
+}
+html[data-tap-page="clienti.html"] .action.primary{
+  background:linear-gradient(145deg,#0b2142,#174b9d)!important;
+  border-color:#174b9d!important;
+  color:#fff!important;
+}
+html[data-tap-page="clienti.html"] .action.danger{
+  color:#a23930!important;
+  border-color:#e8beb9!important;
+  background:#fff5f3!important;
+}
+
+html[data-tap-page="clienti.html"] .results-link{
+  background:linear-gradient(145deg,#0b2142,#123e78)!important;
+  border:1px solid rgba(216,173,77,.32)!important;
+  box-shadow:0 14px 30px rgba(11,33,66,.18)!important;
+}
+
+@media(max-width:760px){
+  html[data-tap-page="clienti.html"] .wrap{
+    padding:25px 10px calc(92px + env(safe-area-inset-bottom))!important;
+  }
+  html[data-tap-page="clienti.html"] .headline{
+    display:flex!important;
+    align-items:flex-end!important;
+    justify-content:space-between!important;
+    gap:8px!important;
+    margin-bottom:15px!important;
+  }
+  html[data-tap-page="clienti.html"] h1{font-size:31px!important}
+  html[data-tap-page="clienti.html"] .count{
+    margin-top:0!important;
+    padding:6px 9px!important;
+    font-size:11px!important;
+  }
+  html[data-tap-page="clienti.html"] .tools{
+    position:relative!important;
+    top:auto!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:7px!important;
+    padding:9px!important;
+    border-radius:17px!important;
+  }
+  html[data-tap-page="clienti.html"] .client-search{grid-column:1/-1!important}
+  html[data-tap-page="clienti.html"] .client-search,
+  html[data-tap-page="clienti.html"] .filter-select,
+  html[data-tap-page="clienti.html"] .reset-filters{
+    height:44px!important;
+    font-size:11px!important;
+  }
+  html[data-tap-page="clienti.html"] .quick-summary{
+    overflow-x:auto!important;
+    flex-wrap:nowrap!important;
+    padding-bottom:3px!important;
+    scrollbar-width:none!important;
+  }
+  html[data-tap-page="clienti.html"] .quick-summary::-webkit-scrollbar{display:none!important}
+  html[data-tap-page="clienti.html"] .quick-chip{flex:0 0 auto!important}
+  html[data-tap-page="clienti.html"] .card{border-radius:18px!important}
+  html[data-tap-page="clienti.html"] th,
+  html[data-tap-page="clienti.html"] td{
+    padding-top:11px!important;
+    padding-bottom:11px!important;
+  }
+  html[data-tap-page="clienti.html"] .modal{
+    margin:10px auto!important;
+    border-radius:20px!important;
+    padding:20px!important;
+  }
+  html[data-tap-page="clienti.html"] .modal h2{font-size:24px!important}
+  html[data-tap-page="clienti.html"] .details{gap:8px!important;margin-top:17px!important}
+  html[data-tap-page="clienti.html"] .detail{padding:11px!important}
+  html[data-tap-page="clienti.html"] .action-grid{gap:8px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html[data-tap-page="clienti.html"] *{transition:none!important}
+}
