@@ -107,9 +107,82 @@
   const style = document.createElement('style');
   style.textContent = `
     .tap-shortcut-hint{margin:14px 0 0;color:#748196;font-size:11px;text-align:right}
-    @media(max-width:760px){.tap-shortcut-hint{display:none}}
+    .table-wrap table{width:860px!important;min-width:860px!important}
+    .tap-hidden-column{display:none!important}
+    .tap-status-col,.tap-status-cell{width:146px!important;min-width:146px!important}
+    .tap-total-col,.tap-total-cell{width:96px!important;min-width:96px!important;text-align:center!important}
+    .tap-actions-col,.tap-actions-cell{width:112px!important;min-width:112px!important}
+    thead th:nth-child(1),tbody td.id{position:sticky!important;left:0!important;z-index:8!important}
+    tbody td.id{z-index:6!important;background:#fff!important}
+    thead th:nth-child(2),tbody td.nome{position:sticky!important;left:56px!important;z-index:8!important;background:#fff!important;box-shadow:9px 0 12px -12px rgba(0,45,37,.55)!important}
+    tbody td.nome{z-index:6!important}
+    @media(max-width:760px){
+      .tap-shortcut-hint{display:none}
+      .table-wrap table{width:812px!important;min-width:812px!important}
+      thead th:nth-child(1),tbody td.id{width:52px!important;min-width:52px!important;max-width:52px!important}
+      thead th:nth-child(2),tbody td.nome{left:52px!important;width:132px!important;min-width:132px!important;max-width:132px!important}
+    }
   `;
   document.head.appendChild(style);
+
+  function compactHeader() {
+    const row = document.querySelector('table thead tr');
+    if (!row || row.dataset.tapCompact === '1') return;
+    const cells = Array.from(row.children);
+    if (cells.length < 13) return;
+
+    const hidden = [4, 5, 6, 7, 8, 10];
+    hidden.forEach(index => cells[index]?.classList.add('tap-hidden-column'));
+
+    const status = cells[11];
+    const total = cells[9];
+    const actions = cells[12];
+    if (status && total) row.insertBefore(status, total);
+
+    if (cells[1]) cells[1].textContent = 'NOME ATTIVITÀ';
+    if (status) {
+      status.textContent = 'STATO';
+      status.classList.add('tap-status-col');
+    }
+    if (total) {
+      total.textContent = 'TOTALE €';
+      total.classList.add('tap-total-col');
+    }
+    if (actions) {
+      actions.textContent = 'AZIONI';
+      actions.classList.add('tap-actions-col');
+    }
+    row.dataset.tapCompact = '1';
+  }
+
+  function compactRow(row) {
+    if (!row || row.dataset.tapCompact === '1') return;
+    const cells = Array.from(row.children);
+    if (cells.length < 13) return;
+
+    const hidden = [4, 5, 6, 7, 8, 10];
+    hidden.forEach(index => cells[index]?.classList.add('tap-hidden-column'));
+
+    const status = cells[11];
+    const total = cells[9];
+    const actions = cells[12];
+    if (status && total) row.insertBefore(status, total);
+    status?.classList.add('tap-status-cell');
+    total?.classList.add('tap-total-cell');
+    actions?.classList.add('tap-actions-cell');
+    row.dataset.tapCompact = '1';
+  }
+
+  function applyCompactTable() {
+    compactHeader();
+    document.querySelectorAll('#rows > tr').forEach(compactRow);
+  }
+
+  applyCompactTable();
+  const rowsRoot = document.getElementById('rows');
+  if (rowsRoot) {
+    new MutationObserver(() => applyCompactTable()).observe(rowsRoot, { childList:true });
+  }
 
   const tools = document.querySelector('.tools');
   if (tools && !document.querySelector('.tap-shortcut-hint')) {
