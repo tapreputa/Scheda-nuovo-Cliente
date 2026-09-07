@@ -1,0 +1,67 @@
+name: Apply risultati mobile team table
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-risultati-mobile-team-table.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch risultati mobile table
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('risultati.html')
+          s = p.read_text(encoding='utf-8')
+          marker = '/* TEAM TABLE MOBILE COMPACT V1 */'
+          if marker not in s:
+              css = r'''
+
+/* TEAM TABLE MOBILE COMPACT V1 */
+@media(max-width:760px){
+  .table-card{overflow:hidden}
+  .table-wrap{overflow-x:hidden!important}
+  table{width:100%!important;min-width:0!important;table-layout:fixed!important}
+  th,td{padding:14px 6px!important}
+  th:first-child,td:first-child{
+    position:static!important;
+    width:34%!important;
+    min-width:34%!important;
+    max-width:34%!important;
+    box-shadow:none!important
+  }
+  thead th:not(:first-child){font-size:12px!important}
+  .metric-label{font-size:14px!important}
+  .value{font-size:18px!important}
+  .money-row .metric-label,.money-row .value{font-size:18px!important}
+}
+@media(max-width:430px){
+  th,td{padding:13px 5px!important}
+  th:first-child,td:first-child{
+    width:35%!important;
+    min-width:35%!important;
+    max-width:35%!important
+  }
+  thead th:not(:first-child){font-size:11px!important}
+  .metric-label{font-size:13px!important}
+  .value{font-size:17px!important}
+  .money-row .metric-label,.money-row .value{font-size:17px!important}
+}
+'''
+              s = s.replace('</style>', css + '\n</style>', 1)
+              p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit patch
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add risultati.html
+          git commit -m "Fit Francesco and Gisberto columns on mobile results table"
+          git push
