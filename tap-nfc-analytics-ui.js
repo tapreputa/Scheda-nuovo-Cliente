@@ -95,40 +95,61 @@
       .tap-eye-count:hover{background:#e7f6f2;border-color:#a8d5c9}.tap-eye-count:focus-visible{outline:3px solid rgba(12,155,128,.18);outline-offset:2px}
       .tap-eye-count[data-zero="1"]{color:#82908c;background:#f7f9f8;border-color:#e0e6e4}
       td.nome{white-space:normal!important}.name-btn{vertical-align:middle}
-      .status-select{width:82px!important;min-width:82px!important;height:46px!important;padding:0 26px 0 10px!important;text-align:center!important;text-align-last:center!important;font-family:Arial,"Segoe UI Symbol",sans-serif!important;font-size:22px!important;font-weight:900!important;line-height:46px!important;overflow:visible!important}
-      .status-select option{font-family:Arial,"Segoe UI Symbol",sans-serif!important;font-size:20px!important;font-weight:900!important}
-      .tap-status-col,.tap-status-cell{width:98px!important;min-width:98px!important;text-align:center!important;overflow:visible!important}
-      .tap-status-red{background:#fff0ed!important;border-color:#efb8af!important;color:#c63327!important}
-      .tap-status-green{background:#e9f8f1!important;border-color:#acdcca!important;color:#078267!important}
+
+      .tap-status-col,.tap-status-cell{width:90px!important;min-width:90px!important;text-align:center!important}
+      .tap-status-wrap{position:relative;width:62px;height:46px;margin:0 auto;border:1px solid #d8e0dd;border-radius:999px;display:flex;align-items:center;justify-content:center;background:#f6f8f7;overflow:hidden}
+      .tap-status-wrap.is-red{background:#fff0ed;border-color:#efb8af}
+      .tap-status-wrap.is-green{background:#e9f8f1;border-color:#acdcca}
+      .tap-status-icon{display:flex;align-items:center;justify-content:center;width:28px;height:28px;font-family:Arial,"Segoe UI Symbol",sans-serif;font-size:27px;font-weight:900;line-height:1;transform:none!important}
+      .tap-status-wrap.is-red .tap-status-icon{color:#c63327}
+      .tap-status-wrap.is-green .tap-status-icon{color:#078267}
+      .tap-status-chevron{position:absolute;right:8px;top:50%;width:8px;height:8px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:translateY(-65%) rotate(45deg);color:#5d7771;pointer-events:none}
+      .tap-status-wrap .status-select{position:absolute!important;inset:0!important;width:100%!important;min-width:0!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;opacity:0!important;cursor:pointer!important;z-index:2!important;appearance:auto!important;-webkit-appearance:menulist!important;background:transparent!important}
+      .tap-status-wrap .status-select:disabled{cursor:not-allowed!important}
+      .tap-status-wrap:has(.status-select:disabled){opacity:.58}
+
       .tap-stats-overlay{display:none;position:fixed;inset:0;background:rgba(0,25,20,.48);z-index:120;padding:18px;overflow:auto}.tap-stats-overlay.show{display:flex;align-items:flex-start;justify-content:center}.tap-stats-panel{width:min(520px,100%);margin:42px auto;background:#fff;border-radius:24px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.25)}
       .tap-stats-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.tap-stats-eyebrow{color:#007f69;font-size:11px;letter-spacing:.16em;font-weight:900;text-transform:uppercase;margin-bottom:7px}.tap-stats-title{margin:0;font-size:28px;line-height:1.1;color:#17332d}.tap-stats-close{width:42px;height:42px;border-radius:50%;border:1px solid #d5dfdc;background:#fff;font-size:21px;cursor:pointer}
       .tap-stats-total{margin:22px 0 14px;padding:18px;border-radius:18px;background:#f2faf8;border:1px solid #cce2dc}.tap-stats-total-label{font-size:12px;color:#6f7d78;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.tap-stats-total-value{margin-top:5px;font-size:36px;font-weight:950;color:#08735f}
       .tap-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tap-stats-card{padding:14px 12px;border:1px solid #dde6e3;border-radius:15px;background:#fbfcfc}.tap-stats-card b{display:block;font-size:24px;color:#17332d}.tap-stats-card span{display:block;margin-top:5px;font-size:11px;color:#78847f;font-weight:800}
       .tap-stats-note{margin-top:16px;padding-top:14px;border-top:1px solid #e7eeeb;color:#73807c;font-size:12px;line-height:1.45}
-      @media(max-width:560px){.tap-stats-panel{margin:16px auto;padding:20px}.tap-stats-title{font-size:24px}.tap-stats-grid{grid-template-columns:1fr}.tap-stats-card{display:flex;align-items:center;justify-content:space-between;gap:12px}.tap-stats-card span{margin:0}.status-select{width:80px!important;min-width:80px!important;height:46px!important;font-size:21px!important;padding:0 25px 0 9px!important}.tap-status-col,.tap-status-cell{width:96px!important;min-width:96px!important}}
+      @media(max-width:560px){.tap-stats-panel{margin:16px auto;padding:20px}.tap-stats-title{font-size:24px}.tap-stats-grid{grid-template-columns:1fr}.tap-stats-card{display:flex;align-items:center;justify-content:space-between;gap:12px}.tap-stats-card span{margin:0}.tap-status-col,.tap-status-cell{width:84px!important;min-width:84px!important}.tap-status-wrap{width:58px;height:44px}.tap-status-icon{font-size:25px}}
     `;
     document.head.appendChild(style);
 
-    function compactStatusSelect(select) {
+    function refreshStatusVisual(select) {
       if (!select) return;
-      const current = String(select.value || '');
-      Array.from(select.options).forEach(option => {
-        const raw = String(option.value || option.textContent || '').trim();
-        if (raw === 'Da consegnare' || raw === '❌' || raw === '✕' || raw === '✕︎' || raw === '×') {
-          option.value = 'Da consegnare';
-          option.textContent = '✕︎';
-        } else if (raw === 'Consegnato' || raw === '✅' || raw === '✅️' || raw === '✓' || raw === '✓︎') {
-          option.value = 'Consegnato';
-          option.textContent = '✓︎';
-        }
-      });
-      if (current === 'Da consegnare' || current === 'Consegnato') select.value = current;
-      select.setAttribute('aria-label', select.value === 'Consegnato' ? 'Consegnato' : 'Da consegnare');
-      select.title = select.value === 'Consegnato' ? 'Consegnato' : 'Da consegnare';
+      const wrap = select.closest('.tap-status-wrap');
+      if (!wrap) return;
+      const delivered = select.value === 'Consegnato';
+      wrap.classList.toggle('is-green', delivered);
+      wrap.classList.toggle('is-red', !delivered);
+      const icon = wrap.querySelector('.tap-status-icon');
+      if (icon) icon.textContent = delivered ? '✓' : '×';
+      wrap.title = delivered ? 'Consegnato' : 'Da consegnare';
+      select.setAttribute('aria-label', delivered ? 'Consegnato' : 'Da consegnare');
     }
 
-    function compactAllStatuses() {
-      document.querySelectorAll('#rows .status-select').forEach(compactStatusSelect);
+    function decorateStatusSelect(select) {
+      if (!select) return;
+      if (!select.closest('.tap-status-wrap')) {
+        const wrap = document.createElement('div');
+        wrap.className = 'tap-status-wrap';
+        const icon = document.createElement('span');
+        icon.className = 'tap-status-icon';
+        const chevron = document.createElement('span');
+        chevron.className = 'tap-status-chevron';
+        select.parentNode.insertBefore(wrap, select);
+        wrap.appendChild(icon);
+        wrap.appendChild(chevron);
+        wrap.appendChild(select);
+        select.addEventListener('change', () => refreshStatusVisual(select));
+      }
+      refreshStatusVisual(select);
+    }
+
+    function decorateAllStatuses() {
+      document.querySelectorAll('#rows .status-select').forEach(decorateStatusSelect);
     }
 
     const statsOverlay = document.createElement('div');
@@ -191,7 +212,7 @@
           openStats(id, name);
         };
       });
-      compactAllStatuses();
+      decorateAllStatuses();
       applying = false;
     }
 
@@ -201,7 +222,7 @@
     rowsRoot.addEventListener('change', event => {
       const select = event.target.closest?.('.status-select');
       if (!select) return;
-      setTimeout(() => compactStatusSelect(select), 0);
+      setTimeout(() => refreshStatusVisual(select), 0);
     });
 
     loadCounts().then(map => {
