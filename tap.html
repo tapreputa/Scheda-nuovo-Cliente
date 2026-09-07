@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#003c33">
+<title>Tapreputa</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}body{display:grid;place-items:center;background:linear-gradient(180deg,#f5f9f8,#edf6f3);color:#17332d;padding:24px}.box{width:min(92vw,420px);background:#fff;border:1px solid #dbe4e1;border-radius:24px;padding:28px;text-align:center;box-shadow:0 18px 45px rgba(12,45,39,.08)}.mark{width:64px;height:64px;border-radius:18px;margin:0 auto 16px;display:grid;place-items:center;background:#003c33;color:#fff;font-size:30px}.title{font-size:24px;font-weight:900}.sub{margin-top:10px;color:#70807a;line-height:1.45}.error{display:none;margin-top:16px;padding:12px;border-radius:12px;background:#fff0ed;color:#8c2d21;border:1px solid #efc0b8;font-size:13px}.error.show{display:block}</style>
+</head>
+<body>
+<div class="box">
+  <div class="mark">N</div>
+  <div class="title">Tapreputa</div>
+  <div class="sub">Apertura in corso…</div>
+  <div id="error" class="error">Link non disponibile. Riprova tra qualche secondo.</div>
+</div>
+<script>
+(() => {
+  'use strict';
+  const SUPABASE_URL = 'https://rqzgdgdoulgjwlxtdxhi.supabase.co';
+  const PUBLISHABLE_KEY = 'sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
+  const slug = new URLSearchParams(location.search).get('c') || '';
+  const canonical = 'https://tapreputa.github.io/Scheda-nuovo-Cliente/tap.html?c=' + encodeURIComponent(slug);
+  const error = document.getElementById('error');
+
+  async function go() {
+    if (!slug) throw new Error('missing slug');
+    const response = await fetch(SUPABASE_URL + '/rest/v1/rpc/register_nfc_tap', {
+      method: 'POST',
+      headers: {
+        apikey: PUBLISHABLE_KEY,
+        Authorization: 'Bearer ' + PUBLISHABLE_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ p_link_nfc: canonical })
+    });
+    if (!response.ok) throw new Error('tracking failed');
+    const data = await response.json().catch(() => []);
+    const row = Array.isArray(data) ? data[0] : data;
+    if (!row?.target_url) throw new Error('target missing');
+    location.replace(row.target_url);
+  }
+
+  go().catch(() => {
+    error.classList.add('show');
+  });
+})();
+</script>
+</body>
+</html>
