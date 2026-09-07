@@ -96,6 +96,10 @@
       .tap-eye-count[data-zero="1"]{color:#82908c;background:#f7f9f8;border-color:#e0e6e4}
       td.nome{white-space:normal!important}.name-btn{vertical-align:middle}
 
+      tbody td.id{position:sticky!important;left:0!important;z-index:40!important;background:#fff!important;color:transparent!important;overflow:visible!important;-webkit-transform:translate3d(0,0,0)!important;transform:translate3d(0,0,0)!important;-webkit-backface-visibility:hidden!important;backface-visibility:hidden!important;isolation:isolate!important}
+      tbody td.id::after{content:attr(data-tap-id);position:absolute;left:14px;top:50%;transform:translateY(-50%);display:block;color:#1f5fa3;font:900 14px/1 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;letter-spacing:.01em;white-space:nowrap;z-index:2;pointer-events:none;-webkit-font-smoothing:antialiased}
+      @media(max-width:760px){tbody td.id::after{left:14px;font-size:14px}}
+
       .tap-status-col,.tap-status-cell{width:90px!important;min-width:90px!important;text-align:center!important}
       .tap-status-wrap{position:relative;width:62px;height:46px;margin:0 auto;border:1px solid #d8e0dd;border-radius:999px;display:flex;align-items:center;justify-content:center;background:#f6f8f7;overflow:hidden}
       .tap-status-wrap.is-red{background:#fff0ed;border-color:#efb8af}
@@ -116,6 +120,13 @@
       @media(max-width:560px){.tap-stats-panel{margin:16px auto;padding:20px}.tap-stats-title{font-size:24px}.tap-stats-grid{grid-template-columns:1fr}.tap-stats-card{display:flex;align-items:center;justify-content:space-between;gap:12px}.tap-stats-card span{margin:0}.tap-status-col,.tap-status-cell{width:84px!important;min-width:84px!important}.tap-status-wrap{width:58px;height:44px}.tap-status-icon{font-size:25px}}
     `;
     document.head.appendChild(style);
+
+    function refreshIdVisuals() {
+      document.querySelectorAll('#rows > tr > td.id').forEach(cell => {
+        const raw = String(cell.dataset.tapId || cell.textContent || '').trim();
+        if (raw) cell.dataset.tapId = raw;
+      });
+    }
 
     function refreshStatusVisual(select) {
       if (!select) return;
@@ -191,6 +202,7 @@
     function apply() {
       if (applying) return;
       applying = true;
+      refreshIdVisuals();
       document.querySelectorAll('#rows > tr').forEach(row => {
         const id = row.querySelector('[data-rename]')?.dataset.rename || row.querySelector('[data-id]')?.dataset.id || '';
         const cell = row.querySelector('td.nome');
