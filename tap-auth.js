@@ -19,6 +19,13 @@
     document.head.appendChild(chatNavLink);
   }
 
+  if (PAGE_NAME !== 'login.html' && !document.querySelector('script[data-tap-global-bottom-nav-loader]')) {
+    const globalNavScript = document.createElement('script');
+    globalNavScript.src = 'tap-global-bottom-nav.js?v=2';
+    globalNavScript.dataset.tapGlobalBottomNavLoader = '1';
+    document.head.appendChild(globalNavScript);
+  }
+
   const SUPABASE_URL = 'https://rqzgdgdoulgjwlxtdxhi.supabase.co';
   const PUBLISHABLE_KEY = 'sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
   const SESSION_KEY = 'tapnfc_supabase_session_v1';
