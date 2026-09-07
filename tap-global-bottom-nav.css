@@ -32,6 +32,15 @@
     transform:translateX(-60%) rotate(8deg);animation:tapNavShine 5.5s ease-in-out infinite
   }
   @keyframes tapNavShine{0%,72%,100%{transform:translateX(-70%) rotate(8deg);opacity:0}78%{opacity:1}90%{transform:translateX(70%) rotate(8deg);opacity:.85}}
+
+  /* I miei clienti: i comandi finali del modal devono poter scorrere sopra la barra fissa. */
+  html[data-tap-page="clienti.html"] .overlay{
+    padding-bottom:calc(122px + env(safe-area-inset-bottom))!important;
+    scroll-padding-bottom:calc(122px + env(safe-area-inset-bottom))!important;
+  }
+  html[data-tap-page="clienti.html"] .overlay .modal{
+    margin-bottom:calc(105px + env(safe-area-inset-bottom))!important;
+  }
 }
 @media(max-width:390px){
   .tap-global-bottom-nav{left:7px;right:7px;height:69px;border-radius:21px}
