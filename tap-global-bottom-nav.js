@@ -13,6 +13,15 @@
     document.head.appendChild(link);
   }
 
+  function ensureResultsCss(){
+    if (page!=='risultati.html' || document.querySelector('link[data-tap-results-modern]')) return;
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href='tap-risultati-modern.css?v=1';
+    link.dataset.tapResultsModern='1';
+    document.head.appendChild(link);
+  }
+
   function currentFor(target){
     if (target==='home') return page==='index.html' && location.hash!=='#nuovo';
     if (target==='new') return page==='personalizza.html' || (page==='index.html' && location.hash==='#nuovo');
@@ -80,6 +89,6 @@
     document.head.appendChild(style);
   }
 
-  function boot(){installNav();installHomeMotion();}
+  function boot(){ensureResultsCss();installNav();installHomeMotion();}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
 })();
