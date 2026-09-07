@@ -2,6 +2,15 @@ package com.tapreputa.tapnfc;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.webkit.JavascriptInterface;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -45,6 +54,7 @@ public class MainActivity extends Activity {
         settings.setDisplayZoomControls(false);
         settings.setSupportMultipleWindows(true);
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        webView.addJavascriptInterface(new AndroidBridge(), "TapAndroid");
 
         // Tap NFC viene aggiornato frequentemente da GitHub Pages: evita che il WebView
         // continui a mostrare vecchie copie di clienti.html, risultati.html e altri file.
@@ -115,6 +125,42 @@ public class MainActivity extends Activity {
             webView.loadUrl(HOME_URL);
         } else {
             webView.restoreState(savedInstanceState);
+        }
+    }
+
+    private class AndroidBridge {
+        @JavascriptInterface
+        public void saveBase64File(String base64, String fileName, String mimeType) {
+            runOnUiThread(() -> {
+                try {
+                    byte[] data = Base64.decode(base64, Base64.DEFAULT);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        ContentValues values = new ContentValues();
+                        values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
+                        values.put(MediaStore.Downloads.MIME_TYPE, mimeType);
+                        values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/Tapreputa");
+                        Uri uri = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+                        if (uri == null) throw new IllegalStateException("Impossibile creare il file");
+                        try (OutputStream out = getContentResolver().openOutputStream(uri)) {
+                            if (out == null) throw new IllegalStateException("Impossibile aprire il file");
+                            out.write(data);
+                        }
+                        Toast.makeText(MainActivity.this, "Excel salvato in Download/Tapreputa", Toast.LENGTH_LONG).show();
+                    } else {
+                        File base = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+                        if (base == null) throw new IllegalStateException("Cartella Download non disponibile");
+                        File dir = new File(base, "Tapreputa");
+                        if (!dir.exists() && !dir.mkdirs()) throw new IllegalStateException("Impossibile creare la cartella");
+                        File file = new File(dir, fileName);
+                        try (OutputStream out = new FileOutputStream(file)) {
+                            out.write(data);
+                        }
+                        Toast.makeText(MainActivity.this, "Excel salvato: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, "Esportazione Excel non riuscita.", Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 
