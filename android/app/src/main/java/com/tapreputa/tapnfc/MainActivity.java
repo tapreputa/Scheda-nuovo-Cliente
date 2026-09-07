@@ -56,8 +56,6 @@ public class MainActivity extends Activity {
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         webView.addJavascriptInterface(new AndroidBridge(), "TapAndroid");
 
-        // Tap NFC viene aggiornato frequentemente da GitHub Pages: evita che il WebView
-        // continui a mostrare vecchie copie di clienti.html, risultati.html e altri file.
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webView.clearCache(true);
 
@@ -128,6 +126,16 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void notifyExcelSaveResult(boolean success) {
+        final String script;
+        if (success) {
+            script = "(function(){try{var d=new Date();localStorage.setItem('tapreputa_last_excel_export_v1',d.toISOString());var e=document.getElementById('lastExportStamp');if(e)e.textContent='Ultima esportazione: '+d.toLocaleString('it-IT',{dateStyle:'short',timeStyle:'short'});}catch(_){}})();";
+        } else {
+            script = "(function(){try{localStorage.removeItem('tapreputa_last_excel_export_v1');var e=document.getElementById('lastExportStamp');if(e)e.textContent='Esportazione non riuscita';var b=document.getElementById('exportExcelBtn');if(b){b.disabled=false;b.innerHTML='<span class=\"tap-export-icon\">⇩</span><span>Esporta</span>';}}catch(_){}})();";
+        }
+        webView.evaluateJavascript(script, null);
+    }
+
     private class AndroidBridge {
         @JavascriptInterface
         public void saveBase64File(String base64, String fileName, String mimeType) {
@@ -144,7 +152,9 @@ public class MainActivity extends Activity {
                         try (OutputStream out = getContentResolver().openOutputStream(uri)) {
                             if (out == null) throw new IllegalStateException("Impossibile aprire il file");
                             out.write(data);
+                            out.flush();
                         }
+                        notifyExcelSaveResult(true);
                         Toast.makeText(MainActivity.this, "Excel salvato in Download/Tapreputa", Toast.LENGTH_LONG).show();
                     } else {
                         File base = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
@@ -154,10 +164,13 @@ public class MainActivity extends Activity {
                         File file = new File(dir, fileName);
                         try (OutputStream out = new FileOutputStream(file)) {
                             out.write(data);
+                            out.flush();
                         }
+                        notifyExcelSaveResult(true);
                         Toast.makeText(MainActivity.this, "Excel salvato: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
+                    notifyExcelSaveResult(false);
                     Toast.makeText(MainActivity.this, "Esportazione Excel non riuscita.", Toast.LENGTH_LONG).show();
                 }
             });
