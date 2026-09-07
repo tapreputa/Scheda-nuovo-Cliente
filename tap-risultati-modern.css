@@ -1,0 +1,243 @@
+/* Tapreputa — Risultati Modern UI v1
+   Solo presentazione. Nessuna logica dati modificata. */
+html[data-tap-page="risultati.html"]{
+  --tap-navy:#07152b;
+  --tap-blue:#1769ff;
+  --tap-blue2:#0e4ebf;
+  --tap-gold:#d4a328;
+  --tap-ink:#0a1930;
+  --tap-muted:#748195;
+  --tap-line:#d9e2ee;
+  --tap-panel:rgba(255,255,255,.92);
+}
+html[data-tap-page="risultati.html"] body{
+  background:
+    radial-gradient(circle at 14% -8%,rgba(23,105,255,.11),transparent 30%),
+    radial-gradient(circle at 92% 18%,rgba(212,163,40,.08),transparent 24%),
+    linear-gradient(180deg,#f7f9fd 0%,#eef3f9 100%)!important;
+  color:var(--tap-ink)!important;
+}
+html[data-tap-page="risultati.html"] .topbar{
+  background:linear-gradient(120deg,#07152b 0%,#0c2c59 58%,#123d78 100%)!important;
+  box-shadow:0 12px 30px rgba(7,21,43,.18)!important;
+  border-bottom:1px solid rgba(255,255,255,.08)!important;
+}
+html[data-tap-page="risultati.html"] .brand-sub{color:#b9c9df!important}
+html[data-tap-page="risultati.html"] .brand-sub strong{color:#f4c95d!important}
+html[data-tap-page="risultati.html"] .wrap{max-width:1080px!important;padding-bottom:150px!important}
+html[data-tap-page="risultati.html"] .eyebrow,
+html[data-tap-page="risultati.html"] .section-kicker{
+  color:#b88619!important;
+  letter-spacing:.22em!important;
+}
+html[data-tap-page="risultati.html"] .headline h1{
+  color:#07172e!important;
+  font-weight:820!important;
+  letter-spacing:-.045em!important;
+}
+html[data-tap-page="risultati.html"] .subtitle{color:#76849a!important}
+html[data-tap-page="risultati.html"] .refresh{
+  border:1px solid #c8d7eb!important;
+  background:rgba(255,255,255,.92)!important;
+  color:#154f9d!important;
+  box-shadow:0 8px 22px rgba(20,42,74,.08)!important;
+}
+html[data-tap-page="risultati.html"] .tap-export-btn{
+  border-color:#d2ae45!important;
+  background:linear-gradient(135deg,#fff9e9,#f7e6ad)!important;
+  color:#6d5200!important;
+  box-shadow:0 8px 24px rgba(189,145,33,.14)!important;
+}
+html[data-tap-page="risultati.html"] .tap-export-stamp{color:#7b8798!important}
+
+/* KPI operatori */
+html[data-tap-page="risultati.html"] .summary-grid{gap:12px!important}
+html[data-tap-page="risultati.html"] .operator-card{
+  position:relative!important;
+  overflow:hidden!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(248,251,255,.92))!important;
+  border:1px solid #d9e2ee!important;
+  border-radius:23px!important;
+  box-shadow:0 16px 38px rgba(20,42,74,.09)!important;
+}
+html[data-tap-page="risultati.html"] .operator-card::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#1769ff,#0b4fc2);
+}
+html[data-tap-page="risultati.html"] .operator-card:nth-child(2)::before{
+  background:linear-gradient(180deg,#d4a328,#f0c85e);
+}
+html[data-tap-page="risultati.html"] .operator-name{
+  color:#718096!important;
+  font-size:11px!important;
+  letter-spacing:.16em!important;
+}
+html[data-tap-page="risultati.html"] .operator-total{
+  color:#0a2348!important;
+  font-size:34px!important;
+  letter-spacing:-.035em!important;
+}
+html[data-tap-page="risultati.html"] .operator-caption{color:#8995a5!important}
+
+/* Hero totale team */
+html[data-tap-page="risultati.html"] .team-total{
+  position:relative!important;
+  overflow:hidden!important;
+  background:linear-gradient(135deg,#07152b 0%,#0b2f60 52%,#1769ff 100%)!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  box-shadow:0 24px 54px rgba(7,21,43,.28),inset 0 1px rgba(255,255,255,.10)!important;
+}
+html[data-tap-page="risultati.html"] .team-total::before{
+  content:"";
+  position:absolute;
+  width:190px;height:190px;
+  right:-64px;top:-88px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.19),rgba(255,255,255,0) 67%);
+  pointer-events:none;
+}
+html[data-tap-page="risultati.html"] .team-total::after{
+  content:"";
+  position:absolute;
+  left:-18%;right:-18%;bottom:-58px;height:92px;
+  background:linear-gradient(90deg,transparent,rgba(244,201,93,.32),rgba(80,175,255,.40),transparent);
+  filter:blur(18px);
+  animation:tapResultGlow 5s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+@keyframes tapResultGlow{from{transform:translateX(-6%) scaleX(.92)}to{transform:translateX(8%) scaleX(1.08)}}
+html[data-tap-page="risultati.html"] .team-label{color:#f4d77f!important}
+html[data-tap-page="risultati.html"] .team-value{font-weight:950!important;text-shadow:0 5px 24px rgba(0,0,0,.18)}
+html[data-tap-page="risultati.html"] .team-note{color:#c9d9ef!important}
+html[data-tap-page="risultati.html"] .team-badge{
+  position:relative;z-index:2;
+  background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.08))!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.18)!important;
+  animation:tapResultPulse 2.8s ease-in-out infinite;
+}
+@keyframes tapResultPulse{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.04)}}
+
+/* Tabella prodotti */
+html[data-tap-page="risultati.html"] .table-card{
+  border:1px solid #d9e2ee!important;
+  box-shadow:0 16px 38px rgba(20,42,74,.09)!important;
+  background:rgba(255,255,255,.94)!important;
+}
+html[data-tap-page="risultati.html"] thead th{
+  background:linear-gradient(180deg,#f8faff,#f2f6fb)!important;
+  color:#65758c!important;
+  border-bottom:1px solid #dce5f0!important;
+}
+html[data-tap-page="risultati.html"] thead th:not(:first-child){color:#39516e!important}
+html[data-tap-page="risultati.html"] td{border-bottom-color:#e7edf5!important}
+html[data-tap-page="risultati.html"] .metric-label{color:#15304f!important}
+html[data-tap-page="risultati.html"] .value{color:#0c365f!important}
+html[data-tap-page="risultati.html"] .money-row td,
+html[data-tap-page="risultati.html"] .money-row td:first-child{background:#fbfcff!important}
+html[data-tap-page="risultati.html"] .money-row .metric-label,
+html[data-tap-page="risultati.html"] .money-row .value{color:#082d55!important}
+html[data-tap-page="risultati.html"] .team-col{background:#edf4ff!important;color:#145bb8!important}
+html[data-tap-page="risultati.html"] .data-note{
+  color:#7b8798!important;
+  padding:10px 14px!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.58)!important;
+  width:max-content;max-width:100%;margin-left:auto!important;margin-right:auto!important;
+}
+
+/* Sezioni */
+html[data-tap-page="risultati.html"] .monthly-section,
+html[data-tap-page="risultati.html"] .analysis-section{
+  border-top:1px solid #d6e0ec!important;
+}
+html[data-tap-page="risultati.html"] .section-title{color:#0a1d38!important;font-weight:850!important}
+html[data-tap-page="risultati.html"] .year-select{
+  border:1px solid #cbd9ea!important;
+  color:#0b315b!important;
+  box-shadow:0 7px 18px rgba(20,42,74,.06)!important;
+}
+html[data-tap-page="risultati.html"] .month-btn{
+  border:1px solid #cfdaea!important;
+  color:#596a80!important;
+  box-shadow:0 6px 15px rgba(20,42,74,.04)!important;
+}
+html[data-tap-page="risultati.html"] .month-btn.active{
+  background:linear-gradient(145deg,#0b4fc2,#1769ff)!important;
+  color:#fff!important;
+  border-color:#1769ff!important;
+  box-shadow:0 9px 22px rgba(23,105,255,.24)!important;
+}
+html[data-tap-page="risultati.html"] .month-label{color:#64758c!important;font-weight:750!important}
+html[data-tap-page="risultati.html"] .monthly-box{
+  background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(247,250,255,.66))!important;
+  border:1px solid #d8e3f0!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.8)!important;
+}
+html[data-tap-page="risultati.html"] .analysis-card{
+  background:linear-gradient(145deg,rgba(255,255,255,.97),rgba(248,251,255,.94))!important;
+  border:1px solid #d9e2ee!important;
+  box-shadow:0 18px 44px rgba(20,42,74,.09)!important;
+}
+html[data-tap-page="risultati.html"] .analysis-leader-label{color:#b17d12!important}
+html[data-tap-page="risultati.html"] .analysis-leader{color:#0c315e!important}
+html[data-tap-page="risultati.html"] .analysis-total{
+  background:linear-gradient(145deg,#edf4ff,#f9fbff)!important;
+  border:1px solid #d6e3f5!important;
+}
+html[data-tap-page="risultati.html"] .analysis-total strong{color:#1459b6!important}
+html[data-tap-page="risultati.html"] .category-track{
+  background:#e7eef7!important;
+  box-shadow:inset 0 1px 3px rgba(27,56,90,.07)!important;
+}
+html[data-tap-page="risultati.html"] .category-fill{
+  position:relative!important;
+  overflow:hidden!important;
+  background:linear-gradient(90deg,#0b4fc2,#1769ff,#53a7ff)!important;
+  box-shadow:0 5px 16px rgba(23,105,255,.19)!important;
+}
+html[data-tap-page="risultati.html"] .category-fill::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.36) 48%,transparent 72%);
+  transform:translateX(-120%);
+  animation:tapBarScan 3.8s ease-in-out infinite;
+}
+@keyframes tapBarScan{0%,35%{transform:translateX(-120%)}70%,100%{transform:translateX(120%)}}
+html[data-tap-page="risultati.html"] .category-row.leader .category-fill{
+  background:linear-gradient(90deg,#9a6c0e,#d4a328,#f2d06a)!important;
+  box-shadow:0 5px 18px rgba(212,163,40,.22)!important;
+}
+html[data-tap-page="risultati.html"] .category-row.leader .category-name{color:#9a6d1e!important}
+html[data-tap-page="risultati.html"] .category-name,
+html[data-tap-page="risultati.html"] .category-value{color:#17385f!important}
+
+/* Mobile */
+@media(max-width:760px){
+  html[data-tap-page="risultati.html"] .wrap{padding:30px 12px 142px!important}
+  html[data-tap-page="risultati.html"] .headline{margin-bottom:22px!important}
+  html[data-tap-page="risultati.html"] .headline h1{font-size:38px!important}
+  html[data-tap-page="risultati.html"] .summary-grid{gap:9px!important}
+  html[data-tap-page="risultati.html"] .operator-card{padding:16px 13px!important;border-radius:20px!important}
+  html[data-tap-page="risultati.html"] .operator-total{font-size:25px!important}
+  html[data-tap-page="risultati.html"] .operator-name{font-size:10px!important}
+  html[data-tap-page="risultati.html"] .team-total{border-radius:22px!important;padding:21px 18px!important}
+  html[data-tap-page="risultati.html"] .team-value{font-size:38px!important}
+  html[data-tap-page="risultati.html"] .table-card{border-radius:22px!important}
+  html[data-tap-page="risultati.html"] .monthly-box{border-radius:24px!important;padding:12px!important}
+  html[data-tap-page="risultati.html"] .analysis-card{border-radius:23px!important}
+  html[data-tap-page="risultati.html"] .data-note{font-size:11px!important}
+}
+@media(max-width:430px){
+  html[data-tap-page="risultati.html"] .operator-total{font-size:23px!important}
+  html[data-tap-page="risultati.html"] .team-value{font-size:34px!important}
+  html[data-tap-page="risultati.html"] .team-label{font-size:11px!important}
+  html[data-tap-page="risultati.html"] .team-note{font-size:12px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html[data-tap-page="risultati.html"] .team-total::after,
+  html[data-tap-page="risultati.html"] .team-badge,
+  html[data-tap-page="risultati.html"] .category-fill::after{animation:none!important}
+}
