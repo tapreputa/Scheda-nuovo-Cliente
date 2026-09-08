@@ -83,7 +83,7 @@
       @keyframes tapActionSweep{0%,7%,24%,100%{left:-75%;opacity:0}10%{opacity:.1}14%{left:130%;opacity:.9}18%{opacity:0}}
       @keyframes tapIconPulse{0%,7%,25%,100%{transform:rotate(0deg) scale(1)}12%{transform:rotate(-10deg) scale(1.14)}16%{transform:rotate(7deg) scale(1.08)}20%{transform:rotate(0deg) scale(1)}}
       .tap-cinematic-actions .quick-card:active{animation-play-state:paused;transform:scale(.97)!important}
-      @media(max-width:820px){.tap-cinematic-actions{perspective:900px}.tap-cinematic-actions .quick-card{backface-visibility:hidden}.tap-cinematic-actions .quick-card:nth-child(3){grid-column:1/-1}}
+      @media(max-width:820px){.tap-cinematic-actions{perspective:900px}.tap-cinematic-actions .quick-card{backface-visibility:hidden;grid-column:auto!important}}
       @media(prefers-reduced-motion:reduce){.tap-cinematic-actions .quick-card,.tap-cinematic-actions .quick-card::before,.tap-cinematic-actions .quick-card::after,.tap-cinematic-actions .quick-icon{animation:none!important}}
     `;
     document.head.appendChild(style);
