@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07152b">
+<title>Potenziali clienti · Tapreputa</title>
+<link rel="stylesheet" href="tap-global-bottom-nav.css?v=2">
+<style>
+:root{--navy:#07152b;--blue:#1769ff;--ink:#0a1930;--muted:#718097;--line:#dce4ee;--green:#08735f;--gold:#d4a328;--panel:#fff;--shadow:0 18px 48px rgba(20,42,74,.10)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink)}
+body{background:radial-gradient(circle at 15% -10%,rgba(23,105,255,.10),transparent 31%),linear-gradient(180deg,#f7f9fd,#eef4f9);padding-bottom:110px;-webkit-font-smoothing:antialiased}
+.topbar{min-height:80px;padding:12px 18px;background:linear-gradient(120deg,var(--navy),#0d3468);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 12px 30px rgba(7,21,43,.18);position:sticky;top:0;z-index:30}
+.brand{display:flex;align-items:center;gap:11px}.brand-mark{width:46px;height:46px;border-radius:14px;background:#fff;display:grid;place-items:center;color:#09254a;font-size:25px;font-weight:950}.brand-title{font-size:17px;font-weight:950}.brand-sub{font-size:10px;color:#b9c9df;margin-top:3px}.brand-sub strong{color:#f4c95d}.operator{font-size:11px;font-weight:850;padding:9px 12px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(255,255,255,.08)}
+.wrap{max-width:1080px;margin:0 auto;padding:30px 18px 70px}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:20px}.eyebrow{font-size:11px;font-weight:950;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}.hero h1{margin:0;font-size:38px;letter-spacing:-.04em}.hero p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.45;max-width:650px}.new-btn{flex:0 0 auto;min-height:48px;padding:0 17px;border:0;border-radius:14px;background:linear-gradient(135deg,#0b4fc2,#1769ff);color:#fff;font:inherit;font-size:12px;font-weight:950;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 12px 24px rgba(23,105,255,.20)}
+.toolbar{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:16px}.search{height:50px;border:1.5px solid #cfdbea;border-radius:14px;background:#fff;padding:0 14px;font:inherit;font-size:13px;outline:none}.search:focus{border-color:#1769ff;box-shadow:0 0 0 4px rgba(23,105,255,.10)}.count{height:50px;padding:0 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.82);display:flex;align-items:center;font-size:11px;font-weight:900;color:#607087}
+.list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow)}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.name{font-size:18px;font-weight:950;letter-spacing:-.02em}.meta{margin-top:5px;font-size:10px;color:#7c899a}.badge{flex:0 0 auto;border-radius:999px;padding:7px 9px;font-size:9px;font-weight:950;background:#edf3ff;color:#155fca}.badge.visitato{background:#fff7e6;color:#886111}.badge.acquisito{background:#ecf9f5;color:#08705d}.badge.scartato{background:#f4f5f7;color:#6f7886}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}.linkbox{border:1px solid #dde6f0;border-radius:15px;padding:12px;background:#f9fbfd;min-width:0}.link-title{font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.07em;color:#78879a}.link-value{margin-top:6px;font-size:10px;color:#344860;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.actions{display:flex;gap:6px;margin-top:9px}.mini{height:34px;padding:0 10px;border:1px solid #cfdae8;border-radius:10px;background:#fff;color:#24517f;font:inherit;font-size:9px;font-weight:900;display:inline-flex;align-items:center;text-decoration:none;cursor:pointer}.mini:disabled{opacity:.45;cursor:not-allowed}.empty{grid-column:1/-1;border:1px dashed #c9d6e5;border-radius:22px;background:rgba(255,255,255,.72);padding:46px 24px;text-align:center;color:#708096}.empty strong{display:block;color:#173554;font-size:18px;margin-bottom:7px}.empty p{font-size:12px;line-height:1.5;margin:0 auto 17px;max-width:520px}.error{padding:14px;border-radius:14px;background:#fff6e7;border:1px solid #ecd29b;color:#79570e;font-size:12px}
+@media(max-width:760px){.topbar{min-height:74px;padding:10px 13px}.operator{display:none}.wrap{padding:24px 13px 44px}.hero{display:block}.hero h1{font-size:31px}.hero p{font-size:11px}.new-btn{margin-top:14px;width:100%;justify-content:center}.toolbar{grid-template-columns:1fr}.count{height:40px}.list{grid-template-columns:1fr}.links{grid-template-columns:1fr 1fr}.card{padding:16px;border-radius:19px}}
+@media(max-width:390px){.links{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-auth="required">
+<header class="topbar">
+  <div class="brand"><div class="brand-mark">◇</div><div><div class="brand-title">Potenziali clienti</div><div class="brand-sub">Powered by <strong>Tapreputa</strong></div></div></div>
+  <div class="operator" data-operator-name>Operatore</div>
+</header>
+<main class="wrap">
+  <section class="hero">
+    <div><div class="eyebrow">Preparazione commerciale</div><h1>Potenziali clienti</h1><p>Prepara in anticipo attività, categoria e link NFC. Questi contatti restano separati da “I miei clienti” finché non concludi la vendita.</p></div>
+    <a class="new-btn" href="index.html?prospect=1#nuovo">＋ Nuovo potenziale</a>
+  </section>
+  <section class="toolbar">
+    <input id="search" class="search" type="search" autocomplete="off" placeholder="Cerca per nome o categoria…">
+    <div id="count" class="count">Caricamento…</div>
+  </section>
+  <section id="list" class="list"><div class="empty"><strong>Caricamento potenziali…</strong></div></section>
+</main>
+<script src="tap-auth.js?v=4"></script>
+<script>
+(() => {
+  'use strict';
+  const SUPABASE_URL='https://rqzgdgdoulgjwlxtdxhi.supabase.co';
+  const PUBLISHABLE_KEY='sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
+  const SESSION_KEY='tapnfc_supabase_session_v1';
+  let prospects=[];
+
+  function getSession(){
+    for(const storage of [sessionStorage,localStorage]){
+      try{const s=JSON.parse(storage.getItem(SESSION_KEY)||'null');if(s?.access_token)return s;}catch{}
+    }
+    return null;
+  }
+  function esc(value){return String(value??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+  function badgeClass(stato){const s=String(stato||'').toLowerCase();if(s.includes('acquis'))return 'acquisito';if(s.includes('visit'))return 'visitato';if(s.includes('scart'))return 'scartato';return '';}
+  function shortLink(v){if(!v)return 'Non ancora generato';try{const u=new URL(v);return u.hostname+u.pathname+(u.search?'…':'');}catch{return String(v);}}
+  async function copyText(text,btn){
+    if(!text)return;
+    try{await navigator.clipboard.writeText(text);const old=btn.textContent;btn.textContent='Copiato ✓';setTimeout(()=>btn.textContent=old,1100);}catch{prompt('Copia il link:',text);}
+  }
+  function render(){
+    const list=document.getElementById('list');const count=document.getElementById('count');const q=(document.getElementById('search').value||'').trim().toLowerCase();
+    const rows=prospects.filter(p=>!q||[p.nome,p.categoria,p.stato].some(v=>String(v||'').toLowerCase().includes(q)));
+    count.textContent=rows.length+' potenzial'+(rows.length===1?'e':'i');
+    if(!rows.length){
+      list.innerHTML=`<div class="empty"><strong>${prospects.length?'Nessun risultato':'Nessun potenziale salvato'}</strong><p>${prospects.length?'Prova a cambiare il testo della ricerca.':'Crea il primo potenziale e prepara già da casa il materiale NFC per la dimostrazione.'}</p>${prospects.length?'':'<a class="new-btn" href="index.html?prospect=1#nuovo">＋ Nuovo potenziale</a>'}</div>`;
+      return;
+    }
+    list.innerHTML=rows.map((p,i)=>`<article class="card" data-i="${i}">
+      <div class="card-head"><div><div class="name">${esc(p.nome)}</div><div class="meta">${esc(p.categoria||'Categoria da scegliere')}${p.operatore?' · '+esc(p.operatore):''}</div></div><span class="badge ${badgeClass(p.stato)}">${esc(p.stato||'Da visitare')}</span></div>
+      <div class="links">
+        <div class="linkbox"><div class="link-title">Versione standard</div><div class="link-value" title="${esc(p.link_standard||'')}">${esc(shortLink(p.link_standard))}</div><div class="actions">${p.link_standard?`<a class="mini" href="${esc(p.link_standard)}" target="_blank" rel="noopener">Anteprima</a><button class="mini copy" type="button" data-link="${esc(p.link_standard)}">Copia link</button>`:'<button class="mini" disabled>Da generare</button>'}</div></div>
+        <div class="linkbox"><div class="link-title">Versione personalizzata</div><div class="link-value" title="${esc(p.link_personalizzato||'')}">${esc(shortLink(p.link_personalizzato))}</div><div class="actions">${p.link_personalizzato?`<a class="mini" href="${esc(p.link_personalizzato)}" target="_blank" rel="noopener">Anteprima</a><button class="mini copy" type="button" data-link="${esc(p.link_personalizzato)}">Copia link</button>`:'<button class="mini" disabled>Da generare</button>'}</div></div>
+      </div>
+    </article>`).join('');
+    list.querySelectorAll('.copy').forEach(btn=>btn.addEventListener('click',()=>copyText(btn.dataset.link,btn)));
+  }
+  async function load(){
+    const list=document.getElementById('list');const session=getSession();
+    if(!session?.access_token){list.innerHTML='<div class="error">Sessione non disponibile. Torna alla Home ed effettua nuovamente l’accesso.</div>';return;}
+    try{
+      const url=SUPABASE_URL+'/rest/v1/potenziali_clienti?select=id,prospect_token,nome,operatore,categoria,categoria_codice,place_id,link_standard,link_personalizzato,logo_url,stato,created_at&order=created_at.desc';
+      const r=await fetch(url,{headers:{apikey:PUBLISHABLE_KEY,Authorization:'Bearer '+session.access_token}});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      prospects=await r.json();render();
+    }catch(err){console.error('[Potenziali]',err);list.innerHTML='<div class="error">Non riesco a caricare i potenziali clienti. Riprova tra poco.</div>';document.getElementById('count').textContent='—';}
+  }
+  document.getElementById('search').addEventListener('input',render);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load,{once:true});else load();
+})();
+</script>
+<script src="tap-global-bottom-nav-loader.js?v=3"></script>
+</body>
+</html>
