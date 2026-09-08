@@ -33,11 +33,14 @@
   function initPersonalizza() {
     const value = document.getElementById('finalLinkValue');
     const copy = document.getElementById('copyFinalBtn');
+    const activity = document.getElementById('activityType');
     if (!value) return;
+
+    const isStandard = () => String(activity?.value || '').trim() === 'standard';
 
     let rewriting = false;
     function rewrite() {
-      if (rewriting) return;
+      if (rewriting || isStandard()) return;
       const current = String(value.textContent || '').trim();
       if (!current || current.startsWith(TRACKER_BASE)) return;
       rewriting = true;
@@ -50,8 +53,23 @@
     observer.observe(value, { childList:true, subtree:true, characterData:true });
     setTimeout(rewrite, 0);
 
+    activity?.addEventListener('change', () => {
+      if (isStandard()) {
+        const directGoogle = String(document.getElementById('destinationUrl')?.value || '').trim();
+        if (directGoogle) {
+          rewriting = true;
+          value.dataset.tapTargetUrl = directGoogle;
+          value.textContent = directGoogle;
+          rewriting = false;
+        }
+      } else {
+        setTimeout(rewrite, 0);
+      }
+    });
+
     copy?.addEventListener('click', async event => {
       const shown = String(value.textContent || '').trim();
+      if (isStandard()) return;
       if (!shown.startsWith(TRACKER_BASE)) return;
       event.preventDefault();
       event.stopImmediatePropagation();
