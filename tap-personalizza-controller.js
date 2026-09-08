@@ -24,6 +24,10 @@
     return String(destinationUrl?.value || params.get('reviewurl') || '').trim();
   }
 
+  function isStandard() {
+    return registry.normalizeId(activity.value) === 'standard';
+  }
+
   function renderCategories() {
     const current = registry.normalizeId(activity.value);
     activity.innerHTML = '';
@@ -41,69 +45,61 @@
       activity.appendChild(option);
     });
 
-    if (registry.get(current)) activity.value = current;
-    else activity.value = '';
+    activity.value = registry.get(current) ? current : '';
   }
 
-  function forceStandardAddClientVisible() {
-    if (!addClientButton) return;
-    if (registry.normalizeId(activity.value) !== 'standard') return;
-    if (!String(finalLinkValue?.textContent || '').trim()) return;
+  function removeStandardSaveProxy() {
+    document.getElementById('tapStandardAddClientBtn')?.remove();
+  }
 
-    addClientButton.hidden = false;
-    addClientButton.removeAttribute('aria-hidden');
-    addClientButton.classList.add('show');
-    addClientButton.disabled = false;
-    addClientButton.textContent = '+ Aggiungi cliente';
-    addClientButton.style.setProperty('display', 'block', 'important');
-    addClientButton.style.setProperty('visibility', 'visible', 'important');
-    addClientButton.style.setProperty('opacity', '1', 'important');
-    addClientButton.style.setProperty('pointer-events', 'auto', 'important');
-    addClientButton.style.setProperty('width', '100%', 'important');
-    addClientButton.style.setProperty('margin-top', '18px', 'important');
+  function showStandardSaveProxy() {
+    if (!isStandard() || !addClientButton) return;
+    const directUrl = String(finalLinkValue?.textContent || '').trim();
+    if (!directUrl) return;
 
-    if (msg && addClientButton.nextElementSibling !== msg) {
-      msg.parentNode?.insertBefore(addClientButton, msg);
+    let proxy = document.getElementById('tapStandardAddClientBtn');
+    if (!proxy) {
+      proxy = document.createElement('button');
+      proxy.id = 'tapStandardAddClientBtn';
+      proxy.type = 'button';
+      proxy.className = 'add-client show';
+      proxy.textContent = '+ Aggiungi cliente';
+      proxy.style.cssText = 'display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;width:100%!important;margin:18px 0 0!important;';
+      proxy.addEventListener('click', () => {
+        if (!isStandard()) return;
+        addClientButton.click();
+      });
+      finalLinkBox?.insertAdjacentElement('afterend', proxy);
     }
   }
 
-  function resetForcedAddClient() {
-    if (!addClientButton) return;
-    addClientButton.style.removeProperty('display');
-    addClientButton.style.removeProperty('visibility');
-    addClientButton.style.removeProperty('opacity');
-    addClientButton.style.removeProperty('pointer-events');
-    addClientButton.style.removeProperty('width');
-    addClientButton.style.removeProperty('margin-top');
-  }
+  function syncStandardControls(standard) {
+    removeStandardSaveProxy();
 
-  function syncStandardControls(isStandard) {
     if (generateButton) {
-      generateButton.style.display = '';
       generateButton.hidden = false;
-      generateButton.textContent = isStandard ? 'Genera link diretto Google' : 'Genera link finale';
-    }
-    if (previewButton) previewButton.textContent = isStandard ? 'Apri pagina recensioni Google' : 'Anteprima pagina';
-
-    if (!isStandard) {
-      resetForcedAddClient();
-      return;
+      generateButton.style.display = '';
+      generateButton.textContent = standard ? 'Genera link diretto Google' : 'Genera link finale';
     }
 
-    const directUrl = getReviewUrl();
-    if (!directUrl) {
-      finalLinkBox?.classList.remove('show');
-      addClientButton?.classList.remove('show');
-      resetForcedAddClient();
-      if (finalLinkValue) finalLinkValue.textContent = '';
+    if (previewButton) {
+      previewButton.textContent = standard ? 'Testa pagina recensioni Google' : 'Anteprima pagina';
+      previewButton.disabled = standard ? !getReviewUrl() : previewButton.disabled;
+      if (standard) previewButton.classList.add('show', 'tap-preview-enabled');
     }
+
+    if (!standard) return;
+
+    // Nella modalità Standard il pulsante originale resta disponibile solo come motore
+    // di salvataggio; l'interfaccia usa un pulsante dedicato e stabile.
+    if (addClientButton) addClientButton.classList.remove('show');
   }
 
   function syncUI() {
     const id = registry.normalizeId(activity.value);
     const category = registry.get(id);
 
-    if (id && id !== activity.value && registry.get(id)) activity.value = id;
+    if (id && id !== activity.value && category) activity.value = id;
 
     if (info) {
       if (category) {
@@ -115,18 +111,19 @@
       }
     }
 
-    const isStandard = id === 'standard';
+    const standard = id === 'standard';
     if (logoFile) {
       const logoField = logoFile.closest('.field');
-      if (logoField) logoField.style.display = isStandard ? 'none' : '';
-      logoFile.disabled = isStandard;
+      if (logoField) logoField.style.display = standard ? 'none' : '';
+      logoFile.disabled = standard;
     }
-    if (isStandard && logoPreview) logoPreview.classList.remove('show');
-    syncStandardControls(isStandard);
+    if (standard && logoPreview) logoPreview.classList.remove('show');
+
+    syncStandardControls(standard);
   }
 
   function generateStandardDirectLink(event) {
-    if (registry.normalizeId(activity.value) !== 'standard') return;
+    if (!isStandard()) return;
     event.preventDefault();
     event.stopImmediatePropagation();
 
@@ -141,36 +138,41 @@
 
     if (finalLinkValue) finalLinkValue.textContent = directUrl;
     finalLinkBox?.classList.add('show');
-    forceStandardAddClientVisible();
-    setTimeout(forceStandardAddClientVisible, 0);
-    setTimeout(forceStandardAddClientVisible, 150);
-    setTimeout(forceStandardAddClientVisible, 500);
+    showStandardSaveProxy();
 
     if (msg) {
       msg.className = 'message show ok';
-      msg.textContent = 'Link diretto Google pronto. Copialo e scrivilo sulla NFC.';
+      msg.textContent = 'Link diretto Google pronto. Testalo, copialo e poi salva il cliente.';
     }
     finalLinkBox?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   function previewStandardDirectLink(event) {
-    if (registry.normalizeId(activity.value) !== 'standard') return;
+    if (!isStandard()) return;
     event.preventDefault();
     event.stopImmediatePropagation();
 
     const directUrl = getReviewUrl();
-    if (!directUrl) return;
-    window.open(directUrl, '_blank', 'noopener,noreferrer');
-    if (msg) {
-      msg.className = 'message show ok';
-      msg.textContent = 'Pagina recensioni Google aperta correttamente.';
+    if (!directUrl) {
+      if (msg) {
+        msg.className = 'message show warn';
+        msg.textContent = 'Link recensioni Google non disponibile.';
+      }
+      return;
     }
+
+    // Salva prima lo stato della personalizzazione e usa la stessa WebView:
+    // evita popup/window.open, più instabili nell'APK. Con Indietro si torna qui.
+    try { window.TapPersonalizzaReliability?.saveDraft?.(); } catch (_) {}
+    try { sessionStorage.setItem('tapreputa_standard_preview_url', directUrl); } catch (_) {}
+    location.assign(directUrl);
   }
 
   async function copyStandardDirectLink(event) {
-    if (registry.normalizeId(activity.value) !== 'standard') return;
+    if (!isStandard()) return;
     const directUrl = String(finalLinkValue?.textContent || getReviewUrl()).trim();
     if (!directUrl) return;
+
     event.preventDefault();
     event.stopImmediatePropagation();
 
@@ -187,7 +189,7 @@
       area.remove();
     }
 
-    forceStandardAddClientVisible();
+    showStandardSaveProxy();
 
     if (copyFinalButton) {
       const oldText = copyFinalButton.textContent;
@@ -211,14 +213,8 @@
   previewButton?.addEventListener('click', previewStandardDirectLink, true);
   copyFinalButton?.addEventListener('click', copyStandardDirectLink, true);
 
-  if (addClientButton) {
-    new MutationObserver(() => {
-      if (registry.normalizeId(activity.value) === 'standard' && String(finalLinkValue?.textContent || '').trim()) {
-        forceStandardAddClientVisible();
-      }
-    }).observe(addClientButton, { attributes:true, attributeFilter:['class','style','hidden','disabled'] });
-  }
-
+  // Nessun MutationObserver e nessun ciclo di retry: questa versione evita
+  // aggiornamenti DOM continui che possono appesantire/crashare la WebView Android.
   syncUI();
 
   window.TapPersonalizza = Object.freeze({
