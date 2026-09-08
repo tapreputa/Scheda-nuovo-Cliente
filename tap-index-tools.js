@@ -16,6 +16,10 @@
   const PUBLISHABLE_KEY = 'sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
   const SESSION_KEY = 'tapnfc_supabase_session_v1';
   const FUNCTION_NAME = 'google-places-autocomplete';
+  const MIN_SEARCH_LENGTH = 6;
+  const SEARCH_DEBOUNCE_MS = 850;
+  const CACHE_TTL_MS = 10 * 60 * 1000;
+  const placesCache = new Map();
 
   function showMessage(text, type = 'warn') {
     if (!msg) return;
@@ -45,6 +49,29 @@
       } catch {}
     }
     return null;
+  }
+
+  function normalizeSearchKey(value) {
+    return String(value || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('it-IT');
+  }
+
+  function getCachedPlaces(query) {
+    const key = normalizeSearchKey(query);
+    const cached = placesCache.get(key);
+    if (!cached) return null;
+    if (Date.now() - cached.savedAt > CACHE_TTL_MS) {
+      placesCache.delete(key);
+      return null;
+    }
+    return cached.items;
+  }
+
+  function setCachedPlaces(query, items) {
+    placesCache.set(normalizeSearchKey(query), { savedAt: Date.now(), items });
+    if (placesCache.size > 40) {
+      const firstKey = placesCache.keys().next().value;
+      if (firstKey) placesCache.delete(firstKey);
+    }
   }
 
   function installStyles() {
@@ -115,7 +142,7 @@
       <div class="tap-places-head"><div class="tap-places-title">Cerca attività su Google</div><div class="tap-places-badge">Automatico</div></div>
       <input id="tapPlacesInput" class="tap-places-input" type="search" autocomplete="off" placeholder="Es. Maxim Bar Palermo">
       <div id="tapPlacesResults" class="tap-places-results"></div>
-      <div class="tap-places-help">Scrivi il nome dell’attività e, se necessario, anche città o indirizzo. Seleziona il risultato corretto: nome e Place ID verranno compilati automaticamente.</div>
+      <div class="tap-places-help">Scrivi almeno 6 caratteri del nome dell’attività e, se necessario, anche città o indirizzo. Attendi un istante e seleziona il risultato corretto: nome e Place ID verranno compilati automaticamente.</div>
       <div id="tapPlacesState" class="tap-places-state">Ricerca protetta tramite Tapreputa…</div>`;
     grid.insertAdjacentElement('afterbegin', box);
   }
@@ -158,6 +185,9 @@
   }
 
   async function searchPlaces(input) {
+    const cached = getCachedPlaces(input);
+    if (cached) return cached;
+
     const session = getSession();
     if (!session?.access_token) throw new Error('Sessione scaduta');
     const response = await fetch(`${SUPABASE_URL}/functions/v1/${FUNCTION_NAME}`, {
@@ -171,7 +201,9 @@
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data?.error || 'Ricerca Google non disponibile');
-    return Array.isArray(data?.suggestions) ? data.suggestions : [];
+    const items = Array.isArray(data?.suggestions) ? data.suggestions : [];
+    setCachedPlaces(input, items);
+    return items;
   }
 
   function installAutocomplete() {
@@ -181,19 +213,34 @@
     if (!input || !results) return;
     let timer = 0;
     let requestSeq = 0;
-    setPlacesState('Ricerca pronta. Scrivi almeno 2 caratteri.', 'ok');
+    let lastRequestedKey = '';
+    setPlacesState('Ricerca pronta. Scrivi almeno 6 caratteri.', 'ok');
 
     input.addEventListener('input', () => {
       clearTimeout(timer);
       const query = input.value.trim();
+      const queryKey = normalizeSearchKey(query);
       renderSuggestions([]);
-      if (query.length < 2) {
-        setPlacesState('Scrivi almeno 2 caratteri per cercare.', '');
+      if (query.length < MIN_SEARCH_LENGTH) {
+        ++requestSeq;
+        setPlacesState('Scrivi almeno 6 caratteri per cercare.', '');
         return;
       }
+
+      const cached = getCachedPlaces(query);
+      if (cached) {
+        ++requestSeq;
+        renderSuggestions(cached);
+        setPlacesState(cached.length ? 'Risultati pronti. Seleziona l’attività corretta.' : 'Nessun risultato trovato. Prova ad aggiungere città o indirizzo.', cached.length ? 'ok' : 'warn');
+        return;
+      }
+
       const seq = ++requestSeq;
-      setPlacesState('Ricerca in corso…', '');
+      setPlacesState('Attendi un istante…', '');
       timer = setTimeout(async () => {
+        if (queryKey === lastRequestedKey) return;
+        lastRequestedKey = queryKey;
+        setPlacesState('Ricerca in corso…', '');
         try {
           const items = await searchPlaces(query);
           if (seq !== requestSeq) return;
@@ -202,10 +249,11 @@
         } catch (err) {
           console.warn('Tap Places proxy error:', err);
           if (seq !== requestSeq) return;
+          lastRequestedKey = '';
           renderSuggestions([]);
           setPlacesState('Ricerca Google non disponibile. Controlla la configurazione del servizio oppure usa l’inserimento manuale.', 'warn');
         }
-      }, 320);
+      }, SEARCH_DEBOUNCE_MS);
     });
 
     document.addEventListener('click', event => {
