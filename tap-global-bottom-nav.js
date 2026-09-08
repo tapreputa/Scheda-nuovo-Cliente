@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const page = location.pathname.split('/').pop() || 'index.html';
-  const allowed = new Set(['index.html','personalizza.html','clienti.html','risultati.html','chat.html','potenziali.html','nuovo-potenziale.html']);
+  const allowed = new Set(['index.html','personalizza.html','personalizza-potenziale.html','clienti.html','risultati.html','chat.html','potenziali.html','nuovo-potenziale.html']);
   if (!allowed.has(page)) return;
 
   function ensureCss(){
@@ -34,7 +34,7 @@
 
   function currentFor(target){
     if (target==='home') return page==='index.html' && location.hash!=='#nuovo';
-    if (target==='new') return page==='personalizza.html' || page==='nuovo-potenziale.html' || (page==='index.html' && location.hash==='#nuovo');
+    if (target==='new') return page==='personalizza.html' || page==='personalizza-potenziale.html' || page==='nuovo-potenziale.html' || (page==='index.html' && location.hash==='#nuovo');
     if (target==='clients') return page==='clienti.html';
     if (target==='results') return page==='risultati.html';
     return false;
