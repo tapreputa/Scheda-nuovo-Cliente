@@ -94,11 +94,10 @@
   continueBtn.addEventListener('click',()=>{
     if(!selected?.placeId) return showMessage('Seleziona prima un’attività dai risultati Google.');
     const p=new URLSearchParams();
-    p.set('prospect','1');
     p.set('reviewurl','https://search.google.com/local/writereview?placeid='+selected.placeId);
     p.set('business',selected.mainText||selected.text||'');
     p.set('placeid',selected.placeId);
-    location.href='personalizza.html?'+p.toString();
+    location.href='personalizza-potenziale.html?'+p.toString();
   });
 
   document.addEventListener('click',e=>{if(e.target!==input&&!results.contains(e.target))results.classList.remove('open');});
