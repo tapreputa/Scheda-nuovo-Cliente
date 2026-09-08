@@ -1,6 +1,6 @@
 (() => {
   'use strict';
   window.TapGooglePlacesConfig = Object.freeze({
-    apiKey: 'INSERISCI_QUI_LA_TUA_API_KEY_GOOGLE_MAPS'
+    apiKey: ' AIzaSyAFRWdBEVK_DrhyEVg9J0Ww43oFzNzFKKs '
   });
 })();
