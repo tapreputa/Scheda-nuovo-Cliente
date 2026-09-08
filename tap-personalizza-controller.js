@@ -13,6 +13,7 @@
   const finalLinkBox = document.getElementById('finalLinkBox');
   const finalLinkValue = document.getElementById('finalLinkValue');
   const copyFinalButton = document.getElementById('copyFinalBtn');
+  const addClientButton = document.getElementById('addClientBtn');
   const destinationUrl = document.getElementById('destinationUrl');
   const msg = document.getElementById('msg');
 
@@ -57,6 +58,7 @@
     const directUrl = getReviewUrl();
     if (!directUrl) {
       finalLinkBox?.classList.remove('show');
+      addClientButton?.classList.remove('show');
       if (finalLinkValue) finalLinkValue.textContent = '';
     }
   }
@@ -103,6 +105,11 @@
 
     if (finalLinkValue) finalLinkValue.textContent = directUrl;
     finalLinkBox?.classList.add('show');
+    if (addClientButton) {
+      addClientButton.classList.add('show');
+      addClientButton.disabled = false;
+      addClientButton.textContent = '+ Aggiungi cliente';
+    }
     if (msg) {
       msg.className = 'message show ok';
       msg.textContent = 'Link diretto Google pronto. Copialo e scrivilo sulla NFC.';
