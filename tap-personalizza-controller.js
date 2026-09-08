@@ -45,6 +45,38 @@
     else activity.value = '';
   }
 
+  function forceStandardAddClientVisible() {
+    if (!addClientButton) return;
+    if (registry.normalizeId(activity.value) !== 'standard') return;
+    if (!String(finalLinkValue?.textContent || '').trim()) return;
+
+    addClientButton.hidden = false;
+    addClientButton.removeAttribute('aria-hidden');
+    addClientButton.classList.add('show');
+    addClientButton.disabled = false;
+    addClientButton.textContent = '+ Aggiungi cliente';
+    addClientButton.style.setProperty('display', 'block', 'important');
+    addClientButton.style.setProperty('visibility', 'visible', 'important');
+    addClientButton.style.setProperty('opacity', '1', 'important');
+    addClientButton.style.setProperty('pointer-events', 'auto', 'important');
+    addClientButton.style.setProperty('width', '100%', 'important');
+    addClientButton.style.setProperty('margin-top', '18px', 'important');
+
+    if (msg && addClientButton.nextElementSibling !== msg) {
+      msg.parentNode?.insertBefore(addClientButton, msg);
+    }
+  }
+
+  function resetForcedAddClient() {
+    if (!addClientButton) return;
+    addClientButton.style.removeProperty('display');
+    addClientButton.style.removeProperty('visibility');
+    addClientButton.style.removeProperty('opacity');
+    addClientButton.style.removeProperty('pointer-events');
+    addClientButton.style.removeProperty('width');
+    addClientButton.style.removeProperty('margin-top');
+  }
+
   function syncStandardControls(isStandard) {
     if (generateButton) {
       generateButton.style.display = '';
@@ -53,12 +85,16 @@
     }
     if (previewButton) previewButton.textContent = isStandard ? 'Apri pagina recensioni Google' : 'Anteprima pagina';
 
-    if (!isStandard) return;
+    if (!isStandard) {
+      resetForcedAddClient();
+      return;
+    }
 
     const directUrl = getReviewUrl();
     if (!directUrl) {
       finalLinkBox?.classList.remove('show');
       addClientButton?.classList.remove('show');
+      resetForcedAddClient();
       if (finalLinkValue) finalLinkValue.textContent = '';
     }
   }
@@ -105,11 +141,11 @@
 
     if (finalLinkValue) finalLinkValue.textContent = directUrl;
     finalLinkBox?.classList.add('show');
-    if (addClientButton) {
-      addClientButton.classList.add('show');
-      addClientButton.disabled = false;
-      addClientButton.textContent = '+ Aggiungi cliente';
-    }
+    forceStandardAddClientVisible();
+    setTimeout(forceStandardAddClientVisible, 0);
+    setTimeout(forceStandardAddClientVisible, 150);
+    setTimeout(forceStandardAddClientVisible, 500);
+
     if (msg) {
       msg.className = 'message show ok';
       msg.textContent = 'Link diretto Google pronto. Copialo e scrivilo sulla NFC.';
@@ -151,6 +187,8 @@
       area.remove();
     }
 
+    forceStandardAddClientVisible();
+
     if (copyFinalButton) {
       const oldText = copyFinalButton.textContent;
       copyFinalButton.textContent = 'Copiato ✓';
@@ -172,6 +210,15 @@
   generateButton?.addEventListener('click', generateStandardDirectLink, true);
   previewButton?.addEventListener('click', previewStandardDirectLink, true);
   copyFinalButton?.addEventListener('click', copyStandardDirectLink, true);
+
+  if (addClientButton) {
+    new MutationObserver(() => {
+      if (registry.normalizeId(activity.value) === 'standard' && String(finalLinkValue?.textContent || '').trim()) {
+        forceStandardAddClientVisible();
+      }
+    }).observe(addClientButton, { attributes:true, attributeFilter:['class','style','hidden','disabled'] });
+  }
+
   syncUI();
 
   window.TapPersonalizza = Object.freeze({
