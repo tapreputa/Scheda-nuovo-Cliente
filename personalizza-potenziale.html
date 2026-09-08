@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07152b">
+<title>Personalizza potenziale · Tapreputa</title>
+<link rel="stylesheet" href="tap-global-bottom-nav.css?v=2">
+<style>
+:root{--navy:#07152b;--blue:#1769ff;--ink:#0a1930;--muted:#718097;--line:#dce4ee;--gold:#d4a328;--green:#08735f;--panel:#fff;--shadow:0 18px 48px rgba(20,42,74,.10)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink)}
+body{background:radial-gradient(circle at 15% -10%,rgba(23,105,255,.10),transparent 31%),linear-gradient(180deg,#f7f9fd,#eef4f9);padding-bottom:110px;-webkit-font-smoothing:antialiased}
+.topbar{min-height:80px;padding:12px 18px;background:linear-gradient(120deg,var(--navy),#0d3468);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 12px 30px rgba(7,21,43,.18);position:sticky;top:0;z-index:30}.brand{display:flex;align-items:center;gap:11px}.brand-link{display:block;width:48px;height:48px;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.20)}.brand-link svg{width:100%;height:100%;display:block}.brand-title{font-size:17px;font-weight:950}.brand-sub{font-size:10px;color:#b9c9df;margin-top:3px}.brand-sub strong{color:#f4c95d}.operator{font-size:11px;font-weight:850;padding:9px 12px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(255,255,255,.08)}
+.wrap{max-width:820px;margin:0 auto;padding:28px 18px 70px}.eyebrow{font-size:11px;font-weight:950;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}.hero h1{margin:0;font-size:38px;letter-spacing:-.04em}.hero p{margin:8px 0 20px;color:var(--muted);font-size:13px;line-height:1.45}.activity{margin-bottom:18px;padding:13px 15px;border:1px solid #d9e5f3;border-radius:14px;background:#fff}.activity strong{display:block;font-size:15px}.activity span{display:block;margin-top:4px;color:#718097;font-size:11px;word-break:break-all}
+.section{background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);margin-bottom:18px}.num{width:44px;height:44px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:#edf3ff;color:#145fd9;font-size:20px;font-weight:950}.section h2{margin:0;text-align:center;font-size:24px}.section-sub{text-align:center;color:var(--muted);font-size:12px;line-height:1.45;margin:7px 0 20px}.fixed-category{height:54px;border:1.5px solid #cfdae7;border-radius:15px;background:#f8fafc;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:900;color:#24425f;margin-bottom:14px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{height:56px;border-radius:15px;font:inherit;font-size:13px;font-weight:950;cursor:pointer}.btn.preview{border:1px solid #cbd8e6;background:#fff;color:#24517f}.btn.generate{border:0;background:linear-gradient(135deg,#0b4fc2,#1769ff);color:#fff;box-shadow:0 12px 24px rgba(23,105,255,.20)}.btn:disabled{opacity:.45;cursor:not-allowed}.coming{border:1px dashed #c8d6e5;background:#f9fbfd;border-radius:16px;padding:18px;text-align:center;color:#718097;font-size:12px;line-height:1.5}
+.summary{display:none;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);margin-top:18px}.summary.show{display:block}.summary h3{margin:0 0 14px;font-size:18px}.link-label{font-size:11px;font-weight:950;color:#52657c;margin-bottom:7px}.link-row{display:grid;grid-template-columns:1fr auto;gap:8px}.link-value{min-height:54px;border:1.5px solid #cfdae7;border-radius:14px;background:#f8fafc;padding:13px;font-size:11px;color:#304761;word-break:break-all}.copy{min-height:54px;padding:0 14px;border:1px solid #cbd8e6;border-radius:14px;background:#fff;color:#24517f;font:inherit;font-size:11px;font-weight:900}.back{display:inline-block;margin-top:14px;color:#5f7188;font-size:11px;font-weight:850;text-decoration:none}
+@media(max-width:760px){.topbar{min-height:74px;padding:10px 13px}.operator{display:none}.wrap{padding:24px 13px 44px}.hero h1{font-size:31px}.hero p{font-size:11px}.section{padding:18px;border-radius:20px}.section h2{font-size:21px}.actions{grid-template-columns:1fr}.link-row{grid-template-columns:1fr}.copy{width:100%}}
+</style>
+</head>
+<body data-auth="required">
+<header class="topbar">
+  <div class="brand">
+    <a class="brand-link" href="index.html" aria-label="Vai alla Home"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="14" fill="#fff"/><path d="M31 12 L88 50 L16 92 L48 56 L66 50 L25 23 Z" fill="#071d35"/><path d="M18 31 L50 50 L39 60 L8 40 Z" fill="#071d35"/><path d="M15 90 L27 57 L39 64 Z" fill="#e6a019"/></svg></a>
+    <div><div class="brand-title">Personalizza potenziale</div><div class="brand-sub">Powered by <strong>Tapreputa</strong></div></div>
+  </div>
+  <div class="operator" data-operator-name>Operatore</div>
+</header>
+<main class="wrap">
+  <section class="hero"><div class="eyebrow">Preparazione commerciale</div><h1>Personalizza potenziale</h1><p>Questa pagina è separata dal flusso “I miei clienti”. Qui prepariamo prima la versione Standard e poi la versione personalizzata.</p></section>
+  <div class="activity"><strong id="businessName">Attività</strong><span id="placeIdText">Place ID</span></div>
+
+  <section class="section">
+    <div class="num">1</div>
+    <h2>Versione Standard</h2>
+    <div class="section-sub">Collegamento diretto alla pagina recensioni Google. La categoria è impostata automaticamente.</div>
+    <div class="fixed-category">Standard — collegamento diretto</div>
+    <div class="actions">
+      <button id="previewStandard" class="btn preview" type="button">Anteprima</button>
+      <button id="generateStandard" class="btn generate" type="button">Genera link</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="num">2</div>
+    <h2>Versione personalizzata</h2>
+    <div class="section-sub">Categoria, logo e pagina Tapreputa dedicata.</div>
+    <div class="coming">La seconda sezione verrà collegata nel prossimo passaggio. Non usa la logica di salvataggio de “I miei clienti”.</div>
+  </section>
+
+  <section id="summary" class="summary">
+    <h3>Link preparati</h3>
+    <div class="link-label">Link recensioni Google</div>
+    <div class="link-row"><div id="standardLink" class="link-value"></div><button id="copyStandard" class="copy" type="button">Copia</button></div>
+  </section>
+
+  <a class="back" href="potenziali.html">← Torna ai potenziali</a>
+</main>
+<script src="tap-auth.js?v=4"></script>
+<script>
+(() => {
+  const p=new URLSearchParams(location.search);
+  const business=p.get('business')||'Attività';
+  const placeid=p.get('placeid')||'';
+  const reviewurl=p.get('reviewurl')||('https://search.google.com/local/writereview?placeid='+encodeURIComponent(placeid));
+  document.getElementById('businessName').textContent=business;
+  document.getElementById('placeIdText').textContent=placeid||'Place ID non disponibile';
+  document.getElementById('previewStandard').addEventListener('click',()=>{ if(reviewurl) window.open(reviewurl,'_blank','noopener'); });
+  document.getElementById('generateStandard').addEventListener('click',()=>{
+    document.getElementById('standardLink').textContent=reviewurl;
+    document.getElementById('summary').classList.add('show');
+  });
+  document.getElementById('copyStandard').addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(reviewurl);const b=document.getElementById('copyStandard');const old=b.textContent;b.textContent='Copiato ✓';setTimeout(()=>b.textContent=old,1000);}catch{prompt('Copia il link:',reviewurl);}
+  });
+})();
+</script>
+<script src="tap-global-bottom-nav-loader.js?v=3"></script>
+</body>
+</html>
