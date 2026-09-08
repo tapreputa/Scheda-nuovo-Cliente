@@ -12,8 +12,12 @@
 body{background:radial-gradient(circle at 15% -10%,rgba(23,105,255,.10),transparent 31%),linear-gradient(180deg,#f7f9fd,#eef4f9);padding-bottom:110px;-webkit-font-smoothing:antialiased}
 .topbar{min-height:80px;padding:12px 18px;background:linear-gradient(120deg,var(--navy),#0d3468);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 12px 30px rgba(7,21,43,.18);position:sticky;top:0;z-index:30}.brand{display:flex;align-items:center;gap:11px}.brand-link{display:block;width:48px;height:48px;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.20)}.brand-link svg{width:100%;height:100%;display:block}.brand-title{font-size:17px;font-weight:950}.brand-sub{font-size:10px;color:#b9c9df;margin-top:3px}.brand-sub strong{color:#f4c95d}.operator{font-size:11px;font-weight:850;padding:9px 12px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(255,255,255,.08)}
 .wrap{max-width:820px;margin:0 auto;padding:28px 18px 70px}.eyebrow{font-size:11px;font-weight:950;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}.hero h1{margin:0;font-size:38px;letter-spacing:-.04em}.hero p{margin:8px 0 20px;color:var(--muted);font-size:13px;line-height:1.45}.activity{margin-bottom:18px;padding:13px 15px;border:1px solid #d9e5f3;border-radius:14px;background:#fff}.activity strong{display:block;font-size:15px}.activity span{display:block;margin-top:4px;color:#718097;font-size:11px;word-break:break-all}
-.section{background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);margin-bottom:18px}.num{width:44px;height:44px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:#edf3ff;color:#145fd9;font-size:20px;font-weight:950}.section h2{margin:0;text-align:center;font-size:24px}.section-sub{text-align:center;color:var(--muted);font-size:12px;line-height:1.45;margin:7px 0 20px}.fixed-category{height:54px;border:1.5px solid #cfdae7;border-radius:15px;background:#f8fafc;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:900;color:#24425f;margin-bottom:14px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{height:56px;border-radius:15px;font:inherit;font-size:13px;font-weight:950;cursor:pointer}.btn.preview{border:1px solid #cbd8e6;background:#fff;color:#24517f}.btn.generate{border:0;background:linear-gradient(135deg,#0b4fc2,#1769ff);color:#fff;box-shadow:0 12px 24px rgba(23,105,255,.20)}.btn:disabled{opacity:.45;cursor:not-allowed}.coming{border:1px dashed #c8d6e5;background:#f9fbfd;border-radius:16px;padding:18px;text-align:center;color:#718097;font-size:12px;line-height:1.5}
-.summary{display:none;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);margin-top:18px}.summary.show{display:block}.summary h3{margin:0 0 14px;font-size:18px}.link-label{font-size:11px;font-weight:950;color:#52657c;margin-bottom:7px}.link-row{display:grid;grid-template-columns:1fr auto;gap:8px}.link-value{min-height:54px;border:1.5px solid #cfdae7;border-radius:14px;background:#f8fafc;padding:13px;font-size:11px;color:#304761;word-break:break-all}.copy{min-height:54px;padding:0 14px;border:1px solid #cbd8e6;border-radius:14px;background:#fff;color:#24517f;font:inherit;font-size:11px;font-weight:900}.back{display:inline-block;margin-top:14px;color:#5f7188;font-size:11px;font-weight:850;text-decoration:none}
+.section{background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);margin-bottom:18px}.num{width:44px;height:44px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:#edf3ff;color:#145fd9;font-size:20px;font-weight:950}.section h2{margin:0;text-align:center;font-size:24px}.section-sub{text-align:center;color:var(--muted);font-size:12px;line-height:1.45;margin:7px 0 20px}.fixed-category{height:54px;border:1.5px solid #cfdae7;border-radius:15px;background:#f8fafc;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:900;color:#24425f;margin-bottom:14px}
+.field{margin-bottom:14px}.field label{display:block;font-size:12px;font-weight:900;color:#34445a;margin:0 0 8px}.select{width:100%;height:54px;border:1.5px solid #cfdae7;border-radius:15px;background:#fff;color:#1c3551;padding:0 14px;font:inherit;font-size:13px;font-weight:800;outline:none}.select:focus{border-color:#1769ff;box-shadow:0 0 0 4px rgba(23,105,255,.10)}
+.upload{border:1.5px dashed #c8d6e5;border-radius:16px;padding:15px;background:#f9fbfd}.upload input{width:100%;font:inherit;font-size:11px}.logo-preview{display:none;margin-top:12px;padding:10px;border:1px solid #dce5ef;border-radius:14px;background:#fff;align-items:center;gap:11px}.logo-preview.show{display:flex}.logo-preview img{width:58px;height:58px;border-radius:11px;object-fit:contain;background:#f6f8fb}.logo-meta{min-width:0;flex:1}.logo-name{font-size:11px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.remove-logo{margin-top:7px;height:34px;padding:0 11px;border:1px solid #efc2c2;border-radius:10px;background:#fff;color:#a13b3b;font:inherit;font-size:10px;font-weight:900;cursor:pointer}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{height:56px;border-radius:15px;font:inherit;font-size:13px;font-weight:950;cursor:pointer}.btn.preview{border:1px solid #cbd8e6;background:#fff;color:#24517f}.btn.generate{border:0;background:linear-gradient(135deg,#0b4fc2,#1769ff);color:#fff;box-shadow:0 12px 24px rgba(23,105,255,.20)}.btn:disabled{opacity:.45;cursor:not-allowed}.status{display:none;margin-top:12px;padding:11px 12px;border-radius:12px;font-size:11px}.status.show{display:block}.status.ok{background:#effaf7;border:1px solid #b9e4d9;color:#08705d}.status.warn{background:#fff9eb;border:1px solid #efd79e;color:#7b5a11}
+.summary{display:none;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);margin-top:18px}.summary.show{display:block}.summary h3{margin:0 0 16px;font-size:20px}.summary-item+.summary-item{margin-top:18px;padding-top:18px;border-top:1px dashed #d5dfeb}.link-label{font-size:11px;font-weight:950;color:#52657c;margin-bottom:7px}.link-row{display:grid;grid-template-columns:1fr auto;gap:8px}.link-value{min-height:54px;border:1.5px solid #cfdae7;border-radius:14px;background:#f8fafc;padding:13px;font-size:11px;color:#304761;word-break:break-all}.link-value.empty{color:#98a3b1}.copy{min-height:54px;padding:0 14px;border:1px solid #cbd8e6;border-radius:14px;background:#fff;color:#24517f;font:inherit;font-size:11px;font-weight:900}.copy:disabled{opacity:.45}.back{display:inline-block;margin-top:14px;color:#5f7188;font-size:11px;font-weight:850;text-decoration:none}
+.renderer-shell{position:fixed;inset:0;z-index:999999;background:#fff;display:none}.renderer-shell.show{display:block}.renderer-back{position:fixed;left:12px;top:12px;z-index:1000001;border:0;border-radius:999px;background:#07152b;color:#fff;padding:11px 15px;font:inherit;font-size:12px;font-weight:900;box-shadow:0 8px 22px rgba(0,0,0,.22)}.renderer-frame{width:100%;height:100%;border:0;background:#fff}
 @media(max-width:760px){.topbar{min-height:74px;padding:10px 13px}.operator{display:none}.wrap{padding:24px 13px 44px}.hero h1{font-size:31px}.hero p{font-size:11px}.section{padding:18px;border-radius:20px}.section h2{font-size:21px}.actions{grid-template-columns:1fr}.link-row{grid-template-columns:1fr}.copy{width:100%}}
 </style>
 </head>
@@ -26,7 +30,7 @@ body{background:radial-gradient(circle at 15% -10%,rgba(23,105,255,.10),transpar
   <div class="operator" data-operator-name>Operatore</div>
 </header>
 <main class="wrap">
-  <section class="hero"><div class="eyebrow">Preparazione commerciale</div><h1>Personalizza potenziale</h1><p>Questa pagina è separata dal flusso “I miei clienti”. Qui prepariamo prima la versione Standard e poi la versione personalizzata.</p></section>
+  <section class="hero"><div class="eyebrow">Preparazione commerciale</div><h1>Personalizza potenziale</h1><p>Questa pagina è separata dal flusso “I miei clienti”. Qui prepariamo la versione Standard e la versione personalizzata.</p></section>
   <div class="activity"><strong id="businessName">Attività</strong><span id="placeIdText">Place ID</span></div>
 
   <section class="section">
@@ -43,18 +47,67 @@ body{background:radial-gradient(circle at 15% -10%,rgba(23,105,255,.10),transpar
   <section class="section">
     <div class="num">2</div>
     <h2>Versione personalizzata</h2>
-    <div class="section-sub">Categoria, logo e pagina Tapreputa dedicata.</div>
-    <div class="coming">La seconda sezione verrà collegata nel prossimo passaggio. Non usa la logica di salvataggio de “I miei clienti”.</div>
+    <div class="section-sub">Scegli la categoria, aggiungi il logo e prepara la pagina Tapreputa dedicata.</div>
+    <div class="field">
+      <label for="customCategory">Categoria personalizzata</label>
+      <select id="customCategory" class="select">
+        <option value="" selected disabled>Seleziona la categoria</option>
+        <option value="abbigliamento">Abbigliamento</option>
+        <option value="autolavaggio">Autolavaggio</option>
+        <option value="bar">Bar / Caffetterie</option>
+        <option value="barbershop">Barber Shop</option>
+        <option value="cartolibreria">Cartolibreria</option>
+        <option value="centroestetico">Centri estetici</option>
+        <option value="detersivi">Detersivi e casalinghi</option>
+        <option value="farmacia">Farmacie</option>
+        <option value="gelateria">Gelaterie</option>
+        <option value="hamburgeria">Hamburgeria</option>
+        <option value="ottica">Ottica / vendita occhiali</option>
+        <option value="fitness">Palestre / Fitness</option>
+        <option value="panificio">Panificio / Biscottificio</option>
+        <option value="parrucchiere">Parrucchieri</option>
+        <option value="pasticceria">Pasticcerie</option>
+        <option value="pizzeria">Pizzerie</option>
+        <option value="pub">Pub / Cocktail bar</option>
+        <option value="ristorante">Ristoranti</option>
+        <option value="ristorantemare">Ristoranti Mare</option>
+        <option value="stabilimento">Stabilimenti balneari</option>
+        <option value="strumentimusicali">Strumenti musicali</option>
+        <option value="svapostore">Svapo Store</option>
+        <option value="yogurteria">Yogurterie</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="customLogo">Logo attività</label>
+      <div class="upload">
+        <input id="customLogo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+        <div id="logoPreview" class="logo-preview"><img id="logoPreviewImg" alt="Anteprima logo"><div class="logo-meta"><div id="logoName" class="logo-name"></div><button id="removeLogo" class="remove-logo" type="button">Rimuovi logo</button></div></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="previewCustom" class="btn preview" type="button">Anteprima</button>
+      <button id="generateCustom" class="btn generate" type="button">Genera link</button>
+    </div>
+    <div id="customStatus" class="status"></div>
   </section>
 
   <section id="summary" class="summary">
     <h3>Link preparati</h3>
-    <div class="link-label">Link recensioni Google</div>
-    <div class="link-row"><div id="standardLink" class="link-value"></div><button id="copyStandard" class="copy" type="button">Copia</button></div>
+    <div class="summary-item">
+      <div class="link-label">Link recensioni Google</div>
+      <div class="link-row"><div id="standardLink" class="link-value empty">Genera prima il link Standard</div><button id="copyStandard" class="copy" type="button" disabled>Copia</button></div>
+    </div>
+    <div class="summary-item">
+      <div class="link-label">Link pagina personalizzata</div>
+      <div class="link-row"><div id="customLink" class="link-value empty">Genera prima il link personalizzato</div><button id="copyCustom" class="copy" type="button" disabled>Copia</button></div>
+    </div>
   </section>
 
   <a class="back" href="potenziali.html">← Torna ai potenziali</a>
 </main>
+
+<div id="rendererShell" class="renderer-shell"><button id="rendererBack" class="renderer-back" type="button">← Torna a Personalizza potenziale</button><iframe id="rendererFrame" class="renderer-frame" title="Anteprima personalizzata"></iframe></div>
+
 <script src="tap-auth.js?v=4"></script>
 <script>
 (() => {
@@ -62,16 +115,90 @@ body{background:radial-gradient(circle at 15% -10%,rgba(23,105,255,.10),transpar
   const business=p.get('business')||'Attività';
   const placeid=p.get('placeid')||'';
   const reviewurl=p.get('reviewurl')||('https://search.google.com/local/writereview?placeid='+encodeURIComponent(placeid));
+  const summary=document.getElementById('summary');
+  const standardLink=document.getElementById('standardLink');
+  const customLink=document.getElementById('customLink');
+  const customCategory=document.getElementById('customCategory');
+  const customLogo=document.getElementById('customLogo');
+  const logoPreview=document.getElementById('logoPreview');
+  const logoPreviewImg=document.getElementById('logoPreviewImg');
+  const logoName=document.getElementById('logoName');
+  const customStatus=document.getElementById('customStatus');
+  const rendererShell=document.getElementById('rendererShell');
+  const rendererFrame=document.getElementById('rendererFrame');
+  let selectedFile=null;
+  let generatedCustom='';
+
   document.getElementById('businessName').textContent=business;
   document.getElementById('placeIdText').textContent=placeid||'Place ID non disponibile';
-  document.getElementById('previewStandard').addEventListener('click',()=>{ if(reviewurl) window.open(reviewurl,'_blank','noopener'); });
+
+  function showStatus(text,type='warn'){customStatus.className='status show '+type;customStatus.textContent=text;}
+  function clearStatus(){customStatus.className='status';customStatus.textContent='';}
+  function slugify(name){return String(name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
+  async function copy(text,button){if(!text)return;try{await navigator.clipboard.writeText(text);const old=button.textContent;button.textContent='Copiato ✓';setTimeout(()=>button.textContent=old,1000);}catch{prompt('Copia il link:',text);}}
+  function showSummary(){summary.classList.add('show');}
+
+  document.getElementById('previewStandard').addEventListener('click',()=>{if(reviewurl)window.open(reviewurl,'_blank','noopener');});
   document.getElementById('generateStandard').addEventListener('click',()=>{
-    document.getElementById('standardLink').textContent=reviewurl;
-    document.getElementById('summary').classList.add('show');
+    standardLink.textContent=reviewurl;
+    standardLink.classList.remove('empty');
+    document.getElementById('copyStandard').disabled=false;
+    showSummary();
   });
-  document.getElementById('copyStandard').addEventListener('click',async()=>{
-    try{await navigator.clipboard.writeText(reviewurl);const b=document.getElementById('copyStandard');const old=b.textContent;b.textContent='Copiato ✓';setTimeout(()=>b.textContent=old,1000);}catch{prompt('Copia il link:',reviewurl);}
+  document.getElementById('copyStandard').addEventListener('click',e=>copy(reviewurl,e.currentTarget));
+
+  customLogo.addEventListener('change',()=>{
+    const file=customLogo.files?.[0]||null; selectedFile=file;
+    if(!file){logoPreview.classList.remove('show');return;}
+    const reader=new FileReader(); reader.onload=e=>{logoPreviewImg.src=e.target.result;logoName.textContent=file.name;logoPreview.classList.add('show');}; reader.readAsDataURL(file); clearStatus();
   });
+  document.getElementById('removeLogo').addEventListener('click',()=>{selectedFile=null;customLogo.value='';logoPreview.classList.remove('show');logoPreviewImg.removeAttribute('src');logoName.textContent='';generatedCustom='';customLink.textContent='Genera prima il link personalizzato';customLink.classList.add('empty');document.getElementById('copyCustom').disabled=true;});
+  customCategory.addEventListener('change',()=>{generatedCustom='';customLink.textContent='Genera prima il link personalizzato';customLink.classList.add('empty');document.getElementById('copyCustom').disabled=true;clearStatus();});
+
+  function rendererUrl(){const q=new URLSearchParams();q.set('reviewurl',reviewurl);q.set('business',business);q.set('placeid',placeid);q.set('category',customCategory.value);return 'personalizza.html?'+q.toString();}
+
+  function prepareRenderer(mode){
+    return new Promise((resolve,reject)=>{
+      if(!customCategory.value)return reject(new Error('Seleziona la categoria personalizzata.'));
+      if(!selectedFile)return reject(new Error('Aggiungi il logo dell’attività.'));
+      rendererFrame.onload=()=>{
+        try{
+          const doc=rendererFrame.contentDocument, win=rendererFrame.contentWindow;
+          const cat=doc.getElementById('activityType'); if(cat){cat.value=customCategory.value;cat.dispatchEvent(new Event('change',{bubbles:true}));}
+          const fileInput=doc.getElementById('logoFile');
+          if(!fileInput)throw new Error('Renderer logo non disponibile.');
+          const dt=new DataTransfer();dt.items.add(selectedFile);fileInput.files=dt.files;fileInput.dispatchEvent(new Event('change',{bubbles:true}));
+          const add=doc.getElementById('addClientBtn');if(add)add.style.display='none';
+          setTimeout(()=>resolve({doc,win}),180);
+        }catch(err){reject(err);}
+      };
+      rendererFrame.src=rendererUrl()+'&_r='+Date.now();
+    });
+  }
+
+  document.getElementById('previewCustom').addEventListener('click',async()=>{
+    try{
+      clearStatus();
+      const {doc}=await prepareRenderer('preview');
+      rendererShell.classList.add('show');document.body.style.overflow='hidden';
+      setTimeout(()=>doc.getElementById('previewBtn')?.click(),120);
+    }catch(err){showStatus(err.message||'Non riesco a preparare l’anteprima.');}
+  });
+
+  document.getElementById('generateCustom').addEventListener('click',async()=>{
+    try{
+      clearStatus();showStatus('Generazione link personalizzato…','ok');
+      const {doc}=await prepareRenderer('generate');
+      const btn=doc.getElementById('generateBtn'); if(!btn)throw new Error('Generatore non disponibile.');
+      btn.click();
+      await new Promise(r=>setTimeout(r,220));
+      const value=(doc.getElementById('finalLinkValue')?.textContent||'').trim();
+      generatedCustom=value||('https://tapreputa.github.io/'+slugify(business)+'/');
+      customLink.textContent=generatedCustom;customLink.classList.remove('empty');document.getElementById('copyCustom').disabled=false;showSummary();showStatus('Link personalizzato preparato.','ok');
+    }catch(err){showStatus(err.message||'Non riesco a generare il link personalizzato.');}
+  });
+  document.getElementById('copyCustom').addEventListener('click',e=>copy(generatedCustom,e.currentTarget));
+  document.getElementById('rendererBack').addEventListener('click',()=>{rendererShell.classList.remove('show');rendererFrame.src='about:blank';document.body.style.overflow='';});
 })();
 </script>
 <script src="tap-global-bottom-nav-loader.js?v=3"></script>
