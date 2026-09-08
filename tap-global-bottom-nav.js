@@ -22,6 +22,16 @@
     document.head.appendChild(link);
   }
 
+  function ensureProspectSave(){
+    if(page!=='personalizza.html') return;
+    const p=new URLSearchParams(location.search);
+    if(p.get('prospect')!=='1' || document.querySelector('script[data-tap-prospect-save]')) return;
+    const s=document.createElement('script');
+    s.src='tap-prospect-save.js?v=1';
+    s.dataset.tapProspectSave='1';
+    document.head.appendChild(s);
+  }
+
   function currentFor(target){
     if (target==='home') return page==='index.html' && location.hash!=='#nuovo';
     if (target==='new') return page==='personalizza.html' || page==='nuovo-potenziale.html' || (page==='index.html' && location.hash==='#nuovo');
@@ -83,12 +93,12 @@
       @keyframes tapActionSweep{0%,7%,24%,100%{left:-75%;opacity:0}10%{opacity:.1}14%{left:130%;opacity:.9}18%{opacity:0}}
       @keyframes tapIconPulse{0%,7%,25%,100%{transform:rotate(0deg) scale(1)}12%{transform:rotate(-10deg) scale(1.14)}16%{transform:rotate(7deg) scale(1.08)}20%{transform:rotate(0deg) scale(1)}}
       .tap-cinematic-actions .quick-card:active{animation-play-state:paused;transform:scale(.97)!important}
-      @media(max-width:820px){.tap-cinematic-actions{perspective:900px}.tap-cinematic-actions .quick-card{backface-visibility:hidden;grid-column:auto!important}}
+      @media(max-width:820px){.tap-cinematic-actions{perspective:900px}.tap-cinematic-actions .quick-card{backface-visibility:hidden}.tap-cinematic-actions .quick-card:nth-child(3){grid-column:auto!important}}
       @media(prefers-reduced-motion:reduce){.tap-cinematic-actions .quick-card,.tap-cinematic-actions .quick-card::before,.tap-cinematic-actions .quick-card::after,.tap-cinematic-actions .quick-icon{animation:none!important}}
     `;
     document.head.appendChild(style);
   }
 
-  function boot(){ensureResultsCss();installNav();installHomeMotion();}
+  function boot(){ensureResultsCss();ensureProspectSave();installNav();installHomeMotion();}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
 })();
