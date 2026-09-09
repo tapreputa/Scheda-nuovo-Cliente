@@ -9,16 +9,23 @@
   function loadExtras() {
     if (!document.querySelector('script[data-tap-potenziali-nav]')) {
       const patch = document.createElement('script');
-      patch.src = 'tap-potenziali-nav.js?v=2';
+      patch.src = 'tap-potenziali-nav.js?v=1';
       patch.dataset.tapPotenzialiNav = '1';
       document.head.appendChild(patch);
     }
 
     if (page === 'personalizza-potenziale.html' && !document.querySelector('script[data-tap-potenziale-save-v3]')) {
       const savePatch = document.createElement('script');
-      savePatch.src = 'tap-potenziale-save-v3.js?v=3';
+      savePatch.src = 'tap-potenziale-save-v3.js?v=2';
       savePatch.dataset.tapPotenzialeSaveV3 = '1';
       document.head.appendChild(savePatch);
+    }
+
+    if (page === 'personalizza-potenziale.html' && !document.querySelector('script[data-tap-potenziale-preview-logo-fix]')) {
+      const logoPatch = document.createElement('script');
+      logoPatch.src = 'tap-potenziale-preview-logo-fix.js?v=1';
+      logoPatch.dataset.tapPotenzialePreviewLogoFix = '1';
+      document.head.appendChild(logoPatch);
     }
   }
 
