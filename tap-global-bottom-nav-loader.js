@@ -16,7 +16,7 @@
 
     if (page === 'personalizza-potenziale.html' && !document.querySelector('script[data-tap-potenziale-save-v3]')) {
       const savePatch = document.createElement('script');
-      savePatch.src = 'tap-potenziale-save-v3.js?v=2';
+      savePatch.src = 'tap-potenziale-save-v3.js?v=3';
       savePatch.dataset.tapPotenzialeSaveV3 = '1';
       document.head.appendChild(savePatch);
     }
@@ -26,6 +26,13 @@
       logoPatch.src = 'tap-potenziale-preview-logo-fix.js?v=4';
       logoPatch.dataset.tapPotenzialePreviewLogoFix = '1';
       document.head.appendChild(logoPatch);
+    }
+
+    if (page === 'personalizza-potenziale.html' && !document.querySelector('script[data-tap-potenziale-independent-link]')) {
+      const linkPatch = document.createElement('script');
+      linkPatch.src = 'tap-potenziale-independent-link.js?v=1';
+      linkPatch.dataset.tapPotenzialeIndependentLink = '1';
+      document.head.appendChild(linkPatch);
     }
   }
 
