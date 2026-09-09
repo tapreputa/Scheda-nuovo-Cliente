@@ -48,6 +48,14 @@
     return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   }
 
+  function currentLogoData() {
+    if (window.tapLogoSkipped) return '';
+    let value = '';
+    try { value = logoDataUrl || ''; } catch (_) { value = window.logoDataUrl || ''; }
+    if (value === 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==') return '';
+    return String(value || '');
+  }
+
   function collect() {
     const params = new URLSearchParams(location.search);
     const option = activity.options[activity.selectedIndex];
@@ -58,6 +66,7 @@
       finalNfcUrl: (finalLinkValue?.textContent || '').trim(),
       categoryCode: activity.value || '',
       categoryText: option?.textContent?.trim() || '',
+      logoData: currentLogoData(),
       logoState: window.tapLogoSkipped ? 'Senza logo' : ((document.getElementById('logoFile')?.files?.[0]) ? 'Logo caricato' : 'Non specificato')
     };
   }
@@ -228,7 +237,7 @@
       }
 
       addBtn.textContent = updateExisting ? 'Aggiornamento...' : 'Salvataggio...';
-      await TapNfc.upsertBusinessClient({
+      const savedClient = await TapNfc.upsertBusinessClient({
         nome: data.businessName,
         categoria: data.categoryText,
         categoria_codice: data.categoryCode,
@@ -241,6 +250,10 @@
         adesivi: order.adesivi,
         spesa: order.spesa
       }, user);
+
+      if (savedClient?.id) {
+        await TapNfc.updateClient(savedClient.id, { logo_data: data.logoData || null });
+      }
 
       showSuccess(data, updateExisting);
     } catch (err) {
