@@ -23,7 +23,7 @@
 
     if (page === 'personalizza-potenziale.html' && !document.querySelector('script[data-tap-potenziale-preview-logo-fix]')) {
       const logoPatch = document.createElement('script');
-      logoPatch.src = 'tap-potenziale-preview-logo-fix.js?v=2';
+      logoPatch.src = 'tap-potenziale-preview-logo-fix.js?v=3';
       logoPatch.dataset.tapPotenzialePreviewLogoFix = '1';
       document.head.appendChild(logoPatch);
     }
