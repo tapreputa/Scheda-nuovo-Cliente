@@ -44,7 +44,7 @@
   }
 
   function waitForEditorLogo(doc, hasLogo) {
-    if (!hasLogo) return new Promise(r => setTimeout(r, 140));
+    if (!hasLogo) return new Promise(r => setTimeout(r, 160));
     return new Promise((resolve, reject) => {
       let tries = 0;
       const timer = setInterval(() => {
@@ -54,7 +54,7 @@
         if (/^data:image\//i.test(src)) {
           clearInterval(timer);
           resolve();
-        } else if (tries > 100) {
+        } else if (tries > 120) {
           clearInterval(timer);
           reject(new Error('Il logo non è stato caricato nel renderer. Riprova.'));
         }
@@ -62,77 +62,63 @@
     });
   }
 
-  function hideInnerBack(doc) {
-    const hide = () => {
-      [...doc.querySelectorAll('button,a')].forEach(el => {
-        if (/Torna a Personalizza/i.test((el.textContent || '').trim())) {
-          el.style.setProperty('display', 'none', 'important');
-        }
-      });
+  function installPreviewInterceptor(win, logoDataUrl, hasLogo) {
+    const current = win.openInlinePreview;
+    if (typeof current !== 'function') return false;
+
+    win.openInlinePreview = function(html) {
+      let out = String(html || '');
+
+      if (hasLogo && logoDataUrl) {
+        out = out.replace(
+          /(<img\b[^>]*class=["'][^"']*\blogo\b[^"']*["'][^>]*\bsrc=["'])[^"']*(["'][^>]*>)/i,
+          '$1' + logoDataUrl + '$2'
+        );
+      } else {
+        out = out.replace(
+          /<img\b[^>]*class=["'][^"']*\blogo\b[^"']*["'][^>]*>/i,
+          '<img class="logo" alt="Logo attività" style="display:none!important">'
+        );
+      }
+
+      return current.call(win, out);
     };
-    hide();
+    return true;
+  }
+
+  function removeInnerPreviewBar(doc) {
     let tries = 0;
     const timer = setInterval(() => {
       tries++;
-      hide();
-      if (tries > 60) clearInterval(timer);
-    }, 60);
-  }
+      const overlay = doc.getElementById('tapPreviewOverlay');
+      if (overlay) {
+        const topbar = overlay.firstElementChild;
+        if (topbar) topbar.style.setProperty('display', 'none', 'important');
 
-  function forceLogoIntoFinalPreview(editorDoc, logoDataUrl, hasLogo) {
-    return new Promise((resolve) => {
-      let tries = 0;
-      const timer = setInterval(() => {
-        tries++;
-        const previewFrame = editorDoc.getElementById('tapPreviewFrame');
-        const previewDoc = previewFrame?.contentDocument;
-        if (!previewDoc?.body) {
-          if (tries > 120) { clearInterval(timer); resolve(false); }
-          return;
+        const innerFrame = doc.getElementById('tapPreviewFrame');
+        if (innerFrame) {
+          innerFrame.style.setProperty('width', '100%', 'important');
+          innerFrame.style.setProperty('height', '100%', 'important');
+          innerFrame.style.setProperty('flex', '1 1 100%', 'important');
         }
 
-        const candidates = [...previewDoc.querySelectorAll(
-          'img.logo, img#logo, img[id*="logo" i], img[class*="logo" i]'
-        )];
-
-        if (candidates.length) {
-          candidates.forEach(img => {
-            const wrapper = img.closest('.logo-wrap,.logo-box,.logo-container');
-            if (hasLogo && logoDataUrl) {
-              img.src = logoDataUrl;
-              img.removeAttribute('srcset');
-              img.style.setProperty('display', 'block', 'important');
-              img.style.setProperty('visibility', 'visible', 'important');
-              img.style.setProperty('opacity', '1', 'important');
-              img.style.setProperty('object-fit', 'contain', 'important');
-              img.style.setProperty('background', 'transparent', 'important');
-              if (wrapper) {
-                wrapper.style.setProperty('display', '', 'important');
-                wrapper.style.setProperty('visibility', 'visible', 'important');
-                wrapper.style.setProperty('background', 'transparent', 'important');
-              }
-            } else {
-              img.style.setProperty('display', 'none', 'important');
-              if (wrapper) wrapper.style.setProperty('display', 'none', 'important');
-            }
-          });
-          clearInterval(timer);
-          resolve(true);
-          return;
-        }
-
-        if (tries > 120) {
-          clearInterval(timer);
-          resolve(false);
-        }
-      }, 50);
-    });
+        clearInterval(timer);
+      }
+      if (tries > 120) clearInterval(timer);
+    }, 50);
   }
 
   async function openPreview() {
     if (!category.value) return showStatus('Seleziona la categoria personalizzata.');
+
     const selectedFile = logoInput.files?.[0] || null;
-    const logoDataUrl = selectedFile ? await fileToDataUrl(selectedFile) : '';
+    let logoDataUrl = '';
+
+    try {
+      logoDataUrl = selectedFile ? await fileToDataUrl(selectedFile) : '';
+    } catch (err) {
+      return showStatus(err?.message || 'Non riesco a leggere il logo selezionato.');
+    }
 
     previewBtn.disabled = true;
     showStatus(selectedFile ? 'Preparazione anteprima con logo…' : 'Preparazione anteprima senza logo…', 'ok');
@@ -143,6 +129,7 @@
           try {
             const doc = frame.contentDocument;
             const win = frame.contentWindow;
+
             const cat = doc.getElementById('activityType');
             if (cat) {
               cat.value = category.value;
@@ -151,6 +138,7 @@
 
             const fileInput = doc.getElementById('logoFile');
             if (!fileInput) throw new Error('Renderer logo non disponibile.');
+
             win.tapLogoSkipped = !selectedFile;
             const dt = new DataTransfer();
             dt.items.add(selectedFile || transparentFile());
@@ -161,6 +149,11 @@
             if (add) add.style.display = 'none';
 
             await waitForEditorLogo(doc, !!selectedFile);
+
+            if (!installPreviewInterceptor(win, logoDataUrl, !!selectedFile)) {
+              throw new Error('Motore anteprima non disponibile.');
+            }
+
             resolve();
           } catch (err) {
             reject(err);
@@ -172,15 +165,10 @@
       const editorDoc = frame.contentDocument;
       shell.classList.add('show');
       document.body.style.overflow = 'hidden';
-      editorDoc.getElementById('previewBtn')?.click();
 
-      hideInnerBack(editorDoc);
-      const applied = await forceLogoIntoFinalPreview(editorDoc, logoDataUrl, !!selectedFile);
-      if (selectedFile && !applied) {
-        showStatus('Anteprima aperta, ma non riesco a individuare il contenitore del logo.', 'warn');
-      } else {
-        showStatus('Anteprima pronta.', 'ok');
-      }
+      editorDoc.getElementById('previewBtn')?.click();
+      removeInnerPreviewBar(editorDoc);
+      showStatus('Anteprima pronta.', 'ok');
     } catch (err) {
       showStatus(err?.message || 'Non riesco a preparare l’anteprima.');
     } finally {
