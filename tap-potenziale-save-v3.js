@@ -84,12 +84,57 @@
     return data;
   }
 
+  function tokenFromLink(link) {
+    try {
+      const u = new URL(link, location.href);
+      if (!/prospect\.html$/i.test(u.pathname)) return '';
+      return u.searchParams.get('p') || '';
+    } catch { return ''; }
+  }
+
+  function makeToken() {
+    const a = new Uint8Array(8);
+    crypto.getRandomValues(a);
+    return [...a].map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  function safeFileName(name) {
+    return String(name || 'logo')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-zA-Z0-9._-]+/g,'-')
+      .replace(/^-+|-+$/g,'') || 'logo';
+  }
+
+  async function uploadLogo(token, file) {
+    if (!file) return null;
+    const session = getSession();
+    if (!session?.access_token) throw new Error('Sessione scaduta. Accedi di nuovo.');
+    const objectPath = token + '/' + Date.now() + '-' + safeFileName(file.name);
+    const response = await fetch(SUPABASE_URL + '/storage/v1/object/prospect-logos/' + objectPath.split('/').map(encodeURIComponent).join('/'), {
+      method: 'POST',
+      headers: {
+        apikey: PUBLISHABLE_KEY,
+        Authorization: 'Bearer ' + session.access_token,
+        'Content-Type': file.type || 'application/octet-stream',
+        'x-upsert': 'true'
+      },
+      body: file
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text || 'Caricamento logo non riuscito.');
+    }
+    return SUPABASE_URL + '/storage/v1/object/public/prospect-logos/' + objectPath.split('/').map(encodeURIComponent).join('/');
+  }
+
   async function saveProspect() {
     const btn = document.getElementById('saveProspectBtn');
     const category = document.getElementById('customCategory');
-    const customLink = String(document.getElementById('customLink')?.textContent || '').trim();
-    const customLinkReady = customLink && !document.getElementById('customLink')?.classList.contains('empty');
-    const standardLink = String(document.getElementById('standardLink')?.textContent || '').trim();
+    const customLinkEl = document.getElementById('customLink');
+    const customLink = String(customLinkEl?.textContent || '').trim();
+    const customLinkReady = customLink && !customLinkEl?.classList.contains('empty');
+    const standardEl = document.getElementById('standardLink');
+    const standardLink = String(standardEl?.textContent || '').trim();
     const state = document.getElementById('prospectStateSelect')?.value || 'Da visitare';
 
     if (!category?.value) return setSaveStatus('Seleziona prima la categoria personalizzata.');
@@ -100,37 +145,51 @@
     const session = getSession();
     if (!session?.user?.id && !session?.access_token) return setSaveStatus('Sessione non disponibile.');
 
-    const payload = {
-      nome: business,
-      operatore: operatorName(),
-      categoria: categoryLabel,
-      categoria_codice: category.value,
-      place_id: placeId || null,
-      link_standard: standardLink && !document.getElementById('standardLink')?.classList.contains('empty') ? standardLink : reviewUrl,
-      link_personalizzato: customLink,
-      logo_url: null,
-      stato: state,
-      personalizzazione: {
-        categoria_standard: 'standard',
-        categoria_personalizzata: category.value,
-        categoria_personalizzata_label: categoryLabel,
-        logo_presente: !!logoFile,
-        logo_nome: logoFile?.name || null
-      },
-      updated_by: session?.user?.id || null
-    };
-
     btn.disabled = true;
     btn.textContent = editId ? 'Salvataggio modifiche…' : 'Salvataggio…';
     setSaveStatus(editId ? 'Aggiornamento del potenziale in corso…' : 'Salvataggio del potenziale in corso…', 'ok');
 
     try {
       let targetId = editId;
-      if (!targetId && placeId) {
-        const r = await rest('potenziali_clienti?select=id,created_by&place_id=eq.' + encodeURIComponent(placeId) + '&limit=1');
-        const existing = (await responseJson(r)) || [];
-        targetId = existing[0]?.id || '';
+      let existingRow = null;
+      if (targetId) {
+        const r = await rest('potenziali_clienti?select=id,logo_url,prospect_token&id=eq.' + encodeURIComponent(targetId) + '&limit=1');
+        existingRow = ((await responseJson(r)) || [])[0] || null;
+      } else if (placeId) {
+        const r = await rest('potenziali_clienti?select=id,logo_url,prospect_token&place_id=eq.' + encodeURIComponent(placeId) + '&limit=1');
+        existingRow = ((await responseJson(r)) || [])[0] || null;
+        targetId = existingRow?.id || '';
       }
+
+      const prospectToken = window.tapProspectToken || tokenFromLink(customLink) || existingRow?.prospect_token || makeToken();
+      window.tapProspectToken = prospectToken;
+
+      let logoUrl = existingRow?.logo_url || null;
+      if (logoFile) {
+        setSaveStatus('Caricamento logo e salvataggio del potenziale…', 'ok');
+        logoUrl = await uploadLogo(prospectToken, logoFile);
+      }
+
+      const payload = {
+        prospect_token: prospectToken,
+        nome: business,
+        operatore: operatorName(),
+        categoria: categoryLabel,
+        categoria_codice: category.value,
+        place_id: placeId || null,
+        link_standard: standardLink && !standardEl?.classList.contains('empty') ? standardLink : reviewUrl,
+        link_personalizzato: customLink,
+        logo_url: logoUrl,
+        stato: state,
+        personalizzazione: {
+          categoria_standard: 'standard',
+          categoria_personalizzata: category.value,
+          categoria_personalizzata_label: categoryLabel,
+          logo_presente: !!logoUrl,
+          logo_nome: logoFile?.name || null
+        },
+        updated_by: session?.user?.id || null
+      };
 
       if (targetId) {
         const r = await rest('potenziali_clienti?id=eq.' + encodeURIComponent(targetId), {
@@ -182,6 +241,7 @@
         b.disabled=false;
         b.onclick=async()=>{try{await navigator.clipboard.writeText(initialCustomLink);const old=b.textContent;b.textContent='Copiato ✓';setTimeout(()=>b.textContent=old,1000)}catch{prompt('Copia il link:',initialCustomLink)}};
       }
+      const t=tokenFromLink(initialCustomLink); if(t) window.tapProspectToken=t;
     }
     document.getElementById('summary')?.classList.add('show');
     if(autoPreview){
@@ -189,33 +249,9 @@
     }
   }
 
-  function fixDuplicatePreviewBack() {
-    const preview = document.getElementById('previewCustom');
-    const frame = document.getElementById('rendererFrame');
-    if (!preview || !frame) return;
-    preview.addEventListener('click', () => {
-      let tries = 0;
-      const timer = setInterval(() => {
-        tries++;
-        try {
-          const doc = frame.contentDocument;
-          const overlay = doc?.getElementById('tapPreviewOverlay');
-          if (overlay) {
-            const buttons = [...overlay.querySelectorAll('button')];
-            const innerBack = buttons.find(b => /Torna a Personalizza/i.test(b.textContent || ''));
-            if (innerBack) innerBack.style.display = 'none';
-            clearInterval(timer);
-          }
-        } catch {}
-        if (tries > 40) clearInterval(timer);
-      }, 75);
-    }, true);
-  }
-
   function boot() {
     installSaveUi();
     preloadEditData();
-    fixDuplicatePreviewBack();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
