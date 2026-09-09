@@ -8,19 +8,13 @@
   const shell = document.getElementById('rendererShell');
   const frame = document.getElementById('rendererFrame');
   const status = document.getElementById('customStatus');
+  const backBtn = document.getElementById('rendererBack');
   if (!previewBtn || !category || !logoInput || !shell || !frame) return;
 
   function showStatus(text, type = 'warn') {
     if (!status) return;
     status.className = 'status show ' + type;
     status.textContent = text;
-  }
-
-  function transparentFile() {
-    const bin = atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL8WQAAAABJRU5ErkJggg==');
-    const a = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
-    return new File([a], 'tap-no-logo.png', { type: 'image/png' });
   }
 
   function fileToDataUrl(file) {
@@ -33,144 +27,106 @@
     });
   }
 
-  function rendererUrl() {
+  function escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  async function loadCanonicalBarCss() {
+    const response = await fetch('personalizza.html?_bar_template=' + Date.now(), { cache: 'no-store' });
+    if (!response.ok) throw new Error('Template Bar non disponibile.');
+    const source = await response.text();
+    const startMarker = 'const BAR_CSS = `';
+    const endMarker = '`;\n\nfunction buildBarTemplate';
+    const start = source.indexOf(startMarker);
+    if (start < 0) throw new Error('Template Bar non trovato.');
+    const contentStart = start + startMarker.length;
+    const end = source.indexOf(endMarker, contentStart);
+    if (end < 0) throw new Error('Template Bar incompleto.');
+    return source.slice(contentStart, end);
+  }
+
+  function reviewUrl() {
     const p = new URLSearchParams(location.search);
-    const q = new URLSearchParams();
-    q.set('reviewurl', p.get('reviewurl') || ('https://search.google.com/local/writereview?placeid=' + encodeURIComponent(p.get('placeid') || '')));
-    q.set('business', p.get('business') || 'Attività');
-    q.set('placeid', p.get('placeid') || '');
-    q.set('category', category.value);
-    return 'personalizza.html?' + q.toString() + '&_preview_fix=' + Date.now();
+    return p.get('reviewurl') || ('https://search.google.com/local/writereview?placeid=' + encodeURIComponent(p.get('placeid') || ''));
   }
 
-  function waitForEditorLogo(doc, hasLogo) {
-    if (!hasLogo) return new Promise(r => setTimeout(r, 160));
-    return new Promise((resolve, reject) => {
-      let tries = 0;
-      const timer = setInterval(() => {
-        tries++;
-        const img = doc.getElementById('logoPreviewImg');
-        const src = img?.getAttribute('src') || img?.src || '';
-        if (/^data:image\//i.test(src)) {
-          clearInterval(timer);
-          resolve();
-        } else if (tries > 120) {
-          clearInterval(timer);
-          reject(new Error('Il logo non è stato caricato nel renderer. Riprova.'));
-        }
-      }, 50);
-    });
+  function buildBarPreview(css, logoDataUrl) {
+    const backgroundUrl = new URL('Sfondobar.png', location.href).href;
+    let finalCss = css.replace('__BAR_BACKGROUND_DATA__', backgroundUrl);
+    if (!logoDataUrl) {
+      finalCss += '\n.brand{display:none!important}.centro{margin-top:0!important}';
+    }
+    const logoMarkup = logoDataUrl
+      ? `<div class="brand"><img id="logo" class="logo" src="${logoDataUrl}" alt="Logo attività"></div>`
+      : '';
+    const safeUrl = escapeHtml(reviewUrl());
+
+    return `<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2b160d">
+<title>Anteprima Bar</title>
+<style>${finalCss}</style>
+</head>
+<body>
+<main class="pagina">
+${logoMarkup}
+<section class="centro">
+<div class="eyebrow">Ti è piaciuto il nostro caffè?</div>
+<div class="messaggio-box"><p class="messaggio">La tua opinione ci aiuta a rendere ogni pausa ancora più piacevole. Dicci la tua! Bastano 2 secondi!</p></div>
+</section>
+<section class="recensione">
+<a id="bottoneGoogle" class="bottone-google" href="${safeUrl}" target="_blank" rel="noopener noreferrer" aria-label="Lascia una recensione Google">
+<span class="chicco chicco1"></span><span class="chicco chicco2"></span><span class="chicco chicco3"></span><span class="testo-bottone">Recensione Google</span>
+</a>
+<div class="stelle" aria-label="5 stelle">★★★★★</div>
+</section>
+<footer>Powered by <strong>Tapreputa</strong></footer>
+</main>
+</body>
+</html>`;
   }
 
-  function installPreviewInterceptor(win, logoDataUrl, hasLogo) {
-    const current = win.openInlinePreview;
-    if (typeof current !== 'function') return false;
-
-    win.openInlinePreview = function(html) {
-      let out = String(html || '');
-
-      if (hasLogo && logoDataUrl) {
-        out = out.replace(
-          /(<img\b[^>]*class=["'][^"']*\blogo\b[^"']*["'][^>]*\bsrc=["'])[^"']*(["'][^>]*>)/i,
-          '$1' + logoDataUrl + '$2'
-        );
-      } else {
-        out = out.replace(
-          /<img\b[^>]*class=["'][^"']*\blogo\b[^"']*["'][^>]*>/i,
-          '<img class="logo" alt="Logo attività" style="display:none!important">'
-        );
-      }
-
-      return current.call(win, out);
-    };
-    return true;
+  function closePreview() {
+    frame.srcdoc = '';
+    shell.classList.remove('show');
+    document.body.style.overflow = '';
   }
 
-  function removeInnerPreviewBar(doc) {
-    let tries = 0;
-    const timer = setInterval(() => {
-      tries++;
-      const overlay = doc.getElementById('tapPreviewOverlay');
-      if (overlay) {
-        const topbar = overlay.firstElementChild;
-        if (topbar) topbar.style.setProperty('display', 'none', 'important');
-
-        const innerFrame = doc.getElementById('tapPreviewFrame');
-        if (innerFrame) {
-          innerFrame.style.setProperty('width', '100%', 'important');
-          innerFrame.style.setProperty('height', '100%', 'important');
-          innerFrame.style.setProperty('flex', '1 1 100%', 'important');
-        }
-
-        clearInterval(timer);
-      }
-      if (tries > 120) clearInterval(timer);
-    }, 50);
+  if (backBtn) {
+    backBtn.onclick = closePreview;
+    backBtn.textContent = '← Torna a Personalizza potenziale';
   }
 
   async function openPreview() {
     if (!category.value) return showStatus('Seleziona la categoria personalizzata.');
-
-    const selectedFile = logoInput.files?.[0] || null;
-    let logoDataUrl = '';
-
-    try {
-      logoDataUrl = selectedFile ? await fileToDataUrl(selectedFile) : '';
-    } catch (err) {
-      return showStatus(err?.message || 'Non riesco a leggere il logo selezionato.');
+    if (category.value !== 'bar') {
+      return showStatus('Nuovo motore indipendente in validazione: per ora prova Bar / Caffetterie.');
     }
 
     previewBtn.disabled = true;
-    showStatus(selectedFile ? 'Preparazione anteprima con logo…' : 'Preparazione anteprima senza logo…', 'ok');
+    const selectedFile = logoInput.files?.[0] || null;
+    showStatus(selectedFile ? 'Preparazione anteprima Bar con logo…' : 'Preparazione anteprima Bar senza logo…', 'ok');
 
     try {
-      await new Promise((resolve, reject) => {
-        frame.onload = async () => {
-          try {
-            const doc = frame.contentDocument;
-            const win = frame.contentWindow;
-
-            const cat = doc.getElementById('activityType');
-            if (cat) {
-              cat.value = category.value;
-              cat.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-
-            const fileInput = doc.getElementById('logoFile');
-            if (!fileInput) throw new Error('Renderer logo non disponibile.');
-
-            win.tapLogoSkipped = !selectedFile;
-            const dt = new DataTransfer();
-            dt.items.add(selectedFile || transparentFile());
-            fileInput.files = dt.files;
-            fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-
-            const add = doc.getElementById('addClientBtn');
-            if (add) add.style.display = 'none';
-
-            await waitForEditorLogo(doc, !!selectedFile);
-
-            if (!installPreviewInterceptor(win, logoDataUrl, !!selectedFile)) {
-              throw new Error('Motore anteprima non disponibile.');
-            }
-
-            resolve();
-          } catch (err) {
-            reject(err);
-          }
-        };
-        frame.src = rendererUrl();
-      });
-
-      const editorDoc = frame.contentDocument;
+      const [css, logoDataUrl] = await Promise.all([
+        loadCanonicalBarCss(),
+        fileToDataUrl(selectedFile)
+      ]);
+      frame.removeAttribute('src');
+      frame.srcdoc = buildBarPreview(css, logoDataUrl);
       shell.classList.add('show');
       document.body.style.overflow = 'hidden';
-
-      editorDoc.getElementById('previewBtn')?.click();
-      removeInnerPreviewBar(editorDoc);
-      showStatus('Anteprima pronta.', 'ok');
+      showStatus('Anteprima Bar pronta.', 'ok');
     } catch (err) {
-      showStatus(err?.message || 'Non riesco a preparare l’anteprima.');
+      showStatus(err?.message || 'Non riesco a preparare l’anteprima Bar.');
     } finally {
       previewBtn.disabled = false;
     }
@@ -179,6 +135,6 @@
   previewBtn.addEventListener('click', e => {
     e.preventDefault();
     e.stopImmediatePropagation();
-    openPreview().catch(err => showStatus(err?.message || 'Non riesco a preparare l’anteprima.'));
+    openPreview();
   }, true);
 })();
