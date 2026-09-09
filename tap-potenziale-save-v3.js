@@ -9,6 +9,11 @@
   const business = params.get('business') || 'Attività';
   const placeId = params.get('placeid') || '';
   const reviewUrl = params.get('reviewurl') || ('https://search.google.com/local/writereview?placeid=' + encodeURIComponent(placeId));
+  const editId = params.get('edit') || '';
+  const initialCategory = params.get('category') || '';
+  const initialCustomLink = params.get('customlink') || '';
+  const initialState = params.get('state') || 'Da visitare';
+  const autoPreview = params.get('preview') === '1';
 
   function getSession() {
     for (const storage of [sessionStorage, localStorage]) {
@@ -35,22 +40,23 @@
     section.style.marginTop = '18px';
     section.innerHTML = `
       <div class="num">3</div>
-      <h2>Salva potenziale cliente</h2>
+      <h2>${editId ? 'Modifica potenziale cliente' : 'Salva potenziale cliente'}</h2>
       <div class="section-sub">Il salvataggio avviene esclusivamente in “Potenziali clienti” e non crea alcuna scheda in “I miei clienti”.</div>
       <div class="field">
         <label for="prospectStateSelect">Stato</label>
         <select id="prospectStateSelect" class="select">
-          <option value="Da visitare" selected>Da visitare</option>
+          <option value="Da visitare">Da visitare</option>
           <option value="Visitato">Visitato</option>
           <option value="Acquisito">Acquisito</option>
           <option value="Non interessato">Non interessato</option>
         </select>
       </div>
-      <button id="saveProspectBtn" class="btn generate" type="button" style="width:100%">Salva potenziale cliente</button>
+      <button id="saveProspectBtn" class="btn generate" type="button" style="width:100%">${editId ? 'Salva modifiche' : 'Salva potenziale cliente'}</button>
       <div id="saveProspectStatus" class="status"></div>
     `;
     summary.insertAdjacentElement('afterend', section);
-
+    const stateSelect=document.getElementById('prospectStateSelect');
+    if(stateSelect && [...stateSelect.options].some(o=>o.value===initialState)) stateSelect.value=initialState;
     document.getElementById('saveProspectBtn').addEventListener('click', saveProspect);
   }
 
@@ -115,18 +121,19 @@
     };
 
     btn.disabled = true;
-    btn.textContent = 'Salvataggio…';
-    setSaveStatus('Salvataggio del potenziale in corso…', 'ok');
+    btn.textContent = editId ? 'Salvataggio modifiche…' : 'Salvataggio…';
+    setSaveStatus(editId ? 'Aggiornamento del potenziale in corso…' : 'Salvataggio del potenziale in corso…', 'ok');
 
     try {
-      let existing = [];
-      if (placeId) {
+      let targetId = editId;
+      if (!targetId && placeId) {
         const r = await rest('potenziali_clienti?select=id,created_by&place_id=eq.' + encodeURIComponent(placeId) + '&limit=1');
-        existing = (await responseJson(r)) || [];
+        const existing = (await responseJson(r)) || [];
+        targetId = existing[0]?.id || '';
       }
 
-      if (existing[0]?.id) {
-        const r = await rest('potenziali_clienti?id=eq.' + encodeURIComponent(existing[0].id), {
+      if (targetId) {
+        const r = await rest('potenziali_clienti?id=eq.' + encodeURIComponent(targetId), {
           method: 'PATCH',
           headers: { Prefer: 'return=representation' },
           body: JSON.stringify(payload)
@@ -142,14 +149,43 @@
         await responseJson(r);
       }
 
-      btn.textContent = 'Potenziale salvato ✓';
-      setSaveStatus('Salvato correttamente in “Potenziali clienti”.', 'ok');
+      btn.textContent = editId ? 'Modifiche salvate ✓' : 'Potenziale salvato ✓';
+      setSaveStatus(editId ? 'Modifiche salvate correttamente.' : 'Salvato correttamente in “Potenziali clienti”.', 'ok');
       setTimeout(() => { location.href = 'potenziali.html'; }, 800);
     } catch (err) {
       console.warn('[Salva potenziale]', err);
       btn.disabled = false;
-      btn.textContent = 'Salva potenziale cliente';
+      btn.textContent = editId ? 'Salva modifiche' : 'Salva potenziale cliente';
       setSaveStatus(err?.message || 'Non riesco a salvare il potenziale.');
+    }
+  }
+
+  function preloadEditData(){
+    if(!editId) return;
+    const category=document.getElementById('customCategory');
+    if(category && initialCategory){
+      category.value=initialCategory;
+      category.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+    const standard=document.getElementById('standardLink');
+    if(standard && reviewUrl){
+      standard.textContent=reviewUrl;
+      standard.classList.remove('empty');
+      const b=document.getElementById('copyStandard'); if(b)b.disabled=false;
+    }
+    const custom=document.getElementById('customLink');
+    if(custom && initialCustomLink){
+      custom.textContent=initialCustomLink;
+      custom.classList.remove('empty');
+      const b=document.getElementById('copyCustom');
+      if(b){
+        b.disabled=false;
+        b.onclick=async()=>{try{await navigator.clipboard.writeText(initialCustomLink);const old=b.textContent;b.textContent='Copiato ✓';setTimeout(()=>b.textContent=old,1000)}catch{prompt('Copia il link:',initialCustomLink)}};
+      }
+    }
+    document.getElementById('summary')?.classList.add('show');
+    if(autoPreview){
+      setTimeout(()=>document.getElementById('previewCustom')?.click(),500);
     }
   }
 
@@ -178,6 +214,7 @@
 
   function boot() {
     installSaveUi();
+    preloadEditData();
     fixDuplicatePreviewBack();
   }
 
