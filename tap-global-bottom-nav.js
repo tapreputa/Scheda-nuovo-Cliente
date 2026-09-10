@@ -23,17 +23,31 @@
   }
 
   function ensureBarExtra(){
-    if (page!=='personalizza.html' || document.querySelector('script[data-tap-barextra-loader]')) return;
-    const bg=document.createElement('script');
-    bg.src='tap-barextra-bg.js?v=1';
-    bg.dataset.tapBarextraBg='1';
-    bg.onload=()=>{
+    if (page!=='personalizza.html') return;
+
+    const activityType=document.getElementById('activityType');
+    if (activityType && !activityType.querySelector('option[value="barextra"]')) {
+      const option=document.createElement('option');
+      option.value='barextra';
+      option.textContent='Bar extra';
+      const bar=activityType.querySelector('option[value="bar"]');
+      if (bar) bar.insertAdjacentElement('afterend',option);
+      else activityType.appendChild(option);
+    }
+
+    if (!document.querySelector('script[data-tap-barextra-loader]')) {
       const script=document.createElement('script');
-      script.src='tap-barextra.js?v=1';
+      script.src='tap-barextra.js?v=2';
       script.dataset.tapBarextraLoader='1';
       document.head.appendChild(script);
-    };
-    document.head.appendChild(bg);
+    }
+
+    if (!document.querySelector('script[data-tap-barextra-bg]')) {
+      const bg=document.createElement('script');
+      bg.src='tap-barextra-bg.js?v=1';
+      bg.dataset.tapBarextraBg='1';
+      document.head.appendChild(bg);
+    }
   }
 
   function currentFor(target){
