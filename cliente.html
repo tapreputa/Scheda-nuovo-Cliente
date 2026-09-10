@@ -18,7 +18,6 @@
 <body>
 <div id="loading" class="loading"><div class="card"><h2>Tapreputa</h2><div>Apertura pagina personalizzata…</div><div id="error" class="error"></div></div></div>
 <div id="page" class="page hidden"><div class="content"><img id="logo" class="logo" alt="Logo attività"><div id="name" class="name"></div><div id="headline" class="headline"></div><div id="message" class="box"></div><a id="review" class="review" href="#">Recensione Google</a><div class="stars">★★★★★</div></div><div class="footer">Powered by <strong>Tapreputa</strong></div></div>
-<script src="tap-barextra-bg.js?v=1"></script>
 <script>
 (()=>{
 'use strict';
@@ -26,7 +25,7 @@ const SUPABASE_URL='https://rqzgdgdoulgjwlxtdxhi.supabase.co';
 const KEY='sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
 const slug=new URLSearchParams(location.search).get('c')||'';
 const bg={
-abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',bar:'Sfondobar.png',barextra:'',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
+abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
 const copy={
 abbigliamento:['IL TUO STILE MERITA 5 STELLE?','La tua opinione ci aiuta a migliorare ogni giorno stile, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 autolavaggio:['LA TUA AUTO SPLENDE COME MERITA?','La tua opinione ci aiuta a migliorare ogni giorno qualità, cura e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
@@ -71,7 +70,7 @@ async function load(){
  if(text[1]){message.textContent=text[1];message.classList.remove('hidden');}else{message.textContent='';message.classList.add('hidden');}
  document.getElementById('review').href=row.link_recensioni;
  if(cat==='barextra') page.classList.add('barextra');
- const background=(cat==='barextra'&&window.TAP_BAREXTRA_BG)?window.TAP_BAREXTRA_BG:(bg[cat]||'Sfondobar.png');
+ const background=bg[cat]||'Sfondobar.png';
  page.style.backgroundImage='url("'+background+'")';
  document.getElementById('loading').classList.add('hidden'); page.classList.remove('hidden');
  window.scrollTo(0,0);
