@@ -22,6 +22,20 @@
     document.head.appendChild(link);
   }
 
+  function ensureBarExtra(){
+    if (page!=='personalizza.html' || document.querySelector('script[data-tap-barextra-loader]')) return;
+    const bg=document.createElement('script');
+    bg.src='tap-barextra-bg.js?v=1';
+    bg.dataset.tapBarextraBg='1';
+    bg.onload=()=>{
+      const script=document.createElement('script');
+      script.src='tap-barextra.js?v=1';
+      script.dataset.tapBarextraLoader='1';
+      document.head.appendChild(script);
+    };
+    document.head.appendChild(bg);
+  }
+
   function currentFor(target){
     if (target==='home') return page==='index.html' && location.hash!=='#nuovo';
     if (target==='new') return page==='personalizza.html' || (page==='index.html' && location.hash==='#nuovo');
@@ -89,6 +103,6 @@
     document.head.appendChild(style);
   }
 
-  function boot(){ensureResultsCss();installNav();installHomeMotion();}
+  function boot(){ensureResultsCss();installNav();installHomeMotion();ensureBarExtra();}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
 })();
