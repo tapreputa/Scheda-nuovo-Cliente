@@ -32,4 +32,30 @@ if "barextra:'Sfondobarextra.webp'" not in c:
     raise SystemExit('Mappatura Bar extra non applicata in cliente.html')
 p.write_text(c, encoding='utf-8')
 
-print('Bar extra riparato: preview con URL diretto e renderer pubblico standard')
+# --- tap-auth.js: il vecchio supporto Bar extra caricava tap-barextra-bg.js e
+# tap-barextra.js dopo il caricamento pagina, sovrascrivendo la preview standard.
+p = Path('tap-auth.js')
+a = p.read_text(encoding='utf-8')
+a_start = a.find('  function loadBarExtraSupport() {')
+a_end = a.find('\n  const SUPABASE_URL =', a_start)
+if a_start == -1 or a_end == -1:
+    raise SystemExit('loadBarExtraSupport non trovato in tap-auth.js')
+clean_loader = '''  function loadBarExtraSupport() {
+    if (PAGE_NAME !== 'personalizza.html') return;
+    const activityType = document.getElementById('activityType');
+    if (activityType && !activityType.querySelector('option[value="barextra"]')) {
+      const option = document.createElement('option');
+      option.value = 'barextra';
+      option.textContent = 'Bar extra';
+      const bar = activityType.querySelector('option[value="bar"]');
+      if (bar) bar.insertAdjacentElement('afterend', option);
+      else activityType.appendChild(option);
+    }
+  }
+'''
+a = a[:a_start] + clean_loader + a[a_end:]
+if "tap-barextra-bg.js?v=2" in a or "tap-barextra.js?v=2" in a:
+    raise SystemExit('Runtime Bar extra obsoleto ancora presente in tap-auth.js')
+p.write_text(a, encoding='utf-8')
+
+print('Bar extra riparato: preview standard, renderer pubblico standard, runtime obsoleto disattivato')
