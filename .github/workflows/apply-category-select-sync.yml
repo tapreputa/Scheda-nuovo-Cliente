@@ -1,0 +1,57 @@
+name: Applica menu categorie canonico
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-category-select-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collega il menu al registro categorie
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          script = '<script src="tap-category-select-sync.js?v=20260910-1550"></script>'
+          for name in ('personalizza-core.html','personalizza.html'):
+              p = Path(name)
+              s = p.read_text(encoding='utf-8')
+              if 'tap-category-select-sync.js' not in s:
+                  marker = '</body>'
+                  if marker not in s:
+                      raise SystemExit(f'</body> non trovato in {name}')
+                  s = s.replace(marker, script + '\n' + marker, 1)
+                  p.write_text(s, encoding='utf-8')
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          import re
+          if "params.set('v'" in s:
+              s = re.sub(r"params\.set\('v','[^']+'\)", "params.set('v','20260910-1550')", s, count=1)
+          else:
+              old = "location.href='personalizza.html?'+params.toString()"
+              new = "params.set('v','20260910-1550');location.href='personalizza.html?'+params.toString()"
+              if old not in s:
+                  raise SystemExit('redirect Personalizza non trovato in index.html')
+              s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Verifica
+        run: |
+          grep -q 'tap-category-select-sync.js?v=20260910-1550' personalizza.html
+          grep -q "params.set('v','20260910-1550')" index.html
+          grep -q "id:'barextra'" tap-categories.js
+      - name: Salva modifiche
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add personalizza.html personalizza-core.html index.html
+          git diff --cached --quiet || git commit -m "Use canonical category registry in Personalizza"
+          git push
