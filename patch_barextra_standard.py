@@ -1,23 +1,45 @@
 from pathlib import Path
+import re
 
 p = Path('personalizza.html')
 s = p.read_text(encoding='utf-8')
 
-old_call = 'const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobarextra.webp");'
-new_call = 'const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobarextra.webp?v=20260910-2046");'
+# Mantiene il cache-bust sul file Bar extra.
+s = s.replace(
+    'const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobarextra.webp");',
+    'const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobarextra.webp?v=20260910-2057");',
+    1
+)
+s = s.replace(
+    'const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobarextra.webp?v=20260910-2046");',
+    'const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobarextra.webp?v=20260910-2057");',
+    1
+)
 
-if old_call in s:
-    s = s.replace(old_call, new_call, 1)
-elif new_call not in s:
-    raise SystemExit('Bar extra background loader not found')
+needle = 'previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {title:"Le nostre specialità ti hanno conquistato?"'
+pos = s.find(needle)
+if pos == -1:
+    raise SystemExit('Bar extra template call not found')
 
-old_css = 'html,body{background:#18221f!important}body{background-image:url("${backgroundDataUrl}")!important;background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important}.pagina{background:transparent!important}'
-new_css = 'html,body{background:#18221f!important}body,.pagina{background-image:url("${backgroundDataUrl}")!important;background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important}.pagina{background-color:transparent!important}'
+line_end = s.find('\n', pos)
+if line_end == -1:
+    raise SystemExit('Bar extra template line end not found')
 
-if old_css in s:
-    s = s.replace(old_css, new_css, 1)
-elif new_css not in s:
-    raise SystemExit('Bar extra layout CSS not found')
+inject = '''\n      previewHtml = previewHtml.replace("<body>", `<body><img class="barextra-scene" src="${backgroundDataUrl}" alt="">`);'''
+if 'class="barextra-scene"' not in s[pos:pos+5000]:
+    s = s[:line_end] + inject + s[line_end:]
+
+style_marker = '<style id="barextra-layout-standard">'
+style_pos = s.find(style_marker, pos)
+if style_pos == -1:
+    raise SystemExit('Bar extra style block not found')
+style_end = s.find('</style>', style_pos)
+if style_end == -1:
+    raise SystemExit('Bar extra style end not found')
+
+extra_css = '.barextra-scene{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;object-fit:cover!important;object-position:center top!important;z-index:0!important;pointer-events:none!important}.pagina{position:relative!important;z-index:1!important;background:transparent!important}body{background:#18221f!important;overflow-x:hidden!important}'
+if '.barextra-scene{' not in s[style_pos:style_end]:
+    s = s[:style_end] + extra_css + s[style_end:]
 
 p.write_text(s, encoding='utf-8')
-print('Bar extra background loading fixed')
+print('Bar extra photographic layer forced')
