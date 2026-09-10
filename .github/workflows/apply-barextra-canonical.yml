@@ -1,0 +1,106 @@
+name: Registra Bar extra come categoria canonica
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-barextra-canonical.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Applica Bar extra con lo stesso sistema delle altre categorie
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          # 1) Registro categorie canonico
+          p = Path('tap-categories.js')
+          s = p.read_text(encoding='utf-8')
+          if "id:'barextra'" not in s:
+              target = "    { id:'bar', label:'Bar / Caffetterie', background:'Sfondobar.png', description:'Sfondo bar fisso + layout dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },"
+              entry = "    { id:'barextra', label:'Bar extra', background:'Sfondobarextra.webp', title:'Le nostre specialità ti hanno conquistato?', accent:'#ead9bd', accent2:'#c9ae84', theme:'#18221f', description:'Bar multiservizio: caffè, pasticceria, gelato, rosticceria siciliana, aperitivi e cocktail + layout dedicato + 5 stelle + Powered by Tapreputa.' },"
+              if target not in s:
+                  raise SystemExit('Voce bar non trovata nel registro categorie')
+              s = s.replace(target, target + '\n' + entry, 1)
+              p.write_text(s, encoding='utf-8')
+
+          # 2) Stesso runtime usato dalle categorie speciali già esistenti
+          p = Path('tap-custom-categories.js')
+          s = p.read_text(encoding='utf-8')
+          old = "const managed = new Set(['gioielleria','macelleria','panineria_hamburgeria','polli_spiedo','veterinario']);"
+          new = "const managed = new Set(['barextra','gioielleria','macelleria','panineria_hamburgeria','polli_spiedo','veterinario']);"
+          if old in s:
+              s = s.replace(old, new, 1)
+          elif "'barextra'" not in s:
+              raise SystemExit('Set managed non trovato')
+
+          # Usa lo sfondo già scelto n.6, senza creare nuove immagini
+          old_bg = "      const bg = await loadBackgroundDataUrl(category.background);"
+          new_bg = "      const bg = (id === 'barextra' && window.TAP_BAREXTRA_BG) ? window.TAP_BAREXTRA_BG : await loadBackgroundDataUrl(category.background);"
+          if old_bg in s:
+              s = s.replace(old_bg, new_bg, 1)
+
+          old_msg = "        message: '',"
+          new_msg = "        message: id === 'barextra' ? 'Dalla colazione all’aperitivo, prepariamo ogni giorno delizie e prodotti genuini per rendere speciale ogni momento. Raccontaci la tua esperienza! Bastano 2 secondi!' : '',"
+          if old_msg in s:
+              s = s.replace(old_msg, new_msg, 1)
+
+          if "id === 'barextra'" not in s.split("if (id === 'gioielleria')",1)[0]:
+              marker = "      if (id === 'gioielleria') {"
+              css = '''      if (id === 'barextra') {
+        css = `<style id="barextra-canonical-v1">html,body{background:#18221f!important}body{background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;background-attachment:fixed!important}.pagina{position:relative!important;min-height:100vh!important;padding:max(18px,env(safe-area-inset-top)) 12px max(82px,calc(env(safe-area-inset-bottom) + 68px))!important;transform:none!important}.card{width:min(100%,500px)!important;padding:0 12px 12px!important}.logo{${hasLogo ? 'width:min(205px,56vw)!important;max-height:98px!important;margin:0 auto clamp(50px,7.5vh,78px)!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;filter:drop-shadow(0 6px 16px rgba(0,0,0,.55))!important;' : 'display:none!important;'}.eyebrow{max-width:455px!important;margin:0 auto 11px!important;font-size:clamp(19px,5vw,25px)!important;line-height:1.12!important;letter-spacing:.05em!important;color:#fff!important;text-shadow:0 3px 15px rgba(0,0,0,.92)!important}.messaggio-box{max-width:455px!important;margin:0 auto 14px!important;padding:10px 13px!important;border-radius:15px!important;background:rgba(16,18,16,.34)!important;border:1px solid rgba(255,255,255,.24)!important;box-shadow:0 8px 20px rgba(0,0,0,.16)!important;backdrop-filter:blur(2px)!important;-webkit-backdrop-filter:blur(2px)!important}.messaggio{font-size:clamp(13px,3.3vw,16px)!important;line-height:1.34!important;font-weight:650!important}.bottone-google{display:inline-flex!important;width:auto!important;min-width:174px!important;min-height:40px!important;padding:7px 19px!important;border-radius:999px!important;background:rgba(245,236,220,.76)!important;color:#4c3927!important;border:1px solid rgba(255,255,255,.65)!important;box-shadow:0 7px 18px rgba(0,0,0,.17)!important;font-size:14px!important;font-weight:850!important;animation:none!important}.bottone-google:before,.bottone-google:after{display:none!important;content:none!important}.stelle{margin-top:12px!important;font-size:30px!important;letter-spacing:.16em!important;color:#ffd552!important;text-shadow:0 0 8px rgba(255,213,82,.98),0 0 22px rgba(255,170,55,.78),0 4px 12px rgba(0,0,0,.62)!important}footer{right:max(16px,env(safe-area-inset-right))!important;bottom:max(14px,env(safe-area-inset-bottom))!important;color:rgba(255,255,255,.92)!important;font-size:9px!important}footer strong{color:#f5dca8!important;font-size:18px!important}</style>`;
+      } else if (id === 'gioielleria') {'''
+              if marker not in s:
+                  raise SystemExit('Punto inserimento layout categorie speciali non trovato')
+              s = s.replace(marker, css, 1)
+          p.write_text(s, encoding='utf-8')
+
+          # 3) Menu fisico: stessa voce anche nel select principale
+          for name in ('personalizza.html','personalizza-core.html'):
+              p = Path(name)
+              s = p.read_text(encoding='utf-8')
+              bar = '<option value="bar">Bar / Caffetterie</option>'
+              extra = '<option value="barextra">Bar extra</option>'
+              if extra not in s:
+                  if bar not in s:
+                      raise SystemExit(f'Voce bar non trovata in {name}')
+                  s = s.replace(bar, bar + '\n' + extra, 1)
+              # garantisce caricamento sfondo scelto e sistema categorie canonico
+              if 'tap-barextra-bg.js' not in s:
+                  marker = '<script src="tap-categories.js'
+                  if marker in s:
+                      pos = s.find(marker)
+                      tag_start = s.rfind('<',0,pos)
+                      s = s[:tag_start] + '<script src="tap-barextra-bg.js?v=20260910-canonical"></script>\n' + s[tag_start:]
+                  else:
+                      s = s.replace('</body>','<script src="tap-barextra-bg.js?v=20260910-canonical"></script>\n</body>',1)
+              p.write_text(s, encoding='utf-8')
+
+          # 4) Nuovo build id: invalida i moduli come previsto dal progetto
+          for name in ('tap-project-config.js','tap-template-manifest.js'):
+              p = Path(name)
+              s = p.read_text(encoding='utf-8')
+              s = s.replace("const BUILD_ID = '20260906-stable5';", "const BUILD_ID = '20260910-barextra1';")
+              p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Verifica integrazione
+        run: |
+          grep -q "id:'barextra'" tap-categories.js
+          grep -q "'barextra','gioielleria'" tap-custom-categories.js
+          grep -q '<option value="barextra">Bar extra</option>' personalizza.html
+          grep -q '20260910-barextra1' tap-project-config.js
+
+      - name: Salva modifiche
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tap-categories.js tap-custom-categories.js personalizza.html personalizza-core.html tap-project-config.js tap-template-manifest.js
+          git diff --cached --quiet || git commit -m "Registra Bar extra nel sistema categorie canonico"
+          git push
