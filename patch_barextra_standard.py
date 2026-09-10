@@ -11,9 +11,12 @@ if extra_opt not in s:
         raise SystemExit('Bar option not found')
     s = s.replace(bar_opt, bar_opt + '\n' + extra_opt, 1)
 
-# Remove the separate Bar extra runtime. The category must use the same preview pipeline as the others.
+# Rimuove il vecchio runtime separato: Bar extra deve usare la stessa pipeline delle altre categorie.
 s = re.sub(r'\s*<script src="tap-barextra-bg\.js[^\"]*"></script>', '', s)
 s = re.sub(r'\s*<script src="tap-barextra\.js[^\"]*"></script>', '', s)
+
+# Aggiunge Bar extra alla whitelist della preview standard.
+s = s.replace('"autolavaggio","bar","ristorante"', '"autolavaggio","bar","barextra","ristorante"')
 
 marker = '''    if (type === "bar") {
       const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobar.png");
