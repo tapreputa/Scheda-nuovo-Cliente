@@ -1,26 +1,50 @@
-name: Ripara Bar extra
+name: Installa sfondo Bar extra
 
 on:
   push:
     branches: [main]
     paths:
-      - 'patch_barextra_standard.py'
+      - '.barextra-upload2/**'
       - '.github/workflows/emergency-restore-personalizza.yml'
 
 permissions:
   contents: write
 
 jobs:
-  repair:
+  install:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Applica riparazione Bar extra
-        run: python3 patch_barextra_standard.py
-      - name: Salva modifiche
+        with:
+          fetch-depth: 0
+
+      - name: Ricostruisci immagine scelta
+        run: |
+          cat .barextra-upload2/part00.bin .barextra-upload2/part01.bin .barextra-upload2/part02.bin > Sfondobarextra.webp
+          test "$(stat -c%s Sfondobarextra.webp)" = "22942"
+          test "$(git hash-object Sfondobarextra.webp)" = "3548b11e400759ed0328e869ffc948506a43249f"
+
+      - name: Forza la nuova immagine in anteprima e pagina cliente
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('personalizza.html')
+          s = p.read_text(encoding='utf-8')
+          s = re.sub(r'Sfondobarextra\.webp(?:\?v=[0-9A-Za-z._-]+)?', 'Sfondobarextra.webp?v=20260911-0035', s)
+          p.write_text(s, encoding='utf-8')
+
+          p = Path('cliente.html')
+          s = p.read_text(encoding='utf-8')
+          s = re.sub(r"barextra:'Sfondobarextra\.webp(?:\?v=[^']*)?'", "barextra:'Sfondobarextra.webp?v=20260911-0035'", s)
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Salva su main
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add personalizza.html cliente.html tap-auth.js index.html
-          git diff --cached --quiet || git commit -m "Repair Bar extra preview and cache"
+          git add Sfondobarextra.webp personalizza.html cliente.html
+          git diff --cached --quiet || git commit -m "Install selected Bar extra background"
           git push
