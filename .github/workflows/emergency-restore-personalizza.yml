@@ -20,12 +20,13 @@ jobs:
       - name: Verifica
         run: |
           grep -q '<option value="barextra">Bar extra</option>' personalizza.html
-          grep -q 'Sfondobarextra.webp?v=20260910-2046' personalizza.html
-          grep -q 'body,.pagina{background-image:url' personalizza.html
+          grep -q 'Sfondobarextra.webp?v=20260910-2057' personalizza.html
+          grep -q 'class="barextra-scene"' personalizza.html
+          grep -q '.barextra-scene{' personalizza.html
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add personalizza.html
-          git diff --cached --quiet || git commit -m "Fix Bar extra background loading"
+          git diff --cached --quiet || git commit -m "Force Bar extra photographic background layer"
           git push
