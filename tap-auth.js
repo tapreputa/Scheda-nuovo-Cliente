@@ -28,7 +28,6 @@
 
   function loadBarExtraSupport() {
     if (PAGE_NAME !== 'personalizza.html') return;
-
     const activityType = document.getElementById('activityType');
     if (activityType && !activityType.querySelector('option[value="barextra"]')) {
       const option = document.createElement('option');
@@ -38,19 +37,6 @@
       if (bar) bar.insertAdjacentElement('afterend', option);
       else activityType.appendChild(option);
     }
-
-    if (document.querySelector('script[data-tap-barextra-direct]')) return;
-    const bg = document.createElement('script');
-    bg.src = 'tap-barextra-bg.js?v=2';
-    bg.dataset.tapBarextraBgDirect = '1';
-    bg.onload = () => {
-      if (document.querySelector('script[data-tap-barextra-direct]')) return;
-      const script = document.createElement('script');
-      script.src = 'tap-barextra.js?v=2';
-      script.dataset.tapBarextraDirect = '1';
-      document.body.appendChild(script);
-    };
-    document.body.appendChild(bg);
   }
 
   const SUPABASE_URL = 'https://rqzgdgdoulgjwlxtdxhi.supabase.co';
