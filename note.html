@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07152b">
+<title>Tap NFC · Block Notes</title>
+<style>
+:root{--navy:#07152b;--blue:#1769ff;--ink:#0a1930;--muted:#718097;--line:#dce4ee;--panel:rgba(255,255,255,.92);--shadow:0 18px 48px rgba(20,42,74,.10)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink)}body{background:radial-gradient(circle at 15% -10%,rgba(23,105,255,.10),transparent 31%),linear-gradient(180deg,#f7f9fd 0%,#eff4f9 100%);padding-bottom:calc(92px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+.topbar{min-height:86px;background:linear-gradient(120deg,var(--navy),#0d3468);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;box-shadow:0 12px 30px rgba(7,21,43,.18);position:sticky;top:0;z-index:20}.brand{display:flex;align-items:center;gap:13px}.brand-icon{width:52px;height:52px;border-radius:15px;background:#fff;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.20)}.brand-icon svg{width:100%;height:100%;display:block}.brand-title{font-size:19px;font-weight:900}.brand-sub{font-size:12px;color:#b9c9df;margin-top:3px}.brand-sub strong{color:#f4c95d}.top-actions{display:flex;align-items:center;gap:9px}.home-btn{min-height:42px;padding:0 14px;border:1px solid rgba(255,255,255,.22);border-radius:13px;color:#fff;text-decoration:none;display:flex;align-items:center;font-size:12px;font-weight:850}.user-pill{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);border-radius:999px;padding:10px 14px;font-size:12px;font-weight:850}
+.wrap{max-width:980px;margin:0 auto;padding:34px 22px 60px}.eyebrow{color:#b88810;font-size:12px;letter-spacing:.22em;font-weight:950;text-transform:uppercase;margin-bottom:9px}h1{margin:0;font-size:40px;line-height:1.04;letter-spacing:-.04em}.sub{margin:10px 0 24px;color:var(--muted);font-size:14px}
+.layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:16px}.editor,.saved{background:var(--panel);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:22px}.editor-head,.saved-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.editor h2,.saved h2{font-size:20px;margin:0}.new-btn{border:1px solid #cbd7e6;background:#fff;color:#31506f;border-radius:12px;min-height:40px;padding:0 13px;font:inherit;font-size:12px;font-weight:900;cursor:pointer}
+label{display:block;font-size:11px;font-weight:900;color:#45566c;text-transform:uppercase;letter-spacing:.07em;margin:0 0 7px}.title-input,textarea{width:100%;border:1.5px solid #cfdae7;border-radius:15px;background:#fff;color:#11243f;font:inherit;outline:none}.title-input{height:52px;padding:0 14px;margin-bottom:14px;font-size:15px;font-weight:800}.title-input:focus,textarea:focus{border-color:#1769ff;box-shadow:0 0 0 4px rgba(23,105,255,.10)}textarea{min-height:300px;resize:vertical;padding:15px;font-size:15px;line-height:1.45}.actions{display:flex;gap:10px;margin-top:14px}.save-btn,.delete-btn{min-height:52px;border-radius:14px;font:inherit;font-size:14px;font-weight:900;cursor:pointer}.save-btn{flex:1;border:0;background:linear-gradient(135deg,#0b4fc2,#1769ff);color:#fff;box-shadow:0 10px 22px rgba(23,105,255,.20)}.delete-btn{display:none;border:1px solid #efc7c1;background:#fff5f3;color:#a23b2e;padding:0 16px}.delete-btn.show{display:block}.message{display:none;margin-top:12px;padding:11px 13px;border-radius:12px;font-size:12px}.message.show{display:block}.message.ok{background:#eaf8f4;color:#096450;border:1px solid #b8e4d8}.message.warn{background:#fff7e8;color:#7b5410;border:1px solid #f0d6a4}
+.note-list{display:grid;gap:9px}.empty{padding:24px 10px;text-align:center;color:#8a96a6;font-size:13px}.note-item{width:100%;text-align:left;border:1px solid #dbe4ef;background:#fff;border-radius:15px;padding:13px;cursor:pointer;color:inherit}.note-item.active{border-color:#7ea7f7;box-shadow:0 0 0 3px rgba(23,105,255,.08)}.note-title{font-size:14px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.note-preview{margin-top:5px;color:#7b8898;font-size:11px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.note-date{margin-top:7px;color:#a0a9b6;font-size:10px}
+.bottom-nav{display:none}
+@media(max-width:760px){.topbar{min-height:76px;padding:11px 14px}.brand-icon{width:46px;height:46px}.brand-title{font-size:17px}.brand-sub{font-size:10px}.user-pill{display:none}.home-btn{padding:0 11px}.wrap{padding:25px 14px 36px}h1{font-size:33px}.sub{font-size:12px}.layout{grid-template-columns:1fr}.editor,.saved{padding:17px;border-radius:21px}textarea{min-height:255px}.saved{margin-bottom:8px}.bottom-nav{position:fixed;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:60;height:70px;border:1px solid rgba(203,214,229,.95);border-radius:22px;background:rgba(255,255,255,.94);box-shadow:0 18px 42px rgba(7,21,43,.20);backdrop-filter:blur(18px);display:grid;grid-template-columns:repeat(4,1fr);padding:6px}.nav-item{border:0;background:transparent;color:#7a8799;text-decoration:none;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9px;font-weight:900}.nav-item .nav-ico{font-size:20px;line-height:1}.nav-item.active{background:#edf3ff;color:#145fd9}}
+</style>
+<link rel="stylesheet" href="tap-premium-theme.css?v=1">
+</head>
+<body data-auth="required">
+<header class="topbar">
+  <div class="brand">
+    <a href="index.html" aria-label="Vai alla home"><div class="brand-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="14" fill="#fff"/><path d="M31 12 L88 50 L16 92 L48 56 L66 50 L25 23 Z" fill="#071d35"/><path d="M18 31 L50 50 L39 60 L8 40 Z" fill="#071d35"/><path d="M15 90 L27 57 L39 64 Z" fill="#e6a019"/></svg></div></a>
+    <div><div class="brand-title">Tap NFC</div><div class="brand-sub">Powered by <strong>Tapreputa</strong></div></div>
+  </div>
+  <div class="top-actions"><a class="home-btn" href="index.html">← Home</a><div class="user-pill" data-operator-name>Operatore</div></div>
+</header>
+
+<main class="wrap">
+  <div class="eyebrow">Appunti personali</div>
+  <h1>Block Notes</h1>
+  <p class="sub">Annota indirizzi, idee, promemoria e qualsiasi informazione utile. Le note restano salvate nel tuo account.</p>
+
+  <div class="layout">
+    <section class="editor">
+      <div class="editor-head"><h2 id="editorTitle">Nuova nota</h2><button id="newBtn" class="new-btn" type="button">＋ Nuova</button></div>
+      <label for="noteTitle">Titolo</label>
+      <input id="noteTitle" class="title-input" maxlength="120" placeholder="Es. Cliente da richiamare">
+      <label for="noteBody">Appunto</label>
+      <textarea id="noteBody" placeholder="Scrivi qui il tuo appunto..."></textarea>
+      <div class="actions"><button id="saveBtn" class="save-btn" type="button">Salva nota</button><button id="deleteBtn" class="delete-btn" type="button">Elimina</button></div>
+      <div id="msg" class="message"></div>
+    </section>
+
+    <section class="saved">
+      <div class="saved-head"><h2>Note salvate</h2><span id="noteCount" style="font-size:12px;color:#7f8b9c;font-weight:800">0</span></div>
+      <div id="noteList" class="note-list"><div class="empty">Caricamento…</div></div>
+    </section>
+  </div>
+</main>
+
+<nav class="bottom-nav" aria-label="Navigazione principale">
+  <a class="nav-item" href="index.html"><span class="nav-ico">⌂</span><span>Home</span></a>
+  <a class="nav-item" href="index.html#nuovo"><span class="nav-ico">＋</span><span>Nuovo</span></a>
+  <a class="nav-item" href="clienti.html"><span class="nav-ico">◎</span><span>Clienti</span></a>
+  <a class="nav-item active" href="note.html"><span class="nav-ico">✎</span><span>Note</span></a>
+</nav>
+
+<script src="tap-auth.js"></script>
+<script>
+(()=>{
+'use strict';
+const titleInput=document.getElementById('noteTitle');
+const bodyInput=document.getElementById('noteBody');
+const list=document.getElementById('noteList');
+const count=document.getElementById('noteCount');
+const saveBtn=document.getElementById('saveBtn');
+const deleteBtn=document.getElementById('deleteBtn');
+const newBtn=document.getElementById('newBtn');
+const msg=document.getElementById('msg');
+const editorTitle=document.getElementById('editorTitle');
+let rows=[];
+let currentId='';
+
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function showMessage(text,type='ok'){msg.className='message show '+type;msg.textContent=text;setTimeout(()=>{msg.className='message';msg.textContent='';},2200);}
+function resetEditor(){currentId='';titleInput.value='';bodyInput.value='';editorTitle.textContent='Nuova nota';saveBtn.textContent='Salva nota';deleteBtn.classList.remove('show');render();titleInput.focus();}
+function formatDate(value){try{return new Intl.DateTimeFormat('it-IT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(value));}catch{return '';}}
+function render(){count.textContent=String(rows.length);if(!rows.length){list.innerHTML='<div class="empty">Nessuna nota salvata.<br>Scrivi il primo appunto.</div>';return;}list.innerHTML=rows.map(r=>`<button class="note-item ${r.id===currentId?'active':''}" data-id="${esc(r.id)}" type="button"><div class="note-title">${esc(r.titolo||'Senza titolo')}</div><div class="note-preview">${esc(r.contenuto||'')}</div><div class="note-date">${esc(formatDate(r.updated_at||r.created_at))}</div></button>`).join('');}
+async function loadNotes(){try{const r=await TapNfc.rest('note_personali?select=id,titolo,contenuto,created_at,updated_at&order=updated_at.desc');if(!r.ok)throw new Error('Errore caricamento note');rows=await r.json();render();}catch(e){console.error(e);list.innerHTML='<div class="empty">Non riesco a caricare le note.</div>';}}
+async function save(){const titolo=titleInput.value.trim();const contenuto=bodyInput.value.trim();if(!titolo&&!contenuto)return showMessage('Scrivi almeno un titolo o un appunto.','warn');saveBtn.disabled=true;saveBtn.textContent='Salvataggio…';try{let r;if(currentId){r=await TapNfc.rest('note_personali?id=eq.'+encodeURIComponent(currentId),{method:'PATCH',headers:{'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify({titolo,contenuto,updated_at:new Date().toISOString()})});}else{r=await TapNfc.rest('note_personali',{method:'POST',headers:{'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify({titolo,contenuto})});}if(!r.ok)throw new Error(await r.text());const saved=(await r.json())[0];currentId=saved?.id||currentId;await loadNotes();if(saved){titleInput.value=saved.titolo||'';bodyInput.value=saved.contenuto||'';editorTitle.textContent='Modifica nota';deleteBtn.classList.add('show');}showMessage('Nota salvata.');}catch(e){console.error(e);showMessage('Errore durante il salvataggio.','warn');}finally{saveBtn.disabled=false;saveBtn.textContent=currentId?'Aggiorna nota':'Salva nota';}}
+async function remove(){if(!currentId)return;if(!confirm('Eliminare questa nota?'))return;deleteBtn.disabled=true;try{const r=await TapNfc.rest('note_personali?id=eq.'+encodeURIComponent(currentId),{method:'DELETE'});if(!r.ok)throw new Error(await r.text());resetEditor();await loadNotes();showMessage('Nota eliminata.');}catch(e){console.error(e);showMessage('Errore durante l’eliminazione.','warn');}finally{deleteBtn.disabled=false;}}
+list.addEventListener('click',e=>{const btn=e.target.closest('.note-item');if(!btn)return;const row=rows.find(r=>r.id===btn.dataset.id);if(!row)return;currentId=row.id;titleInput.value=row.titolo||'';bodyInput.value=row.contenuto||'';editorTitle.textContent='Modifica nota';saveBtn.textContent='Aggiorna nota';deleteBtn.classList.add('show');render();window.scrollTo({top:0,behavior:'smooth'});});
+saveBtn.addEventListener('click',save);deleteBtn.addEventListener('click',remove);newBtn.addEventListener('click',resetEditor);
+loadNotes();
+})();
+</script>
+</body>
+</html>
