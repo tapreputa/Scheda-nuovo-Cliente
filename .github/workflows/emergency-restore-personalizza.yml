@@ -21,6 +21,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add personalizza.html cliente.html tap-auth.js
-          git diff --cached --quiet || git commit -m "Repair Bar extra preview and public renderer"
+          git add personalizza.html cliente.html tap-auth.js index.html
+          git diff --cached --quiet || git commit -m "Repair Bar extra preview and cache"
           git push
