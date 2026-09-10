@@ -1,0 +1,65 @@
+name: Applica Bar extra nel registro categorie
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-barextra-registry.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Registra Bar extra e materializza lo sfondo scelto
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, base64
+
+          # Materializza in un vero file WebP lo sfondo gia scelto (nessuna nuova immagine).
+          bgjs = Path('tap-barextra-bg.js').read_text(encoding='utf-8')
+          m = re.search(r"base64,([^']+)'", bgjs)
+          if not m:
+              raise SystemExit('Base64 Bar extra non trovato')
+          Path('Sfondobarextra.webp').write_bytes(base64.b64decode(m.group(1)))
+
+          # Registra la categoria nello stesso registro centrale delle altre categorie.
+          p = Path('tap-categories.js')
+          s = p.read_text(encoding='utf-8')
+          if "id:'barextra'" not in s:
+              bar = "    { id:'bar', label:'Bar / Caffetterie', background:'Sfondobar.png', description:'Sfondo bar fisso + layout dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },"
+              extra = "    { id:'barextra', label:'Bar extra', background:'Sfondobarextra.webp', title:'Le nostre specialità ti hanno conquistato?', accent:'#ead9bd', accent2:'#c9ae84', theme:'#18221f', description:'Bar multiservizio: caffè, pasticceria, gelato, rosticceria siciliana, aperitivi e cocktail + layout dedicato + 5 stelle + Powered by Tapreputa.' },"
+              if bar not in s:
+                  raise SystemExit('Voce Bar non trovata nel registro')
+              s = s.replace(bar, bar + '\n' + extra, 1)
+              p.write_text(s, encoding='utf-8')
+
+          # Aggiorna il build id previsto dall'architettura del progetto.
+          for name in ('tap-project-config.js','tap-template-manifest.js'):
+              p = Path(name)
+              s = p.read_text(encoding='utf-8')
+              s = s.replace("const BUILD_ID = '20260906-stable5';", "const BUILD_ID = '20260910-barextra1';")
+              p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Verifica
+        shell: bash
+        run: |
+          test -s Sfondobarextra.webp
+          grep -q "id:'barextra'" tap-categories.js
+          grep -q "background:'Sfondobarextra.webp'" tap-categories.js
+          grep -q "20260910-barextra1" tap-project-config.js
+
+      - name: Salva modifiche
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Sfondobarextra.webp tap-categories.js tap-project-config.js tap-template-manifest.js
+          git diff --cached --quiet || git commit -m "Registra Bar extra nel sistema categorie"
+          git push
