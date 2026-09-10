@@ -1,0 +1,54 @@
+name: Applica Bar extra direttamente
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-barextra-direct.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inserisce Bar extra direttamente in Personalizza
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          core = Path('personalizza-core.html')
+          html = core.read_text(encoding='utf-8')
+
+          bar_line = '<option value="bar">Bar / Caffetterie</option>'
+          extra_line = '<option value="barextra">Bar extra</option>'
+          if extra_line not in html:
+              if bar_line not in html:
+                  raise SystemExit('Voce Bar / Caffetterie non trovata')
+              html = html.replace(bar_line, bar_line + '\n' + extra_line, 1)
+
+          support = '<script src="tap-barextra-bg.js?v=20260910-5"></script>\n<script src="tap-barextra.js?v=20260910-5"></script>'
+          if 'tap-barextra.js' not in html:
+              marker = '<script src="tap-auth.js"></script>'
+              if marker in html:
+                  html = html.replace(marker, support + '\n' + marker, 1)
+              else:
+                  html = html.replace('</body>', support + '\n</body>', 1)
+
+          core.write_text(html, encoding='utf-8')
+          Path('personalizza.html').write_text(html, encoding='utf-8')
+          PY
+      - name: Verifica voce e supporto
+        run: |
+          grep -q '<option value="barextra">Bar extra</option>' personalizza.html
+          grep -q 'tap-barextra.js' personalizza.html
+          grep -q 'tap-barextra-bg.js' personalizza.html
+      - name: Salva modifiche
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add personalizza.html personalizza-core.html
+          git diff --cached --quiet || git commit -m "Inserisce Bar extra direttamente in Personalizza"
+          git push
