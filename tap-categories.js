@@ -6,6 +6,7 @@
     { id:'abbigliamento', label:'Abbigliamento', background:'Sfondoabbigliamento.png', description:'Sfondo fotografico boutique premium + layout moda dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
     { id:'autolavaggio', label:'Autolavaggio', background:'Sfondoautolavaggio.png', description:'Sfondo autolavaggio moderno + logo integrato nell’insegna superiore + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
     { id:'bar', label:'Bar / Caffetterie', background:'Sfondobar.png', description:'Sfondo bar fisso + layout dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
+    { id:'barextra', label:'Bar extra', background:'Sfondobarextra.webp', title:'Le nostre specialità ti hanno conquistato?', accent:'#ead9bd', accent2:'#c9ae84', theme:'#18221f', description:'Bar multiservizio: caffè, pasticceria, gelato, rosticceria siciliana, aperitivi e cocktail + layout dedicato + 5 stelle + Powered by Tapreputa.' },
     { id:'barbershop', label:'Barber Shop', background:'Sfondobarbershop.jpg', description:'Sfondo barber moderno + stile deciso + pulsante premium + 5 stelle + Powered by Tapreputa.' },
     { id:'cartolibreria', label:'Cartolibreria', background:'Sfondocartolibreria.png', description:'Sfondo cartolibreria caldo + layout dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
     { id:'centroestetico', label:'Centri estetici', background:'Sfondocentroestetico.jpg', description:'Sfondo wellness luminoso + stile raffinato + pulsante premium + 5 stelle + Powered by Tapreputa.' },

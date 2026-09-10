@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const BUILD_ID = '20260906-stable5';
+  const BUILD_ID = '20260910-barextra1';
   const GLOBAL_POLICY_VERSION = '1.2';
 
   const GLOBAL_RULES = Object.freeze({
