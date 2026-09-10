@@ -118,10 +118,9 @@
         };
 
         let html = buildPremiumTemplate(logoDataUrl, reviewUrl, window.TAP_BAREXTRA_BG, cfg);
-        html = html.replace('</head>', `<style id="barextra-layout-v1">
+        html = html.replace('</head>', `<style id="barextra-layout-v2">
           html,body{background:#18221f!important}
-          body{background-image:linear-gradient(180deg,rgba(8,10,9,.06),rgba(8,10,9,.03) 48%,rgba(8,10,9,.18)),url("${window.TAP_BAREXTRA_BG}")!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important}
-          .pagina{padding-top:max(18px,env(safe-area-inset-top))!important;padding-bottom:max(86px,calc(env(safe-area-inset-bottom) + 72px))!important;transform:none!important}
+          .pagina{background-color:#18221f!important;background-image:linear-gradient(180deg,rgba(8,10,9,.06),rgba(8,10,9,.03) 48%,rgba(8,10,9,.18)),url("${window.TAP_BAREXTRA_BG}")!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;padding-top:max(18px,env(safe-area-inset-top))!important;padding-bottom:max(86px,calc(env(safe-area-inset-bottom) + 72px))!important;transform:none!important}
           .card{width:min(100%,500px)!important;padding:0 12px 12px!important}
           .logo{width:min(220px,58vw)!important;max-height:108px!important;margin:0 auto clamp(62px,9vh,96px)!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;filter:drop-shadow(0 6px 16px rgba(0,0,0,.55))!important}
           .eyebrow{max-width:455px!important;margin:0 auto 11px!important;font-size:clamp(18px,4.2vw,25px)!important;line-height:1.12!important;letter-spacing:.055em!important;color:#fff!important;text-shadow:0 3px 15px rgba(0,0,0,.92)!important}
