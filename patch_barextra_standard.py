@@ -15,6 +15,8 @@ branch = '''    } else if (type === "barextra") {
       previewHtml = previewHtml.replace("</head>", `<style id="barextra-layout-standard">.logo{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;border-radius:0!important;max-height:108px!important;width:min(220px,58vw)!important;object-fit:contain!important;margin-bottom:clamp(62px,9vh,96px)!important;filter:drop-shadow(0 6px 16px rgba(0,0,0,.55))!important}.eyebrow{max-width:455px!important;margin:0 auto 11px!important;font-size:clamp(18px,4.2vw,25px)!important;line-height:1.12!important;letter-spacing:.055em!important;color:#fff!important;text-shadow:0 3px 15px rgba(0,0,0,.92)!important}.messaggio-box{max-width:455px!important;margin:0 auto 14px!important;padding:11px 14px!important;border-radius:16px!important;background:rgba(16,18,16,.40)!important;border:1px solid rgba(255,255,255,.28)!important}.messaggio{font-size:clamp(14px,3.3vw,16px)!important;line-height:1.36!important;font-weight:650!important}.bottone-google{width:auto!important;min-width:190px!important;min-height:44px!important;padding:9px 24px!important;border-radius:999px!important;background:rgba(245,236,220,.80)!important;color:#4c3927!important;border:1px solid rgba(255,255,255,.72)!important;box-shadow:0 8px 20px rgba(0,0,0,.18)!important;font-size:15px!important;font-weight:850!important;animation:none!important}.bottone-google:before,.bottone-google:after{display:none!important;content:none!important}.stelle{margin-top:13px!important;font-size:30px!important;letter-spacing:.17em!important;color:#ffd552!important;text-shadow:0 0 8px rgba(255,213,82,.95),0 0 22px rgba(255,170,55,.72),0 4px 12px rgba(0,0,0,.62)!important}footer{color:rgba(255,255,255,.92)!important}footer strong{color:#f5dca8!important}</style>` + "</head>");
 '''
 s = s[:start] + branch + s[end:]
+# Forza il browser a caricare la versione nuova di tap-auth.js, senza usare la copia cache precedente.
+s = re.sub(r'<script src="tap-auth\.js(?:\?v=[^"]*)?"></script>', '<script src="tap-auth.js?v=20260910-2135"></script>', s, count=1)
 p.write_text(s, encoding='utf-8')
 
 # --- cliente.html: elimina il vecchio runtime speciale e usa il normale file di sfondo.
@@ -32,8 +34,7 @@ if "barextra:'Sfondobarextra.webp'" not in c:
     raise SystemExit('Mappatura Bar extra non applicata in cliente.html')
 p.write_text(c, encoding='utf-8')
 
-# --- tap-auth.js: il vecchio supporto Bar extra caricava tap-barextra-bg.js e
-# tap-barextra.js dopo il caricamento pagina, sovrascrivendo la preview standard.
+# --- tap-auth.js: elimina il caricamento dinamico dei vecchi override Bar extra.
 p = Path('tap-auth.js')
 a = p.read_text(encoding='utf-8')
 a_start = a.find('  function loadBarExtraSupport() {')
@@ -58,4 +59,4 @@ if "tap-barextra-bg.js?v=2" in a or "tap-barextra.js?v=2" in a:
     raise SystemExit('Runtime Bar extra obsoleto ancora presente in tap-auth.js')
 p.write_text(a, encoding='utf-8')
 
-print('Bar extra riparato: preview standard, renderer pubblico standard, runtime obsoleto disattivato')
+print('Bar extra riparato e cache tap-auth invalidata')
