@@ -21,9 +21,36 @@
 
   if (PAGE_NAME !== 'login.html' && !document.querySelector('script[data-tap-global-bottom-nav-loader]')) {
     const globalNavScript = document.createElement('script');
-    globalNavScript.src = 'tap-global-bottom-nav.js?v=2';
+    globalNavScript.src = 'tap-global-bottom-nav.js?v=3';
     globalNavScript.dataset.tapGlobalBottomNavLoader = '1';
     document.head.appendChild(globalNavScript);
+  }
+
+  function loadBarExtraSupport() {
+    if (PAGE_NAME !== 'personalizza.html') return;
+
+    const activityType = document.getElementById('activityType');
+    if (activityType && !activityType.querySelector('option[value="barextra"]')) {
+      const option = document.createElement('option');
+      option.value = 'barextra';
+      option.textContent = 'Bar extra';
+      const bar = activityType.querySelector('option[value="bar"]');
+      if (bar) bar.insertAdjacentElement('afterend', option);
+      else activityType.appendChild(option);
+    }
+
+    if (document.querySelector('script[data-tap-barextra-direct]')) return;
+    const bg = document.createElement('script');
+    bg.src = 'tap-barextra-bg.js?v=2';
+    bg.dataset.tapBarextraBgDirect = '1';
+    bg.onload = () => {
+      if (document.querySelector('script[data-tap-barextra-direct]')) return;
+      const script = document.createElement('script');
+      script.src = 'tap-barextra.js?v=2';
+      script.dataset.tapBarextraDirect = '1';
+      document.body.appendChild(script);
+    };
+    document.body.appendChild(bg);
   }
 
   const SUPABASE_URL = 'https://rqzgdgdoulgjwlxtdxhi.supabase.co';
@@ -505,6 +532,7 @@
     if ((location.pathname.split('/').pop() || '') === 'personalizza.html') {
       installPersonalizzaBridge(user);
       loadVeterinarioSupport();
+      loadBarExtraSupport();
     }
   }
 
@@ -515,9 +543,11 @@
   };
 
   if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadBarExtraSupport, { once: true });
     document.addEventListener('DOMContentLoaded', autoProtect);
     document.addEventListener('DOMContentLoaded', loadPageTools);
   } else {
+    loadBarExtraSupport();
     autoProtect();
     loadPageTools();
   }
