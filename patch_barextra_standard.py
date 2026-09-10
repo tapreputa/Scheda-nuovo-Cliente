@@ -1,45 +1,35 @@
 from pathlib import Path
 import re
 
+# --- personalizza.html: usa l'immagine pubblica direttamente, come URL assoluto.
 p = Path('personalizza.html')
 s = p.read_text(encoding='utf-8')
+start = s.find('    } else if (type === "barextra") {')
+end = s.find('    } else if (type === "ristorante") {', start)
+if start == -1 or end == -1:
+    raise SystemExit('Blocco Bar extra non trovato in personalizza.html')
 
-# Mantiene il cache-bust sul file Bar extra.
-s = s.replace(
-    'const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobarextra.webp");',
-    'const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobarextra.webp?v=20260910-2057");',
-    1
-)
-s = s.replace(
-    'const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobarextra.webp?v=20260910-2046");',
-    'const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobarextra.webp?v=20260910-2057");',
-    1
-)
-
-needle = 'previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {title:"Le nostre specialità ti hanno conquistato?"'
-pos = s.find(needle)
-if pos == -1:
-    raise SystemExit('Bar extra template call not found')
-
-line_end = s.find('\n', pos)
-if line_end == -1:
-    raise SystemExit('Bar extra template line end not found')
-
-inject = '''\n      previewHtml = previewHtml.replace("<body>", `<body><img class="barextra-scene" src="${backgroundDataUrl}" alt="">`);'''
-if 'class="barextra-scene"' not in s[pos:pos+5000]:
-    s = s[:line_end] + inject + s[line_end:]
-
-style_marker = '<style id="barextra-layout-standard">'
-style_pos = s.find(style_marker, pos)
-if style_pos == -1:
-    raise SystemExit('Bar extra style block not found')
-style_end = s.find('</style>', style_pos)
-if style_end == -1:
-    raise SystemExit('Bar extra style end not found')
-
-extra_css = '.barextra-scene{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;object-fit:cover!important;object-position:center top!important;z-index:0!important;pointer-events:none!important}.pagina{position:relative!important;z-index:1!important;background:transparent!important}body{background:#18221f!important;overflow-x:hidden!important}'
-if '.barextra-scene{' not in s[style_pos:style_end]:
-    s = s[:style_end] + extra_css + s[style_end:]
-
+branch = '''    } else if (type === "barextra") {
+      const backgroundDataUrl = new URL("Sfondobarextra.webp?v=20260910-2118", window.location.href).href;
+      previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {title:"Le nostre specialità ti hanno conquistato?", accent:"#ead9bd", accent2:"#c9ae84", theme:"#18221f", box:"rgba(18,20,18,.40)", text:"#ffffff", message:"Dalla colazione all’aperitivo, prepariamo ogni giorno delizie e prodotti genuini per rendere speciale ogni momento. Raccontaci la tua esperienza! Bastano 2 secondi!", shift:"none", footerSize:"9px", footerStrong:"18px"});
+      previewHtml = previewHtml.replace("</head>", `<style id="barextra-layout-standard">.logo{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;border-radius:0!important;max-height:108px!important;width:min(220px,58vw)!important;object-fit:contain!important;margin-bottom:clamp(62px,9vh,96px)!important;filter:drop-shadow(0 6px 16px rgba(0,0,0,.55))!important}.eyebrow{max-width:455px!important;margin:0 auto 11px!important;font-size:clamp(18px,4.2vw,25px)!important;line-height:1.12!important;letter-spacing:.055em!important;color:#fff!important;text-shadow:0 3px 15px rgba(0,0,0,.92)!important}.messaggio-box{max-width:455px!important;margin:0 auto 14px!important;padding:11px 14px!important;border-radius:16px!important;background:rgba(16,18,16,.40)!important;border:1px solid rgba(255,255,255,.28)!important}.messaggio{font-size:clamp(14px,3.3vw,16px)!important;line-height:1.36!important;font-weight:650!important}.bottone-google{width:auto!important;min-width:190px!important;min-height:44px!important;padding:9px 24px!important;border-radius:999px!important;background:rgba(245,236,220,.80)!important;color:#4c3927!important;border:1px solid rgba(255,255,255,.72)!important;box-shadow:0 8px 20px rgba(0,0,0,.18)!important;font-size:15px!important;font-weight:850!important;animation:none!important}.bottone-google:before,.bottone-google:after{display:none!important;content:none!important}.stelle{margin-top:13px!important;font-size:30px!important;letter-spacing:.17em!important;color:#ffd552!important;text-shadow:0 0 8px rgba(255,213,82,.95),0 0 22px rgba(255,170,55,.72),0 4px 12px rgba(0,0,0,.62)!important}footer{color:rgba(255,255,255,.92)!important}footer strong{color:#f5dca8!important}</style>` + "</head>");
+'''
+s = s[:start] + branch + s[end:]
 p.write_text(s, encoding='utf-8')
-print('Bar extra photographic layer forced')
+
+# --- cliente.html: elimina il vecchio runtime speciale e usa il normale file di sfondo.
+p = Path('cliente.html')
+c = p.read_text(encoding='utf-8')
+c = re.sub(r'\s*<script src="tap-barextra-bg\.js[^\"]*"></script>\s*', '\n', c, count=1)
+c = c.replace("barextra:'',", "barextra:'Sfondobarextra.webp',", 1)
+old = "const background=(cat==='barextra'&&window.TAP_BAREXTRA_BG)?window.TAP_BAREXTRA_BG:(bg[cat]||'Sfondobar.png');"
+new = "const background=bg[cat]||'Sfondobar.png';"
+if old in c:
+    c = c.replace(old, new, 1)
+elif new not in c:
+    raise SystemExit('Resolver sfondo non trovato in cliente.html')
+if "barextra:'Sfondobarextra.webp'" not in c:
+    raise SystemExit('Mappatura Bar extra non applicata in cliente.html')
+p.write_text(c, encoding='utf-8')
+
+print('Bar extra riparato: preview con URL diretto e renderer pubblico standard')
