@@ -1,4 +1,4 @@
-name: Integra Bar extra standard
+name: Ripara Bar extra
 
 on:
   push:
@@ -11,22 +11,16 @@ permissions:
   contents: write
 
 jobs:
-  integrate:
+  repair:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Applica integrazione Bar extra
+      - name: Applica riparazione Bar extra
         run: python3 patch_barextra_standard.py
-      - name: Verifica
-        run: |
-          grep -q '<option value="barextra">Bar extra</option>' personalizza.html
-          grep -q 'Sfondobarextra.webp?v=20260910-2057' personalizza.html
-          grep -q 'class="barextra-scene"' personalizza.html
-          grep -q '.barextra-scene{' personalizza.html
-      - name: Commit
+      - name: Salva modifiche
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add personalizza.html
-          git diff --cached --quiet || git commit -m "Force Bar extra photographic background layer"
+          git add personalizza.html cliente.html
+          git diff --cached --quiet || git commit -m "Repair Bar extra preview and public renderer"
           git push
