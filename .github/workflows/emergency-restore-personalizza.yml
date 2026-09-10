@@ -1,9 +1,10 @@
-name: Integra Bar extra con procedura standard
+name: Integra Bar extra standard
 
 on:
   push:
     branches: [main]
     paths:
+      - 'patch_barextra_standard.py'
       - '.github/workflows/emergency-restore-personalizza.yml'
 
 permissions:
@@ -14,73 +15,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Integra Bar extra direttamente in Personalizza
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-
-          p = Path('personalizza.html')
-          s = p.read_text(encoding='utf-8')
-
-          # Mantiene la voce menu già presente.
-          bar_opt = '<option value="bar">Bar / Caffetterie</option>'
-          extra_opt = '<option value="barextra">Bar extra</option>'
-          if extra_opt not in s:
-              if bar_opt not in s:
-                  raise SystemExit('ERRORE: voce Bar non trovata')
-              s = s.replace(bar_opt, bar_opt + '\n' + extra_opt, 1)
-
-          # Rimuove il vecchio runtime separato: Bar extra deve seguire la stessa
-          # procedura delle categorie già collaudate dentro la catena preview.
-          s = re.sub(r'\s*<script src="tap-barextra-bg\.js[^\"]*"></script>', '', s)
-          s = re.sub(r'\s*<script src="tap-barextra\.js[^\"]*"></script>', '', s)
-
-          marker = '''    if (type === "bar") {
-      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobar.png");
-      previewHtml = buildBarTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
-    } else if (type === "ristorante") {'''
-
-          replacement = '''    if (type === "bar") {
-      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobar.png");
-      previewHtml = buildBarTemplate(logoDataUrl, reviewUrl, backgroundDataUrl);
-    } else if (type === "barextra") {
-      const backgroundDataUrl = await loadBackgroundDataUrl("Sfondobarextra.webp");
-      previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, {
-        title:"Le nostre specialità ti hanno conquistato?",
-        accent:"#ead9bd",
-        accent2:"#c9ae84",
-        theme:"#18221f",
-        box:"rgba(18,20,18,.40)",
-        text:"#ffffff",
-        message:"Dalla colazione all’aperitivo, prepariamo ogni giorno delizie e prodotti genuini per rendere speciale ogni momento. Raccontaci la tua esperienza! Bastano 2 secondi!",
-        shift:"none",
-        footerSize:"9px",
-        footerStrong:"18px"
-      });
-      previewHtml = previewHtml.replace("</head>", `<style id="barextra-layout-standard">html,body{background:#18221f!important}body{background-image:url("${backgroundDataUrl}")!important;background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important;background-attachment:scroll!important}.pagina{background:transparent!important;padding-top:max(18px,env(safe-area-inset-top))!important;padding-bottom:max(86px,calc(env(safe-area-inset-bottom) + 72px))!important;transform:none!important}.pagina:before,.pagina:after{display:none!important;content:none!important;background:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.logo,.logo-wrap,.logo-box,.logo-container{background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border:none!important;filter:none!important}.logo{width:min(220px,58vw)!important;max-height:108px!important;margin-bottom:clamp(62px,9vh,96px)!important;padding:0!important;border-radius:0!important;object-fit:contain!important;filter:drop-shadow(0 6px 16px rgba(0,0,0,.55))!important}.eyebrow{max-width:455px!important;margin:0 auto 11px!important;font-size:clamp(18px,4.2vw,25px)!important;line-height:1.12!important;letter-spacing:.055em!important;color:#fff!important;text-shadow:0 3px 15px rgba(0,0,0,.92)!important}.messaggio-box{max-width:455px!important;margin:0 auto 14px!important;padding:11px 14px!important;border-radius:16px!important;background:rgba(16,18,16,.40)!important;border:1px solid rgba(255,255,255,.28)!important;box-shadow:0 8px 22px rgba(0,0,0,.18)!important;backdrop-filter:blur(3px)!important;-webkit-backdrop-filter:blur(3px)!important}.messaggio{font-size:clamp(14px,3.3vw,16px)!important;line-height:1.36!important;font-weight:650!important}.bottone-google{display:inline-flex!important;width:auto!important;min-width:190px!important;min-height:44px!important;padding:9px 24px!important;border-radius:999px!important;background:rgba(245,236,220,.80)!important;color:#4c3927!important;border:1px solid rgba(255,255,255,.72)!important;box-shadow:0 8px 20px rgba(0,0,0,.18)!important;font-size:15px!important;font-weight:850!important;animation:none!important}.bottone-google:before,.bottone-google:after{display:none!important;content:none!important}.stelle{margin-top:13px!important;font-size:30px!important;letter-spacing:.17em!important;color:#ffd552!important;text-shadow:0 0 8px rgba(255,213,82,.95),0 0 22px rgba(255,170,55,.72),0 4px 12px rgba(0,0,0,.62)!important}footer{right:max(16px,env(safe-area-inset-right))!important;bottom:max(14px,env(safe-area-inset-bottom))!important;color:rgba(255,255,255,.92)!important}footer strong{color:#f5dca8!important}@media(max-width:640px){body{background-size:cover!important;background-position:center top!important}.logo{width:min(205px,56vw)!important;max-height:98px!important;margin-bottom:clamp(52px,8vh,82px)!important}.eyebrow{font-size:20px!important}.messaggio-box{max-width:420px!important}.bottone-google{min-width:178px!important;min-height:42px!important;padding:8px 21px!important;font-size:14px!important}.stelle{font-size:29px!important}}</style>` + "</head>");
-    } else if (type === "ristorante") {'''
-
-          if 'type === "barextra"' not in s:
-              if marker not in s:
-                  raise SystemExit('ERRORE: catena preview standard non trovata')
-              s = s.replace(marker, replacement, 1)
-
-          p.write_text(s, encoding='utf-8')
-          PY
-
-      - name: Verifica integrazione
+      - name: Applica integrazione Bar extra
+        run: python3 patch_barextra_standard.py
+      - name: Verifica
         run: |
           grep -q '<option value="barextra">Bar extra</option>' personalizza.html
           grep -q 'loadBackgroundDataUrl("Sfondobarextra.webp")' personalizza.html
           grep -q 'type === "barextra"' personalizza.html
-          ! grep -q 'tap-barextra.js' personalizza.html
-          ! grep -q 'tap-barextra-bg.js' personalizza.html
-
-      - name: Commit integrazione
+      - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add personalizza.html
-          git commit -m "Integrate Bar extra with standard preview pipeline"
+          git diff --cached --quiet || git commit -m "Integrate Bar extra with standard preview pipeline"
           git push
