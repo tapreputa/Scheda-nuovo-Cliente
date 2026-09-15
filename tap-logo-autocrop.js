@@ -6,6 +6,8 @@
 
   const previousOpenInlinePreview = openInlinePreview;
   const cache = new Map();
+  let pendingLogoProcess = Promise.resolve('');
+  let processedLogoData = '';
 
   function colorDistance(a, b) {
     const dr = a[0] - b[0];
@@ -101,7 +103,6 @@
     for (let y = b.minY; y <= b.maxY; y += stepY) { take(b.minX, y); take(b.maxX, y); }
     if (!samples.length) return null;
 
-    // Median-like robust representative to avoid one bright logo detail influencing the background sample.
     const avg = [0, 0, 0];
     for (const s of samples) { avg[0] += s[0]; avg[1] += s[1]; avg[2] += s[2]; }
     avg[0] /= samples.length; avg[1] /= samples.length; avg[2] /= samples.length;
@@ -127,13 +128,9 @@
           const image = ctx.getImageData(0, 0, w, h);
           const d = image.data;
 
-          // Pass 1: remove the uniform color connected to the actual image edges.
           const bg = getCornerColor(d, w, h);
           removeConnectedBackground(d, w, h, bg, 34);
 
-          // Pass 2: handles logos with transparent rounded corners around a solid rectangle.
-          // After trimming the transparent exterior, sample the first opaque border and remove
-          // only the connected uniform area. This keeps the real logo artwork intact.
           const firstBounds = alphaBounds(d, w, h);
           if (firstBounds) {
             const innerBg = sampleOpaqueBorderColor(d, w, h, firstBounds);
@@ -168,6 +165,23 @@
     return task;
   }
 
+  function setCanonicalLogo(processed) {
+    if (!processed) return;
+    processedLogoData = String(processed);
+    try { logoDataUrl = processedLogoData; } catch (_) {}
+    window.logoDataUrl = processedLogoData;
+    cache.set(processedLogoData, Promise.resolve(processedLogoData));
+
+    const previewImg = document.getElementById('logoPreviewImg');
+    const previewBox = document.getElementById('logoPreview');
+    if (previewImg) previewImg.src = processedLogoData;
+    if (previewBox) previewBox.classList.add('show');
+
+    window.dispatchEvent(new CustomEvent('tap-logo-processed-ready', {
+      detail: { dataUrl: processedLogoData }
+    }));
+  }
+
   function extractLogoDataUrl(html) {
     const tagMatch = html.match(/<img\b[^>]*class=["'][^"']*\blogo\b[^"']*["'][^>]*>/i) ||
                      html.match(/<img\b[^>]*id=["'][^"']*logo[^"']*["'][^>]*>/i);
@@ -184,6 +198,7 @@
     if (!src) return previousOpenInlinePreview(html);
 
     processLogoDataUrl(src).then((processed) => {
+      if (processed) setCanonicalLogo(processed);
       let finalHtml = html;
       if (processed && processed !== src) finalHtml = finalHtml.split(src).join(processed);
       finalHtml = finalHtml.replace('</head>', `<style id="tap-global-logo-harmony-v2">
@@ -213,12 +228,29 @@
   if (logoInput && previewImg) {
     logoInput.addEventListener('change', () => {
       const file = logoInput.files && logoInput.files[0];
-      if (!file || !file.type.startsWith('image/') || file.type.includes('svg')) return;
-      const reader = new FileReader();
-      reader.onload = () => processLogoDataUrl(String(reader.result || '')).then((processed) => {
-        if (processed) previewImg.src = processed;
+      processedLogoData = '';
+      if (!file || !file.type.startsWith('image/') || file.type.includes('svg')) {
+        pendingLogoProcess = Promise.resolve('');
+        return;
+      }
+
+      pendingLogoProcess = new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          processLogoDataUrl(String(reader.result || '')).then((processed) => {
+            if (processed) setCanonicalLogo(processed);
+            resolve(processed || '');
+          });
+        };
+        reader.onerror = () => resolve('');
+        reader.readAsDataURL(file);
       });
-      reader.readAsDataURL(file);
     });
   }
+
+  window.TapLogoAutocrop = Object.freeze({
+    processLogoDataUrl,
+    whenReady: () => pendingLogoProcess,
+    getProcessedLogo: () => processedLogoData
+  });
 })();
