@@ -177,7 +177,7 @@
 
   async function listLogos(term = '') {
     const q = sanitizeSearch(term);
-    let path = 'logo_archive?select=id,business_name,thumb_path,file_size,uploaded_by_name,created_at&order=created_at.desc&limit=' + SEARCH_LIMIT;
+    let path = 'logo_archive?select=id,business_name,storage_path,thumb_path,file_size,uploaded_by_name,created_at&order=created_at.desc&limit=' + SEARCH_LIMIT;
     if (q) path += '&business_name=ilike.' + encodeURIComponent('*' + q + '*');
     const response = await TapNfc.rest(path);
     return await parseResponse(response, 'Impossibile caricare l’archivio.');
@@ -223,8 +223,70 @@
       const date = item.created_at ? new Date(item.created_at) : null;
       const dateText = date && !Number.isNaN(date.getTime()) ? date.toLocaleDateString('it-IT') : '';
       meta.textContent = 'Caricato da ' + (item.uploaded_by_name || 'Operatore') + (dateText ? ' · ' + dateText : '') + ' · ' + formatBytes(item.file_size);
-      copy.append(name, meta);
+      const actions = document.createElement('div');
+      actions.className = 'logo-actions';
+      const renameBtn = document.createElement('button');
+      renameBtn.type = 'button';
+      renameBtn.className = 'logo-action logo-action-edit';
+      renameBtn.textContent = 'Rinomina';
+      renameBtn.setAttribute('aria-label', 'Rinomina ' + item.business_name);
+      const deleteBtn = document.createElement('button');
+      deleteBtn.type = 'button';
+      deleteBtn.className = 'logo-action logo-action-delete';
+      deleteBtn.textContent = 'Elimina';
+      deleteBtn.setAttribute('aria-label', 'Elimina ' + item.business_name);
+      actions.append(renameBtn, deleteBtn);
+      copy.append(name, meta, actions);
       card.append(thumb, copy);
+
+      renameBtn.addEventListener('click', async () => {
+        const proposed = window.prompt('Nuovo nome attività:', item.business_name);
+        if (proposed === null) return;
+        const nextName = proposed.trim().replace(/\s+/g, ' ');
+        if (nextName.length < 2) return setStatus('Inserisci un nome attività valido.', 'err');
+        if (nextName.length > 120) return setStatus('Il nome è troppo lungo.', 'err');
+        renameBtn.disabled = true;
+        deleteBtn.disabled = true;
+        try {
+          const response = await TapNfc.rest('logo_archive?id=eq.' + encodeURIComponent(item.id), {
+            method:'PATCH',
+            headers:{ Prefer:'return=minimal' },
+            body:JSON.stringify({ business_name:nextName })
+          });
+          await parseResponse(response, 'Rinomina non riuscita.');
+          setStatus('Nome aggiornato correttamente.', 'ok');
+          await refresh(searchInput.value);
+        } catch (err) {
+          console.error(err);
+          setStatus(err.message || 'Rinomina non riuscita.', 'err');
+          renameBtn.disabled = false;
+          deleteBtn.disabled = false;
+        }
+      });
+
+      deleteBtn.addEventListener('click', async () => {
+        const confirmed = window.confirm('Eliminare definitivamente "' + item.business_name + '" dall’Archivio Logo?\n\nQuesta operazione non modifica eventuali pagine cliente già create.');
+        if (!confirmed) return;
+        renameBtn.disabled = true;
+        deleteBtn.disabled = true;
+        try {
+          const response = await TapNfc.rest('logo_archive?id=eq.' + encodeURIComponent(item.id), {
+            method:'DELETE',
+            headers:{ Prefer:'return=minimal' }
+          });
+          await parseResponse(response, 'Eliminazione non riuscita.');
+          await Promise.all([deleteObject(item.storage_path), deleteObject(item.thumb_path)]);
+          signedUrlCache.delete(item.thumb_path);
+          signedUrlCache.delete(item.storage_path);
+          setStatus('Logo eliminato correttamente dall’archivio.', 'ok');
+          await refresh(searchInput.value);
+        } catch (err) {
+          console.error(err);
+          setStatus(err.message || 'Eliminazione non riuscita.', 'err');
+          renameBtn.disabled = false;
+          deleteBtn.disabled = false;
+        }
+      });
       archiveGrid.appendChild(card);
       signedUrl(item.thumb_path).then(url => {
         const img = document.createElement('img');
