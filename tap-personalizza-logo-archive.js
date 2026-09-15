@@ -62,6 +62,15 @@
     return /^https?:/i.test(signed) ? signed : SUPABASE_URL + '/storage/v1' + (signed.startsWith('/') ? signed : '/' + signed);
   }
 
+  function blobToDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ''));
+      reader.onerror = () => reject(reader.error || new Error('Impossibile preparare il logo.'));
+      reader.readAsDataURL(blob);
+    });
+  }
+
   function safeTerm(value) {
     return String(value || '').trim().replace(/[*,()]/g, ' ').replace(/\s+/g, ' ').slice(0,80);
   }
@@ -165,12 +174,22 @@
       const response = await fetch(url, { cache:'no-store' });
       if (!response.ok) throw new Error('Impossibile scaricare il logo selezionato.');
       const blob = await response.blob();
+      const dataUrl = await blobToDataUrl(blob);
+      if (!dataUrl) throw new Error('Impossibile preparare il logo selezionato.');
       const fileName = (String(item.business_name || 'logo').trim().replace(/[^a-z0-9àèéìòù_-]+/gi, '-').replace(/^-+|-+$/g, '') || 'logo') + '.webp';
       const file = new File([blob], fileName, { type:blob.type || 'image/webp', lastModified:Date.now() });
       const transfer = new DataTransfer();
       transfer.items.add(file);
       logoInput.files = transfer.files;
+      try { logoDataUrl = dataUrl; } catch (_) { window.logoDataUrl = dataUrl; }
+      const previewImg = document.getElementById('logoPreviewImg');
+      const previewBox = document.getElementById('logoPreview');
+      const previewName = document.getElementById('logoName');
+      if (previewImg) previewImg.src = dataUrl;
+      if (previewName) previewName.textContent = fileName;
+      if (previewBox) previewBox.classList.add('show');
       logoInput.dispatchEvent(new Event('change', { bubbles:true }));
+      await new Promise(resolve => setTimeout(resolve, 0));
       close();
     } catch (error) {
       console.error('[Archivio Logo → Personalizza]', error);
