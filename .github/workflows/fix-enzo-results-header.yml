@@ -1,0 +1,22 @@
+name: Fix Enzo Results Header
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-enzo-results-header.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tools/fix_enzo_results_header.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add risultati.html
+          git diff --cached --quiet || git commit -m "Fix Enzo monthly results header"
+          git push
