@@ -3,7 +3,88 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20260906-stable5.1';
+  const BUILD_ID = '20260915-stable5.2';
+
+  function syncAuthenticatedOperator() {
+    const select = document.getElementById('operatorSelect');
+    if (!select) return;
+    const authenticatedName = String(document.body?.dataset?.tapOperator || '').trim();
+    if (!authenticatedName) return;
+
+    let option = Array.from(select.options).find(item => item.value === authenticatedName);
+    if (!option) {
+      option = document.createElement('option');
+      option.value = authenticatedName;
+      option.textContent = authenticatedName;
+      select.appendChild(option);
+    }
+    select.value = authenticatedName;
+  }
+
+  const originalFetch = window.fetch.bind(window);
+  window.fetch = function(input, init = {}) {
+    try {
+      const rawUrl = typeof input === 'string' ? input : input?.url;
+      if (rawUrl) {
+        const url = new URL(rawUrl, location.href);
+        const fileName = decodeURIComponent(url.pathname.split('/').pop() || '');
+        const isPreviewBackground = url.origin === location.origin && /^Sfondo/i.test(fileName);
+        if (isPreviewBackground && init?.cache === 'no-store') {
+          init = { ...init, cache: 'force-cache' };
+        }
+      }
+    } catch {}
+    return originalFetch(input, init);
+  };
+
+  const PREVIEW_BACKGROUNDS = Object.freeze({
+    abbigliamento: 'Sfondoabbigliamento.png',
+    autolavaggio: 'Sfondoautolavaggio.png',
+    bar: 'Sfondobar.png',
+    barextra: 'Sfondobarextra.webp?v=20260911-0035',
+    barbershop: 'Sfondobarbershop.jpg',
+    cartolibreria: 'Sfondocartolibreria.png',
+    centroestetico: 'Sfondocentroestetico.jpg',
+    detersivi: 'Sfondodetersivi.jpg',
+    farmacia: 'Sfondofarmacia.jpg',
+    fitness: 'Sfondofitness.jpg',
+    gelateria: 'Sfondogelateria.jpg',
+    hamburgeria: 'Sfondohamburgeria.png',
+    ottica: 'Sfondoottica.png',
+    panificio: 'Sfondopanificio.webp',
+    parrucchiere: 'Sfondoparrucchiere.jpg',
+    pasticceria: 'Sfondopasticceria.jpg',
+    pizzeria: 'Sfondopizzeria.jpg',
+    pub: 'Sfondopub.jpg',
+    ristorante: 'Sfondoristorante.png',
+    ristorantemare: 'Sfondoristorantemare.png',
+    stabilimento: 'Sfondostabilimento.jpg',
+    strumentimusicali: 'Sfondostrumentimusicali.png',
+    svapostore: 'Sfondosvapostore.png',
+    yogurteria: 'Sfondoyogurteria.jpg'
+  });
+
+  const warmedBackgrounds = new Set();
+  function warmPreviewBackground() {
+    const activity = document.getElementById('activityType');
+    const file = PREVIEW_BACKGROUNDS[String(activity?.value || '')];
+    if (!file || warmedBackgrounds.has(file)) return;
+    warmedBackgrounds.add(file);
+    const url = new URL(file, location.href).href;
+    originalFetch(url, { cache: 'force-cache' }).catch(() => warmedBackgrounds.delete(file));
+  }
+
+  function installOperatorAndPreviewFixes() {
+    syncAuthenticatedOperator();
+    const activity = document.getElementById('activityType');
+    if (activity && activity.dataset.tapPreviewWarm !== '1') {
+      activity.dataset.tapPreviewWarm = '1';
+      activity.addEventListener('change', warmPreviewBackground);
+    }
+    warmPreviewBackground();
+    setTimeout(syncAuthenticatedOperator, 100);
+    setTimeout(syncAuthenticatedOperator, 500);
+  }
 
   const CORE_MODULES = Object.freeze([
     'tap-categories.js',
@@ -72,9 +153,12 @@
     });
   }
 
+  installOperatorAndPreviewFixes();
+
   (async () => {
     try {
       for (const src of MODULES) await loadScript(src);
+      installOperatorAndPreviewFixes();
       document.documentElement.dataset.tapModulesBuild = BUILD_ID;
       window.TapPersonalizzaBuild = Object.freeze({
         id: BUILD_ID,
