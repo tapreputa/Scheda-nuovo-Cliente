@@ -1,0 +1,22 @@
+name: Fix Archive Logo Preview Race
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-archive-logo-preview-race.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tools/fix_archive_logo_preview_race.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tap-personalizza-logo-archive.js tap-veterinario.js
+          git diff --cached --quiet || git commit -m "Fix first preview after archived logo selection"
+          git push
