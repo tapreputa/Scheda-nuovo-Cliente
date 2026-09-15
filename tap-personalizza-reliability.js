@@ -4,8 +4,6 @@
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
   const activity = document.getElementById('activityType');
-  const previewBtn = document.getElementById('previewBtn');
-  const generateBtn = document.getElementById('generateBtn');
   const msg = document.getElementById('msg');
   const logoFile = document.getElementById('logoFile');
   const reviewInput = document.getElementById('destinationUrl');
@@ -69,37 +67,24 @@
     const file = category.background;
     if (assetCache.get(file) === true) return true;
     try {
-      const response = await fetch(file, { method:'HEAD', cache:'no-store' });
+      const response = await fetch(file, { method:'HEAD', cache:'force-cache' });
       if (!response.ok) throw new Error('HTTP ' + response.status);
       assetCache.set(file, true);
       return true;
     } catch (error) {
       assetCache.delete(file);
-      if (msg) {
-        msg.className = 'message show warn';
-        msg.textContent = `Sfondo non disponibile: ${file}. Controlla il nome del file su GitHub prima di continuare.`;
-      }
       return false;
     }
   }
 
+  // Controllo sfondo solo in background: non blocca più il primo tap su Anteprima/Genera.
   activity.addEventListener('change', () => {
     const category = window.TapCategories?.get(activity.value);
-    if (category?.background) validateBackground(category);
+    if (category?.background) validateBackground(category).catch(() => {});
   });
 
-  async function preflight(event, button) {
-    const category = window.TapCategories?.get(activity.value);
-    if (!category?.background) return;
-    if (assetCache.get(category.background) === true) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const ok = await validateBackground(category);
-    if (ok) button.click();
-  }
-
-  previewBtn?.addEventListener('click', event => preflight(event, previewBtn), true);
-  generateBtn?.addEventListener('click', event => preflight(event, generateBtn), true);
+  const currentCategory = window.TapCategories?.get(activity.value);
+  if (currentCategory?.background) validateBackground(currentCategory).catch(() => {});
 
   const addClientBtn = document.getElementById('addClientBtn');
   if (addClientBtn && msg) {
