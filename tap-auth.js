@@ -47,7 +47,8 @@
 
   const OPERATORS = Object.freeze({
     'francesco@tapnfc.local': 'Francesco',
-    'gisberto@tapnfc.local': 'Gisberto'
+    'gisberto@tapnfc.local': 'Gisberto',
+    'enzo@tapnfc.local': 'Enzo'
   });
 
   function safeJson(text) {
