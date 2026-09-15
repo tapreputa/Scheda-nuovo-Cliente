@@ -1,0 +1,48 @@
+/* Tap NFC — mobile chat composer visibility fix */
+.chat-composer{
+  display:grid !important;
+  grid-template-columns:auto minmax(0,1fr) auto !important;
+  align-items:end !important;
+}
+.composer-text{
+  min-width:0 !important;
+  width:100% !important;
+}
+.send-btn{
+  flex-shrink:0 !important;
+  min-width:92px !important;
+  width:auto !important;
+  white-space:nowrap !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+@media(max-width:760px){
+  .chat-composer{
+    grid-template-columns:42px minmax(0,1fr) 82px !important;
+    gap:7px !important;
+  }
+  .send-btn{
+    min-width:82px !important;
+    width:82px !important;
+    padding:0 10px !important;
+    font-size:11px !important;
+  }
+}
+@media(max-width:390px){
+  .chat-composer{
+    grid-template-columns:40px minmax(0,1fr) 76px !important;
+    gap:6px !important;
+  }
+  .attach-btn{
+    width:40px !important;
+    height:42px !important;
+    flex-basis:40px !important;
+  }
+  .send-btn{
+    min-width:76px !important;
+    width:76px !important;
+    padding:0 8px !important;
+    font-size:10.5px !important;
+  }
+}
