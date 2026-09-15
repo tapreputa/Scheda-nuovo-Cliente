@@ -38,11 +38,60 @@ jobs:
           gs = gs.replace("versionName '1.2.0'", "versionName '1.3.0'")
           g.write_text(gs, encoding='utf-8')
           PY
-      - name: Commit Android bridge
+      - name: Patch results for Enzo
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('risultati.html')
+          s = p.read_text(encoding='utf-8')
+          if 'id="enTotalTop"' in s:
+              raise SystemExit(0)
+
+          pairs = [
+            ('<div class="summary-grid"><article class="operator-card"><div class="operator-name">Francesco</div><div id="frTotalTop" class="operator-total">€ 0,00</div><div class="operator-caption">Vendite personali totali</div></article><article class="operator-card"><div class="operator-name">Gisberto</div><div id="giTotalTop" class="operator-total">€ 0,00</div><div class="operator-caption">Vendite personali totali</div></article></div>', '<div class="summary-grid"><article class="operator-card"><div class="operator-name">Francesco</div><div id="frTotalTop" class="operator-total">€ 0,00</div><div class="operator-caption">Vendite personali totali</div></article><article class="operator-card"><div class="operator-name">Gisberto</div><div id="giTotalTop" class="operator-total">€ 0,00</div><div class="operator-caption">Vendite personali totali</div></article><article class="operator-card"><div class="operator-name">Enzo</div><div id="enTotalTop" class="operator-total">€ 0,00</div><div class="operator-caption">Vendite personali totali</div></article></div>'),
+            ('Francesco + Gisberto · totale generale', 'Francesco + Gisberto + Enzo · totale generale'),
+            ('<tr><th>Prodotto</th><th>Francesco</th><th>Gisberto</th><th class="team-col">Team</th></tr>', '<tr><th>Prodotto</th><th>Francesco</th><th>Gisberto</th><th>Enzo</th><th class="team-col">Team</th></tr>'),
+            ('<tr><td class="metric-label">Targhe</td><td id="frTarghe" class="value">0</td><td id="giTarghe" class="value">0</td><td id="teamTarghe" class="value team-col">0</td></tr>', '<tr><td class="metric-label">Targhe</td><td id="frTarghe" class="value">0</td><td id="giTarghe" class="value">0</td><td id="enTarghe" class="value">0</td><td id="teamTarghe" class="value team-col">0</td></tr>'),
+            ('<tr><td class="metric-label">Card</td><td id="frCarte" class="value">0</td><td id="giCarte" class="value">0</td><td id="teamCarte" class="value team-col">0</td></tr>', '<tr><td class="metric-label">Card</td><td id="frCarte" class="value">0</td><td id="giCarte" class="value">0</td><td id="enCarte" class="value">0</td><td id="teamCarte" class="value team-col">0</td></tr>'),
+            ('<tr><td class="metric-label">Adesivi</td><td id="frAdesivi" class="value">0</td><td id="giAdesivi" class="value">0</td><td id="teamAdesivi" class="value team-col">0</td></tr>', '<tr><td class="metric-label">Adesivi</td><td id="frAdesivi" class="value">0</td><td id="giAdesivi" class="value">0</td><td id="enAdesivi" class="value">0</td><td id="teamAdesivi" class="value team-col">0</td></tr>'),
+            ('<tr class="money-row"><td class="metric-label">Totale €</td><td id="frEuro" class="value">€ 0,00</td><td id="giEuro" class="value">€ 0,00</td><td id="teamEuroTable" class="value team-col">€ 0,00</td></tr>', '<tr class="money-row"><td class="metric-label">Totale €</td><td id="frEuro" class="value">€ 0,00</td><td id="giEuro" class="value">€ 0,00</td><td id="enEuro" class="value">€ 0,00</td><td id="teamEuroTable" class="value team-col">€ 0,00</td></tr>'),
+            ('<div class="summary-grid"><article class="operator-card"><div class="operator-name">Francesco</div><div id="mFrTotalTop" class="operator-total">€ 0,00</div><div class="operator-caption">Vendite del mese</div></article><article class="operator-card"><div class="operator-name">Gisberto</div><div id="mGiTotalTop" class="operator-total">€ 0,00</div><div class="operator-caption">Vendite del mese</div></article></div>', '<div class="summary-grid"><article class="operator-card"><div class="operator-name">Francesco</div><div id="mFrTotalTop" class="operator-total">€ 0,00</div><div class="operator-caption">Vendite del mese</div></article><article class="operator-card"><div class="operator-name">Gisberto</div><div id="mGiTotalTop" class="operator-total">€ 0,00</div><div class="operator-caption">Vendite del mese</div></article><article class="operator-card"><div class="operator-name">Enzo</div><div id="mEnTotalTop" class="operator-total">€ 0,00</div><div class="operator-caption">Vendite del mese</div></article></div>'),
+            ('<div id="mTeamNote" class="team-note">Francesco + Gisberto</div>', '<div id="mTeamNote" class="team-note">Francesco + Gisberto + Enzo</div>'),
+            ('<tr><td class="metric-label">Targhe</td><td id="mFrTarghe" class="value">0</td><td id="mGiTarghe" class="value">0</td><td id="mTeamTarghe" class="value team-col">0</td></tr>', '<tr><td class="metric-label">Targhe</td><td id="mFrTarghe" class="value">0</td><td id="mGiTarghe" class="value">0</td><td id="mEnTarghe" class="value">0</td><td id="mTeamTarghe" class="value team-col">0</td></tr>'),
+            ('<tr><td class="metric-label">Card</td><td id="mFrCarte" class="value">0</td><td id="mGiCarte" class="value">0</td><td id="mTeamCarte" class="value team-col">0</td></tr>', '<tr><td class="metric-label">Card</td><td id="mFrCarte" class="value">0</td><td id="mGiCarte" class="value">0</td><td id="mEnCarte" class="value">0</td><td id="mTeamCarte" class="value team-col">0</td></tr>'),
+            ('<tr><td class="metric-label">Adesivi</td><td id="mFrAdesivi" class="value">0</td><td id="mGiAdesivi" class="value">0</td><td id="mTeamAdesivi" class="value team-col">0</td></tr>', '<tr><td class="metric-label">Adesivi</td><td id="mFrAdesivi" class="value">0</td><td id="mGiAdesivi" class="value">0</td><td id="mEnAdesivi" class="value">0</td><td id="mTeamAdesivi" class="value team-col">0</td></tr>'),
+            ('<tr class="money-row"><td class="metric-label">Totale €</td><td id="mFrEuro" class="value">€ 0,00</td><td id="mGiEuro" class="value">€ 0,00</td><td id="mTeamEuroTable" class="value team-col">€ 0,00</td></tr>', '<tr class="money-row"><td class="metric-label">Totale €</td><td id="mFrEuro" class="value">€ 0,00</td><td id="mGiEuro" class="value">€ 0,00</td><td id="mEnEuro" class="value">€ 0,00</td><td id="mTeamEuroTable" class="value team-col">€ 0,00</td></tr>'),
+            ('function calculate(clienti){const totals={Francesco:empty(),Gisberto:empty()};', 'function calculate(clienti){const totals={Francesco:empty(),Gisberto:empty(),Enzo:empty()};'),
+            ('function teamOf(t){const f=t.Francesco,g=t.Gisberto;return{targhe:f.targhe+g.targhe,carte:f.carte+g.carte,adesivi:f.adesivi+g.adesivi,euro:f.euro+g.euro}}', 'function teamOf(t){const f=t.Francesco,g=t.Gisberto,e=t.Enzo;return{targhe:f.targhe+g.targhe+e.targhe,carte:f.carte+g.carte+e.carte,adesivi:f.adesivi+g.adesivi+e.adesivi,euro:f.euro+g.euro+e.euro}}'),
+            ("function renderTotals(clienti){const t=calculate(clienti),f=t.Francesco,g=t.Gisberto,team=teamOf(t);", "function renderTotals(clienti){const t=calculate(clienti),f=t.Francesco,g=t.Gisberto,e=t.Enzo,team=teamOf(t);"),
+            ("setText('giTarghe',g.targhe);setText('teamTarghe'", "setText('giTarghe',g.targhe);setText('enTarghe',e.targhe);setText('teamTarghe'"),
+            ("setText('giCarte',g.carte);setText('teamCarte'", "setText('giCarte',g.carte);setText('enCarte',e.carte);setText('teamCarte'"),
+            ("setText('giAdesivi',g.adesivi);setText('teamAdesivi'", "setText('giAdesivi',g.adesivi);setText('enAdesivi',e.adesivi);setText('teamAdesivi'"),
+            ("setText('giEuro',euro.format(g.euro));setText('teamEuroTable'", "setText('giEuro',euro.format(g.euro));setText('enEuro',euro.format(e.euro));setText('teamEuroTable'"),
+            ("setText('giTotalTop',euro.format(g.euro));setText('teamTotal'", "setText('giTotalTop',euro.format(g.euro));setText('enTotalTop',euro.format(e.euro));setText('teamTotal'"),
+            ("function renderMonthly(){const clienti=clientsForMonth(),t=calculate(clienti),f=t.Francesco,g=t.Gisberto,team=teamOf(t);", "function renderMonthly(){const clienti=clientsForMonth(),t=calculate(clienti),f=t.Francesco,g=t.Gisberto,e=t.Enzo,team=teamOf(t);"),
+            ("setText('mGiTotalTop',euro.format(g.euro));setText('mTeamTotal'", "setText('mGiTotalTop',euro.format(g.euro));setText('mEnTotalTop',euro.format(e.euro));setText('mTeamTotal'"),
+            ("'Francesco + Gisberto · '+MONTHS", "'Francesco + Gisberto + Enzo · '+MONTHS"),
+            ("setText('mGiTarghe',g.targhe);setText('mTeamTarghe'", "setText('mGiTarghe',g.targhe);setText('mEnTarghe',e.targhe);setText('mTeamTarghe'"),
+            ("setText('mGiCarte',g.carte);setText('mTeamCarte'", "setText('mGiCarte',g.carte);setText('mEnCarte',e.carte);setText('mTeamCarte'"),
+            ("setText('mGiAdesivi',g.adesivi);setText('mTeamAdesivi'", "setText('mGiAdesivi',g.adesivi);setText('mEnAdesivi',e.adesivi);setText('mTeamAdesivi'"),
+            ("setText('mGiEuro',euro.format(g.euro));setText('mTeamEuroTable'", "setText('mGiEuro',euro.format(g.euro));setText('mEnEuro',euro.format(e.euro));setText('mTeamEuroTable'")
+          ]
+          for old,new in pairs:
+              if old not in s:
+                  raise SystemExit('Pattern missing: '+old[:100])
+              s=s.replace(old,new,1)
+
+          css = '''\n<style id="tap-results-enzo-v1">\n.summary-grid{grid-template-columns:repeat(3,minmax(0,1fr))}\ntable{min-width:760px}\n@media(max-width:760px){.summary-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.operator-card{min-width:0;padding:15px 10px}.operator-name{font-size:10px}.operator-total{font-size:21px}.operator-caption{font-size:10px}}\n@media(max-width:520px){.summary-grid{grid-template-columns:1fr}.operator-card{padding:14px 16px}.operator-total{font-size:24px}}\n</style>\n'''
+          s=s.replace('</head>',css+'</head>',1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit changes
         run: |
           if git diff --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add android/app/src/main/java/com/tapreputa/tapnfc/MainActivity.java android/app/build.gradle
-          git commit -m "Support saving exported Excel files from Android app"
+          git add android/app/src/main/java/com/tapreputa/tapnfc/MainActivity.java android/app/build.gradle risultati.html
+          git commit -m "Add Enzo to results dashboard"
           git push
