@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07152b">
+<title>Tap NFC · Archivio Logo</title>
+<link rel="stylesheet" href="tap-premium-theme.css?v=2">
+<link rel="stylesheet" href="archivio-logo.css?v=1">
+</head>
+<body data-auth="required">
+<header class="topbar">
+  <div class="brand">
+    <a href="index.html" aria-label="Vai alla home">
+      <div class="brand-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="14" fill="#fff"/><path d="M31 12 L88 50 L16 92 L48 56 L66 50 L25 23 Z" fill="#071d35"/><path d="M18 31 L50 50 L39 60 L8 40 Z" fill="#071d35"/><path d="M15 90 L27 57 L39 64 Z" fill="#e6a019"/></svg></div>
+    </a>
+    <div><div class="brand-title">Tap NFC</div><div class="brand-sub">Powered by <strong>Tapreputa</strong></div></div>
+  </div>
+  <div class="top-actions">
+    <a class="back" href="index.html">← Home</a>
+    <button class="logout" type="button" data-logout aria-label="Esci">Esci</button>
+  </div>
+</header>
+
+<main class="logo-wrap">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Preparazione clienti</div>
+      <h1>Archivio Logo</h1>
+      <p>Carica in anticipo i loghi delle attività da visitare. L’archivio è condiviso tra Francesco, Gisberto ed Enzo e usa miniature leggere per non rallentare l’app.</p>
+    </div>
+    <div class="shared-pill">● Archivio condiviso</div>
+  </section>
+
+  <section class="panel" aria-label="Carica nuovo logo">
+    <div class="panel-title">Carica un nuovo logo</div>
+    <div class="upload-grid">
+      <div>
+        <div class="field">
+          <label for="logoBusinessName">Nome attività</label>
+          <input id="logoBusinessName" type="text" maxlength="120" autocomplete="organization" placeholder="Es. Bar Giada">
+        </div>
+        <div class="file-row">
+          <input id="logoFile" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+          <button class="file-picker" id="logoFilePicker" type="button">Scegli logo</button>
+          <div class="file-name" id="logoFileName">Nessun file selezionato</div>
+        </div>
+      </div>
+      <button class="upload-btn" id="logoUploadBtn" type="button">Salva in Archivio</button>
+    </div>
+    <div class="helper">JPG, PNG o WEBP · massimo 10 MB in ingresso. Prima del salvataggio il file viene ottimizzato automaticamente e viene creata una miniatura separata.</div>
+    <div class="status" id="logoStatus" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="panel" aria-label="Cerca nell'archivio">
+    <div class="panel-title">Cerca logo</div>
+    <div class="search-row">
+      <input class="search-input" id="logoSearch" type="search" autocomplete="off" placeholder="Scrivi il nome dell’attività…">
+      <div class="search-count" id="logoSearchCount">Caricamento…</div>
+    </div>
+    <div class="archive-grid" id="logoArchiveGrid">
+      <div class="empty" style="grid-column:1/-1"><strong>Caricamento archivio…</strong><span>Sto recuperando i loghi disponibili.</span></div>
+    </div>
+  </section>
+</main>
+
+<script src="tap-auth.js"></script>
+<script src="archivio-logo.js?v=1"></script>
+</body>
+</html>
