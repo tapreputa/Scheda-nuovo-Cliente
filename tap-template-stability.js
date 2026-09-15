@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20260906-stable5.1';
+  const BUILD_ID = '20260916-stable5.2';
   const SNAPSHOT_KEY = 'tapreputa_preview_snapshot_v1';
   const BINDING_KEY = 'tapreputa_generated_binding_v1';
   const activity = document.getElementById('activityType');
@@ -195,15 +195,33 @@
 
   if (typeof openInlinePreview === 'function') {
     const previousOpenInlinePreview = openInlinePreview;
+
+    function captureRenderedPreview(previousSrcdoc, expectedSignature) {
+      let attempts = 0;
+      const timer = setInterval(() => {
+        attempts++;
+        const frame = document.getElementById('tapPreviewFrame');
+        const rendered = String(frame?.srcdoc || '');
+        const ready = Boolean(rendered) && rendered !== previousSrcdoc;
+
+        if (ready && currentSignature() === expectedSignature) {
+          clearInterval(timer);
+          const stableHtml = dedupeDuplicateIds(rendered);
+          if (stableHtml !== rendered) frame.srcdoc = stableHtml;
+          saveSnapshot(stableHtml);
+          return;
+        }
+
+        if (attempts >= 100) clearInterval(timer);
+      }, 30);
+    }
+
     openInlinePreview = function(html) {
+      const frameBefore = document.getElementById('tapPreviewFrame');
+      const previousSrcdoc = String(frameBefore?.srcdoc || '');
+      const expectedSignature = currentSignature();
       const result = previousOpenInlinePreview(html);
-      const frame = document.getElementById('tapPreviewFrame');
-      if (frame) {
-        const rendered = String(frame.srcdoc || html || '');
-        const stableHtml = dedupeDuplicateIds(rendered);
-        if (stableHtml !== rendered) frame.srcdoc = stableHtml;
-        saveSnapshot(stableHtml);
-      }
+      captureRenderedPreview(previousSrcdoc, expectedSignature);
       return result;
     };
   }
