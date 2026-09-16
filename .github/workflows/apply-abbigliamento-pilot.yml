@@ -1,0 +1,28 @@
+name: Apply Abbigliamento Pilot
+
+on:
+  push:
+    paths:
+      - 'tools/apply_abbigliamento_pilot.py'
+      - '.github/workflows/apply-abbigliamento-pilot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tools/apply_abbigliamento_pilot.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No changes needed"
+          else
+            git add cliente.html
+            git commit -m "Apply Abbigliamento preview parity pilot"
+            git push
+          fi
