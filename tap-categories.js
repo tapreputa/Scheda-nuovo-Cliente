@@ -13,7 +13,7 @@
     { id:'detersivi', label:'Detersivi e casalinghi', background:'Sfondodetersivi.jpg', description:'Sfondo pulito e luminoso + layout dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
     { id:'farmacia', label:'Farmacie', background:'Sfondofarmacia.jpg', description:'Sfondo farmacia luminoso + stile professionale + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
     { id:'fitness', label:'Palestre / Fitness', background:'Sfondofitness.jpg', description:'Sfondo palestra moderno + stile energico + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
-    { id:'fotografo', label:'Fotografo', background:'Sfondofotografo.png', title:'Ti è piaciuto il nostro lavoro?', accent:'#c59a6d', accent2:'#8c6848', theme:'#2d2926', description:'Sfondo studio fotografico premium + layout dedicato con spazio per logo, titolo, didascalia, pulsante recensioni e 5 stelle + Powered by Tapreputa.' },
+    { id:'fotografo', label:'Fotografo', background:'Sfondofotografo.png', title:'Ti è piaciuto il nostro lavoro?', accent:'#c59a6d', accent2:'#8c6848', theme:'#2d2926', approvedAt:'2026-09-17', description:'Sfondo studio fotografico premium + layout dedicato con spazio per logo, titolo, didascalia, pulsante recensioni e 5 stelle + Powered by Tapreputa.' },
     { id:'gelateria', label:'Gelaterie', background:'Sfondogelateria.jpg', description:'Sfondo gelateria luminoso + stile fresco + pulsante premium + 5 stelle + Powered by Tapreputa.' },
     { id:'gioielleria', label:'Gioielleria', background:'Sfondogioielleria.png', title:'La qualità e la cura dei nostri gioielli ti hanno conquistato?', accent:'#b9975b', accent2:'#7d6238', theme:'#8a744a', description:'Sfondo gioielleria premium + layout elegante dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
     { id:'macelleria', label:'Macelleria', background:'Sfondomacelleria.png', title:'Freschezza e qualità della nostra carne ti hanno soddisfatto?', accent:'#8f2f2f', accent2:'#5f1717', theme:'#4a241f', description:'Sfondo macelleria premium + layout dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
@@ -40,7 +40,7 @@
 
   const CLOSED_IDS = Object.freeze(categories.filter(item => item.id !== 'standard').map(item => item.id));
   const closedSet = new Set(CLOSED_IDS);
-  const byId = Object.freeze(Object.fromEntries(categories.map(item => [item.id, Object.freeze({version:'1.0', closed:closedSet.has(item.id), approvedAt:'2026-09-17', ...item})])));
+  const byId = Object.freeze(Object.fromEntries(categories.map(item => [item.id, Object.freeze({version:'1.0', closed:closedSet.has(item.id), approvedAt:'2026-09-06', ...item})])));
   const sorted = Object.freeze(categories.slice().sort((a,b) => {
     if (a.id === 'standard') return -1;
     if (b.id === 'standard') return 1;
