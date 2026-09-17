@@ -89,18 +89,116 @@
   .page.abbigliamento .stars{margin-top:18px;font-size:clamp(34px,7.5vw,42px)}
 }
 
-/* Fotografo — layout dedicato allo sfondo studio/workspace */
-.page.fotografo{background-position:center center;background-size:cover}
-.page.fotografo:before{background:linear-gradient(180deg,rgba(8,8,8,.22) 0%,rgba(8,8,8,.10) 42%,rgba(8,8,8,.32) 100%)}
-.page.fotografo .content{position:relative;padding:0 20px 96px}
-.page.fotografo .logo{position:absolute;top:max(18px,2.7vh);left:50%;transform:translateX(-50%);width:min(190px,50vw);max-height:105px;margin:0;filter:drop-shadow(0 5px 15px rgba(0,0,0,.50))}
-.page.fotografo .name{position:absolute;top:max(24px,3.5vh);left:7%;right:7%;margin:0;font-size:clamp(25px,6vw,33px)}
-.page.fotografo .headline{position:absolute;top:20vh;left:6%;right:6%;max-width:none;margin:0;font-size:clamp(22px,5.8vw,30px);line-height:1.08;letter-spacing:.045em;text-shadow:0 3px 14px rgba(0,0,0,.88)}
-.page.fotografo .box{position:absolute;top:31vh;left:7%;right:7%;width:auto;margin:0;padding:14px 16px;border-radius:18px;background:rgba(20,17,15,.48);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);font-size:clamp(15px,3.8vw,18px);line-height:1.32;font-weight:700}
-.page.fotografo .review{position:absolute;top:58vh;left:7%;right:7%;width:auto;margin:0;min-height:57px;padding:15px 16px;border-radius:22px;background:linear-gradient(135deg,#c59a6d,#8c6848 62%,#b58a5e);color:#fff;border:1px solid rgba(255,255,255,.42);font-size:clamp(20px,5vw,25px);box-shadow:0 11px 28px rgba(0,0,0,.30)}
-.page.fotografo .stars{position:absolute;top:70vh;left:0;right:0;margin:0;font-size:clamp(36px,8vw,44px);color:#ffd400;text-shadow:0 0 12px rgba(255,215,0,.85),0 4px 10px rgba(0,0,0,.55)}
-.page.fotografo .footer{font-size:9px}.page.fotografo .footer strong{font-size:18px}
-@media(max-height:690px){.page.fotografo .logo{top:2vh;max-height:88px}.page.fotografo .name{top:3vh}.page.fotografo .headline{top:18vh;font-size:clamp(20px,5.4vw,27px)}.page.fotografo .box{top:29vh;padding:11px 14px;font-size:clamp(14px,3.5vw,16px)}.page.fotografo .review{top:57vh;min-height:52px}.page.fotografo .stars{top:69vh}}
+/* Fotografo — layout fedele allo sfondo originale: niente crop / niente zoom */
+.page.fotografo{
+  background-color:#171310;
+  background-position:center top;
+  background-size:100% auto;
+  background-repeat:no-repeat;
+}
+.page.fotografo:before{
+  background:linear-gradient(180deg,rgba(8,8,8,.10) 0%,rgba(8,8,8,.04) 43%,rgba(8,8,8,.12) 72%,rgba(8,8,8,.24) 100%);
+}
+.page.fotografo .content{
+  position:relative;
+  height:100%;
+  padding:0 20px 92px;
+}
+.page.fotografo .logo{
+  position:absolute;
+  top:max(14px,2.2vh);
+  left:50%;
+  transform:translateX(-50%);
+  width:min(166px,44vw);
+  max-height:92px;
+  margin:0;
+  object-fit:contain;
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,.42));
+}
+.page.fotografo .name{
+  position:absolute;
+  top:max(20px,3vh);
+  left:7%;
+  right:7%;
+  margin:0;
+  font-size:clamp(24px,5.6vw,31px);
+}
+.page.fotografo .headline{
+  position:absolute;
+  top:20.5vh;
+  left:7%;
+  right:7%;
+  max-width:none;
+  margin:0;
+  font-size:clamp(21px,5.4vw,28px);
+  line-height:1.08;
+  letter-spacing:.04em;
+  text-shadow:0 3px 14px rgba(0,0,0,.88);
+}
+.page.fotografo .box{
+  position:absolute;
+  top:32.5vh;
+  left:8%;
+  right:8%;
+  width:auto;
+  margin:0;
+  padding:13px 15px;
+  border-radius:18px;
+  background:rgba(17,14,12,.40);
+  border:1px solid rgba(255,255,255,.22);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+  font-size:clamp(14px,3.55vw,17px);
+  line-height:1.30;
+  font-weight:700;
+  box-shadow:0 9px 22px rgba(0,0,0,.16);
+}
+.page.fotografo .review{
+  position:absolute;
+  top:58.5vh;
+  left:8%;
+  right:8%;
+  width:auto;
+  margin:0;
+  min-height:54px;
+  padding:13px 15px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#c59a6d,#8c6848 62%,#b58a5e);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.38);
+  font-size:clamp(19px,4.7vw,23px);
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+.page.fotografo .stars{
+  position:absolute;
+  top:70vh;
+  left:0;
+  right:0;
+  margin:0;
+  font-size:clamp(34px,7.3vw,41px);
+  letter-spacing:3px;
+  color:#ffd400;
+  text-shadow:0 0 10px rgba(255,215,0,.78),0 4px 9px rgba(0,0,0,.50);
+}
+.page.fotografo .footer{
+  right:14px;
+  bottom:max(10px,env(safe-area-inset-bottom));
+  font-size:8px;
+}
+.page.fotografo .footer strong{font-size:17px}
+@media(max-height:780px){
+  .page.fotografo .logo{top:1.8vh;width:min(154px,42vw);max-height:82px}
+  .page.fotografo .name{top:2.6vh}
+  .page.fotografo .headline{top:19vh;font-size:clamp(19px,5.1vw,25px)}
+  .page.fotografo .box{top:30.5vh;padding:11px 13px;font-size:clamp(13px,3.35vw,15.5px)}
+  .page.fotografo .review{top:57.5vh;min-height:50px;font-size:clamp(18px,4.5vw,21px)}
+  .page.fotografo .stars{top:69vh;font-size:clamp(32px,7vw,38px)}
+}
+@media(max-width:380px){
+  .page.fotografo{background-size:100% auto}
+  .page.fotografo .box{left:6%;right:6%}
+  .page.fotografo .review{left:6%;right:6%}
+}
 
 @media (max-height:780px){.content{padding-top:18px;padding-bottom:94px}.logo{width:min(48vw,220px);max-height:105px;margin-bottom:14px}.name{margin-bottom:14px}.headline{font-size:22px}.box{margin-top:14px;padding:16px 18px;font-size:17px}.review{margin-top:16px;padding:16px 16px;font-size:23px}.stars{margin-top:12px;font-size:36px}.footer{font-size:13px}.footer strong{font-size:25px}.page.barextra .content{padding-top:14px;padding-bottom:74px}.page.barextra .logo{width:min(190px,54vw);max-height:88px;margin-bottom:clamp(38px,6.5vh,60px)}.page.barextra .name{margin-bottom:clamp(38px,6.5vh,60px)}.page.barextra .headline{font-size:19px}.page.barextra .box{margin-top:9px;padding:9px 12px;font-size:14px}.page.barextra .review{min-width:172px;min-height:40px;margin-top:10px;padding:8px 20px;font-size:14px}.page.barextra .stars{margin-top:9px;font-size:27px}.page.barextra .footer{font-size:8px}.page.barextra .footer strong{font-size:16px}}
 @media(max-width:340px) and (max-height:600px){.page.barextra .content{padding-top:8px;padding-bottom:58px}.page.barextra .logo{width:150px;max-height:72px;margin-bottom:28px}.page.barextra .name{font-size:18px;margin-bottom:28px}.page.barextra .headline{font-size:15px}.page.barextra .box{padding:8px 10px;margin-top:7px;font-size:12px}.page.barextra .review{min-width:156px;min-height:36px;margin-top:8px;font-size:12px;padding:7px 16px}.page.barextra .stars{font-size:23px;margin-top:8px}.page.barextra .footer{bottom:7px;right:8px}}
@@ -116,7 +214,7 @@ const SUPABASE_URL='https://rqzgdgdoulgjwlxtdxhi.supabase.co';
 const KEY='sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
 const slug=new URLSearchParams(location.search).get('c')||'';
 const bg={
-abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.webp',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
+abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.webp?v=20260918-02',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
 const copy={
 abbigliamento:['IL TUO STILE MERITA 5 STELLE?','La tua opinione ci aiuta a migliorare ogni giorno stile, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 autolavaggio:['LA TUA AUTO SPLENDE COME MERITA?','La tua opinione ci aiuta a migliorare ogni giorno qualità, cura e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
