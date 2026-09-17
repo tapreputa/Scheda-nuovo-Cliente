@@ -11,7 +11,6 @@
 /* Bar extra — layout dedicato: sfondo protagonista, controlli leggeri */
 .page.barextra{background-position:center center;background-size:cover}.page.barextra:before{background:linear-gradient(180deg,rgba(7,10,8,.07) 0%,rgba(7,10,8,.03) 42%,rgba(7,10,8,.13) 68%,rgba(7,10,8,.28) 100%)}.page.barextra .content{padding-top:max(18px,env(safe-area-inset-top));padding-bottom:max(86px,calc(env(safe-area-inset-bottom) + 72px))}.page.barextra .logo{width:min(220px,58vw);max-height:108px;margin:0 auto clamp(62px,9vh,96px);filter:drop-shadow(0 6px 16px rgba(0,0,0,.55))}.page.barextra .name{font-size:clamp(22px,4vw,30px);margin-bottom:clamp(62px,9vh,96px)}.page.barextra .headline{max-width:455px;font-size:clamp(18px,4.2vw,25px);line-height:1.12;letter-spacing:.055em;text-shadow:0 3px 15px rgba(0,0,0,.92)}.page.barextra .box{margin-top:11px;width:min(90vw,455px);padding:11px 14px;border-radius:16px;background:rgba(16,18,16,.40);border:1px solid rgba(255,255,255,.28);box-shadow:0 8px 22px rgba(0,0,0,.18);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);font-size:clamp(14px,3.3vw,16px);line-height:1.36;font-weight:650}.page.barextra .review{display:inline-flex;align-items:center;justify-content:center;width:auto;min-width:190px;min-height:44px;margin-top:14px;padding:9px 24px;border-radius:999px;background:rgba(245,236,220,.80);color:#4c3927;border:1px solid rgba(255,255,255,.72);box-shadow:0 8px 20px rgba(0,0,0,.18);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);font-size:15px;font-weight:850}.page.barextra .stars{margin-top:13px;font-size:30px;letter-spacing:.17em;color:#ffd552;text-shadow:0 0 8px rgba(255,213,82,.95),0 0 22px rgba(255,170,55,.72),0 4px 12px rgba(0,0,0,.62)}.page.barextra .footer{font-size:9px;color:rgba(255,255,255,.92)}.page.barextra .footer strong{font-size:18px;color:#f5dca8}
 
-
 /* tap-abbigliamento-preview-parity-pilot-v1 */
 .page.abbigliamento{
   background-position:center center;
@@ -90,6 +89,19 @@
   .page.abbigliamento .stars{margin-top:18px;font-size:clamp(34px,7.5vw,42px)}
 }
 
+/* Fotografo — layout dedicato allo sfondo studio/workspace */
+.page.fotografo{background-position:center center;background-size:cover}
+.page.fotografo:before{background:linear-gradient(180deg,rgba(8,8,8,.22) 0%,rgba(8,8,8,.10) 42%,rgba(8,8,8,.32) 100%)}
+.page.fotografo .content{position:relative;padding:0 20px 96px}
+.page.fotografo .logo{position:absolute;top:max(18px,2.7vh);left:50%;transform:translateX(-50%);width:min(190px,50vw);max-height:105px;margin:0;filter:drop-shadow(0 5px 15px rgba(0,0,0,.50))}
+.page.fotografo .name{position:absolute;top:max(24px,3.5vh);left:7%;right:7%;margin:0;font-size:clamp(25px,6vw,33px)}
+.page.fotografo .headline{position:absolute;top:20vh;left:6%;right:6%;max-width:none;margin:0;font-size:clamp(22px,5.8vw,30px);line-height:1.08;letter-spacing:.045em;text-shadow:0 3px 14px rgba(0,0,0,.88)}
+.page.fotografo .box{position:absolute;top:31vh;left:7%;right:7%;width:auto;margin:0;padding:14px 16px;border-radius:18px;background:rgba(20,17,15,.48);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);font-size:clamp(15px,3.8vw,18px);line-height:1.32;font-weight:700}
+.page.fotografo .review{position:absolute;top:58vh;left:7%;right:7%;width:auto;margin:0;min-height:57px;padding:15px 16px;border-radius:22px;background:linear-gradient(135deg,#c59a6d,#8c6848 62%,#b58a5e);color:#fff;border:1px solid rgba(255,255,255,.42);font-size:clamp(20px,5vw,25px);box-shadow:0 11px 28px rgba(0,0,0,.30)}
+.page.fotografo .stars{position:absolute;top:70vh;left:0;right:0;margin:0;font-size:clamp(36px,8vw,44px);color:#ffd400;text-shadow:0 0 12px rgba(255,215,0,.85),0 4px 10px rgba(0,0,0,.55)}
+.page.fotografo .footer{font-size:9px}.page.fotografo .footer strong{font-size:18px}
+@media(max-height:690px){.page.fotografo .logo{top:2vh;max-height:88px}.page.fotografo .name{top:3vh}.page.fotografo .headline{top:18vh;font-size:clamp(20px,5.4vw,27px)}.page.fotografo .box{top:29vh;padding:11px 14px;font-size:clamp(14px,3.5vw,16px)}.page.fotografo .review{top:57vh;min-height:52px}.page.fotografo .stars{top:69vh}}
+
 @media (max-height:780px){.content{padding-top:18px;padding-bottom:94px}.logo{width:min(48vw,220px);max-height:105px;margin-bottom:14px}.name{margin-bottom:14px}.headline{font-size:22px}.box{margin-top:14px;padding:16px 18px;font-size:17px}.review{margin-top:16px;padding:16px 16px;font-size:23px}.stars{margin-top:12px;font-size:36px}.footer{font-size:13px}.footer strong{font-size:25px}.page.barextra .content{padding-top:14px;padding-bottom:74px}.page.barextra .logo{width:min(190px,54vw);max-height:88px;margin-bottom:clamp(38px,6.5vh,60px)}.page.barextra .name{margin-bottom:clamp(38px,6.5vh,60px)}.page.barextra .headline{font-size:19px}.page.barextra .box{margin-top:9px;padding:9px 12px;font-size:14px}.page.barextra .review{min-width:172px;min-height:40px;margin-top:10px;padding:8px 20px;font-size:14px}.page.barextra .stars{margin-top:9px;font-size:27px}.page.barextra .footer{font-size:8px}.page.barextra .footer strong{font-size:16px}}
 @media(max-width:340px) and (max-height:600px){.page.barextra .content{padding-top:8px;padding-bottom:58px}.page.barextra .logo{width:150px;max-height:72px;margin-bottom:28px}.page.barextra .name{font-size:18px;margin-bottom:28px}.page.barextra .headline{font-size:15px}.page.barextra .box{padding:8px 10px;margin-top:7px;font-size:12px}.page.barextra .review{min-width:156px;min-height:36px;margin-top:8px;font-size:12px;padding:7px 16px}.page.barextra .stars{font-size:23px;margin-top:8px}.page.barextra .footer{bottom:7px;right:8px}}
 </style>
@@ -104,7 +116,7 @@ const SUPABASE_URL='https://rqzgdgdoulgjwlxtdxhi.supabase.co';
 const KEY='sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
 const slug=new URLSearchParams(location.search).get('c')||'';
 const bg={
-abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
+abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.webp',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
 const copy={
 abbigliamento:['IL TUO STILE MERITA 5 STELLE?','La tua opinione ci aiuta a migliorare ogni giorno stile, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 autolavaggio:['LA TUA AUTO SPLENDE COME MERITA?','La tua opinione ci aiuta a migliorare ogni giorno qualità, cura e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
@@ -116,6 +128,7 @@ centroestetico:['TI È PIACIUTO IL TUO MOMENTO DI BENESSERE?','Il tuo feedback c
 detersivi:['HAI TROVATO TUTTO CIÒ CHE CERCAVI?','La tua opinione ci aiuta a migliorare assortimento, qualità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 farmacia:['LA TUA ESPERIENZA È IMPORTANTE PER NOI','La tua opinione ci aiuta a migliorare ogni giorno accoglienza, disponibilità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 fitness:['TI È PIACIUTO ALLENARTI CON NOI?','La tua opinione ci aiuta a migliorare ogni giorno ambiente, attrezzature e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
+fotografo:['TI È PIACIUTO IL NOSTRO LAVORO?','La tua opinione ci aiuta a valorizzare ogni scatto e a migliorare ogni servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 gelateria:['TI È PIACIUTO IL NOSTRO GELATO?','La tua opinione rende tutto ancora più dolce. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 gioielleria:['LA QUALITÀ E LA CURA DEI NOSTRI GIOIELLI TI HANNO CONQUISTATO?',''],
 macelleria:['FRESCHEZZA E QUALITÀ DELLA NOSTRA CARNE TI HANNO SODDISFATTO?',''],
@@ -150,6 +163,7 @@ async function load(){
  document.getElementById('review').href=row.link_recensioni;
  if(cat==='barextra') page.classList.add('barextra');
  if(cat==='abbigliamento') page.classList.add('abbigliamento');
+ if(cat==='fotografo') page.classList.add('fotografo');
  const background=bg[cat]||'Sfondobar.png';
  page.style.backgroundImage='url("'+background+'")';
  document.getElementById('loading').classList.add('hidden'); page.classList.remove('hidden');
