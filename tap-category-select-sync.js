@@ -25,6 +25,22 @@
 
     select.replaceChildren(frag);
 
+    if (!select.dataset.tapRegistryInfoBound) {
+      select.dataset.tapRegistryInfoBound = '1';
+      select.addEventListener('change', () => {
+        const info = document.getElementById('templateInfo');
+        const category = registry.get(select.value);
+        if (!info) return;
+        if (!category) {
+          info.hidden = true;
+          info.innerHTML = '';
+          return;
+        }
+        info.hidden = false;
+        info.innerHTML = `<span>Tipologia selezionata</span><strong>${category.label}</strong>`;
+      });
+    }
+
     const incoming = new URLSearchParams(location.search).get('category');
     const wanted = registry.normalizeId(incoming || current || '');
     if (wanted && registry.get(wanted)) select.value = wanted;
