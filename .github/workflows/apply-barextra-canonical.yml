@@ -1,10 +1,7 @@
 name: Registra Bar extra come categoria canonica
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/apply-barextra-canonical.yml'
+  workflow_dispatch:
 
 permissions:
   contents: write
