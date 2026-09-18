@@ -29,6 +29,7 @@
     ['fotografo','Fotografo'],
     ['gelateria','Gelaterie'],
     ['gioielleria','Gioielleria'],
+    ['hotel','Hotel'],
     ['macelleria','Macelleria'],
     ['petfood','Negozio di animali / Pet Food'],
     ['ottica','Ottica / vendita occhiali'],
