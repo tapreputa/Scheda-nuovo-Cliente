@@ -190,7 +190,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <label for="activityType">Tipologia di attività</label>
 <select id="activityType">
 <option value="" selected disabled>Seleziona la tipologia di attività</option>
-<option value="standard">Standard — collegamento diretto</option>
+<option value="standard">Standard — collegamento diretto — collegamento diretto</option>
 <option value="abbigliamento">Abbigliamento</option>
 <option value="autolavaggio">Autolavaggio</option>
 <option value="beb">B&B Isola</option>
@@ -204,6 +204,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <option value="fotografo">Fotografo</option>
 <option value="gelateria">Gelaterie</option>
 <option value="gioielleria">Gioielleria</option>
+<option value="hotel">Hotel Isola</option>
 <option value="macelleria">Macelleria</option>
 <option value="petfood">Negozio di animali / Pet Food</option>
 <option value="ottica">Ottica / vendita occhiali</option>
@@ -322,6 +323,7 @@ activityType.addEventListener("change", () => {
     standard: ["Standard", "Collegamento diretto alla pagina recensioni Google. Nessun logo e nessuna pagina personalizzata richiesta."],
     abbigliamento: ["Abbigliamento", "Sfondo fotografico boutique premium + layout moda dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     autolavaggio: ["Autolavaggio", "Sfondo autolavaggio moderno + logo integrato nell’insegna superiore + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
+    beb: ["B&B Isola", "Sfondo condiviso con Hotel Isola, tramonto e isolotto protagonista + layout dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa."],
     bar: ["Bar / Caffetterie", "Sfondobar fisso + layout Indexbar + pulsante con chicchi animati + 5 stelle + Powered by Tapreputa."],
     ristorante: ["Ristoranti", "Sfondoristorante fisso + layout elegante premium + 5 stelle + Powered by Tapreputa."],
     ristorantemare: ["Ristoranti Mare", "Sfondoristorantemare fisso + stile mediterraneo + pulsante premium + 5 stelle + Powered by Tapreputa."],
