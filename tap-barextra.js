@@ -99,10 +99,17 @@
         destinationUrl.value = reviewUrl;
         if (!logoDataUrl) return warn('Carica il logo dell’attività.');
         if (!reviewUrl) return warn('Il link recensioni non è presente.');
-        if (!window.TAP_BAREXTRA_BG) return warn('Sfondo Bar extra non disponibile.');
-
         msg.className = 'message show ok';
         msg.textContent = 'Preparazione anteprima...';
+
+        let barExtraBackground = '';
+        try {
+          barExtraBackground = await loadBackgroundDataUrl('Sfondobarextra.webp?v=20260918-live');
+        } catch (backgroundError) {
+          console.warn('[Bar extra background]', backgroundError);
+          barExtraBackground = window.TAP_BAREXTRA_BG || '';
+        }
+        if (!barExtraBackground) return warn('Sfondo Bar extra non disponibile.');
 
         const cfg = {
           title: TITLE,
@@ -117,10 +124,10 @@
           footerStrong: '18px'
         };
 
-        let html = buildPremiumTemplate(logoDataUrl, reviewUrl, window.TAP_BAREXTRA_BG, cfg);
+        let html = buildPremiumTemplate(logoDataUrl, reviewUrl, barExtraBackground, cfg);
         html = html.replace('</head>', `<style id="barextra-layout-v2">
           html,body{background:#18221f!important}
-          .pagina{background-color:#18221f!important;background-image:linear-gradient(180deg,rgba(8,10,9,.06),rgba(8,10,9,.03) 48%,rgba(8,10,9,.18)),url("${window.TAP_BAREXTRA_BG}")!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;padding-top:max(18px,env(safe-area-inset-top))!important;padding-bottom:max(86px,calc(env(safe-area-inset-bottom) + 72px))!important;transform:none!important}
+          .pagina{background-color:#18221f!important;background-image:linear-gradient(180deg,rgba(8,10,9,.06),rgba(8,10,9,.03) 48%,rgba(8,10,9,.18)),url("${barExtraBackground}")!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;padding-top:max(18px,env(safe-area-inset-top))!important;padding-bottom:max(86px,calc(env(safe-area-inset-bottom) + 72px))!important;transform:none!important}
           .card{width:min(100%,500px)!important;padding:0 12px 12px!important}
           .logo{width:min(220px,58vw)!important;max-height:108px!important;margin:0 auto clamp(62px,9vh,96px)!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;filter:drop-shadow(0 6px 16px rgba(0,0,0,.55))!important}
           .eyebrow{max-width:455px!important;margin:0 auto 11px!important;font-size:clamp(18px,4.2vw,25px)!important;line-height:1.12!important;letter-spacing:.055em!important;color:#fff!important;text-shadow:0 3px 15px rgba(0,0,0,.92)!important}
