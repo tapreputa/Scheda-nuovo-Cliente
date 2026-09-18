@@ -32,6 +32,7 @@
     ['gelateria','Gelaterie'],
     ['gioielleria','Gioielleria'],
     ['hotel','Hotel Isola'],
+    ['lavanderia','Lavanderia'],
     ['macelleria','Macelleria'],
     ['petfood','Negozio di animali / Pet Food'],
     ['ottica','Ottica / vendita occhiali'],
