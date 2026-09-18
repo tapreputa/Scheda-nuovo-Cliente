@@ -27,6 +27,7 @@
     ['detersivi','Detersivi e casalinghi'],
     ['enoteca','Enoteca'],
     ['farmacia','Farmacie'],
+    ['fioraio','Fioraio'],
     ['fotografo','Fotografo'],
     ['gelateria','Gelaterie'],
     ['gioielleria','Gioielleria'],
