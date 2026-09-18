@@ -45,6 +45,7 @@
     ['ristorantemare','Ristoranti Mare'],
     ['stabilimento','Stabilimenti balneari'],
     ['strumentimusicali','Strumenti musicali'],
+    ['studiotatuaggi','Studio tatuaggi'],
     ['svapostore','Svapo Store'],
     ['toelettaturacani','Toelettatura cani'],
     ['veterinario','Veterinario'],
