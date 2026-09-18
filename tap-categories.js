@@ -30,6 +30,7 @@
     { id:'stabilimento', label:'Stabilimenti balneari', background:'Sfondostabilimento.jpg', description:'Sfondo mare al tramonto + stile tropicale + pulsante premium + 5 stelle + Powered by Tapreputa.' },
     { id:'strumentimusicali', label:'Strumenti musicali', background:'Sfondostrumentimusicali.png', description:'Sfondo negozio di strumenti musicali + stile caldo e deciso + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
     { id:'svapostore', label:'Svapo Store', background:'Sfondosvapostore.png', description:'Sfondo fotografico premium teal/viola + layout moderno dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
+    { id:'toelettaturacani', label:'Toelettatura cani', background:'Sfondotoelettaturacani.png', title:'Il tuo cane si è trovato bene da noi?', accent:'#c9a47c', accent2:'#8f6a47', theme:'#3a3028', approvedAt:'2026-09-18', description:'Sfondo toelettatura cani premium + layout dedicato con spazio per logo, titolo, didascalia, pulsante recensioni e 5 stelle + Powered by Tapreputa.' },
     { id:'veterinario', label:'Veterinario', background:'Sfondoveterinario.png', title:'Il tuo amico a 4 zampe è stato bene con noi?', accent:'#3f8f73', accent2:'#23644f', theme:'#315e52', description:'Sfondo studio veterinario premium + layout dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
     { id:'yogurteria', label:'Yogurterie', background:'Sfondoyogurteria.jpg', description:'Sfondo luminoso turchese + layout fresco dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa.' }
   ];
