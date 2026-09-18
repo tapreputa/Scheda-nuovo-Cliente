@@ -228,6 +228,76 @@
   .page.fotografo .review{left:6%;right:6%}
 }
 
+/* Parity Gioielleria / Macelleria / Panineria / Polli / Veterinario */
+
+/* Gioielleria — allineata all'anteprima dedicata */
+.page.gioielleria{background-size:cover;background-position:center top;background-repeat:no-repeat;background-attachment:fixed}
+.page.gioielleria .content{position:relative;height:100%;padding:0}
+.page.gioielleria .logo{position:absolute;top:2.8vh;left:50%;transform:translateX(-50%);width:min(185px,52vw);max-height:100px;margin:0;object-fit:contain;filter:drop-shadow(0 5px 14px rgba(0,0,0,.28))}
+.page.gioielleria .name{display:none}
+.page.gioielleria .headline{position:absolute;top:13vh;left:6%;right:6%;max-width:none;margin:0;font-size:clamp(23px,6.4vw,32px);line-height:1.08;letter-spacing:.035em;color:#fff;text-shadow:0 3px 12px rgba(60,45,20,.72)}
+.page.gioielleria:has(.logo.show) .headline{top:23vh}
+.page.gioielleria .box{display:none}
+.page.gioielleria .review{position:absolute;top:65vh;left:6%;right:6%;width:auto;margin:0;min-height:57px;background:linear-gradient(135deg,#c4a56b,#8f7240 62%,#b18f55);border:1px solid rgba(255,255,255,.42);box-shadow:0 10px 26px rgba(70,50,20,.24)}
+.page.gioielleria .stars{position:absolute;top:76.5vh;left:0;right:0;margin:0}
+.page.gioielleria .footer{font-size:8px}.page.gioielleria .footer strong{font-size:16px}
+@media(max-width:640px){.page.gioielleria .logo{top:2.5vh;width:min(174px,50vw);max-height:94px}.page.gioielleria .headline{top:12.5vh;font-size:clamp(22px,6.8vw,30px)}.page.gioielleria:has(.logo.show) .headline{top:22.5vh}.page.gioielleria .review{top:65.5vh;min-height:55px}.page.gioielleria .stars{top:77vh}}
+@media(max-height:690px){.page.gioielleria .headline{top:11vh}.page.gioielleria:has(.logo.show) .headline{top:21vh}.page.gioielleria .review{top:63vh}.page.gioielleria .stars{top:75vh}}
+
+/* Macelleria — allineata all'anteprima dedicata */
+.page.macelleria{background-size:cover;background-position:center top;background-repeat:no-repeat;background-attachment:fixed}
+.page.macelleria .content{position:relative;height:100%;padding:0}
+.page.macelleria .logo{position:absolute;top:2.5vh;left:50%;transform:translateX(-50%);width:min(190px,54vw);max-height:105px;margin:0;object-fit:contain;filter:drop-shadow(0 5px 14px rgba(0,0,0,.45))}
+.page.macelleria .name{display:none}
+.page.macelleria .headline{position:absolute;top:12vh;left:5%;right:5%;max-width:none;margin:0;font-size:clamp(24px,6.4vw,33px);line-height:1.06;letter-spacing:.035em;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.88)}
+.page.macelleria:has(.logo.show) .headline{top:22vh}
+.page.macelleria .box{display:none}
+.page.macelleria .review{position:absolute;top:62vh;left:5%;right:5%;width:auto;margin:0;min-height:58px;background:linear-gradient(135deg,#9d3b34,#651d19 62%,#8a2d28);border:1px solid rgba(255,255,255,.28)}
+.page.macelleria .stars{position:absolute;top:73.5vh;left:0;right:0;margin:0}
+.page.macelleria .footer{font-size:8px}.page.macelleria .footer strong{font-size:16px}
+
+/* Panineria/Hamburgeria — allineata all'anteprima dedicata */
+.page.panineria_hamburgeria{background-color:#15110d;background-size:100% auto;background-position:center center;background-repeat:no-repeat;background-attachment:fixed}
+.page.panineria_hamburgeria:before{background:radial-gradient(circle at 18% 14%,rgba(12,11,10,.98) 0 32%,rgba(12,11,10,.84) 45%,rgba(12,11,10,.38) 62%,rgba(12,11,10,0) 78%);width:30vw;height:17vh;right:auto;bottom:auto}
+.page.panineria_hamburgeria .content{position:relative;height:100%;padding:0}
+.page.panineria_hamburgeria .logo{position:absolute;z-index:3;top:2.5vh;left:50%;transform:translateX(-50%);width:min(185px,52vw);max-height:100px;margin:0;object-fit:contain;filter:drop-shadow(0 5px 14px rgba(0,0,0,.42))}
+.page.panineria_hamburgeria .name{display:none}
+.page.panineria_hamburgeria .headline{position:absolute;z-index:3;top:11vh;left:5%;right:5%;max-width:none;margin:0;font-size:clamp(23px,6.2vw,32px);line-height:1.07;letter-spacing:.03em;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.9)}
+.page.panineria_hamburgeria:has(.logo.show) .headline{top:21vh}
+.page.panineria_hamburgeria .box{display:none}
+.page.panineria_hamburgeria .stars{position:absolute;z-index:3;top:40.5vh;left:0;right:0;margin:0}
+.page.panineria_hamburgeria .review{position:absolute;z-index:3;top:46.5vh;left:5%;right:5%;width:auto;margin:0;min-height:57px;background:linear-gradient(135deg,#e39a45,#a95c21 62%,#c7742c);border:1px solid rgba(255,255,255,.32);box-shadow:0 10px 28px rgba(0,0,0,.3)}
+.page.panineria_hamburgeria .footer{z-index:3;font-size:8px}.page.panineria_hamburgeria .footer strong{font-size:16px}
+@media(max-width:640px){.page.panineria_hamburgeria:before{width:32vw;height:18vh}.page.panineria_hamburgeria .logo{top:2.3vh;width:min(174px,50vw);max-height:94px}.page.panineria_hamburgeria .headline{top:10.5vh;font-size:clamp(22px,6.8vw,30px)}.page.panineria_hamburgeria:has(.logo.show) .headline{top:20.5vh}.page.panineria_hamburgeria .stars{top:40.5vh}.page.panineria_hamburgeria .review{top:46.8vh;min-height:55px}}
+@media(max-height:690px){.page.panineria_hamburgeria .headline{top:9.5vh}.page.panineria_hamburgeria:has(.logo.show) .headline{top:19.5vh}.page.panineria_hamburgeria .stars{top:39vh}.page.panineria_hamburgeria .review{top:45.5vh}}
+
+/* Polli allo spiedo — allineata all'anteprima dedicata */
+.page.polli_spiedo{background-color:#2a160c;background-size:cover;background-position:center top;background-repeat:no-repeat;background-attachment:fixed}
+.page.polli_spiedo .content{position:relative;height:100%;padding:0}
+.page.polli_spiedo .logo{position:absolute;top:2.5vh;left:50%;transform:translateX(-50%);width:min(185px,52vw);max-height:100px;margin:0;object-fit:contain;filter:drop-shadow(0 5px 14px rgba(0,0,0,.45))}
+.page.polli_spiedo .name{display:none}
+.page.polli_spiedo .headline{position:absolute;top:21vh;left:50%;right:auto;width:86vw;max-width:620px;transform:translateX(-50%);margin:0;text-align:center;box-sizing:border-box;font-size:clamp(23px,6.1vw,31px);line-height:1.07;letter-spacing:.025em;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.9)}
+.page.polli_spiedo .box{display:none}
+.page.polli_spiedo .review{position:absolute;top:69vh;left:7%;right:7%;width:auto;margin:0;min-height:57px;background:linear-gradient(135deg,#e39a45,#a95c21 62%,#c7742c);border:1px solid rgba(255,255,255,.32);box-shadow:0 10px 28px rgba(0,0,0,.32)}
+.page.polli_spiedo:has(.logo.show) .review{top:66vh}
+.page.polli_spiedo .stars{position:absolute;top:80vh;left:0;right:0;margin:0}
+.page.polli_spiedo:has(.logo.show) .stars{top:77vh}
+.page.polli_spiedo .footer{font-size:8px}.page.polli_spiedo .footer strong{font-size:16px}
+@media(max-width:640px){.page.polli_spiedo .logo{top:2.3vh;width:min(174px,50vw);max-height:94px}.page.polli_spiedo .headline{top:20.5vh;width:84vw;font-size:clamp(22px,6.2vw,29px)}.page.polli_spiedo .review{top:68.5vh;min-height:55px}.page.polli_spiedo:has(.logo.show) .review{top:65.5vh}.page.polli_spiedo .stars{top:79.5vh}.page.polli_spiedo:has(.logo.show) .stars{top:76.5vh}}
+@media(max-height:690px){.page.polli_spiedo .headline{top:19vh}.page.polli_spiedo .review{top:66vh}.page.polli_spiedo:has(.logo.show) .review{top:63vh}.page.polli_spiedo .stars{top:77vh}.page.polli_spiedo:has(.logo.show) .stars{top:74vh}}
+
+/* Veterinario — allineata all'anteprima dedicata */
+.page.veterinario{background-size:cover;background-position:left top;background-repeat:no-repeat;background-attachment:fixed}
+.page.veterinario .content{padding-top:68px;padding-bottom:96px}
+.page.veterinario:has(.logo.show) .content{padding-top:22px}
+.page.veterinario .logo{width:min(210px,62%);max-height:118px;margin:0 auto 34px;object-fit:contain;filter:drop-shadow(0 7px 18px rgba(0,0,0,.32))}
+.page.veterinario .name{display:none}
+.page.veterinario .headline{max-width:560px;margin:0 auto;font-size:clamp(24px,6vw,36px);line-height:1.08;letter-spacing:.055em;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.78)}
+.page.veterinario .box{display:none}
+.page.veterinario .review{margin-top:195px;min-height:60px;background:linear-gradient(135deg,#3f8f73,#23644f 60%,#3f8f73);border:1px solid rgba(255,255,255,.28)}
+.page.veterinario .stars{margin-top:38px}
+.page.veterinario .footer{font-size:8px}.page.veterinario .footer strong{font-size:16px}
+
 /* B&B Isola — layout dedicato con isolotto prioritario */
 .page.beb{
   background-color:#2b2019;
@@ -498,6 +568,11 @@ async function load(){
  if(cat==='fioraio') page.classList.add('fioraio');
  if(cat==='fotografo') page.classList.add('fotografo');
  if(cat==='hotel') page.classList.add('hotel');
+ if(cat==='veterinario') page.classList.add('veterinario');
+ if(cat==='polli_spiedo') page.classList.add('polli_spiedo');
+ if(cat==='panineria_hamburgeria') page.classList.add('panineria_hamburgeria');
+ if(cat==='macelleria') page.classList.add('macelleria');
+ if(cat==='gioielleria') page.classList.add('gioielleria');
  if(cat==='lavanderia') page.classList.add('lavanderia');
  if(cat==='studiotatuaggi') page.classList.add('studiotatuaggi');
  if(cat==='petfood') page.classList.add('petfood');
