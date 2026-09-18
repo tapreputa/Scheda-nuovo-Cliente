@@ -284,6 +284,34 @@
   .page.petfood .stars{top:72.5vh;font-size:clamp(32px,7vw,38px)}
 }
 
+/* Enoteca — rustico premium, centro scena preservato */
+.page.enoteca{
+  background-color:#2a1b17;
+  background-position:center top;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+.page.enoteca:before{
+  background:linear-gradient(180deg,rgba(17,10,8,.08) 0%,rgba(17,10,8,.02) 48%,rgba(17,10,8,.08) 72%,rgba(17,10,8,.22) 100%);
+}
+.page.enoteca .content{position:relative;height:100%;padding:0 20px 92px}
+.page.enoteca .logo{position:absolute;top:max(13px,2.1vh);left:50%;transform:translateX(-50%);width:min(158px,41vw);max-height:86px;margin:0;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.48))}
+.page.enoteca .name{position:absolute;top:max(18px,2.8vh);left:7%;right:7%;margin:0;font-size:clamp(23px,5.4vw,30px)}
+.page.enoteca .headline{position:absolute;top:15.5vh;left:8%;right:8%;max-width:none;margin:0;font-size:clamp(20px,5.1vw,27px);line-height:1.08;letter-spacing:.035em;color:#fff6eb;text-shadow:0 3px 14px rgba(0,0,0,.90)}
+.page.enoteca .box{position:absolute;top:25.5vh;left:9%;right:9%;width:auto;margin:0;padding:8px 12px;border-radius:14px;background:rgba(45,27,23,.20);border:1px solid rgba(206,150,111,.24);backdrop-filter:blur(1px);-webkit-backdrop-filter:blur(1px);color:#fff6eb;font-size:clamp(12.5px,3.1vw,15px);line-height:1.20;font-weight:700;box-shadow:0 8px 18px rgba(0,0,0,.12)}
+.page.enoteca .review{position:absolute;top:67vh;left:15%;right:15%;width:auto;margin:0;min-height:44px;padding:9px 13px;border-radius:17px;background:linear-gradient(135deg,#9b4a3c,#623126 62%,#7f3c31);color:#fff7ef;border:1px solid rgba(255,235,215,.34);font-size:clamp(16px,4vw,19px);box-shadow:0 9px 22px rgba(0,0,0,.28)}
+.page.enoteca .stars{position:absolute;top:78.5vh;left:0;right:0;margin:0;font-size:clamp(32px,7vw,39px);letter-spacing:3px;color:#ffd24f;text-shadow:0 0 10px rgba(255,190,70,.72),0 4px 9px rgba(0,0,0,.55)}
+.page.enoteca .footer{right:14px;bottom:max(10px,env(safe-area-inset-bottom));font-size:8px;color:#f5dcc3}
+.page.enoteca .footer strong{font-size:17px;color:#e7a36f}
+@media(max-height:780px){
+  .page.enoteca .logo{top:1.6vh;width:min(148px,39vw);max-height:78px}
+  .page.enoteca .name{top:2.4vh}
+  .page.enoteca .headline{top:14.5vh;font-size:clamp(18px,4.9vw,24px)}
+  .page.enoteca .box{top:24vh;padding:7px 11px;font-size:clamp(12px,3vw,14.5px)}
+  .page.enoteca .review{top:66vh;left:15%;right:15%;min-height:42px;padding:8px 12px;font-size:clamp(15px,3.8vw,18px)}
+  .page.enoteca .stars{top:77.5vh;font-size:clamp(30px,6.8vw,37px)}
+}
+
 /* Studio tatuaggi — sfondo protagonista, palette antracite e ambra */
 .page.studiotatuaggi{
   background-color:#211914;
@@ -354,7 +382,7 @@ const SUPABASE_URL='https://rqzgdgdoulgjwlxtdxhi.supabase.co';
 const KEY='sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
 const slug=new URLSearchParams(location.search).get('c')||'';
 const bg={
-abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',beb:'Sfondohotel.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.png?v=20260918-hq-original',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',hotel:'Sfondohotel.png',macelleria:'Sfondomacelleria.png',petfood:'Sfondopetfood.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',studiotatuaggi:'Sfondostudiotatuaggi.png',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',toelettaturacani:'Sfondotoelettaturacani.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
+abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',beb:'Sfondohotel.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',enoteca:'Sfondoenoteca.png',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.png?v=20260918-hq-original',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',hotel:'Sfondohotel.png',macelleria:'Sfondomacelleria.png',petfood:'Sfondopetfood.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',studiotatuaggi:'Sfondostudiotatuaggi.png',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',toelettaturacani:'Sfondotoelettaturacani.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
 const copy={
 abbigliamento:['IL TUO STILE MERITA 5 STELLE?','La tua opinione ci aiuta a migliorare ogni giorno stile, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 autolavaggio:['LA TUA AUTO SPLENDE COME MERITA?','La tua opinione ci aiuta a migliorare ogni giorno qualità, cura e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
@@ -364,6 +392,7 @@ barextra:['LE NOSTRE SPECIALITÀ TI HANNO CONQUISTATO?','Dalla colazione all’a
 barbershop:['TI È PIACIUTO IL TUO NUOVO STILE?','Il tuo feedback ci aiuta a perfezionare stile, servizio ed esperienza. Dicci la tua! Bastano 2 secondi!'],
 cartolibreria:['HAI TROVATO QUELLO CHE CERCAVI?','La tua opinione ci aiuta a migliorare ogni giorno assortimento, disponibilità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 centroestetico:['TI È PIACIUTO IL TUO MOMENTO DI BENESSERE?','Il tuo feedback ci aiuta a prenderci cura di ogni dettaglio della tua esperienza. Dicci la tua! Bastano 2 secondi!'],
+enoteca:['LA NOSTRA SELEZIONE DI VINI TI HA CONQUISTATO?','La tua opinione ci aiuta a migliorare ogni giorno selezione, accoglienza e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 detersivi:['HAI TROVATO TUTTO CIÒ CHE CERCAVI?','La tua opinione ci aiuta a migliorare assortimento, qualità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 farmacia:['LA TUA ESPERIENZA È IMPORTANTE PER NOI','La tua opinione ci aiuta a migliorare ogni giorno accoglienza, disponibilità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 fitness:['TI È PIACIUTO ALLENARTI CON NOI?','La tua opinione ci aiuta a migliorare ogni giorno ambiente, attrezzature e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
@@ -407,6 +436,7 @@ async function load(){
  if(cat==='barextra') page.classList.add('barextra');
  if(cat==='abbigliamento') page.classList.add('abbigliamento');
  if(cat==='beb') page.classList.add('beb');
+ if(cat==='enoteca') page.classList.add('enoteca');
  if(cat==='fotografo') page.classList.add('fotografo');
  if(cat==='hotel') page.classList.add('hotel');
  if(cat==='studiotatuaggi') page.classList.add('studiotatuaggi');
