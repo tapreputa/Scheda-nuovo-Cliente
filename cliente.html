@@ -89,6 +89,34 @@
   .page.abbigliamento .stars{margin-top:18px;font-size:clamp(34px,7.5vw,42px)}
 }
 
+/* Fioraio — composizioni protagoniste, palette salvia e rosa cipria */
+.page.fioraio{
+  background-color:#314035;
+  background-position:center top;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+.page.fioraio:before{
+  background:linear-gradient(180deg,rgba(20,27,22,.07) 0%,rgba(20,27,22,.02) 48%,rgba(20,27,22,.08) 72%,rgba(20,27,22,.20) 100%);
+}
+.page.fioraio .content{position:relative;height:100%;padding:0 20px 92px}
+.page.fioraio .logo{position:absolute;top:max(13px,2.1vh);left:50%;transform:translateX(-50%);width:min(156px,40vw);max-height:84px;margin:0;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.35))}
+.page.fioraio .name{position:absolute;top:max(18px,2.8vh);left:7%;right:7%;margin:0;font-size:clamp(23px,5.4vw,30px)}
+.page.fioraio .headline{position:absolute;top:15.5vh;left:7%;right:7%;max-width:none;margin:0;font-size:clamp(20px,5.1vw,27px);line-height:1.08;letter-spacing:.03em;color:#fffaf6;text-shadow:0 3px 14px rgba(0,0,0,.82)}
+.page.fioraio .box{position:absolute;top:25.5vh;left:8%;right:8%;width:auto;margin:0;padding:8px 12px;border-radius:15px;background:rgba(38,48,40,.18);border:1px solid rgba(255,226,230,.24);backdrop-filter:blur(1px);-webkit-backdrop-filter:blur(1px);color:#fffaf6;font-size:clamp(12.5px,3.1vw,15px);line-height:1.20;font-weight:700;box-shadow:0 8px 18px rgba(0,0,0,.10)}
+.page.fioraio .review{position:absolute;top:67vh;left:14%;right:14%;width:auto;margin:0;min-height:44px;padding:9px 13px;border-radius:18px;background:linear-gradient(135deg,#cf7f8f,#8e5f67 62%,#b86f7f);color:#fffaf6;border:1px solid rgba(255,245,245,.38);font-size:clamp(16px,4vw,19px);box-shadow:0 9px 22px rgba(0,0,0,.20)}
+.page.fioraio .stars{position:absolute;top:78.5vh;left:0;right:0;margin:0;font-size:clamp(32px,7vw,39px);letter-spacing:3px;color:#ffd84a;text-shadow:0 0 10px rgba(255,216,74,.75),0 4px 9px rgba(0,0,0,.42)}
+.page.fioraio .footer{right:14px;bottom:max(10px,env(safe-area-inset-bottom));font-size:8px;color:#f9e9e9}
+.page.fioraio .footer strong{font-size:17px;color:#f0a7b4}
+@media(max-height:780px){
+  .page.fioraio .logo{top:1.6vh;width:min(146px,38vw);max-height:76px}
+  .page.fioraio .name{top:2.4vh}
+  .page.fioraio .headline{top:14.5vh;font-size:clamp(18px,4.9vw,24px)}
+  .page.fioraio .box{top:24vh;padding:7px 11px;font-size:clamp(12px,3vw,14.5px)}
+  .page.fioraio .review{top:66vh;left:14%;right:14%;min-height:42px;padding:8px 12px;font-size:clamp(15px,3.8vw,18px)}
+  .page.fioraio .stars{top:77.5vh;font-size:clamp(30px,6.8vw,37px)}
+}
+
 /* Fotografo — layout fedele allo sfondo originale: niente crop / niente zoom */
 .page.fotografo{
   background-color:#171310;
@@ -382,7 +410,7 @@ const SUPABASE_URL='https://rqzgdgdoulgjwlxtdxhi.supabase.co';
 const KEY='sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
 const slug=new URLSearchParams(location.search).get('c')||'';
 const bg={
-abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',beb:'Sfondohotel.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',enoteca:'Sfondoenoteca.png',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.png?v=20260918-hq-original',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',hotel:'Sfondohotel.png',macelleria:'Sfondomacelleria.png',petfood:'Sfondopetfood.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',studiotatuaggi:'Sfondostudiotatuaggi.png',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',toelettaturacani:'Sfondotoelettaturacani.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
+abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',beb:'Sfondohotel.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',enoteca:'Sfondoenoteca.png',farmacia:'Sfondofarmacia.jpg',fioraio:'Sfondofioraio.png',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.png?v=20260918-hq-original',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',hotel:'Sfondohotel.png',macelleria:'Sfondomacelleria.png',petfood:'Sfondopetfood.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',studiotatuaggi:'Sfondostudiotatuaggi.png',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',toelettaturacani:'Sfondotoelettaturacani.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
 const copy={
 abbigliamento:['IL TUO STILE MERITA 5 STELLE?','La tua opinione ci aiuta a migliorare ogni giorno stile, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 autolavaggio:['LA TUA AUTO SPLENDE COME MERITA?','La tua opinione ci aiuta a migliorare ogni giorno qualità, cura e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
@@ -394,6 +422,7 @@ cartolibreria:['HAI TROVATO QUELLO CHE CERCAVI?','La tua opinione ci aiuta a mig
 centroestetico:['TI È PIACIUTO IL TUO MOMENTO DI BENESSERE?','Il tuo feedback ci aiuta a prenderci cura di ogni dettaglio della tua esperienza. Dicci la tua! Bastano 2 secondi!'],
 enoteca:['LA NOSTRA SELEZIONE DI VINI TI HA CONQUISTATO?','La tua opinione ci aiuta a migliorare ogni giorno selezione, accoglienza e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 detersivi:['HAI TROVATO TUTTO CIÒ CHE CERCAVI?','La tua opinione ci aiuta a migliorare assortimento, qualità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
+fioraio:['I NOSTRI FIORI HANNO RESO SPECIALE IL TUO MOMENTO?','La tua opinione ci aiuta a rendere ogni composizione ancora più curata e ogni momento ancora più speciale. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 farmacia:['LA TUA ESPERIENZA È IMPORTANTE PER NOI','La tua opinione ci aiuta a migliorare ogni giorno accoglienza, disponibilità e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 fitness:['TI È PIACIUTO ALLENARTI CON NOI?','La tua opinione ci aiuta a migliorare ogni giorno ambiente, attrezzature e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 fotografo:['TI È PIACIUTO IL NOSTRO LAVORO?','La tua opinione ci aiuta a valorizzare ogni scatto e a migliorare ogni servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
@@ -437,6 +466,7 @@ async function load(){
  if(cat==='abbigliamento') page.classList.add('abbigliamento');
  if(cat==='beb') page.classList.add('beb');
  if(cat==='enoteca') page.classList.add('enoteca');
+ if(cat==='fioraio') page.classList.add('fioraio');
  if(cat==='fotografo') page.classList.add('fotografo');
  if(cat==='hotel') page.classList.add('hotel');
  if(cat==='studiotatuaggi') page.classList.add('studiotatuaggi');
