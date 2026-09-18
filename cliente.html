@@ -200,6 +200,34 @@
   .page.fotografo .review{left:6%;right:6%}
 }
 
+/* Negozio di animali / Pet Food — layout verticale dedicato */
+.page.petfood{
+  background-color:#2e2a25;
+  background-position:center top;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+.page.petfood:before{
+  background:linear-gradient(180deg,rgba(20,18,15,.10) 0%,rgba(20,18,15,.04) 42%,rgba(20,18,15,.12) 72%,rgba(20,18,15,.24) 100%);
+}
+.page.petfood .content{position:relative;height:100%;padding:0 20px 92px}
+.page.petfood .logo{position:absolute;top:max(14px,2.2vh);left:50%;transform:translateX(-50%);width:min(166px,44vw);max-height:92px;margin:0;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.35))}
+.page.petfood .name{position:absolute;top:max(20px,3vh);left:7%;right:7%;margin:0;font-size:clamp(24px,5.6vw,31px)}
+.page.petfood .headline{position:absolute;top:18.5vh;left:6%;right:6%;max-width:none;margin:0;font-size:clamp(21px,5.4vw,28px);line-height:1.08;letter-spacing:.035em;text-shadow:0 3px 14px rgba(0,0,0,.82)}
+.page.petfood .box{position:absolute;top:29.5vh;left:4%;right:4%;width:auto;margin:0;padding:9px 13px;border-radius:16px;background:rgba(30,25,20,.24);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(1.5px);-webkit-backdrop-filter:blur(1.5px);font-size:clamp(13px,3.3vw,16px);line-height:1.22;font-weight:700;box-shadow:0 9px 22px rgba(0,0,0,.14)}
+.page.petfood .review{position:absolute;top:61.5vh;left:10%;right:10%;width:auto;margin:0;min-height:46px;padding:10px 14px;border-radius:18px;background:linear-gradient(135deg,#c9a47c,#8f6a47 62%,#b68c63);color:#fff;border:1px solid rgba(255,255,255,.40);font-size:clamp(17px,4.2vw,20px);box-shadow:0 10px 25px rgba(0,0,0,.22)}
+.page.petfood .stars{position:absolute;top:73.5vh;left:0;right:0;margin:0;font-size:clamp(34px,7.3vw,41px);letter-spacing:3px;color:#ffd400;text-shadow:0 0 10px rgba(255,215,0,.78),0 4px 9px rgba(0,0,0,.50)}
+.page.petfood .footer{right:14px;bottom:max(10px,env(safe-area-inset-bottom));font-size:8px}
+.page.petfood .footer strong{font-size:17px}
+@media(max-height:780px){
+  .page.petfood .logo{top:1.8vh;width:min(154px,42vw);max-height:82px}
+  .page.petfood .name{top:2.6vh}
+  .page.petfood .headline{top:17.5vh;font-size:clamp(19px,5.1vw,25px)}
+  .page.petfood .box{top:28vh;padding:8px 12px;font-size:clamp(12.5px,3.2vw,15px)}
+  .page.petfood .review{top:60.5vh;left:10%;right:10%;min-height:44px;padding:9px 13px;font-size:clamp(16px,4vw,19px)}
+  .page.petfood .stars{top:72.5vh;font-size:clamp(32px,7vw,38px)}
+}
+
 /* Toelettatura cani — layout verticale dedicato */
 .page.toelettaturacani{
   background-color:#2a211a;
@@ -242,7 +270,7 @@ const SUPABASE_URL='https://rqzgdgdoulgjwlxtdxhi.supabase.co';
 const KEY='sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
 const slug=new URLSearchParams(location.search).get('c')||'';
 const bg={
-abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.png?v=20260918-hq-original',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',toelettaturacani:'Sfondotoelettaturacani.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
+abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.png?v=20260918-hq-original',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',petfood:'Sfondopetfood.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',toelettaturacani:'Sfondotoelettaturacani.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
 const copy={
 abbigliamento:['IL TUO STILE MERITA 5 STELLE?','La tua opinione ci aiuta a migliorare ogni giorno stile, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 autolavaggio:['LA TUA AUTO SPLENDE COME MERITA?','La tua opinione ci aiuta a migliorare ogni giorno qualità, cura e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
@@ -258,6 +286,7 @@ fotografo:['TI È PIACIUTO IL NOSTRO LAVORO?','La tua opinione ci aiuta a valori
 gelateria:['TI È PIACIUTO IL NOSTRO GELATO?','La tua opinione rende tutto ancora più dolce. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 gioielleria:['LA QUALITÀ E LA CURA DEI NOSTRI GIOIELLI TI HANNO CONQUISTATO?',''],
 macelleria:['FRESCHEZZA E QUALITÀ DELLA NOSTRA CARNE TI HANNO SODDISFATTO?',''],
+petfood:['HAI TROVATO TUTTO PER IL TUO AMICO ANIMALE?','La tua opinione ci aiuta a migliorare ogni giorno assortimento, cura e servizio per tutti i nostri amici animali. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 ottica:['TI È PIACIUTA LA TUA ESPERIENZA DA NOI?','La tua opinione ci aiuta a migliorare ogni giorno scelta, consulenza e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 panificio:['TI SONO PIACIUTI I NOSTRI PRODOTTI DA FORNO?','La tua opinione ci aiuta a portare in tavola ogni giorno pane, biscotti e bontà ancora migliori. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 panineria_hamburgeria:['PANINI E HAMBURGER PREPARATI CON GUSTO: TI ABBIAMO CONQUISTATO?',''],
@@ -291,6 +320,7 @@ async function load(){
  if(cat==='barextra') page.classList.add('barextra');
  if(cat==='abbigliamento') page.classList.add('abbigliamento');
  if(cat==='fotografo') page.classList.add('fotografo');
+ if(cat==='petfood') page.classList.add('petfood');
  if(cat==='toelettaturacani') page.classList.add('toelettaturacani');
  const background=bg[cat]||'Sfondobar.png';
  page.style.backgroundImage='url("'+background+'")';
