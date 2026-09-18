@@ -561,6 +561,7 @@ async function load(){
  document.getElementById('headline').textContent=text[0];
  if(text[1]){message.textContent=text[1];message.classList.remove('hidden');}else{message.textContent='';message.classList.add('hidden');}
  document.getElementById('review').href=row.link_recensioni;
+ if(cat==='bar') page.classList.add('bar');
  if(cat==='barextra') page.classList.add('barextra');
  if(cat==='abbigliamento') page.classList.add('abbigliamento');
  if(cat==='beb') page.classList.add('beb');
