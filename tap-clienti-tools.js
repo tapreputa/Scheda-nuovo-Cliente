@@ -18,7 +18,7 @@
   const CATEGORIES = Object.freeze([
     ['abbigliamento','Abbigliamento'],
     ['autolavaggio','Autolavaggio'],
-    ['beb','B&B'],
+    ['beb','B&B Isola'],
     ['bar','Bar / Caffetterie'],
     ['barextra','Bar extra'],
     ['barbershop','Barber Shop'],
@@ -29,7 +29,7 @@
     ['fotografo','Fotografo'],
     ['gelateria','Gelaterie'],
     ['gioielleria','Gioielleria'],
-    ['hotel','Hotel'],
+    ['hotel','Hotel Isola'],
     ['macelleria','Macelleria'],
     ['petfood','Negozio di animali / Pet Food'],
     ['ottica','Ottica / vendita occhiali'],
