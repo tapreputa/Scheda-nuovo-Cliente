@@ -16,7 +16,38 @@
   const actionGrid = overlay?.querySelector('.action-grid');
 
   const CATEGORIES = Object.freeze([
-    ['abbigliamento','Abbigliamento'],['autolavaggio','Autolavaggio'],['bar','Bar / Caffetterie'],['barextra','Bar Extra'],['barbershop','Barber Shop'],['cartolibreria','Cartolibreria'],['centroestetico','Centri estetici'],['detersivi','Detersivi e casalinghi'],['farmacia','Farmacie'],['fitness','Palestre / Fitness'],['gelateria','Gelaterie'],['gioielleria','Gioielleria'],['macelleria','Macelleria'],['ottica','Ottica / vendita occhiali'],['panificio','Panificio / Biscottificio'],['panineria_hamburgeria','Panineria/Hamburgeria'],['parrucchiere','Parrucchieri'],['pasticceria','Pasticcerie'],['pizzeria','Pizzerie'],['polli_spiedo','Polli allo spiedo'],['pub','Pub / Cocktail bar'],['ristorante','Ristoranti'],['ristorantemare','Ristoranti Mare'],['stabilimento','Stabilimenti balneari'],['strumentimusicali','Strumenti musicali'],['svapostore','Svapo Store'],['veterinario','Veterinario'],['yogurteria','Yogurterie']
+    ['abbigliamento','Abbigliamento'],
+    ['autolavaggio','Autolavaggio'],
+    ['beb','B&B'],
+    ['bar','Bar / Caffetterie'],
+    ['barextra','Bar extra'],
+    ['barbershop','Barber Shop'],
+    ['cartolibreria','Cartolibreria'],
+    ['centroestetico','Centri estetici'],
+    ['detersivi','Detersivi e casalinghi'],
+    ['farmacia','Farmacie'],
+    ['fotografo','Fotografo'],
+    ['gelateria','Gelaterie'],
+    ['gioielleria','Gioielleria'],
+    ['macelleria','Macelleria'],
+    ['petfood','Negozio di animali / Pet Food'],
+    ['ottica','Ottica / vendita occhiali'],
+    ['fitness','Palestre / Fitness'],
+    ['panificio','Panificio / Biscottificio'],
+    ['panineria_hamburgeria','Panineria/Hamburgeria'],
+    ['parrucchiere','Parrucchieri'],
+    ['pasticceria','Pasticcerie'],
+    ['pizzeria','Pizzerie'],
+    ['polli_spiedo','Polli allo spiedo'],
+    ['pub','Pub / Cocktail bar'],
+    ['ristorante','Ristoranti'],
+    ['ristorantemare','Ristoranti Mare'],
+    ['stabilimento','Stabilimenti balneari'],
+    ['strumentimusicali','Strumenti musicali'],
+    ['svapostore','Svapo Store'],
+    ['toelettaturacani','Toelettatura cani'],
+    ['veterinario','Veterinario'],
+    ['yogurteria','Yogurterie']
   ]);
 
   function safeParse(value) {
