@@ -25,6 +25,7 @@
     ['cartolibreria','Cartolibreria'],
     ['centroestetico','Centri estetici'],
     ['detersivi','Detersivi e casalinghi'],
+    ['enoteca','Enoteca'],
     ['farmacia','Farmacie'],
     ['fotografo','Fotografo'],
     ['gelateria','Gelaterie'],
