@@ -200,6 +200,34 @@
   .page.fotografo .review{left:6%;right:6%}
 }
 
+/* B&B — layout verticale dedicato */
+.page.beb{
+  background-color:#2f2822;
+  background-position:center top;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+.page.beb:before{
+  background:linear-gradient(180deg,rgba(24,18,14,.10) 0%,rgba(24,18,14,.04) 42%,rgba(24,18,14,.12) 72%,rgba(24,18,14,.24) 100%);
+}
+.page.beb .content{position:relative;height:100%;padding:0 20px 92px}
+.page.beb .logo{position:absolute;top:max(14px,2.2vh);left:50%;transform:translateX(-50%);width:min(166px,44vw);max-height:92px;margin:0;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.35))}
+.page.beb .name{position:absolute;top:max(20px,3vh);left:7%;right:7%;margin:0;font-size:clamp(24px,5.6vw,31px)}
+.page.beb .headline{position:absolute;top:18.5vh;left:6%;right:6%;max-width:none;margin:0;font-size:clamp(21px,5.4vw,28px);line-height:1.08;letter-spacing:.035em;text-shadow:0 3px 14px rgba(0,0,0,.82)}
+.page.beb .box{position:absolute;top:29.5vh;left:4%;right:4%;width:auto;margin:0;padding:9px 13px;border-radius:16px;background:rgba(42,32,25,.24);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(1.5px);-webkit-backdrop-filter:blur(1.5px);font-size:clamp(13px,3.3vw,16px);line-height:1.22;font-weight:700;box-shadow:0 9px 22px rgba(0,0,0,.14)}
+.page.beb .review{position:absolute;top:61.5vh;left:10%;right:10%;width:auto;margin:0;min-height:46px;padding:10px 14px;border-radius:18px;background:linear-gradient(135deg,#c8a47e,#8f6e50 62%,#b78e68);color:#fff;border:1px solid rgba(255,255,255,.40);font-size:clamp(17px,4.2vw,20px);box-shadow:0 10px 25px rgba(0,0,0,.22)}
+.page.beb .stars{position:absolute;top:73.5vh;left:0;right:0;margin:0;font-size:clamp(34px,7.3vw,41px);letter-spacing:3px;color:#ffd400;text-shadow:0 0 10px rgba(255,215,0,.78),0 4px 9px rgba(0,0,0,.50)}
+.page.beb .footer{right:14px;bottom:max(10px,env(safe-area-inset-bottom));font-size:8px}
+.page.beb .footer strong{font-size:17px}
+@media(max-height:780px){
+  .page.beb .logo{top:1.8vh;width:min(154px,42vw);max-height:82px}
+  .page.beb .name{top:2.6vh}
+  .page.beb .headline{top:17.5vh;font-size:clamp(19px,5.1vw,25px)}
+  .page.beb .box{top:28vh;padding:8px 12px;font-size:clamp(12.5px,3.2vw,15px)}
+  .page.beb .review{top:60.5vh;left:10%;right:10%;min-height:44px;padding:9px 13px;font-size:clamp(16px,4vw,19px)}
+  .page.beb .stars{top:72.5vh;font-size:clamp(32px,7vw,38px)}
+}
+
 /* Negozio di animali / Pet Food — layout verticale dedicato */
 .page.petfood{
   background-color:#2e2a25;
@@ -270,10 +298,11 @@ const SUPABASE_URL='https://rqzgdgdoulgjwlxtdxhi.supabase.co';
 const KEY='sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
 const slug=new URLSearchParams(location.search).get('c')||'';
 const bg={
-abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.png?v=20260918-hq-original',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',petfood:'Sfondopetfood.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',toelettaturacani:'Sfondotoelettaturacani.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
+abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',beb:'Sfondobeb.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.png?v=20260918-hq-original',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',petfood:'Sfondopetfood.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',toelettaturacani:'Sfondotoelettaturacani.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
 const copy={
 abbigliamento:['IL TUO STILE MERITA 5 STELLE?','La tua opinione ci aiuta a migliorare ogni giorno stile, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 autolavaggio:['LA TUA AUTO SPLENDE COME MERITA?','La tua opinione ci aiuta a migliorare ogni giorno qualità, cura e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
+beb:['TI È PIACIUTO IL TUO SOGGIORNO DA NOI?','La tua opinione ci aiuta a rendere ogni soggiorno ancora più accogliente e speciale. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 bar:['TI È PIACIUTO IL NOSTRO CAFFÈ?','La tua opinione ci aiuta a rendere ogni pausa ancora più piacevole. Dicci la tua! Bastano 2 secondi!'],
 barextra:['LE NOSTRE SPECIALITÀ TI HANNO CONQUISTATO?','Dalla colazione all’aperitivo, prepariamo ogni giorno delizie e prodotti genuini per rendere speciale ogni momento. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 barbershop:['TI È PIACIUTO IL TUO NUOVO STILE?','Il tuo feedback ci aiuta a perfezionare stile, servizio ed esperienza. Dicci la tua! Bastano 2 secondi!'],
@@ -319,6 +348,7 @@ async function load(){
  document.getElementById('review').href=row.link_recensioni;
  if(cat==='barextra') page.classList.add('barextra');
  if(cat==='abbigliamento') page.classList.add('abbigliamento');
+ if(cat==='beb') page.classList.add('beb');
  if(cat==='fotografo') page.classList.add('fotografo');
  if(cat==='petfood') page.classList.add('petfood');
  if(cat==='toelettaturacani') page.classList.add('toelettaturacani');
