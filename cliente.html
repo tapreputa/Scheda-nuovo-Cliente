@@ -200,6 +200,34 @@
   .page.fotografo .review{left:6%;right:6%}
 }
 
+/* Toelettatura cani — layout verticale dedicato */
+.page.toelettaturacani{
+  background-color:#2a211a;
+  background-position:center top;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+.page.toelettaturacani:before{
+  background:linear-gradient(180deg,rgba(25,18,14,.10) 0%,rgba(25,18,14,.03) 42%,rgba(25,18,14,.13) 72%,rgba(25,18,14,.26) 100%);
+}
+.page.toelettaturacani .content{position:relative;height:100%;padding:0 20px 92px}
+.page.toelettaturacani .logo{position:absolute;top:max(14px,2.2vh);left:50%;transform:translateX(-50%);width:min(166px,44vw);max-height:92px;margin:0;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.35))}
+.page.toelettaturacani .name{position:absolute;top:max(20px,3vh);left:7%;right:7%;margin:0;font-size:clamp(24px,5.6vw,31px)}
+.page.toelettaturacani .headline{position:absolute;top:18.5vh;left:6%;right:6%;max-width:none;margin:0;font-size:clamp(21px,5.4vw,28px);line-height:1.08;letter-spacing:.035em;text-shadow:0 3px 14px rgba(0,0,0,.78)}
+.page.toelettaturacani .box{position:absolute;top:29.5vh;left:4%;right:4%;width:auto;margin:0;padding:9px 13px;border-radius:16px;background:rgba(37,28,22,.24);border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(1.5px);-webkit-backdrop-filter:blur(1.5px);font-size:clamp(13px,3.3vw,16px);line-height:1.22;font-weight:700;box-shadow:0 9px 22px rgba(0,0,0,.14)}
+.page.toelettaturacani .review{position:absolute;top:61.5vh;left:7%;right:7%;width:auto;margin:0;min-height:54px;padding:13px 15px;border-radius:20px;background:linear-gradient(135deg,#c9a47c,#8f6a47 62%,#b68c63);color:#fff;border:1px solid rgba(255,255,255,.40);font-size:clamp(19px,4.7vw,23px);box-shadow:0 10px 25px rgba(0,0,0,.22)}
+.page.toelettaturacani .stars{position:absolute;top:72.5vh;left:0;right:0;margin:0;font-size:clamp(34px,7.3vw,41px);letter-spacing:3px;color:#ffd400;text-shadow:0 0 10px rgba(255,215,0,.78),0 4px 9px rgba(0,0,0,.50)}
+.page.toelettaturacani .footer{right:14px;bottom:max(10px,env(safe-area-inset-bottom));font-size:8px}
+.page.toelettaturacani .footer strong{font-size:17px}
+@media(max-height:780px){
+  .page.toelettaturacani .logo{top:1.8vh;width:min(154px,42vw);max-height:82px}
+  .page.toelettaturacani .name{top:2.6vh}
+  .page.toelettaturacani .headline{top:17.5vh;font-size:clamp(19px,5.1vw,25px)}
+  .page.toelettaturacani .box{top:28vh;padding:8px 12px;font-size:clamp(12.5px,3.2vw,15px)}
+  .page.toelettaturacani .review{top:60vh;min-height:50px;font-size:clamp(18px,4.5vw,21px)}
+  .page.toelettaturacani .stars{top:71vh;font-size:clamp(32px,7vw,38px)}
+}
+
 @media (max-height:780px){.content{padding-top:18px;padding-bottom:94px}.logo{width:min(48vw,220px);max-height:105px;margin-bottom:14px}.name{margin-bottom:14px}.headline{font-size:22px}.box{margin-top:14px;padding:16px 18px;font-size:17px}.review{margin-top:16px;padding:16px 16px;font-size:23px}.stars{margin-top:12px;font-size:36px}.footer{font-size:13px}.footer strong{font-size:25px}.page.barextra .content{padding-top:14px;padding-bottom:74px}.page.barextra .logo{width:min(190px,54vw);max-height:88px;margin-bottom:clamp(38px,6.5vh,60px)}.page.barextra .name{margin-bottom:clamp(38px,6.5vh,60px)}.page.barextra .headline{font-size:19px}.page.barextra .box{margin-top:9px;padding:9px 12px;font-size:14px}.page.barextra .review{min-width:172px;min-height:40px;margin-top:10px;padding:8px 20px;font-size:14px}.page.barextra .stars{margin-top:9px;font-size:27px}.page.barextra .footer{font-size:8px}.page.barextra .footer strong{font-size:16px}}
 @media(max-width:340px) and (max-height:600px){.page.barextra .content{padding-top:8px;padding-bottom:58px}.page.barextra .logo{width:150px;max-height:72px;margin-bottom:28px}.page.barextra .name{font-size:18px;margin-bottom:28px}.page.barextra .headline{font-size:15px}.page.barextra .box{padding:8px 10px;margin-top:7px;font-size:12px}.page.barextra .review{min-width:156px;min-height:36px;margin-top:8px;font-size:12px;padding:7px 16px}.page.barextra .stars{font-size:23px;margin-top:8px}.page.barextra .footer{bottom:7px;right:8px}}
 </style>
@@ -214,7 +242,7 @@ const SUPABASE_URL='https://rqzgdgdoulgjwlxtdxhi.supabase.co';
 const KEY='sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
 const slug=new URLSearchParams(location.search).get('c')||'';
 const bg={
-abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.png?v=20260918-hq-original',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
+abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',farmacia:'Sfondofarmacia.jpg',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.png?v=20260918-hq-original',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',macelleria:'Sfondomacelleria.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',toelettaturacani:'Sfondotoelettaturacani.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
 const copy={
 abbigliamento:['IL TUO STILE MERITA 5 STELLE?','La tua opinione ci aiuta a migliorare ogni giorno stile, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 autolavaggio:['LA TUA AUTO SPLENDE COME MERITA?','La tua opinione ci aiuta a migliorare ogni giorno qualità, cura e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
@@ -244,6 +272,7 @@ ristorantemare:['TI È PIACIUTA LA NOSTRA CUCINA SUL MARE?','Il tuo feedback ci 
 stabilimento:['TI È PIACIUTA LA TUA GIORNATA AL MARE?','Aiutaci a rendere ogni giornata al mare ancora più speciale. Dicci la tua! Bastano 2 secondi!'],
 strumentimusicali:['TI È PIACIUTA LA TUA ESPERIENZA NEL NOSTRO NEGOZIO?','La tua opinione ci aiuta a migliorare ogni giorno assortimento, consulenza e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 svapostore:['TI È PIACIUTA LA TUA ESPERIENZA NEL NOSTRO STORE?','La tua opinione ci aiuta a migliorare ogni giorno accoglienza, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
+toelettaturacani:['IL TUO CANE SI È TROVATO BENE DA NOI?','La tua opinione ci aiuta a prenderci cura sempre meglio dei nostri amici a 4 zampe. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 veterinario:['IL TUO AMICO A 4 ZAMPE È STATO BENE CON NOI?',''],
 yogurteria:['TI È PIACIUTA LA NOSTRA ESPERIENZA YOGURT?','La tua opinione ci aiuta a creare ogni giorno yogurt, topping e combinazioni ancora più golose. Raccontaci la tua esperienza! Bastano 2 secondi!']
 };
@@ -262,6 +291,7 @@ async function load(){
  if(cat==='barextra') page.classList.add('barextra');
  if(cat==='abbigliamento') page.classList.add('abbigliamento');
  if(cat==='fotografo') page.classList.add('fotografo');
+ if(cat==='toelettaturacani') page.classList.add('toelettaturacani');
  const background=bg[cat]||'Sfondobar.png';
  page.style.backgroundImage='url("'+background+'")';
  document.getElementById('loading').classList.add('hidden'); page.classList.remove('hidden');
