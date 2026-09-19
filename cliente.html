@@ -1768,6 +1768,79 @@
 
 @media (max-height:780px){.content{padding-top:18px;padding-bottom:94px}.logo{width:min(48vw,220px);max-height:105px;margin-bottom:14px}.name{margin-bottom:14px}.headline{font-size:22px}.box{margin-top:14px;padding:16px 18px;font-size:17px}.review{margin-top:16px;padding:16px 16px;font-size:23px}.stars{margin-top:12px;font-size:36px}.footer{font-size:13px}.footer strong{font-size:25px}.page.barextra .content{padding-top:14px;padding-bottom:74px}.page.barextra .logo{width:min(190px,54vw);max-height:88px;margin-bottom:clamp(38px,6.5vh,60px)}.page.barextra .name{margin-bottom:clamp(38px,6.5vh,60px)}.page.barextra .headline{font-size:19px}.page.barextra .box{margin-top:9px;padding:9px 12px;font-size:14px}.page.barextra .review{min-width:172px;min-height:40px;margin-top:10px;padding:8px 20px;font-size:14px}.page.barextra .stars{margin-top:9px;font-size:27px}.page.barextra .footer{font-size:8px}.page.barextra .footer strong{font-size:16px}}
 @media(max-width:340px) and (max-height:600px){.page.barextra .content{padding-top:8px;padding-bottom:58px}.page.barextra .logo{width:150px;max-height:72px;margin-bottom:28px}.page.barextra .name{font-size:18px;margin-bottom:28px}.page.barextra .headline{font-size:15px}.page.barextra .box{padding:8px 10px;margin-top:7px;font-size:12px}.page.barextra .review{min-width:156px;min-height:36px;margin-top:8px;font-size:12px;padding:7px 16px}.page.barextra .stars{font-size:23px;margin-top:8px}.page.barextra .footer{bottom:7px;right:8px}}
+
+/* Global no-logo parity with Personalizza */
+.page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .name{
+  display:none!important;
+}
+.page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .headline,
+.page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .box,
+.page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .review,
+.page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .stars{
+  position:relative!important;
+}
+.page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .headline{top:78px!important}
+.page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .box{top:104px!important}
+.page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .review{top:138px!important}
+.page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .stars{top:152px!important}
+@media(min-width:641px){
+  .page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .headline{top:84px!important}
+  .page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .box{top:110px!important}
+  .page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .review{top:144px!important}
+  .page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .stars{top:158px!important}
+}
+@media(max-width:340px) and (max-height:600px){
+  .page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .headline{top:42px!important}
+  .page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .box{top:60px!important}
+  .page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .review{top:84px!important}
+  .page:not(.abbigliamento):not(.autolavaggio):not(.bar):not(.barbershop):not(.cartolibreria):not(:has(.logo.show)) .stars{top:94px!important}
+}
+
+/* category-specific no-logo overrides loaded after the global rule in Personalizza */
+.page.gioielleria:not(:has(.logo.show)) .headline{
+  display:block!important;left:50%!important;transform:translateX(-50%)!important;
+  width:84%!important;max-width:600px!important;margin-left:0!important;margin-right:0!important;
+  box-sizing:border-box!important;white-space:normal!important;text-align:center!important;
+  font-size:clamp(1.16rem,5.3vw,1.50rem)!important;line-height:1.18!important;
+  letter-spacing:.055em!important;text-shadow:0 3px 10px rgba(0,0,0,.64)!important;
+}
+.page.gioielleria:not(:has(.logo.show)) .review{
+  display:block!important;left:50%!important;transform:translateX(-50%)!important;
+  top:220px!important;width:84%!important;max-width:620px!important;margin-left:0!important;margin-right:0!important;right:auto!important;
+}
+.page.gioielleria:not(:has(.logo.show)) .stars{top:244px!important;left:0!important;margin-left:auto!important;margin-right:auto!important;text-align:center!important}
+@media(min-width:641px){
+  .page.gioielleria:not(:has(.logo.show)) .review{top:226px!important}
+  .page.gioielleria:not(:has(.logo.show)) .stars{top:250px!important}
+}
+@media(max-width:640px){
+  .page.gioielleria:not(:has(.logo.show)) .headline{width:82%!important;font-size:clamp(1.10rem,5.05vw,1.38rem)!important;letter-spacing:.05em!important}
+  .page.gioielleria:not(:has(.logo.show)) .review{width:82%!important;top:218px!important}
+  .page.gioielleria:not(:has(.logo.show)) .stars{top:242px!important}
+}
+
+.page.macelleria:not(:has(.logo.show)) .headline{
+  display:block!important;left:50%!important;transform:translateX(-50%)!important;
+  width:86%!important;max-width:620px!important;margin-left:0!important;margin-right:0!important;
+  box-sizing:border-box!important;white-space:normal!important;text-align:center!important;
+  font-size:clamp(1.34rem,6.25vw,1.78rem)!important;line-height:1.14!important;
+  letter-spacing:.04em!important;text-shadow:0 3px 10px rgba(0,0,0,.78)!important;
+}
+.page.macelleria:not(:has(.logo.show)) .review{
+  display:block!important;left:50%!important;transform:translateX(-50%)!important;
+  top:350px!important;width:82%!important;max-width:620px!important;margin-left:0!important;margin-right:0!important;right:auto!important;
+}
+.page.macelleria:not(:has(.logo.show)) .stars{top:386px!important;left:0!important;margin-left:auto!important;margin-right:auto!important;text-align:center!important}
+@media(min-width:641px){
+  .page.macelleria:not(:has(.logo.show)) .review{top:360px!important}
+  .page.macelleria:not(:has(.logo.show)) .stars{top:396px!important}
+}
+@media(max-width:640px){
+  .page.macelleria:not(:has(.logo.show)) .headline{width:84%!important;font-size:clamp(1.28rem,5.95vw,1.64rem)!important;letter-spacing:.035em!important}
+  .page.macelleria:not(:has(.logo.show)) .review{width:82%!important;top:344px!important}
+  .page.macelleria:not(:has(.logo.show)) .stars{top:380px!important}
+}
+
 </style>
 </head>
 <body>
