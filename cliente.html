@@ -622,7 +622,17 @@
   background:linear-gradient(180deg,rgba(4,24,34,.03),rgba(4,24,34,.02) 48%,rgba(4,24,34,.13));
 }
 .page.ristorantemare .content{padding:max(6px,env(safe-area-inset-top)) 16px 110px}
-.page.ristorantemare .logo,.page.ristorantemare .name{display:none}
+.page.ristorantemare .name{display:none}
+.page.ristorantemare .logo{
+  width:min(310px,88%);
+  max-height:175px;
+  object-fit:contain;
+  margin:0 auto 22px;
+  padding:8px 12px;
+  border-radius:22px;
+  background:rgba(255,255,255,.07);
+  filter:drop-shadow(0 0 12px rgba(180,235,255,.34)) drop-shadow(0 10px 24px rgba(0,0,0,.5));
+}
 .page.ristorantemare .headline{
   font-size:clamp(1.44rem,6.5vw,1.98rem);
   line-height:1.08;
@@ -644,7 +654,10 @@
 }
 .page.ristorantemare .stars{color:#ffd86d}
 .page.ristorantemare .footer{font-size:11px}.page.ristorantemare .footer strong{font-size:23px;color:#dff7ff}
-@media(max-width:640px){.page.ristorantemare .headline{font-size:clamp(1.36rem,6.3vw,1.82rem)}}
+@media(max-width:640px){
+ .page.ristorantemare .logo{width:min(285px,88%);max-height:160px;margin-bottom:18px}
+ .page.ristorantemare .headline{font-size:clamp(1.36rem,6.3vw,1.82rem)}
+}
 
 /* Stabilimento */
 .page.stabilimento{
