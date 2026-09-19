@@ -228,6 +228,251 @@
   .page.fotografo .review{left:6%;right:6%}
 }
 
+/* Preview parity group 2: Detersivi / Farmacia / Gelateria / Ottica */
+
+.page.detersivi,.page.farmacia,.page.ottica{
+  background-position:center;
+  background-size:cover;
+}
+.page.detersivi:before,.page.farmacia:before,.page.ottica:before{
+  background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.02) 48%,rgba(0,0,0,.18));
+}
+.page.detersivi .content,.page.farmacia .content,.page.ottica .content{
+  padding:max(6px,env(safe-area-inset-top)) 16px 110px;
+}
+.page.detersivi .name,.page.farmacia .name,.page.gelateria .name,.page.ottica .name{display:none}
+
+/* Detersivi */
+.page.detersivi .content{transform:translateY(-18px)}
+.page.detersivi .logo,.page.detersivi .headline,.page.detersivi .box,.page.detersivi .review,.page.detersivi .stars{position:relative}
+.page.detersivi .logo{top:28px;width:min(310px,88%);max-height:175px;margin:0 auto 22px}
+.page.detersivi .headline{
+  top:34px;
+  font-size:clamp(1.22rem,5.7vw,1.62rem);
+  line-height:1.16;
+  font-weight:950;
+  letter-spacing:.10em;
+  text-shadow:0 3px 9px rgba(0,0,0,.38);
+}
+.page.detersivi .box{
+  top:44px;
+  background:rgba(255,255,255,.48);
+  border:1px solid rgba(255,255,255,.36);
+  color:#123b42;
+  backdrop-filter:blur(.45px);
+  -webkit-backdrop-filter:blur(.45px);
+}
+.page.detersivi .review{
+  top:54px;
+  background:linear-gradient(135deg,#1fa9b8,#0b6f7d 60%,#1fa9b8);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.25);
+}
+.page.detersivi .stars{top:58px}
+.page.detersivi:not(:has(.logo.show)) .logo{display:none}
+.page.detersivi:not(:has(.logo.show)) .headline{top:78px}
+.page.detersivi:not(:has(.logo.show)) .box{
+  top:104px;
+  background:rgba(255,255,255,.58);
+  border-color:rgba(255,255,255,.42);
+  backdrop-filter:blur(.6px);
+  -webkit-backdrop-filter:blur(.6px);
+}
+.page.detersivi:not(:has(.logo.show)) .review{top:138px}
+.page.detersivi:not(:has(.logo.show)) .stars{top:152px}
+@media(max-width:640px){
+ .page.detersivi .logo{top:24px}
+ .page.detersivi .headline{top:30px;font-size:clamp(1.18rem,5.5vw,1.50rem)}
+ .page.detersivi .box{top:40px}
+ .page.detersivi .review{top:50px}
+ .page.detersivi .stars{top:54px}
+}
+
+/* Farmacia */
+.page.farmacia .content{transform:translateY(-10px)}
+.page.farmacia .headline{
+  font-size:clamp(1.18rem,5.5vw,1.50rem);
+  line-height:1.14;
+  font-weight:950;
+  letter-spacing:.10em;
+  text-shadow:0 3px 10px rgba(0,0,0,.50);
+}
+.page.farmacia .box{
+  background:rgba(255,255,255,.44);
+  border:1px solid rgba(255,255,255,.30);
+  color:#16473f;
+  backdrop-filter:blur(.35px);
+  -webkit-backdrop-filter:blur(.35px);
+}
+.page.farmacia .review{
+  background:linear-gradient(135deg,#16a085,#0b6f61 60%,#16a085);
+  color:#fff;
+}
+.page.farmacia:not(:has(.logo.show)) .logo{display:none}
+.page.farmacia:not(:has(.logo.show)) .headline,
+.page.farmacia:not(:has(.logo.show)) .box,
+.page.farmacia:not(:has(.logo.show)) .review,
+.page.farmacia:not(:has(.logo.show)) .stars{position:relative}
+.page.farmacia:not(:has(.logo.show)) .headline{
+  top:78px;
+  font-size:clamp(1.28rem,6vw,1.72rem);
+}
+.page.farmacia:not(:has(.logo.show)) .box{
+  top:104px;
+  background:rgba(255,255,255,.50);
+  border-color:rgba(255,255,255,.34);
+  backdrop-filter:blur(.45px);
+  -webkit-backdrop-filter:blur(.45px);
+}
+.page.farmacia:not(:has(.logo.show)) .review{top:150px}
+.page.farmacia:not(:has(.logo.show)) .stars{top:166px}
+@media(min-width:641px){
+ .page.farmacia:not(:has(.logo.show)) .review{top:156px}
+ .page.farmacia:not(:has(.logo.show)) .stars{top:172px}
+}
+@media(max-width:640px){
+ .page.farmacia .headline{font-size:clamp(1.14rem,5.3vw,1.42rem)}
+ .page.farmacia:not(:has(.logo.show)) .headline{font-size:clamp(1.22rem,5.8vw,1.58rem)}
+}
+
+/* Gelateria */
+.page.gelateria{
+  background-position:center center;
+  background-size:100% 100%;
+  background-repeat:no-repeat;
+  background-color:#000;
+}
+.page.gelateria:before{background:none}
+.page.gelateria .content{
+  padding:clamp(34px,4.8vh,68px) 16px max(92px,calc(env(safe-area-inset-bottom) + 76px));
+}
+.page.gelateria .logo{
+  width:min(230px,64%);
+  max-height:124px;
+  margin:0 auto 22px;
+  padding:0;
+  background:transparent;
+  border-radius:0;
+  filter:drop-shadow(0 7px 18px rgba(0,0,0,.40));
+  -webkit-mask-image:radial-gradient(ellipse 78% 72% at 50% 50%,#000 50%,rgba(0,0,0,.96) 64%,rgba(0,0,0,.58) 80%,transparent 100%);
+  mask-image:radial-gradient(ellipse 78% 72% at 50% 50%,#000 50%,rgba(0,0,0,.96) 64%,rgba(0,0,0,.58) 80%,transparent 100%);
+}
+.page.gelateria .headline{
+  font-size:clamp(1.20rem,5.6vw,1.54rem);
+  line-height:1.14;
+  font-weight:950;
+  letter-spacing:.10em;
+  color:#fff;
+  text-shadow:0 3px 10px rgba(0,0,0,.72);
+}
+.page.gelateria .box{
+  background:rgba(255,255,255,.40);
+  color:#493340;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:18px;
+  padding:14px 16px;
+  backdrop-filter:blur(.30px);
+  -webkit-backdrop-filter:blur(.30px);
+}
+.page.gelateria .review{
+  background:linear-gradient(135deg,#d55791,#58aeb1 54%,#d55791);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.32);
+  min-height:54px;
+}
+.page.gelateria .stars{
+  margin-top:24px;
+  font-size:30px;
+  letter-spacing:.15em;
+  color:#ffd62a;
+  text-shadow:0 0 7px rgba(255,229,92,.98),0 0 15px rgba(255,196,32,.90),0 3px 8px rgba(0,0,0,.34);
+  filter:brightness(1.18) saturate(1.22);
+}
+.page.gelateria .footer{
+  right:max(8px,env(safe-area-inset-right));
+  bottom:clamp(320px,36vh,540px);
+  font-size:9px;
+}
+.page.gelateria .footer strong{font-size:17px}
+.page.gelateria:not(:has(.logo.show)) .logo{display:none}
+.page.gelateria:not(:has(.logo.show)) .headline,
+.page.gelateria:not(:has(.logo.show)) .box,
+.page.gelateria:not(:has(.logo.show)) .review,
+.page.gelateria:not(:has(.logo.show)) .stars{position:relative}
+.page.gelateria:not(:has(.logo.show)) .headline{
+  top:78px;
+  font-size:clamp(1.30rem,6vw,1.72rem);
+}
+.page.gelateria:not(:has(.logo.show)) .box{
+  top:104px;
+  background:rgba(255,255,255,.46);
+  border-color:rgba(255,255,255,.30);
+  backdrop-filter:blur(.35px);
+}
+.page.gelateria:not(:has(.logo.show)) .review{top:138px}
+.page.gelateria:not(:has(.logo.show)) .stars{top:152px}
+@media(max-width:640px){
+ .page.gelateria .content{padding-top:clamp(30px,4.4vh,54px)}
+ .page.gelateria .logo{width:min(215px,62%);max-height:118px;margin-bottom:20px}
+ .page.gelateria .headline{font-size:clamp(1.16rem,5.4vw,1.46rem)}
+ .page.gelateria:not(:has(.logo.show)) .headline{font-size:clamp(1.22rem,5.8vw,1.58rem)}
+ .page.gelateria .footer{bottom:clamp(320px,36vh,500px)}
+}
+
+/* Ottica */
+.page.ottica .content{transform:translateY(-8px)}
+.page.ottica .headline{
+  color:#fff;
+  font-size:clamp(1.26rem,5.8vw,1.60rem);
+  line-height:1.14;
+  font-weight:950;
+  letter-spacing:.065em;
+  text-align:center;
+  text-shadow:0 3px 10px rgba(0,0,0,.92),0 0 4px rgba(0,0,0,.55);
+}
+.page.ottica .box{
+  background:rgba(255,255,255,.38);
+  color:#3f342b;
+}
+.page.ottica .review{
+  background:linear-gradient(135deg,#9b8d80,#75695f);
+  color:#fff;
+  border-color:rgba(255,255,255,.30);
+  box-shadow:0 8px 20px rgba(60,48,40,.24);
+}
+.page.ottica:not(:has(.logo.show)) .logo{display:none}
+.page.ottica:not(:has(.logo.show)) .headline,
+.page.ottica:not(:has(.logo.show)) .box,
+.page.ottica:not(:has(.logo.show)) .review,
+.page.ottica:not(:has(.logo.show)) .stars{position:relative}
+.page.ottica:not(:has(.logo.show)) .headline{
+  top:78px;
+  font-size:clamp(1.34rem,6.2vw,1.78rem);
+  letter-spacing:.075em;
+  text-shadow:0 3px 10px rgba(0,0,0,.62);
+}
+.page.ottica:not(:has(.logo.show)) .box{
+  top:104px;
+  background:rgba(238,232,224,.46);
+  border-color:rgba(255,255,255,.34);
+  color:#342c27;
+  font-weight:850;
+  text-shadow:0 1px 1px rgba(255,255,255,.72),0 1px 2px rgba(0,0,0,.12);
+  backdrop-filter:blur(.25px);
+  -webkit-backdrop-filter:blur(.25px);
+}
+.page.ottica:not(:has(.logo.show)) .review{top:158px}
+.page.ottica:not(:has(.logo.show)) .stars{top:176px}
+@media(min-width:641px){
+ .page.ottica:not(:has(.logo.show)) .review{top:164px}
+ .page.ottica:not(:has(.logo.show)) .stars{top:182px}
+}
+@media(max-width:640px){
+ .page.ottica .headline{font-size:clamp(1.26rem,5.9vw,1.60rem)}
+ .page.ottica:not(:has(.logo.show)) .review{top:154px}
+ .page.ottica:not(:has(.logo.show)) .stars{top:172px}
+}
+
 /* Preview parity group 1: Autolavaggio / Bar / Barber Shop / Cartolibreria */
 
 /* Autolavaggio */
@@ -868,7 +1113,7 @@ hotel:['IL TUO SOGGIORNO È STATO ALL’ALTEZZA DELLE ASPETTATIVE?','La tua opin
 lavanderia:['IL NOSTRO SERVIZIO DI LAVANDERIA TI HA SODDISFATTO?','La tua opinione ci aiuta a migliorare ogni giorno qualità, cura e puntualità del servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 macelleria:['FRESCHEZZA E QUALITÀ DELLA NOSTRA CARNE TI HANNO SODDISFATTO?',''],
 petfood:['HAI TROVATO TUTTO PER IL TUO AMICO ANIMALE?','La tua opinione ci aiuta a migliorare ogni giorno assortimento, cura e servizio per tutti i nostri amici animali. Raccontaci la tua esperienza! Bastano 2 secondi!'],
-ottica:['TI È PIACIUTA LA TUA ESPERIENZA DA NOI?','La tua opinione ci aiuta a migliorare ogni giorno scelta, consulenza e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
+ottica:['TROVA GLI OCCHIALI PERFETTI PER TE!','La tua opinione ci aiuta a migliorare ogni giorno scelta, consulenza e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 panificio:['TI SONO PIACIUTI I NOSTRI PRODOTTI DA FORNO?','La tua opinione ci aiuta a portare in tavola ogni giorno pane, biscotti e bontà ancora migliori. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 panineria_hamburgeria:['PANINI E HAMBURGER PREPARATI CON GUSTO: TI ABBIAMO CONQUISTATO?',''],
 hamburgeria:['PANINI E HAMBURGER PREPARATI CON GUSTO: TI ABBIAMO CONQUISTATO?',''],
@@ -904,6 +1149,10 @@ async function load(){
  if(cat==='abbigliamento') page.classList.add('abbigliamento');
  if(cat==='cartolibreria') page.classList.add('cartolibreria');
  if(cat==='barbershop') page.classList.add('barbershop');
+ if(cat==='ottica') page.classList.add('ottica');
+ if(cat==='gelateria') page.classList.add('gelateria');
+ if(cat==='farmacia') page.classList.add('farmacia');
+ if(cat==='detersivi') page.classList.add('detersivi');
  if(cat==='autolavaggio') page.classList.add('autolavaggio');
  if(cat==='beb') page.classList.add('beb');
  if(cat==='enoteca') page.classList.add('enoteca');
