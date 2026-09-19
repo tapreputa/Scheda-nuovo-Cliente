@@ -228,6 +228,158 @@
   .page.fotografo .review{left:6%;right:6%}
 }
 
+/* Preview parity group 4: Pub / Ristorante / Ristoranti Mare / Stabilimento */
+
+/* Pub */
+.page.pub{
+  background-position:center;
+  background-size:cover;
+}
+.page.pub:before{background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.02) 48%,rgba(0,0,0,.18))}
+.page.pub .content{
+  padding:max(6px,env(safe-area-inset-top)) 16px 110px;
+  transform:translateY(10px);
+}
+.page.pub .logo,.page.pub .name{display:none}
+.page.pub .headline{
+  font-size:clamp(1.45rem,6.2vw,2rem);
+  line-height:1.12;
+  font-weight:950;
+  letter-spacing:.09em;
+  color:#fff;
+  text-shadow:0 3px 12px rgba(0,0,0,.95);
+}
+.page.pub .box{
+  background:rgba(8,18,38,.48);
+  color:#fff;
+  border-color:rgba(255,255,255,.30);
+  backdrop-filter:blur(1px);
+  -webkit-backdrop-filter:blur(1px);
+  box-shadow:0 8px 22px rgba(0,0,0,.22);
+}
+.page.pub .review{
+  background:linear-gradient(135deg,#d88a2b,#9a5719 60%,#d88a2b);
+  color:#fff;
+}
+@media(max-width:640px){.page.pub .headline{font-size:clamp(1.35rem,6vw,1.78rem)}}
+
+/* Ristorante */
+.page.ristorante{
+  background-position:center center;
+  background-size:cover;
+}
+.page.ristorante:before{
+  background:linear-gradient(180deg,rgba(16,10,8,.04) 0%,rgba(16,10,8,.02) 48%,rgba(16,10,8,.12) 100%);
+}
+.page.ristorante .content{padding:max(6px,env(safe-area-inset-top)) 16px 110px}
+.page.ristorante .name{display:none}
+.page.ristorante .logo{
+  width:min(310px,88%);
+  max-height:175px;
+  margin:0 auto 22px;
+  padding:8px 12px;
+  border-radius:22px;
+  background:rgba(255,255,255,.05);
+  filter:drop-shadow(0 0 10px rgba(255,210,120,.30)) drop-shadow(0 10px 24px rgba(0,0,0,.52));
+}
+.page.ristorante .headline{
+  font-size:clamp(1.22rem,5.4vw,1.58rem);
+  line-height:1.12;
+  font-weight:950;
+  letter-spacing:.04em;
+  color:#fff;
+  text-shadow:0 3px 11px rgba(0,0,0,.9);
+}
+.page.ristorante .box{
+  background:rgba(245,238,228,.47);
+  color:#2d2019;
+  border:1px solid rgba(255,255,255,.30);
+  backdrop-filter:blur(.9px);
+  -webkit-backdrop-filter:blur(.9px);
+  box-shadow:0 8px 22px rgba(0,0,0,.16);
+}
+.page.ristorante .review{
+  background:linear-gradient(135deg,#9a5f34 0%,#6a371d 55%,#8b4b27 100%);
+  color:#fff;
+  border:1px solid rgba(255,220,170,.22);
+}
+.page.ristorante .stars{color:#ffd56a}
+.page.ristorante .footer{font-size:11px}.page.ristorante .footer strong{font-size:23px;color:#ffe0ad}
+.page.ristorante:not(:has(.logo.show)) .logo{display:none}
+.page.ristorante:not(:has(.logo.show)) .headline{
+  font-size:clamp(1.42rem,6.4vw,1.95rem);
+  line-height:1.08;
+  letter-spacing:.035em;
+  text-shadow:0 3px 12px rgba(0,0,0,.92);
+}
+.page.ristorante:not(:has(.logo.show)) .box{background:rgba(245,238,228,.42)}
+@media(max-width:640px){
+ .page.ristorante .logo{width:min(285px,88%);max-height:160px;margin-bottom:18px}
+ .page.ristorante .headline{font-size:clamp(1.18rem,5.2vw,1.48rem)}
+ .page.ristorante:not(:has(.logo.show)) .headline{font-size:clamp(1.34rem,6.2vw,1.78rem)}
+ .page.ristorante .box{background:rgba(245,238,228,.49)}
+ .page.ristorante:not(:has(.logo.show)) .box{background:rgba(245,238,228,.44)}
+}
+
+/* Ristoranti Mare */
+.page.ristorantemare{
+  background-position:center;
+  background-size:cover;
+}
+.page.ristorantemare:before{
+  background:linear-gradient(180deg,rgba(4,24,34,.03),rgba(4,24,34,.02) 48%,rgba(4,24,34,.13));
+}
+.page.ristorantemare .content{padding:max(6px,env(safe-area-inset-top)) 16px 110px}
+.page.ristorantemare .logo,.page.ristorantemare .name{display:none}
+.page.ristorantemare .headline{
+  font-size:clamp(1.44rem,6.5vw,1.98rem);
+  line-height:1.08;
+  font-weight:950;
+  letter-spacing:.035em;
+  color:#fff;
+  text-shadow:0 3px 12px rgba(0,0,0,.72);
+}
+.page.ristorantemare .box{
+  background:rgba(248,253,255,.5);
+  color:#123442;
+  border:1px solid rgba(255,255,255,.42);
+  backdrop-filter:blur(1px);
+}
+.page.ristorantemare .review{
+  background:linear-gradient(135deg,#1f7998,#12546f 55%,#2183a4);
+  color:#fff;
+  border:1px solid rgba(205,242,255,.32);
+}
+.page.ristorantemare .stars{color:#ffd86d}
+.page.ristorantemare .footer{font-size:11px}.page.ristorantemare .footer strong{font-size:23px;color:#dff7ff}
+@media(max-width:640px){.page.ristorantemare .headline{font-size:clamp(1.36rem,6.3vw,1.82rem)}}
+
+/* Stabilimento */
+.page.stabilimento{
+  background-position:center;
+  background-size:cover;
+}
+.page.stabilimento:before{background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.02) 48%,rgba(0,0,0,.18))}
+.page.stabilimento .content{padding:max(6px,env(safe-area-inset-top)) 16px 110px}
+.page.stabilimento .logo,.page.stabilimento .name{display:none}
+.page.stabilimento .headline{
+  font-size:clamp(1.5rem,6.6vw,2rem);
+  line-height:1.08;
+  font-weight:950;
+  letter-spacing:.035em;
+  color:#fff;
+  text-shadow:0 3px 12px rgba(0,0,0,.78);
+}
+.page.stabilimento .box{
+  background:rgba(247,253,255,.60);
+  color:#123d4a;
+}
+.page.stabilimento .review{
+  background:linear-gradient(135deg,#1689a6,#075f78 60%,#1689a6);
+  color:#fff;
+}
+@media(max-width:640px){.page.stabilimento .headline{font-size:clamp(1.42rem,6.4vw,1.84rem)}}
+
 /* Preview parity group 3: Panificio / Parrucchiere / Pasticceria / Pizzeria */
 
 .page.panificio{
@@ -1396,6 +1548,10 @@ async function load(){
  if(cat==='barbershop') page.classList.add('barbershop');
  if(cat==='ottica') page.classList.add('ottica');
  if(cat==='pizzeria') page.classList.add('pizzeria');
+ if(cat==='stabilimento') page.classList.add('stabilimento');
+ if(cat==='ristorantemare') page.classList.add('ristorantemare');
+ if(cat==='ristorante') page.classList.add('ristorante');
+ if(cat==='pub') page.classList.add('pub');
  if(cat==='pasticceria') page.classList.add('pasticceria');
  if(cat==='parrucchiere') page.classList.add('parrucchiere');
  if(cat==='panificio') page.classList.add('panificio');
