@@ -1915,7 +1915,23 @@ async function load(){
  if(!row||!row.link_recensioni) throw new Error('Cliente non trovato.');
  const cat=row.categoria_codice||''; const text=copy[cat]||['TI È PIACIUTA LA TUA ESPERIENZA?','La tua opinione è importante. Lascia una recensione e aiutaci a migliorare ogni giorno.'];
  const name=document.getElementById('name'); const logo=document.getElementById('logo'); const message=document.getElementById('message'); const page=document.getElementById('page');
- if(row.logo_data){logo.src=row.logo_data;logo.classList.add('show');name.classList.add('hidden');}else{name.textContent=row.nome||'';}
+ if(row.logo_data){
+   logo.src=row.logo_data;
+   logo.classList.add('show');
+   logo.style.setProperty('display','block','important');
+   name.classList.add('hidden');
+   logo.addEventListener('error',()=>{
+     logo.classList.remove('show');
+     logo.style.removeProperty('display');
+     name.classList.remove('hidden');
+     name.textContent=row.nome||'';
+   },{once:true});
+ }else{
+   logo.classList.remove('show');
+   logo.style.removeProperty('display');
+   name.classList.remove('hidden');
+   name.textContent=row.nome||'';
+ }
  document.getElementById('headline').textContent=text[0];
  if(text[1]){message.textContent=text[1];message.classList.remove('hidden');}else{message.textContent='';message.classList.add('hidden');}
  document.getElementById('review').href=row.link_recensioni;
