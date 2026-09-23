@@ -15,10 +15,30 @@
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,25,20,.48);padding:20px;z-index:30;overflow:auto}.overlay.show{display:flex;align-items:flex-start;justify-content:center}.modal{width:min(620px,100%);margin:40px auto;background:#fff;border-radius:24px;padding:26px;box-shadow:0 30px 80px rgba(0,0,0,.25)}.modal-top{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}.modal h2{margin:0;font-size:28px}.close{width:42px;height:42px;border-radius:50%;border:1px solid #d5dfdc;background:#fff;font-size:21px;cursor:pointer}.details{margin-top:23px;display:grid;gap:12px}.detail{background:#f8fbfa;border:1px solid #dce5e2;border-radius:14px;padding:13px}.detail b{display:block;font-size:11px;color:#71807b;margin-bottom:6px;text-transform:uppercase}.detail div{word-break:break-all;line-height:1.4}.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:17px}.action{min-height:52px;border-radius:13px;border:1px solid #0a8e75;background:#effaf7;color:#08735f;font:inherit;font-size:14px;font-weight:800;cursor:pointer}.action.primary{background:#003c33;color:#fff;border-color:#003c33}.action.danger{color:#9a291c;border-color:#e1b5af;background:#fff7f5}
 .results-link-wrap{display:flex;justify-content:center;margin:28px 0 0}.results-link{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:250px;min-height:58px;padding:0 26px;border-radius:18px;background:#003c33;color:#fff;text-decoration:none;font-size:16px;font-weight:900;box-shadow:0 14px 30px rgba(0,60,51,.18)}.results-link:active{transform:scale(.98)}.results-link-icon{font-size:20px}
 @media(max-width:1050px){.tools{grid-template-columns:1fr 1fr 1fr}.client-search{grid-column:1/-1}.reset-filters{width:100%}}
-@media(max-width:760px){.topbar{min-height:82px;padding:14px 12px}.brand-icon{width:50px;height:50px}.brand-title{font-size:17px}.brand-sub{font-size:11px}.user-pill{display:none}.back,.logout{font-size:11px;padding:9px 10px}.wrap{padding:32px 10px 55px}.headline{display:block}h1{font-size:38px}.count{margin-top:10px}.tools{grid-template-columns:1fr 1fr;gap:8px}.client-search{grid-column:1/-1}.filter-select,.reset-filters{height:48px;font-size:12px}.card{border-radius:20px}.modal{margin:15px auto;padding:21px}.action-grid{grid-template-columns:1fr}thead th:nth-child(1),tbody td.id{display:none!important}thead th:nth-child(2),tbody td.nome{left:0!important;width:184px!important;min-width:184px!important;max-width:184px!important;padding-left:62px!important}.mobile-client-id{display:block;position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#1f5fa3;font-weight:900;font-size:14px;line-height:1;white-space:nowrap}.name-btn{width:108px}.results-link-wrap{margin-top:24px}.results-link{width:min(82vw,320px);min-height:56px}}
+@media(max-width:760px){.topbar{min-height:82px;padding:14px 12px}.brand-icon{width:50px;height:50px}.brand-title{font-size:17px}.brand-sub{font-size:11px}.user-pill{display:none}.back,.logout{font-size:11px;padding:9px 10px}.wrap{padding:32px 10px 55px}.headline{display:block}h1{font-size:38px}.count{margin-top:10px}.tools{grid-template-columns:1fr 1fr;gap:8px}.client-search{grid-column:1/-1}.filter-select,.reset-filters{height:48px;font-size:12px}.card{border-radius:20px}.modal{margin:15px auto;padding:21px}.action-grid{grid-template-columns:1fr}.mobile-client-id{display:none!important}.name-btn{width:116px}.results-link-wrap{margin-top:24px}.results-link{width:min(82vw,320px);min-height:56px}}
 </style>
 <link rel="stylesheet" href="tap-premium-theme.css?v=1">
 <link rel="stylesheet" href="tap-premium-polish.css?v=2">
+<style>
+@media(max-width:760px){
+  html body #tableWrap thead th:nth-child(1),
+  html body #rows>tr>td.id{
+    display:table-cell!important;position:static!important;left:auto!important;
+    width:52px!important;min-width:52px!important;max-width:52px!important;
+    z-index:auto!important;transform:none!important;-webkit-transform:none!important;
+    isolation:auto!important;overflow:hidden!important;background:#fff!important;
+  }
+  html body #tableWrap thead th:nth-child(2),
+  html body #rows>tr>td.nome{
+    position:static!important;left:auto!important;width:132px!important;
+    min-width:132px!important;max-width:132px!important;padding-left:7px!important;
+    z-index:auto!important;transform:none!important;-webkit-transform:none!important;
+    isolation:auto!important;box-shadow:none!important;background:#fff!important;
+  }
+  html body #rows .mobile-client-id{display:none!important}
+  html body #rows .name-btn{width:116px!important}
+}
+</style>
 </head>
 <body>
 <header class="topbar">
