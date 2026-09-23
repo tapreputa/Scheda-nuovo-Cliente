@@ -14,6 +14,12 @@ import java.io.OutputStream;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
+import android.nfc.tech.NdefFormatable;
 import android.os.Bundle;
 import android.os.Message;
 import android.webkit.ValueCallback;
@@ -23,14 +29,22 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import org.json.JSONObject;
 
-public class MainActivity extends Activity {
+import java.io.IOException;
+import java.util.Locale;
+
+public class MainActivity extends Activity implements NfcAdapter.ReaderCallback {
 
     private static final String HOME_URL = "https://tapreputa.github.io/Scheda-nuovo-Cliente/";
     private static final int FILE_CHOOSER_REQUEST = 1001;
 
     private WebView webView;
     private ValueCallback<Uri[]> filePathCallback;
+    private NfcAdapter nfcAdapter;
+    private final Object nfcWriteLock = new Object();
+    private volatile boolean nfcWriteActive = false;
+    private volatile String pendingNfcUrl = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +56,7 @@ public class MainActivity extends Activity {
         webView = new WebView(this);
         webView.setBackgroundColor(Color.rgb(248, 249, 252));
         setContentView(webView);
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -175,6 +190,155 @@ public class MainActivity extends Activity {
                 }
             });
         }
+
+        @JavascriptInterface
+        public void writeNfcUrl(String url, String label) {
+            runOnUiThread(() -> startNfcWrite(url));
+        }
+
+        @JavascriptInterface
+        public void cancelNfcWrite() {
+            runOnUiThread(() -> cancelNfcWriteInternal());
+        }
+    }
+
+    private void startNfcWrite(String rawUrl) {
+        String url = rawUrl == null ? "" : rawUrl.trim();
+        if (!isAllowedNfcUrl(url)) {
+            notifyNfcWriteResult(false, "Il link selezionato non è valido per la scrittura NFC.");
+            return;
+        }
+        if (nfcAdapter == null) {
+            notifyNfcWriteResult(false, "Questo telefono non dispone della funzione NFC.");
+            return;
+        }
+        if (!nfcAdapter.isEnabled()) {
+            notifyNfcWriteResult(false, "NFC disattivato. Attivalo dalle impostazioni rapide e premi Riprova.");
+            return;
+        }
+
+        synchronized (nfcWriteLock) {
+            pendingNfcUrl = url;
+            nfcWriteActive = true;
+        }
+
+        int flags = NfcAdapter.FLAG_READER_NFC_A
+                | NfcAdapter.FLAG_READER_NFC_B
+                | NfcAdapter.FLAG_READER_NFC_F
+                | NfcAdapter.FLAG_READER_NFC_V;
+        try {
+            nfcAdapter.enableReaderMode(this, this, flags, null);
+        } catch (Exception error) {
+            synchronized (nfcWriteLock) {
+                pendingNfcUrl = null;
+                nfcWriteActive = false;
+            }
+            notifyNfcWriteResult(false, "Impossibile avviare la modalità di scrittura NFC.");
+        }
+    }
+
+    private boolean isAllowedNfcUrl(String value) {
+        try {
+            Uri uri = Uri.parse(value);
+            String scheme = uri.getScheme();
+            String host = uri.getHost();
+            if (!"https".equalsIgnoreCase(scheme) || host == null) return false;
+            String normalizedHost = host.toLowerCase(Locale.ROOT);
+            return "tapreputa.github.io".equals(normalizedHost)
+                    || "search.google.com".equals(normalizedHost)
+                    || "www.google.com".equals(normalizedHost)
+                    || "google.com".equals(normalizedHost)
+                    || "g.page".equals(normalizedHost)
+                    || "maps.app.goo.gl".equals(normalizedHost);
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    @Override
+    public void onTagDiscovered(Tag tag) {
+        final String url;
+        synchronized (nfcWriteLock) {
+            if (!nfcWriteActive || pendingNfcUrl == null) return;
+            nfcWriteActive = false;
+            url = pendingNfcUrl;
+        }
+
+        boolean success = false;
+        String resultMessage;
+        try {
+            NdefMessage message = new NdefMessage(new NdefRecord[]{NdefRecord.createUri(url)});
+            Ndef ndef = Ndef.get(tag);
+            if (ndef != null) {
+                try {
+                    ndef.connect();
+                    if (!ndef.isWritable()) {
+                        resultMessage = "La card NFC è protetta e non può essere riscritta.";
+                    } else if (message.toByteArray().length > ndef.getMaxSize()) {
+                        resultMessage = "La memoria della card NFC non è sufficiente per questo link.";
+                    } else {
+                        ndef.writeNdefMessage(message);
+                        success = true;
+                        resultMessage = "Il link è stato scritto sulla card NFC.";
+                    }
+                } finally {
+                    try { ndef.close(); } catch (IOException ignored) {}
+                }
+            } else {
+                NdefFormatable formatable = NdefFormatable.get(tag);
+                if (formatable == null) {
+                    resultMessage = "Questa card non è compatibile con la scrittura NDEF.";
+                } else {
+                    try {
+                        formatable.connect();
+                        formatable.format(message);
+                        success = true;
+                        resultMessage = "La card è stata formattata e il link è stato scritto.";
+                    } finally {
+                        try { formatable.close(); } catch (IOException ignored) {}
+                    }
+                }
+            }
+        } catch (android.nfc.TagLostException error) {
+            resultMessage = "Card allontanata troppo presto. Mantienila ferma e premi Riprova.";
+        } catch (android.nfc.FormatException error) {
+            resultMessage = "La card NFC usa un formato non compatibile.";
+        } catch (IOException error) {
+            resultMessage = "Scrittura interrotta. Mantieni la card ferma sul telefono e riprova.";
+        } catch (Exception error) {
+            resultMessage = "Scrittura NFC non riuscita. Riprova con un’altra card.";
+        }
+
+        final boolean completed = success;
+        final String completedMessage = resultMessage;
+        runOnUiThread(() -> {
+            disableNfcReaderMode();
+            synchronized (nfcWriteLock) {
+                pendingNfcUrl = null;
+                nfcWriteActive = false;
+            }
+            notifyNfcWriteResult(completed, completedMessage);
+            if (completed) Toast.makeText(MainActivity.this, "Scrittura NFC completata", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void notifyNfcWriteResult(boolean success, String message) {
+        String payload = "{\"success\":" + success + ",\"message\":" + JSONObject.quote(message) + "}";
+        String script = "window.TapNfcWriterNativeResult&&window.TapNfcWriterNativeResult(" + payload + ");";
+        runOnUiThread(() -> webView.evaluateJavascript(script, null));
+    }
+
+    private void disableNfcReaderMode() {
+        if (nfcAdapter == null) return;
+        try { nfcAdapter.disableReaderMode(this); } catch (Exception ignored) {}
+    }
+
+    private void cancelNfcWriteInternal() {
+        synchronized (nfcWriteLock) {
+            pendingNfcUrl = null;
+            nfcWriteActive = false;
+        }
+        disableNfcReaderMode();
     }
 
     private boolean handleNavigation(Uri uri) {
@@ -239,6 +403,12 @@ public class MainActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         webView.saveState(outState);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onPause() {
+        cancelNfcWriteInternal();
+        super.onPause();
     }
 
     @Override
