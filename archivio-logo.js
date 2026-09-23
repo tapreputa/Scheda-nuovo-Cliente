@@ -96,37 +96,94 @@
     return String(Date.now()) + '-' + Math.random().toString(16).slice(2);
   }
 
-  function loadImage(file) {
+  async function detectImageType(file) {
+    const bytes = new Uint8Array(await file.slice(0,24).arrayBuffer());
+    const ascii = Array.from(bytes, byte => String.fromCharCode(byte)).join('');
+    if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'image/jpeg';
+    if (bytes[0] === 0x89 && ascii.slice(1,4) === 'PNG') return 'image/png';
+    if (ascii.slice(0,4) === 'RIFF' && ascii.slice(8,12) === 'WEBP') return 'image/webp';
+    if (ascii.slice(4,12).includes('ftypavif') || ascii.slice(4,12).includes('ftypavis')) return 'image/avif';
+    if (/ftyp(?:heic|heix|hevc|hevx|mif1|msf1)/.test(ascii.slice(4,16))) return 'image/heic';
+    return String(file.type || '').toLowerCase();
+  }
+
+  function imageFromSource(source) {
     return new Promise((resolve, reject) => {
-      const url = URL.createObjectURL(file);
       const img = new Image();
       img.decoding = 'async';
-      img.onload = () => resolve({ img, url });
-      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Impossibile leggere il file immagine.')); };
-      img.src = url;
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('Decodifica immagine non riuscita.'));
+      img.src = source;
     });
   }
 
-  async function renderWebp(file, maxEdge, quality) {
-    const { img, url } = await loadImage(file);
+  function fileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ''));
+      reader.onerror = () => reject(reader.error || new Error('Lettura del file non riuscita.'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function loadImage(file) {
+    const detectedType = await detectImageType(file);
+    const source = detectedType && detectedType !== file.type ? new Blob([file], { type:detectedType }) : file;
+
+    if (typeof createImageBitmap === 'function') {
+      try {
+        const bitmap = await createImageBitmap(source, { imageOrientation:'from-image' });
+        if (bitmap.width && bitmap.height) return { img:bitmap, cleanup:() => bitmap.close?.(), detectedType };
+        bitmap.close?.();
+      } catch {}
+    }
+
+    const url = URL.createObjectURL(source);
     try {
-      const naturalWidth = img.naturalWidth || img.width;
-      const naturalHeight = img.naturalHeight || img.height;
-      if (!naturalWidth || !naturalHeight) throw new Error('Dimensioni immagine non valide.');
-      const scale = Math.min(1, maxEdge / Math.max(naturalWidth, naturalHeight));
-      const width = Math.max(1, Math.round(naturalWidth * scale));
-      const height = Math.max(1, Math.round(naturalHeight * scale));
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d', { alpha:true });
-      ctx.clearRect(0,0,width,height);
-      ctx.drawImage(img,0,0,width,height);
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/webp', quality));
-      if (!blob) throw new Error('Ottimizzazione immagine non riuscita.');
-      return blob;
-    } finally {
+      const img = await imageFromSource(url);
+      return { img, cleanup:() => URL.revokeObjectURL(url), detectedType };
+    } catch {
       URL.revokeObjectURL(url);
+    }
+
+    try {
+      const dataUrl = await fileAsDataUrl(source);
+      const img = await imageFromSource(dataUrl);
+      return { img, cleanup:() => {}, detectedType };
+    } catch {}
+
+    if (detectedType === 'image/heic') {
+      throw new Error('Il file è in formato HEIC anche se termina in .jpg. Aprilo nella Galleria e salvalo o esportalo come JPG o PNG.');
+    }
+    throw new Error('Il file non contiene un’immagine JPG, PNG, WEBP o AVIF leggibile. Prova ad aprirlo nella Galleria e salvalo nuovamente.');
+  }
+
+  function renderWebpFromImage(img, maxEdge, quality) {
+    const naturalWidth = img.naturalWidth || img.width;
+    const naturalHeight = img.naturalHeight || img.height;
+    if (!naturalWidth || !naturalHeight) throw new Error('Dimensioni immagine non valide.');
+    const scale = Math.min(1, maxEdge / Math.max(naturalWidth, naturalHeight));
+    const width = Math.max(1, Math.round(naturalWidth * scale));
+    const height = Math.max(1, Math.round(naturalHeight * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d', { alpha:true });
+    if (!ctx) throw new Error('Il browser non consente di elaborare questa immagine.');
+    ctx.clearRect(0,0,width,height);
+    ctx.drawImage(img,0,0,width,height);
+    return new Promise(resolve => canvas.toBlob(resolve, 'image/webp', quality));
+  }
+
+  async function renderWebpVariants(file) {
+    const { img, cleanup } = await loadImage(file);
+    try {
+      const logoBlob = await renderWebpFromImage(img, MAX_LOGO_EDGE, .90);
+      const thumbBlob = await renderWebpFromImage(img, MAX_THUMB_EDGE, .84);
+      if (!logoBlob || !thumbBlob) throw new Error('Ottimizzazione immagine non riuscita.');
+      return [logoBlob, thumbBlob];
+    } finally {
+      cleanup();
     }
   }
 
@@ -335,10 +392,7 @@
     let logoPath = '';
     let thumbPath = '';
     try {
-      const [logoBlob, thumbBlob] = await Promise.all([
-        renderWebp(selectedFile, MAX_LOGO_EDGE, .90),
-        renderWebp(selectedFile, MAX_THUMB_EDGE, .84)
-      ]);
+      const [logoBlob, thumbBlob] = await renderWebpVariants(selectedFile);
       const folder = user.id + '/' + safeUuid();
       logoPath = folder + '/logo.webp';
       thumbPath = folder + '/thumb.webp';
