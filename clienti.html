@@ -108,6 +108,6 @@ document.getElementById('delete').onclick=()=>{if(currentId)deleteById(currentId
 (async()=>{user=await TapNfc.requireAuth();if(!user)return;TapNfc.decoratePage(user);try{const result=await TapNfc.migrateLocalClients(user);if(result.migrated)notice(`${result.migrated} clienti locali importati nel database condiviso.`)}catch(err){notice('Importazione vecchi dati non completata: '+(err.message||'errore.'),true)}await loadClients()})();
 </script>
 <script src="tap-nfc-analytics-ui.js?v=1"></script>
-<script src="tap-nfc-writer.js?v=1"></script>
+<script src="tap-nfc-writer.js?v=2"></script>
 </body>
 </html>
