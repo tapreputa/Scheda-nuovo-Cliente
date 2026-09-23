@@ -28,7 +28,7 @@
     .tap-nfc-overlay.success .tap-nfc-title{color:#087251}
     .tap-nfc-overlay.error .tap-nfc-icon{background:#fff0ed;color:#c3392d}
     .tap-nfc-overlay.error .tap-nfc-title{color:#9a3027}
-    @media(max-width:560px){.tap-nfc-write-detail{padding-right:14px!important;padding-bottom:68px!important}.tap-nfc-write-btn{left:14px;right:14px;top:auto;bottom:13px;transform:none;min-height:43px}.tap-nfc-write-btn:active{transform:scale(.98)}.tap-nfc-dialog{padding:25px 20px}}
+    @media(max-width:560px){.tap-nfc-write-detail{padding-right:14px!important}.tap-nfc-write-detail>div{overflow-wrap:anywhere;word-break:break-word}.tap-nfc-write-btn{position:static!important;display:block;width:100%;height:48px;min-height:48px;margin-top:14px;padding:0 16px!important;transform:none}.tap-nfc-write-btn:active{transform:scale(.98)}.tap-nfc-dialog{padding:25px 20px}}
   `;
   document.head.appendChild(style);
 
