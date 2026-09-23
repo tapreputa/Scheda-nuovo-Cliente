@@ -45,6 +45,7 @@ public class MainActivity extends Activity implements NfcAdapter.ReaderCallback 
     private final Object nfcWriteLock = new Object();
     private volatile boolean nfcWriteActive = false;
     private volatile String pendingNfcUrl = null;
+    private volatile boolean pendingNfcErase = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,6 +198,11 @@ public class MainActivity extends Activity implements NfcAdapter.ReaderCallback 
         }
 
         @JavascriptInterface
+        public void eraseNfcTag() {
+            runOnUiThread(() -> startNfcErase());
+        }
+
+        @JavascriptInterface
         public void cancelNfcWrite() {
             runOnUiThread(() -> cancelNfcWriteInternal());
         }
@@ -219,6 +225,7 @@ public class MainActivity extends Activity implements NfcAdapter.ReaderCallback 
 
         synchronized (nfcWriteLock) {
             pendingNfcUrl = url;
+            pendingNfcErase = false;
             nfcWriteActive = true;
         }
 
@@ -231,9 +238,42 @@ public class MainActivity extends Activity implements NfcAdapter.ReaderCallback 
         } catch (Exception error) {
             synchronized (nfcWriteLock) {
                 pendingNfcUrl = null;
+                pendingNfcErase = false;
                 nfcWriteActive = false;
             }
             notifyNfcWriteResult(false, "Impossibile avviare la modalità di scrittura NFC.");
+        }
+    }
+
+    private void startNfcErase() {
+        if (nfcAdapter == null) {
+            notifyNfcEraseResult(false, "Questo telefono non dispone della funzione NFC.");
+            return;
+        }
+        if (!nfcAdapter.isEnabled()) {
+            notifyNfcEraseResult(false, "NFC disattivato. Attivalo dalle impostazioni rapide e premi Riprova.");
+            return;
+        }
+
+        synchronized (nfcWriteLock) {
+            pendingNfcUrl = null;
+            pendingNfcErase = true;
+            nfcWriteActive = true;
+        }
+
+        int flags = NfcAdapter.FLAG_READER_NFC_A
+                | NfcAdapter.FLAG_READER_NFC_B
+                | NfcAdapter.FLAG_READER_NFC_F
+                | NfcAdapter.FLAG_READER_NFC_V;
+        try {
+            nfcAdapter.enableReaderMode(this, this, flags, null);
+        } catch (Exception error) {
+            synchronized (nfcWriteLock) {
+                pendingNfcUrl = null;
+                pendingNfcErase = false;
+                nfcWriteActive = false;
+            }
+            notifyNfcEraseResult(false, "Impossibile avviare la modalità di azzeramento NFC.");
         }
     }
 
@@ -258,16 +298,21 @@ public class MainActivity extends Activity implements NfcAdapter.ReaderCallback 
     @Override
     public void onTagDiscovered(Tag tag) {
         final String url;
+        final boolean erase;
         synchronized (nfcWriteLock) {
-            if (!nfcWriteActive || pendingNfcUrl == null) return;
+            if (!nfcWriteActive || (!pendingNfcErase && pendingNfcUrl == null)) return;
             nfcWriteActive = false;
             url = pendingNfcUrl;
+            erase = pendingNfcErase;
         }
 
         boolean success = false;
         String resultMessage;
         try {
-            NdefMessage message = new NdefMessage(new NdefRecord[]{NdefRecord.createUri(url)});
+            NdefRecord record = erase
+                    ? new NdefRecord(NdefRecord.TNF_EMPTY, new byte[0], new byte[0], new byte[0])
+                    : NdefRecord.createUri(url);
+            NdefMessage message = new NdefMessage(new NdefRecord[]{record});
             Ndef ndef = Ndef.get(tag);
             if (ndef != null) {
                 try {
@@ -279,7 +324,9 @@ public class MainActivity extends Activity implements NfcAdapter.ReaderCallback 
                     } else {
                         ndef.writeNdefMessage(message);
                         success = true;
-                        resultMessage = "Il link è stato scritto sulla card NFC.";
+                        resultMessage = erase
+                                ? "La card è vuota e pronta per una nuova programmazione."
+                                : "Il link è stato scritto sulla card NFC.";
                     }
                 } finally {
                     try { ndef.close(); } catch (IOException ignored) {}
@@ -293,7 +340,9 @@ public class MainActivity extends Activity implements NfcAdapter.ReaderCallback 
                         formatable.connect();
                         formatable.format(message);
                         success = true;
-                        resultMessage = "La card è stata formattata e il link è stato scritto.";
+                        resultMessage = erase
+                                ? "La card è stata formattata ed è pronta per una nuova programmazione."
+                                : "La card è stata formattata e il link è stato scritto.";
                     } finally {
                         try { formatable.close(); } catch (IOException ignored) {}
                     }
@@ -315,16 +364,29 @@ public class MainActivity extends Activity implements NfcAdapter.ReaderCallback 
             disableNfcReaderMode();
             synchronized (nfcWriteLock) {
                 pendingNfcUrl = null;
+                pendingNfcErase = false;
                 nfcWriteActive = false;
             }
-            notifyNfcWriteResult(completed, completedMessage);
-            if (completed) Toast.makeText(MainActivity.this, "Scrittura NFC completata", Toast.LENGTH_SHORT).show();
+            if (erase) {
+                notifyNfcEraseResult(completed, completedMessage);
+            } else {
+                notifyNfcWriteResult(completed, completedMessage);
+            }
+            if (completed) {
+                Toast.makeText(MainActivity.this, erase ? "Card NFC azzerata" : "Scrittura NFC completata", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
     private void notifyNfcWriteResult(boolean success, String message) {
         String payload = "{\"success\":" + success + ",\"message\":" + JSONObject.quote(message) + "}";
         String script = "window.TapNfcWriterNativeResult&&window.TapNfcWriterNativeResult(" + payload + ");";
+        runOnUiThread(() -> webView.evaluateJavascript(script, null));
+    }
+
+    private void notifyNfcEraseResult(boolean success, String message) {
+        String payload = "{\"success\":" + success + ",\"message\":" + JSONObject.quote(message) + "}";
+        String script = "window.TapNfcEraserNativeResult&&window.TapNfcEraserNativeResult(" + payload + ");";
         runOnUiThread(() -> webView.evaluateJavascript(script, null));
     }
 
@@ -336,6 +398,7 @@ public class MainActivity extends Activity implements NfcAdapter.ReaderCallback 
     private void cancelNfcWriteInternal() {
         synchronized (nfcWriteLock) {
             pendingNfcUrl = null;
+            pendingNfcErase = false;
             nfcWriteActive = false;
         }
         disableNfcReaderMode();
