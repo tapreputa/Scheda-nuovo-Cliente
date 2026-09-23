@@ -9,9 +9,10 @@
 
   const style=document.createElement('style');
   style.textContent=`
-    .tap-erase-backdrop{position:fixed;inset:0;z-index:120;background:rgba(5,18,38,.68);display:none;align-items:flex-end;justify-content:center;padding:18px 14px calc(18px + env(safe-area-inset-bottom));backdrop-filter:blur(5px)}
+    .tap-erase-backdrop{position:fixed;inset:0;z-index:2147483646;background:rgba(5,18,38,.68);display:none;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 14px max(16px,env(safe-area-inset-bottom));backdrop-filter:blur(5px)}
     .tap-erase-backdrop.show{display:flex}
-    .tap-erase-sheet{width:min(100%,480px);background:#fff;border:1px solid #dce4ee;border-radius:25px;padding:24px;box-shadow:0 28px 70px rgba(5,18,38,.32);text-align:center}
+    .tap-erase-open .bottom-nav{display:none!important}
+    .tap-erase-sheet{width:min(100%,480px);max-height:calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow-y:auto;background:#fff;border:1px solid #dce4ee;border-radius:25px;padding:24px;box-shadow:0 28px 70px rgba(5,18,38,.32);text-align:center}
     .tap-erase-icon{width:66px;height:66px;margin:0 auto 15px;border-radius:20px;background:#fff0ee;color:#bf3026;display:grid;place-items:center;font-size:31px;font-weight:900}
     .tap-erase-sheet.is-success .tap-erase-icon{background:#e9f8f3;color:#00866d}
     .tap-erase-sheet h2{margin:0;color:#0a1930;font-size:25px;letter-spacing:-.03em}
@@ -23,7 +24,24 @@
     .tap-erase-confirm{border:0;background:linear-gradient(135deg,#b9342a,#df4c40);color:#fff;box-shadow:0 10px 22px rgba(185,52,42,.2)}
     .tap-erase-confirm.success{background:linear-gradient(135deg,#00836b,#08aa88);box-shadow:0 10px 22px rgba(0,131,107,.2)}
     .tap-erase-confirm:disabled{opacity:.65;cursor:default}
-    @media(min-width:700px){.tap-erase-backdrop{align-items:center}}
+    @media(max-width:430px){
+      .tap-erase-sheet{padding:20px 18px;border-radius:22px}
+      .tap-erase-icon{width:56px;height:56px;margin-bottom:12px;border-radius:17px;font-size:27px}
+      .tap-erase-sheet h2{font-size:23px}
+      .tap-erase-copy{margin-top:8px;font-size:14px;line-height:1.35}
+      .tap-erase-warning{margin-top:12px;padding:10px 11px;font-size:11px}
+      .tap-erase-actions{margin-top:14px;gap:8px}
+      .tap-erase-actions button{height:50px;font-size:13px}
+    }
+    @media(max-height:640px){
+      .tap-erase-sheet{padding:16px}
+      .tap-erase-icon{width:48px;height:48px;margin-bottom:8px;font-size:24px}
+      .tap-erase-sheet h2{font-size:21px}
+      .tap-erase-copy{margin-top:6px;font-size:13px}
+      .tap-erase-warning{margin-top:9px;padding:8px 10px}
+      .tap-erase-actions{margin-top:10px}
+      .tap-erase-actions button{height:46px}
+    }
   `;
   document.head.appendChild(style);
 
@@ -74,12 +92,14 @@
   function close(){
     if(waiting&&typeof bridge.cancelNfcWrite==='function')bridge.cancelNfcWrite();
     backdrop.classList.remove('show');
+    document.body.classList.remove('tap-erase-open');
     document.body.style.overflow='';
     reset();
   }
 
   trigger.addEventListener('click',()=>{
     reset();
+    document.body.classList.add('tap-erase-open');
     backdrop.classList.add('show');
     document.body.style.overflow='hidden';
     confirm.focus();
