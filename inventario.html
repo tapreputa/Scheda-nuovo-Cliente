@@ -29,9 +29,9 @@ main{max-width:1000px;margin:0 auto;padding:30px 20px 50px}.intro{margin-bottom:
     <form id="openingForm" novalidate>
       <div class="fields">
         <div class="field"><label for="openingDate">Data rilevazione</label><input id="openingDate" name="data_movimento" type="date" required></div>
-        <div class="field"><label for="openingTarghe">Targhe</label><input id="openingTarghe" name="targhe" type="number" min="0" step="1" inputmode="numeric" value="0" required></div>
-        <div class="field"><label for="openingCarte">Cards</label><input id="openingCarte" name="carte" type="number" min="0" step="1" inputmode="numeric" value="0" required></div>
-        <div class="field"><label for="openingAdesivi">Adesivi</label><input id="openingAdesivi" name="adesivi" type="number" min="0" step="1" inputmode="numeric" value="0" required></div>
+        <div class="field"><label for="openingTarghe">Targhe</label><input id="openingTarghe" name="targhe" type="number" min="0" step="1" inputmode="numeric" required></div>
+        <div class="field"><label for="openingCarte">Cards</label><input id="openingCarte" name="carte" type="number" min="0" step="1" inputmode="numeric" required></div>
+        <div class="field"><label for="openingAdesivi">Adesivi</label><input id="openingAdesivi" name="adesivi" type="number" min="0" step="1" inputmode="numeric" required></div>
       </div>
       <button class="primary" type="submit">Salva giacenza iniziale</button>
     </form>
@@ -41,9 +41,9 @@ main{max-width:1000px;margin:0 auto;padding:30px 20px 50px}.intro{margin-bottom:
     <form id="orderForm" novalidate>
       <div class="fields">
         <div class="field"><label for="orderDate">Data ordine</label><input id="orderDate" name="data_movimento" type="date" required></div>
-        <div class="field"><label for="orderTarghe">Targhe</label><input id="orderTarghe" name="targhe" type="number" min="0" step="1" inputmode="numeric" value="0" required></div>
-        <div class="field"><label for="orderCarte">Cards</label><input id="orderCarte" name="carte" type="number" min="0" step="1" inputmode="numeric" value="0" required></div>
-        <div class="field"><label for="orderAdesivi">Adesivi</label><input id="orderAdesivi" name="adesivi" type="number" min="0" step="1" inputmode="numeric" value="0" required></div>
+        <div class="field"><label for="orderTarghe">Targhe</label><input id="orderTarghe" name="targhe" type="number" min="0" step="1" inputmode="numeric" required></div>
+        <div class="field"><label for="orderCarte">Cards</label><input id="orderCarte" name="carte" type="number" min="0" step="1" inputmode="numeric" required></div>
+        <div class="field"><label for="orderAdesivi">Adesivi</label><input id="orderAdesivi" name="adesivi" type="number" min="0" step="1" inputmode="numeric" required></div>
       </div>
       <div class="field" style="margin-top:12px"><label for="orderNote">Nota (facoltativa)</label><input id="orderNote" name="note" type="text" maxlength="180" placeholder="Es. fornitore o riferimento ordine"></div>
       <button class="primary" type="submit">Registra ordine</button>
@@ -55,6 +55,6 @@ main{max-width:1000px;margin:0 auto;padding:30px 20px 50px}.intro{margin-bottom:
   </section>
 </main>
 <script src="tap-auth.js"></script>
-<script src="tap-inventario.js?v=1"></script>
+<script src="tap-inventario.js?v=2"></script>
 </body>
 </html>

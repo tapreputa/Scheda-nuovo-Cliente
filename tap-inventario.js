@@ -17,6 +17,9 @@
   }
   document.getElementById('openingDate').value = localDate();
   document.getElementById('orderDate').value = localDate();
+  document.querySelectorAll('input[type="number"]').forEach(input => {
+    input.addEventListener('focus', () => { if (input.value === '0') input.value = ''; });
+  });
 
   function showNotice(message, type) {
     pageNotice.textContent = message;
@@ -109,6 +112,7 @@
     const values = {};
     for (const field of fields) {
       const raw = String(data.get(field) || '').trim();
+      if (raw === '') { values[field] = 0; continue; }
       const amount = Number(raw);
       if (!/^\d+$/.test(raw) || !Number.isSafeInteger(amount) || amount < 0) throw new Error('Inserisci quantità intere pari o superiori a zero.');
       values[field] = amount;
@@ -145,7 +149,7 @@
       form.reset();
       const dateInput = form.querySelector('input[type="date"]');
       if (dateInput) dateInput.value = localDate();
-      for (const input of form.querySelectorAll('input[type="number"]')) input.value = '0';
+      for (const input of form.querySelectorAll('input[type="number"]')) input.value = '';
       await refresh();
       showNotice(tipo === 'ordine' ? 'Ordine registrato e scorte aggiornate.' : 'Giacenza iniziale salvata. Da ora le vendite aggiornano automaticamente le quantità.', 'ok');
     } catch (error) {
