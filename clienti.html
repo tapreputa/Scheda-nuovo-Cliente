@@ -169,7 +169,7 @@ document.getElementById('copyNfc').onclick=function(){const c=getClient(currentI
 document.getElementById('preview').onclick=()=>{const c=getClient(currentId);const url=previewUrl(c);if(url)window.open(url,'_blank','noopener,noreferrer')};
 document.getElementById('edit').onclick=()=>{const c=getClient(currentId);if(!c)return;if(!isOwner(c))return notice('Solo '+(c.operatore||'l’operatore proprietario')+' può modificare questo cliente.',true);const p=new URLSearchParams();if(c.link_recensioni)p.set('reviewurl',c.link_recensioni);if(c.nome)p.set('business',c.nome);if(c.place_id)p.set('placeid',c.place_id);if(c.categoria_codice)p.set('category',c.categoria_codice);location.href='personalizza.html?'+p.toString()};
 document.getElementById('delete').onclick=()=>{if(currentId)deleteById(currentId)};
-(async()=>{user=await TapNfc.requireAuth();if(!user)return;TapNfc.decoratePage(user);try{const result=await TapNfc.migrateLocalClients(user);if(result.migrated)notice(`${result.migrated} clienti locali importati nel database condiviso.`)}catch(err){notice('Importazione vecchi dati non completata: '+(err.message||'errore.'),true)}await loadClients()})();
+(async()=>{user=await TapNfc.requireAuth();if(!user)return;TapNfc.decoratePage(user);try{const result=await TapNfc.migrateLocalClients(user);if(result.migrated)notice(`${result.migrated} clienti locali importati nel database condiviso.`)}catch(err){notice('Importazione vecchi dati non completata: '+(err.message||'errore.'),true)}await loadClients();const requestedClientId=new URLSearchParams(location.search).get('open');if(requestedClientId)openClient(requestedClientId)})();
 </script>
 <script src="tap-nfc-analytics-ui.js?v=4"></script>
 <script src="tap-nfc-writer.js?v=3"></script>
