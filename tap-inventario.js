@@ -43,6 +43,9 @@
     document.getElementById('stockTarghe').textContent = Number(row?.targhe || 0).toLocaleString('it-IT');
     document.getElementById('stockCarte').textContent = Number(row?.carte || 0).toLocaleString('it-IT');
     document.getElementById('stockAdesivi').textContent = Number(row?.adesivi || 0).toLocaleString('it-IT');
+    const spend = row?.spesa_totale;
+    document.getElementById('stockSpend').textContent = spend === null || spend === undefined ? '—' : new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(Number(spend));
+    document.getElementById('stockSpendNote').textContent = spend === null || spend === undefined ? 'completa i costi degli ordini precedenti' : 'somma degli ordini registrati';
   }
   function labelFor(type) {
     return ({ apertura: 'Giacenza iniziale', ordine: 'Ordine ricevuto', vendita: 'Vendita cliente', rettifica_vendita: 'Modifica vendita', storno_vendita: 'Storno vendita' })[type] || 'Movimento';
@@ -74,29 +77,66 @@
       const meta = document.createElement('div');
       meta.className = 'movement-meta';
       const date = row.data_movimento ? new Date(row.data_movimento + 'T12:00:00').toLocaleDateString('it-IT') : '';
-      meta.textContent = [date, row.operatore || 'Operatore', row.note || ''].filter(Boolean).join(' · ');
+      const cost = row.tipo === 'ordine' ? (row.spesa === null || row.spesa === undefined ? 'Costo da completare' : new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(Number(row.spesa))) : '';
+      meta.textContent = [date, row.operatore || 'Operatore', row.note || '', cost].filter(Boolean).join(' · ');
       left.append(title, meta);
       const qty = document.createElement('div');
       qty.className = 'movement-qty' + (row.tipo === 'vendita' || row.tipo === 'rettifica_vendita' ? ' negative' : '');
-      qty.textContent = quantitySummary(row);
+      const qtyText = document.createElement('span');
+      qtyText.textContent = quantitySummary(row);
+      qty.append(qtyText);
+      if (row.tipo === 'ordine' && (row.spesa === null || row.spesa === undefined)) {
+        const complete = document.createElement('button');
+        complete.type = 'button';
+        complete.className = 'secondary';
+        complete.textContent = 'Inserisci costo';
+        complete.addEventListener('click', () => completeOrderSpend(row));
+        qty.append(complete);
+      }
       item.append(left, qty);
       historyElement.append(item);
+    }
+  }
+  function parseSpend(value) {
+    const raw = String(value || '').trim().replace(',', '.');
+    if (!/^\d+(?:\.\d{1,2})?$/.test(raw)) throw new Error('Inserisci un importo in euro, per esempio 125,50.');
+    const amount = Number(raw);
+    if (!Number.isFinite(amount) || amount < 0 || amount > 9999999999.99) throw new Error('Inserisci un importo valido pari o superiore a zero.');
+    return amount.toFixed(2);
+  }
+  async function completeOrderSpend(row) {
+    const entered = window.prompt('Inserisci la spesa effettiva di questo ordine in euro (es. 125,50):');
+    if (entered === null) return;
+    try {
+      const response = await TapNfc.rest('inventario_movimenti?id=eq.' + encodeURIComponent(row.id), {
+        method: 'PATCH',
+        headers: { Prefer: 'return=minimal' },
+        body: JSON.stringify({ spesa: parseSpend(entered) })
+      });
+      await readResponse(response);
+      await refresh();
+      showNotice('Costo dell’ordine aggiornato e totale ricalcolato.', 'ok');
+    } catch (error) {
+      showNotice(error.message, 'error');
     }
   }
   async function refresh() {
     clearNotice();
     try {
-      const [balanceRows, movementRows, openingRows] = await Promise.all([
-        getRows('inventario_giacenze?select=id,targhe,carte,adesivi,updated_at&id=eq.1&limit=1'),
-        getRows('inventario_movimenti?select=id,tipo,data_movimento,targhe,carte,adesivi,operatore,note,created_at&order=created_at.desc&limit=50'),
-        getRows('inventario_movimenti?select=id&tipo=eq.apertura&limit=1')
+      const [balanceRows, movementRows, openingRows, uncostedOrders] = await Promise.all([
+        getRows('inventario_giacenze?select=id,targhe,carte,adesivi,spesa_totale,updated_at&id=eq.1&limit=1'),
+        getRows('inventario_movimenti?select=id,tipo,data_movimento,targhe,carte,adesivi,spesa,operatore,note,created_at&order=created_at.desc&limit=50'),
+        getRows('inventario_movimenti?select=id&tipo=eq.apertura&limit=1'),
+        getRows('inventario_movimenti?select=id,tipo,data_movimento,targhe,carte,adesivi,spesa,operatore,note,created_at&tipo=eq.ordine&spesa=is.null&order=created_at.desc')
       ]);
       const opening = openingRows.length > 0;
       openingRecorded = opening;
       openingPanel.classList.toggle('hidden', opening);
       orderPanel.classList.toggle('hidden', !opening);
       renderBalance(balanceRows[0]);
-      renderHistory(movementRows);
+      const combined = new Map([...movementRows, ...uncostedOrders].map(row => [row.id, row]));
+      const allMovements = [...combined.values()].sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+      renderHistory(allMovements);
       if (!opening) showNotice('Per attivare le scorte, registra una volta le quantità fisicamente presenti. I clienti già esistenti non verranno conteggiati retroattivamente.', 'info');
     } catch (error) {
       showNotice('Non riesco a caricare l’inventario: ' + error.message, 'error');
@@ -132,10 +172,12 @@
       if (!form.reportValidity()) return;
       const values = extractQuantities(form, tipo);
       const formData = new FormData(form);
+      const orderSpend = tipo === 'ordine' ? parseSpend(formData.get('spesa')) : '0.00';
       const payload = {
         tipo,
         data_movimento: formData.get('data_movimento'),
         ...values,
+        spesa: orderSpend,
         operatore: TapNfc.operatorName(currentUser),
         created_by: currentUser.id,
         note: tipo === 'ordine' ? String(formData.get('note') || '').trim() || null : null
