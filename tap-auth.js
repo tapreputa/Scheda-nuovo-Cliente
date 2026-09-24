@@ -21,7 +21,7 @@
 
   if (PAGE_NAME !== 'login.html' && !document.querySelector('script[data-tap-global-bottom-nav-loader]')) {
     const globalNavScript = document.createElement('script');
-    globalNavScript.src = 'tap-global-bottom-nav.js?v=3';
+    globalNavScript.src = 'tap-global-bottom-nav.js?v=4';
     globalNavScript.dataset.tapGlobalBottomNavLoader = '1';
     document.head.appendChild(globalNavScript);
   }
