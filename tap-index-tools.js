@@ -92,7 +92,6 @@
       .tap-place-option:active{background:#f1f6ff}
       .tap-place-main{display:block;font-size:12px;font-weight:900;color:#123a68}
       .tap-place-secondary{display:block;margin-top:3px;font-size:10px;color:#7d8a9b;line-height:1.35}
-      .tap-places-help{margin-top:8px;color:#75859a;font-size:10px;line-height:1.35}
       .tap-places-state{display:flex;align-items:center;gap:8px;margin-top:10px;padding:9px 11px;border-radius:12px;background:#fff;border:1px solid #d9e5f3;color:#687991;font-size:10px;font-weight:800}
       .tap-places-state.ok{border-color:#b9e4d9;background:#effaf7;color:#08705d}
       .tap-places-state.warn{border-color:#efd79e;background:#fff9eb;color:#7b5a11}
@@ -142,7 +141,6 @@
       <div class="tap-places-head"><div class="tap-places-title">Cerca attività su Google</div><div class="tap-places-badge">Automatico</div></div>
       <input id="tapPlacesInput" class="tap-places-input" type="search" autocomplete="off" placeholder="Es. Maxim Bar Palermo">
       <div id="tapPlacesResults" class="tap-places-results"></div>
-      <div class="tap-places-help">Scrivi almeno 6 caratteri del nome dell’attività e, se necessario, anche città o indirizzo. Attendi un istante e seleziona il risultato corretto: nome e Place ID verranno compilati automaticamente.</div>
       <div id="tapPlacesState" class="tap-places-state">Ricerca protetta tramite Tapreputa…</div>`;
     grid.insertAdjacentElement('afterbegin', box);
   }
