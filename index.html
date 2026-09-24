@@ -156,6 +156,37 @@
 }
 @media(max-width:350px){.tap-home-premium .welcome h1{font-size:24px!important}}
 </style>
+<style id="tap-home-nfc-hero-v1">
+.tap-home-premium .welcome{
+  min-height:184px;padding:24px 28px;display:flex;align-items:center;gap:18px;
+  background:linear-gradient(112deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.95) 57%,rgba(235,243,255,.94) 100%);
+}
+.tap-home-premium .welcome-copy{position:relative;z-index:1;flex:1 1 auto;min-width:0;max-width:600px}
+.tap-home-premium .welcome .eyebrow{margin:0 0 10px;font-size:10px;letter-spacing:.19em}
+.tap-home-premium .welcome h1{margin:0;color:#082a52!important;font-size:clamp(27px,3.4vw,39px);line-height:1.05;letter-spacing:-.05em;font-weight:820!important}
+.tap-home-premium .welcome p{margin:8px 0 0;color:#667890!important;font-size:13px;line-height:1.4}
+.tap-home-premium .welcome .status-pill{display:inline-flex;margin-top:12px;padding:7px 11px;font-size:10px}
+.tap-home-premium .welcome-visual{position:relative;z-index:1;flex:0 0 clamp(180px,25vw,270px);width:clamp(180px,25vw,270px);line-height:0;filter:drop-shadow(0 14px 20px rgba(8,42,82,.12));transform:perspective(700px) rotateY(-5deg) rotateX(2deg)}
+.tap-home-premium .welcome-visual svg{display:block;width:100%;height:auto;overflow:visible}
+.tap-home-premium[data-tap-operator]::after{content:none!important;display:none!important}
+@media(max-width:760px){
+  .tap-home-premium .welcome{min-height:150px;padding:17px 17px;gap:4px;border-radius:22px}
+  .tap-home-premium .welcome::before{width:155px;height:155px;right:-100px;top:-62px;opacity:.7}
+  .tap-home-premium .welcome-copy{max-width:none}
+  .tap-home-premium .welcome .eyebrow{margin-bottom:8px;font-size:8px;letter-spacing:.13em;white-space:nowrap}
+  .tap-home-premium .welcome h1{font-size:clamp(22px,6.6vw,27px)!important;line-height:1.04!important;letter-spacing:-.045em!important;overflow-wrap:anywhere}
+  .tap-home-premium .welcome p{max-width:25em;margin-top:7px;font-size:10px;line-height:1.35}
+  .tap-home-premium .welcome .status-pill{margin-top:9px;padding:6px 8px;font-size:9px}
+  .tap-home-premium .welcome-visual{flex-basis:clamp(88px,28vw,124px);width:clamp(88px,28vw,124px);transform:perspective(600px) rotateY(-4deg) rotateX(2deg)}
+  .tap-home-premium .welcome::after{left:17px;right:17px}
+}
+@media(max-width:350px){
+  .tap-home-premium .welcome{padding:15px 13px;gap:0}
+  .tap-home-premium .welcome h1{font-size:21px!important}
+  .tap-home-premium .welcome-visual{flex-basis:82px;width:82px}
+  .tap-home-premium .welcome .eyebrow{font-size:7px;letter-spacing:.1em}
+}
+</style>
 </head>
 <body data-auth="required">
 <header class="topbar">
@@ -167,11 +198,43 @@
 </header>
 
 <main class="wrap tap-home-premium">
-  <section class="welcome">
-    <div><div class="eyebrow">Tapreputa Control Center</div><h1>Gestisci il tuo lavoro,<br>senza perdere tempo.</h1><p>Clienti, vendite e attività operative in un’unica schermata.</p></div>
-    <div class="status-pill"><span class="status-dot"></span><span>Database connesso</span></div>
+<section class="welcome">
+    <div class="welcome-copy"><div class="eyebrow">Tapreputa · NFC Control</div><h1>Ciao <span data-operator-name>Operatore</span></h1><p>Pronto per configurare la prossima card NFC?</p><div class="status-pill"><span class="status-dot"></span><span>Database connesso</span></div></div>
+    <div class="welcome-visual" aria-hidden="true">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="nfcPhone" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b3a70"/><stop offset="1" stop-color="#071b39"/></linearGradient>
+          <linearGradient id="nfcScreen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eef5ff"/><stop offset="1" stop-color="#dceaff"/></linearGradient>
+          <linearGradient id="nfcCard" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#f2f7ff"/></linearGradient>
+          <linearGradient id="nfcGold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0cf77"/><stop offset="1" stop-color="#c4952e"/></linearGradient>
+          <filter id="nfcShadow" x="-30%" y="-30%" width="170%" height="180%"><feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#082a52" flood-opacity=".18"/></filter>
+        </defs>
+        <circle cx="164" cy="100" r="86" fill="#e8f1ff" opacity=".68"/>
+        <circle cx="164" cy="100" r="69" fill="none" stroke="#cbdcf5" stroke-width="1.2" stroke-dasharray="3 6"/>
+        <g transform="rotate(-8 192 94)" filter="url(#nfcShadow)">
+          <rect x="147" y="15" width="91" height="164" rx="19" fill="url(#nfcPhone)"/>
+          <rect x="153" y="23" width="79" height="146" rx="14" fill="url(#nfcScreen)"/>
+          <rect x="180" y="29" width="25" height="4" rx="2" fill="#9fb6d7"/>
+          <circle cx="192" cy="158" r="3.5" fill="#9fb6d7"/>
+          <path d="M176 89a23 23 0 0 1 32 0M181 95a16 16 0 0 1 22 0M187 101a8 8 0 0 1 11 0" fill="none" stroke="#1476e8" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="192.5" cy="108" r="3" fill="#d5a329"/>
+          <text x="192" y="137" text-anchor="middle" fill="#315477" font-family="Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1.5">TAP NFC</text>
+        </g>
+        <g transform="rotate(8 111 124)" filter="url(#nfcShadow)">
+          <rect x="28" y="80" width="151" height="91" rx="14" fill="url(#nfcCard)" stroke="#cbd9ec" stroke-width="1.4"/>
+          <path d="M42 81h122" stroke="url(#nfcGold)" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="43" y="97" width="24" height="29" rx="5" fill="#f7e8be" stroke="#dec071"/>
+          <path d="M55 98v27M44 111h22" stroke="#c39a3a" stroke-width="1.1" opacity=".8"/>
+          <path d="M111 106a19 19 0 0 1 0 23M117 101a27 27 0 0 1 0 33M123 96a35 35 0 0 1 0 43" fill="none" stroke="#1476e8" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="105" cy="117.5" r="3" fill="#d5a329"/>
+          <text x="43" y="150" fill="#153b68" font-family="Arial,sans-serif" font-size="8" font-weight="800" letter-spacing="1.5">TAPREPUTA</text>
+          <text x="163" y="155" text-anchor="end" fill="#8798ad" font-family="Arial,sans-serif" font-size="7" font-weight="700" letter-spacing="1">NFC</text>
+        </g>
+        <path d="M42 57c12-8 25-11 39-10" fill="none" stroke="#d5a329" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+        <circle cx="39" cy="58" r="3" fill="#d5a329"/>
+      </svg>
+    </div>
   </section>
-
   <section class="kpis" aria-label="Riepilogo rapido">
     <article class="kpi"><div class="kpi-label">Clienti</div><div class="kpi-value" id="homeClients">—</div><div class="kpi-note">totale registrati</div></article>
     <article class="kpi"><div class="kpi-label">Vendite mese</div><div class="kpi-value" id="homeSales">—</div><div class="kpi-note">totale team</div></article>
