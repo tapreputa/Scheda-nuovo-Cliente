@@ -22,11 +22,11 @@
   .tap-global-nav-ico{font-size:20px;line-height:1;transition:transform .22s ease}
   .tap-global-nav-item[aria-current="page"]{color:#0e59c7;background:#edf3ff}
   .tap-global-nav-item[aria-current="page"] .tap-global-nav-ico{transform:translateY(-1px)}
-  .tap-global-nav-item.tap-new{
+  .tap-global-nav-item.tap-new[aria-current="page"]{
     color:#fff;background:linear-gradient(145deg,#0a48b6,#1769ff 62%,#3982ff);
     box-shadow:0 9px 20px rgba(23,105,255,.27),inset 0 1px rgba(255,255,255,.20)
   }
-  .tap-global-nav-item.tap-new::after{
+  .tap-global-nav-item.tap-new[aria-current="page"]::after{
     content:"";position:absolute;inset:-40% -80%;pointer-events:none;
     background:linear-gradient(110deg,transparent 36%,rgba(255,255,255,.34) 48%,transparent 60%);
     transform:translateX(-60%) rotate(8deg);animation:tapNavShine 5.5s ease-in-out infinite
@@ -46,4 +46,4 @@
   .tap-global-bottom-nav{left:7px;right:7px;height:69px;border-radius:21px}
   .tap-global-nav-item{font-size:8.5px}.tap-global-nav-ico{font-size:19px}
 }
-@media(prefers-reduced-motion:reduce){.tap-global-nav-item,.tap-global-nav-ico{transition:none!important}.tap-global-nav-item.tap-new::after{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.tap-global-nav-item,.tap-global-nav-ico{transition:none!important}.tap-global-nav-item.tap-new[aria-current="page"]::after{animation:none!important}}
