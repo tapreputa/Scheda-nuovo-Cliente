@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const page = location.pathname.split('/').pop() || 'index.html';
-  const allowed = new Set(['index.html','personalizza.html','clienti.html','risultati.html','chat.html']);
+  const allowed = new Set(['index.html','personalizza.html','clienti.html','risultati.html','chat.html','inventario.html']);
   if (!allowed.has(page)) return;
 
   function ensureCss(){
@@ -55,6 +55,7 @@
     if (target==='new') return page==='personalizza.html' || (page==='index.html' && location.hash==='#nuovo');
     if (target==='clients') return page==='clienti.html';
     if (target==='results') return page==='risultati.html';
+    if (target==='inventory') return page==='inventario.html';
     return false;
   }
 
@@ -63,6 +64,7 @@
     ensureCss();
     const nav=document.createElement('nav');
     nav.className='tap-global-bottom-nav';
+    if (page==='inventario.html') nav.style.gridTemplateColumns='repeat(5,1fr)';
     nav.setAttribute('aria-label','Navigazione principale');
     const items=[
       ['home','index.html','⌂','Home',''],
@@ -70,6 +72,7 @@
       ['clients','clienti.html','◎','Clienti',''],
       ['results','risultati.html','▥','Risultati','']
     ];
+    if (page==='inventario.html') items.push(['inventory','inventario.html','▤','Scorte','']);
     nav.innerHTML=items.map(([key,href,ico,label,extra])=>`<a class="tap-global-nav-item ${extra}" href="${href}" ${currentFor(key)?'aria-current="page"':''}><span class="tap-global-nav-ico" aria-hidden="true">${ico}</span><span>${label}</span></a>`).join('');
     document.body.appendChild(nav);
 

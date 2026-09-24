@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07152b">
+<title>Ordini / Inventario · Tap NFC</title>
+<style>
+:root{--navy:#07152b;--blue:#1769ff;--ink:#0a1930;--muted:#718097;--line:#dce4ee;--panel:rgba(255,255,255,.92);--shadow:0 18px 48px rgba(20,42,74,.10)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink)}body{background:radial-gradient(circle at 15% -10%,rgba(23,105,255,.10),transparent 31%),linear-gradient(180deg,#f7f9fd 0%,#eff4f9 100%);padding-bottom:calc(100px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+.topbar{min-height:78px;background:linear-gradient(120deg,var(--navy),#0d3468);color:#fff;display:flex;align-items:center;gap:16px;padding:14px max(18px,calc((100% - 1000px)/2));box-shadow:0 12px 30px rgba(7,21,43,.18);position:sticky;top:0;z-index:20}.back{width:42px;height:42px;display:grid;place-items:center;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.24);border-radius:13px;font-size:24px}.brand h1{margin:0;font-size:19px;letter-spacing:-.03em}.brand p{margin:3px 0 0;color:#b9c9df;font-size:12px}.operator{margin-left:auto;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);border-radius:999px;padding:9px 12px;font-size:12px;font-weight:800}
+main{max-width:1000px;margin:0 auto;padding:30px 20px 50px}.intro{margin-bottom:20px}.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a57813;font-weight:900}.intro h2{font-size:34px;line-height:1.05;letter-spacing:-.04em;margin:8px 0}.intro p{color:var(--muted);margin:0;line-height:1.5}.stock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}.stock{background:var(--panel);border:1px solid var(--line);border-radius:19px;padding:18px;box-shadow:var(--shadow)}.stock-label{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.08em}.stock-value{font-size:34px;font-weight:950;letter-spacing:-.04em;margin-top:5px;color:#09254a}.stock-unit{font-size:12px;color:#8b97a7}.panel{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow);margin:18px 0}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:17px}.panel h3{font-size:20px;letter-spacing:-.025em;margin:0}.panel .sub{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.45}.badge{flex:none;border:1px solid #dce4ee;background:#f7f9fc;border-radius:999px;padding:7px 10px;color:#65748a;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}.fields{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.field label{display:block;font-size:12px;font-weight:900;margin:0 0 7px;color:#34445a}.field input{width:100%;height:50px;border:1.5px solid #cfdae7;border-radius:13px;background:#fff;color:#11243f;padding:0 13px;font:inherit;font-size:15px;outline:none}.field input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(23,105,255,.10)}.primary,.secondary{height:52px;border-radius:14px;padding:0 18px;font:inherit;font-weight:900;cursor:pointer}.primary{width:100%;margin-top:16px;border:0;background:linear-gradient(135deg,#0b4fc2,#1769ff);color:#fff;box-shadow:0 12px 24px rgba(23,105,255,.20)}.secondary{border:1px solid #d1dceb;background:#fff;color:#24466d}.primary:disabled{opacity:.62;cursor:wait}.notice{display:none;padding:13px 15px;margin-top:14px;border-radius:13px;font-size:13px;line-height:1.45}.notice.show{display:block}.notice.error{background:#fff2f0;color:#8c2d23;border:1px solid #f0c3bd}.notice.ok{background:#eaf8f4;color:#096450;border:1px solid #b8e4d8}.notice.info{background:#eff5ff;color:#224d83;border:1px solid #c9daf5}.history{display:grid;gap:9px}.movement{display:grid;grid-template-columns:1fr auto;gap:8px 16px;padding:13px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:14px}.movement-title{font-size:13px;font-weight:900}.movement-meta{font-size:11px;color:var(--muted);margin-top:4px}.movement-qty{text-align:right;font-size:12px;font-weight:850;color:#176b57;align-self:center}.movement-qty .negative{color:#b13a31}.empty{color:var(--muted);font-size:13px;padding:12px}.hidden{display:none!important}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+@media(max-width:680px){main{padding:24px 15px 38px}.intro h2{font-size:29px}.stock-grid{gap:8px}.stock{padding:14px 12px;border-radius:16px}.stock-value{font-size:29px}.stock-label{font-size:10px}.fields{grid-template-columns:1fr 1fr}.panel{padding:18px 15px}.operator{font-size:10px;padding:8px 10px}}
+@media(max-width:380px){.stock-label{letter-spacing:0}.stock-value{font-size:25px}.brand h1{font-size:17px}}
+</style>
+</head>
+<body data-auth="required">
+<header class="topbar"><a class="back" href="index.html" aria-label="Torna alla Home">‹</a><div class="brand"><h1>Ordini / Inventario</h1><p>Scorte condivise tra i tre operatori</p></div><div class="operator" data-operator-name>Operatore</div></header>
+<main>
+  <section class="intro"><div class="eyebrow">Gestione prodotti</div><h2>Scorte sempre aggiornate</h2><p>Registra la giacenza fisica attuale una sola volta. Da quel momento, gli ordini aggiungono prodotti e i nuovi clienti aggiornano automaticamente le quantità vendute.</p></section>
+  <div id="pageNotice" class="notice" role="status" aria-live="polite"></div>
+  <section class="stock-grid" aria-label="Giacenza attuale">
+    <article class="stock"><div class="stock-label">Targhe</div><div id="stockTarghe" class="stock-value">—</div><div class="stock-unit">pezzi disponibili</div></article>
+    <article class="stock"><div class="stock-label">Cards</div><div id="stockCarte" class="stock-value">—</div><div class="stock-unit">pezzi disponibili</div></article>
+    <article class="stock"><div class="stock-label">Adesivi</div><div id="stockAdesivi" class="stock-value">—</div><div class="stock-unit">pezzi disponibili</div></article>
+  </section>
+  <section id="openingPanel" class="panel hidden">
+    <div class="panel-head"><div><h3>Imposta la giacenza iniziale</h3><div class="sub">Inserisci ciò che hai fisicamente in magazzino oggi. Le vendite precedenti a questa registrazione non vengono sottratte di nuovo.</div></div><span class="badge">Una volta sola</span></div>
+    <form id="openingForm" novalidate>
+      <div class="fields">
+        <div class="field"><label for="openingDate">Data rilevazione</label><input id="openingDate" name="data_movimento" type="date" required></div>
+        <div class="field"><label for="openingTarghe">Targhe</label><input id="openingTarghe" name="targhe" type="number" min="0" step="1" inputmode="numeric" value="0" required></div>
+        <div class="field"><label for="openingCarte">Cards</label><input id="openingCarte" name="carte" type="number" min="0" step="1" inputmode="numeric" value="0" required></div>
+        <div class="field"><label for="openingAdesivi">Adesivi</label><input id="openingAdesivi" name="adesivi" type="number" min="0" step="1" inputmode="numeric" value="0" required></div>
+      </div>
+      <button class="primary" type="submit">Salva giacenza iniziale</button>
+    </form>
+  </section>
+  <section id="orderPanel" class="panel hidden">
+    <div class="panel-head"><div><h3>Registra un nuovo ordine</h3><div class="sub">Inserisci le quantità arrivate. Le scorte verranno incrementate subito per tutti gli operatori.</div></div><span class="badge">Carico</span></div>
+    <form id="orderForm" novalidate>
+      <div class="fields">
+        <div class="field"><label for="orderDate">Data ordine</label><input id="orderDate" name="data_movimento" type="date" required></div>
+        <div class="field"><label for="orderTarghe">Targhe</label><input id="orderTarghe" name="targhe" type="number" min="0" step="1" inputmode="numeric" value="0" required></div>
+        <div class="field"><label for="orderCarte">Cards</label><input id="orderCarte" name="carte" type="number" min="0" step="1" inputmode="numeric" value="0" required></div>
+        <div class="field"><label for="orderAdesivi">Adesivi</label><input id="orderAdesivi" name="adesivi" type="number" min="0" step="1" inputmode="numeric" value="0" required></div>
+      </div>
+      <div class="field" style="margin-top:12px"><label for="orderNote">Nota (facoltativa)</label><input id="orderNote" name="note" type="text" maxlength="180" placeholder="Es. fornitore o riferimento ordine"></div>
+      <button class="primary" type="submit">Registra ordine</button>
+    </form>
+  </section>
+  <section class="panel">
+    <div class="toolbar"><div><h3>Movimenti recenti</h3><div class="sub">Ordini e vendite registrati nel sistema.</div></div><button id="refreshButton" class="secondary" type="button">Aggiorna</button></div>
+    <div id="history" class="history"><div class="empty">Caricamento movimenti…</div></div>
+  </section>
+</main>
+<script src="tap-auth.js"></script>
+<script src="tap-inventario.js?v=1"></script>
+</body>
+</html>
