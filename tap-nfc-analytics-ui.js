@@ -91,7 +91,7 @@
 
   async function loadCounts() {
     if (!window.TapNfc?.rest) return new Map();
-    const response = await TapNfc.rest('rpc/get_nfc_tap_counts', {
+    const response = await TapNfc.rest('rpc/get_nfc_analytics', {
       method:'POST',
       headers:{ 'Content-Type':'application/json' },
       body:'{}'
@@ -129,7 +129,7 @@
       .tap-stats-overlay{display:none;position:fixed;inset:0;background:rgba(0,25,20,.48);z-index:120;padding:18px;overflow:auto}.tap-stats-overlay.show{display:flex;align-items:flex-start;justify-content:center}.tap-stats-panel{width:min(520px,100%);margin:42px auto;background:#fff;border-radius:24px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.25)}
       .tap-stats-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.tap-stats-eyebrow{color:#007f69;font-size:11px;letter-spacing:.16em;font-weight:900;text-transform:uppercase;margin-bottom:7px}.tap-stats-title{margin:0;font-size:28px;line-height:1.1;color:#17332d}.tap-stats-close{width:42px;height:42px;border-radius:50%;border:1px solid #d5dfdc;background:#fff;font-size:21px;cursor:pointer}
       .tap-stats-total{margin:22px 0 14px;padding:18px;border-radius:18px;background:#f2faf8;border:1px solid #cce2dc}.tap-stats-total-label{font-size:12px;color:#6f7d78;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.tap-stats-total-value{margin-top:5px;font-size:36px;font-weight:950;color:#08735f}
-      .tap-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tap-stats-card{padding:14px 12px;border:1px solid #dde6e3;border-radius:15px;background:#fbfcfc}.tap-stats-card b{display:block;font-size:24px;color:#17332d}.tap-stats-card span{display:block;margin-top:5px;font-size:11px;color:#78847f;font-weight:800}
+      .tap-stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.tap-stats-card{padding:14px 12px;border:1px solid #dde6e3;border-radius:15px;background:#fbfcfc}.tap-stats-card b{display:block;font-size:24px;color:#17332d}.tap-stats-card span{display:block;margin-top:5px;font-size:11px;color:#78847f;font-weight:800}.tap-stats-activity{margin-top:12px;padding:13px 14px;border-radius:14px;background:#eef8f5;color:#08735f;font-size:12px;font-weight:850}.tap-stats-activity.inactive{background:#fff1ee;color:#a2382e}
       .tap-stats-note{margin-top:16px;padding-top:14px;border-top:1px solid #e7eeeb;color:#73807c;font-size:12px;line-height:1.45}
       @media(max-width:560px){.tap-stats-panel{margin:16px auto;padding:20px}.tap-stats-title{font-size:24px}.tap-stats-grid{grid-template-columns:1fr}.tap-stats-card{display:flex;align-items:center;justify-content:space-between;gap:12px}.tap-stats-card span{margin:0}.tap-status-col,.tap-status-cell{width:84px!important;min-width:84px!important}.tap-status-wrap{width:58px;height:44px}.tap-status-icon{font-size:25px}}
     `;
@@ -178,13 +178,15 @@
           <div><div class="tap-stats-eyebrow">Statistiche NFC</div><h2 id="tapStatsTitle" class="tap-stats-title">Cliente</h2></div>
           <button class="tap-stats-close" type="button" aria-label="Chiudi">×</button>
         </div>
-        <div class="tap-stats-total"><div class="tap-stats-total-label">Tap totali</div><div id="tapStatsTotal" class="tap-stats-total-value">0</div></div>
+        <div class="tap-stats-total"><div class="tap-stats-total-label">Aperture tracciate totali</div><div id="tapStatsTotal" class="tap-stats-total-value">0</div></div>
         <div class="tap-stats-grid">
-          <div class="tap-stats-card"><b id="tapStatsToday">0</b><span>Oggi</span></div>
-          <div class="tap-stats-card"><b id="tapStats7">0</b><span>Ultimi 7 giorni</span></div>
-          <div class="tap-stats-card"><b id="tapStats30">0</b><span>Ultimi 30 giorni</span></div>
+          <div class="tap-stats-card"><b id="tapStats30">0</b><span>Aperture · 30 giorni</span></div>
+          <div class="tap-stats-card"><b id="tapStatsViews30">0</b><span>Visite pagina · 30 giorni</span></div>
+          <div class="tap-stats-card"><b id="tapStatsClicks30">0</b><span>Clic verso Google · 30 giorni</span></div>
+          <div class="tap-stats-card"><b id="tapStatsRate30">0%</b><span>Prosecuzione verso Google</span></div>
         </div>
-        <div class="tap-stats-note">Il conteggio registra le aperture generate dal link NFC tracciato. I valori si aggiornano quando torni su questa pagina.</div>
+        <div id="tapStatsActivity" class="tap-stats-activity">Ultima attività: —</div>
+        <div class="tap-stats-note">Le anteprime aperte dagli operatori sono escluse. I clic verso Google sono misurati da oggi e non equivalgono a recensioni pubblicate.</div>
       </div>`;
     document.body.appendChild(statsOverlay);
     const statsClose = statsOverlay.querySelector('.tap-stats-close');
@@ -196,13 +198,32 @@
     let counts = new Map();
     let applying = false;
 
+    function activityStatus(value) {
+      if (!value) return { text:'Nessuna attività registrata', inactive:true };
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return { text:'Nessuna attività registrata', inactive:true };
+      const days = Math.floor((Date.now() - date.getTime()) / 86400000);
+      const when = date.toLocaleString('it-IT', { dateStyle:'short', timeStyle:'short' });
+      return days >= 30
+        ? { text:'Inattivo da 30 giorni · ultima attività ' + when, inactive:true }
+        : { text:'Ultima attività: ' + when, inactive:false };
+    }
+
     function openStats(id, name) {
-      const data = counts.get(String(id)) || { total:0, today:0, last_7_days:0, last_30_days:0 };
+      const data = counts.get(String(id)) || {};
+      const views30 = Number(data.page_views_30_days || 0);
+      const clicks30 = Number(data.google_clicks_30_days || 0);
+      const rate = views30 ? Math.min(100, Math.round(clicks30 / views30 * 100)) : 0;
+      const activity = activityStatus(data.last_activity_at);
       statsOverlay.querySelector('#tapStatsTitle').textContent = name || 'Cliente';
-      statsOverlay.querySelector('#tapStatsTotal').textContent = Number(data.total || 0).toLocaleString('it-IT');
-      statsOverlay.querySelector('#tapStatsToday').textContent = Number(data.today || 0).toLocaleString('it-IT');
-      statsOverlay.querySelector('#tapStats7').textContent = Number(data.last_7_days || 0).toLocaleString('it-IT');
-      statsOverlay.querySelector('#tapStats30').textContent = Number(data.last_30_days || 0).toLocaleString('it-IT');
+      statsOverlay.querySelector('#tapStatsTotal').textContent = Number(data.opens_total || 0).toLocaleString('it-IT');
+      statsOverlay.querySelector('#tapStats30').textContent = Number(data.opens_30_days || 0).toLocaleString('it-IT');
+      statsOverlay.querySelector('#tapStatsViews30').textContent = views30.toLocaleString('it-IT');
+      statsOverlay.querySelector('#tapStatsClicks30').textContent = clicks30.toLocaleString('it-IT');
+      statsOverlay.querySelector('#tapStatsRate30').textContent = rate.toLocaleString('it-IT') + '%';
+      const activityEl = statsOverlay.querySelector('#tapStatsActivity');
+      activityEl.textContent = activity.text;
+      activityEl.classList.toggle('inactive', activity.inactive);
       statsOverlay.classList.add('show');
     }
 
@@ -213,7 +234,7 @@
         const id = row.querySelector('[data-rename]')?.dataset.rename || row.querySelector('[data-id]')?.dataset.id || '';
         const cell = row.querySelector('td.nome');
         if (!id || !cell) return;
-        const data = counts.get(String(id)) || { total:0, today:0, last_7_days:0, last_30_days:0 };
+        const data = counts.get(String(id)) || {};
         let badge = cell.querySelector('.tap-eye-count');
         if (!badge) {
           badge = document.createElement('button');
@@ -221,10 +242,10 @@
           badge.className = 'tap-eye-count';
           cell.appendChild(badge);
         }
-        const total = Number(data.total || 0);
+        const total = Number(data.opens_total || 0);
         badge.dataset.zero = total ? '0' : '1';
         badge.textContent = '👁 ' + total.toLocaleString('it-IT');
-        badge.title = `Apri statistiche NFC — oggi ${Number(data.today||0)}, 7 giorni ${Number(data.last_7_days||0)}, 30 giorni ${Number(data.last_30_days||0)}, totale ${total}`;
+        badge.title = `Apri statistiche — aperture 30 giorni ${Number(data.opens_30_days||0)}, clic verso Google ${Number(data.google_clicks_30_days||0)}, totale ${total}`;
         badge.onclick = () => {
           const name = cell.querySelector('.name-btn')?.textContent?.trim() || '';
           openStats(id, name);

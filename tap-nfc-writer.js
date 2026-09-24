@@ -56,6 +56,19 @@
   const close = overlay.querySelector('#tapNfcClose');
   let pending = null;
 
+  function urlForCard(url, label) {
+    const clean = String(url || '').trim();
+    if (label !== 'link personalizzato') return clean;
+    try {
+      const parsed = new URL(clean);
+      if (parsed.hostname === 'tapreputa.github.io' && parsed.pathname.endsWith('/Scheda-nuovo-Cliente/tap.html')) {
+        parsed.searchParams.set('src', 'nfc');
+        return parsed.toString();
+      }
+    } catch {}
+    return clean;
+  }
+
   function closeWriter() {
     try { nativeBridge.cancelNfcWrite(); } catch {}
     overlay.classList.remove('show', 'success', 'error');
@@ -63,7 +76,7 @@
   }
 
   function beginWrite(url, label) {
-    const clean = String(url || '').trim();
+    const clean = urlForCard(url, label);
     if (!clean || clean === '-') return;
     pending = { url:clean, label };
     overlay.classList.remove('success', 'error');

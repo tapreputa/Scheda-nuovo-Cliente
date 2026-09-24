@@ -20,8 +20,11 @@
   'use strict';
   const SUPABASE_URL = 'https://rqzgdgdoulgjwlxtdxhi.supabase.co';
   const PUBLISHABLE_KEY = 'sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
-  const slug = new URLSearchParams(location.search).get('c') || '';
-  const canonical = 'https://tapreputa.github.io/Scheda-nuovo-Cliente/tap.html?c=' + encodeURIComponent(slug);
+  const params = new URLSearchParams(location.search);
+  const slug = params.get('c') || '';
+  const requestedSource = params.get('src') || 'legacy';
+  const source = ['nfc', 'link', 'legacy', 'qr'].includes(requestedSource) ? requestedSource : 'link';
+  const canonical = 'https://tapreputa.github.io/Scheda-nuovo-Cliente/tap.html?c=' + encodeURIComponent(slug) + '&src=' + encodeURIComponent(source);
   const error = document.getElementById('error');
 
   async function go() {
