@@ -149,6 +149,13 @@
 }
 @media(prefers-reduced-motion:reduce){.tap-home-premium .quick-card,.tap-home-premium .quick-arrow,.tap-home-premium .primary{transition:none!important}}
 </style>
+<style id="tap-home-mobile-refine-v1">
+@media(max-width:760px){
+  .tap-home-premium .welcome h1{font-size:clamp(25px,6.9vw,28px)!important;line-height:1.08!important;letter-spacing:-.045em!important;max-width:100%}
+  .tap-home-premium[data-tap-operator]::after{top:30px!important;right:32px!important;font-size:12px!important;padding:6px 10px!important}
+}
+@media(max-width:350px){.tap-home-premium .welcome h1{font-size:24px!important}}
+</style>
 </head>
 <body data-auth="required">
 <header class="topbar">
