@@ -504,7 +504,7 @@
     const src = modules[PAGE_NAME];
     if (!src || document.querySelector(`script[data-tap-page-tools="${src}"]`)) return;
     const script = document.createElement('script');
-    script.src = src + '?v=2';
+    script.src = src + '?v=3';
     script.dataset.tapPageTools = src;
     document.body.appendChild(script);
   }
