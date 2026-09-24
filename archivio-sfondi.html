@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07152b">
+<title>Tap NFC · Archivio Sfondi</title>
+<link rel="stylesheet" href="tap-premium-theme.css?v=2">
+<style>
+:root{--navy:#07152b;--blue:#1769ff;--ink:#0a1930;--muted:#718097;--line:#dce4ee;--gold:#d4a328}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink)}body{background:radial-gradient(circle at 15% -10%,rgba(23,105,255,.10),transparent 31%),linear-gradient(180deg,#f7f9fd,#eff4f9);-webkit-font-smoothing:antialiased}
+.topbar{min-height:86px;background:linear-gradient(120deg,#07152b,#0d3468);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;box-shadow:0 12px 30px rgba(7,21,43,.18);position:sticky;top:0;z-index:20}.brand{display:flex;align-items:center;gap:13px}.brand-icon{width:52px;height:52px;border-radius:15px;background:#fff;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.20)}.brand-icon svg{width:100%;height:100%;display:block}.brand-title{font-size:19px;font-weight:900}.brand-sub{font-size:12px;color:#b9c9df;margin-top:3px}.brand-sub strong{color:#f4c95d}.top-actions{display:flex;align-items:center;gap:9px}.back,.logout{min-height:42px;border:1px solid rgba(255,255,255,.20);border-radius:13px;background:rgba(255,255,255,.08);color:#fff;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font:inherit;font-size:12px;font-weight:850;cursor:pointer}.back{background:#fff;color:#08264c}
+.wrap{max-width:1180px;margin:0 auto;padding:42px 24px 70px}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:24px}.eyebrow{color:var(--gold);font-size:12px;letter-spacing:.2em;font-weight:950;text-transform:uppercase;margin-bottom:10px}.hero h1{margin:0;font-size:44px;line-height:1;letter-spacing:-.04em}.hero p{max-width:700px;margin:12px 0 0;color:var(--muted);font-size:14px;line-height:1.55}.count{flex:0 0 auto;border:1px solid #cadbea;background:#fff;border-radius:999px;padding:10px 15px;color:#175b9c;font-size:12px;font-weight:900}
+.tools{display:flex;align-items:center;gap:12px;margin-bottom:20px}.search{width:100%;height:54px;border:1.5px solid #cfdae7;border-radius:16px;background:#fff;padding:0 17px;color:#10243f;font:inherit;font-size:15px;outline:none;box-shadow:0 10px 28px rgba(20,42,74,.06)}.search:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(23,105,255,.10)}
+.archive-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.background-card{min-width:0;border:1px solid var(--line);border-radius:22px;background:#fff;overflow:hidden;box-shadow:0 15px 38px rgba(20,42,74,.09);cursor:pointer;text-align:left;padding:0;color:inherit;font:inherit;transition:transform .16s ease,box-shadow .16s ease}.background-card:hover{transform:translateY(-3px);box-shadow:0 20px 42px rgba(20,42,74,.14)}.background-card:focus-visible{outline:4px solid rgba(23,105,255,.22);outline-offset:3px}.image-wrap{position:relative;aspect-ratio:9/14;background:#dfe6ed;overflow:hidden}.image-wrap img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .28s ease}.background-card:hover img{transform:scale(1.025)}.quality{position:absolute;right:9px;top:9px;padding:5px 8px;border-radius:999px;background:rgba(7,21,43,.78);color:#fff;font-size:9px;font-weight:900;letter-spacing:.06em;backdrop-filter:blur(8px)}.card-body{padding:14px 14px 15px}.category-name{font-size:15px;font-weight:950;line-height:1.22}.view-label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:7px;color:#748397;font-size:10px;font-weight:800}.empty{grid-column:1/-1;padding:48px 20px;text-align:center;border:1px dashed #c9d5e3;border-radius:20px;background:rgba(255,255,255,.65);color:#748397}
+.viewer{display:none;position:fixed;inset:0;z-index:2147483646;background:#050b15;color:#fff;align-items:center;justify-content:center}.viewer.show{display:flex}.viewer-image{display:block;width:100%;height:100%;object-fit:contain}.viewer-top{position:absolute;left:0;right:0;top:0;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:max(14px,env(safe-area-inset-top)) 16px 22px;background:linear-gradient(180deg,rgba(0,0,0,.86),transparent)}.viewer-title{font-size:20px;font-weight:950;text-shadow:0 2px 10px #000}.viewer-index{margin-top:4px;color:#d6deea;font-size:11px;font-weight:750}.viewer-close{width:46px;height:46px;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(0,0,0,.42);color:#fff;font-size:27px;line-height:1;cursor:pointer}.viewer-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:48px;height:64px;border:1px solid rgba(255,255,255,.26);background:rgba(0,0,0,.36);color:#fff;border-radius:15px;font-size:28px;cursor:pointer;backdrop-filter:blur(7px)}.viewer-prev{left:12px}.viewer-next{right:12px}.viewer-bottom{position:absolute;left:0;right:0;bottom:0;padding:28px 16px max(18px,env(safe-area-inset-bottom));text-align:center;background:linear-gradient(0deg,rgba(0,0,0,.78),transparent);font-size:11px;color:#dbe3ed}
+@media(max-width:900px){.archive-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){.topbar{min-height:76px;padding:11px 12px}.brand-icon{width:46px;height:46px}.brand-title{font-size:17px}.brand-sub{font-size:10px}.logout{display:none}.back{min-height:40px;padding:0 12px}.wrap{padding:28px 12px 42px}.hero{display:block}.hero h1{font-size:36px}.hero p{font-size:12px}.count{display:inline-flex;margin-top:14px}.tools{margin-bottom:14px}.search{height:50px}.archive-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.background-card{border-radius:17px}.card-body{padding:12px}.category-name{font-size:13px}.image-wrap{aspect-ratio:9/14}.viewer-title{font-size:17px}.viewer-nav{width:42px;height:58px}.viewer-prev{left:7px}.viewer-next{right:7px}}
+</style>
+</head>
+<body data-auth="required">
+<header class="topbar">
+  <div class="brand">
+    <a href="index.html" aria-label="Vai alla home"><div class="brand-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="14" fill="#fff"/><path d="M31 12 L88 50 L16 92 L48 56 L66 50 L25 23 Z" fill="#071d35"/><path d="M18 31 L50 50 L39 60 L8 40 Z" fill="#071d35"/><path d="M15 90 L27 57 L39 64 Z" fill="#e6a019"/></svg></div></a>
+    <div><div class="brand-title">Tap NFC</div><div class="brand-sub">Powered by <strong>Tapreputa</strong></div></div>
+  </div>
+  <div class="top-actions"><a class="back" href="index.html">← Home</a><button class="logout" type="button" data-logout>Esci</button></div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div><div class="eyebrow">Catalogo personalizzazioni</div><h1>Archivio Sfondi</h1><p>Mostra al cliente tutte le grafiche disponibili e apri ogni immagine a schermo intero per valutarla nella massima qualità originale.</p></div>
+    <div class="count"><span id="visibleCount">37</span> categorie disponibili</div>
+  </section>
+  <div class="tools"><input id="backgroundSearch" class="search" type="search" autocomplete="off" placeholder="Cerca una categoria…" aria-label="Cerca una categoria"></div>
+  <section id="backgroundGrid" class="archive-grid" aria-live="polite"></section>
+</main>
+
+<div id="backgroundViewer" class="viewer" role="dialog" aria-modal="true" aria-labelledby="viewerTitle">
+  <div class="viewer-top"><div><div id="viewerTitle" class="viewer-title"></div><div id="viewerIndex" class="viewer-index"></div></div><button id="viewerClose" class="viewer-close" type="button" aria-label="Chiudi">×</button></div>
+  <img id="viewerImage" class="viewer-image" alt="">
+  <button id="viewerPrev" class="viewer-nav viewer-prev" type="button" aria-label="Immagine precedente">‹</button>
+  <button id="viewerNext" class="viewer-nav viewer-next" type="button" aria-label="Immagine successiva">›</button>
+  <div class="viewer-bottom">Usa le frecce o scorri lateralmente per confrontare le categorie</div>
+</div>
+
+<script src="tap-auth.js"></script>
+<script src="archivio-sfondi.js?v=1"></script>
+</body>
+</html>
