@@ -19,12 +19,16 @@
 </style>
 <link rel="stylesheet" href="tap-premium-theme.css?v=2">
 <link rel="stylesheet" href="home-logo-archive.css?v=1">
-<style id="tap-home-notes-grid-v2">
+<style id="tap-home-tools-grid-v3">
+.quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.quick-grid>.archive-logo-card{grid-column:auto!important;min-height:142px!important}
 @media(max-width:820px){
   .quick-grid{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:9px!important}
   .quick-grid>.quick-card{grid-column:auto!important;width:auto!important;max-width:none!important}
-  .quick-grid>.report-card{grid-column:1!important;grid-row:2!important}
-  .quick-grid>.notes-card{grid-column:2!important;grid-row:2!important}
+  .quick-grid>.report-card{grid-column:1!important;grid-row:1!important}
+  .quick-grid>.notes-card{grid-column:2!important;grid-row:1!important}
+  .quick-grid>.archive-logo-card{grid-column:1!important;grid-row:2!important;min-height:120px!important}
+  .quick-grid>.archive-background-card{grid-column:2!important;grid-row:2!important}
 }
 </style>
 </head>
@@ -61,8 +65,6 @@
   </section>
 
   <section class="quick-grid" aria-label="Azioni rapide">
-    <a class="quick-card" href="clienti.html"><div class="quick-icon">◎</div><div class="quick-title">I miei clienti</div><div class="quick-desc">Consulta, modifica e gestisci il database.</div><div class="quick-arrow">→</div></a>
-    <a class="quick-card" href="risultati.html"><div class="quick-icon">▥</div><div class="quick-title">Risultati</div><div class="quick-desc">Controlla vendite, prodotti e andamento.</div><div class="quick-arrow">→</div></a>
     <a class="quick-card report-card" href="risultati.html"><div class="quick-icon">⇩</div><div class="quick-title">Report Excel</div><div class="quick-desc">Accedi all’esportazione professionale.</div><div class="quick-arrow">→</div></a>
     <a class="quick-card notes-card" href="note.html"><div class="quick-icon">✎</div><div class="quick-title">Block Notes</div><div class="quick-desc">Appunti, indirizzi, idee e promemoria.</div><div class="quick-arrow">→</div></a>
     <a class="quick-card archive-logo-card" href="archivio-logo.html"><div class="quick-icon">▣</div><div class="quick-title">Archivio Logo</div><div class="quick-desc">Prepara e conserva i loghi dei prossimi potenziali clienti.</div><div class="quick-arrow">→</div></a>
