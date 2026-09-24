@@ -419,7 +419,7 @@
     });
 
     const pill = document.querySelector('.user-pill');
-    if (pill && !document.querySelector('[data-logout]')) {
+    if (pill && !document.querySelector('[data-logout]') && !['clienti.html', 'risultati.html'].includes(PAGE_NAME)) {
       const button = document.createElement('button');
       button.type = 'button';
       button.dataset.logout = '1';
