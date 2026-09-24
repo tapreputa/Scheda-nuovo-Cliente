@@ -8,7 +8,7 @@
     if (document.querySelector('link[data-tap-global-bottom-nav]')) return;
     const link=document.createElement('link');
     link.rel='stylesheet';
-    link.href='tap-global-bottom-nav.css?v=3';
+    link.href='tap-global-bottom-nav.css?v=4';
     link.dataset.tapGlobalBottomNav='1';
     document.head.appendChild(link);
   }
