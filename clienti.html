@@ -31,6 +31,16 @@
     z-index:auto!important;transform:none!important;-webkit-transform:none!important;
     isolation:auto!important;overflow:hidden!important;background:#fff!important;
   }
+  html body #tableWrap thead th:nth-child(1){
+    position:sticky!important;left:0!important;z-index:10!important;
+    background:#f7faf9!important;box-shadow:4px 0 8px -6px rgba(0,45,37,.6)!important;
+  }
+  html body #tableWrap #rows>tr>td.id{
+    position:sticky!important;left:0!important;z-index:7!important;
+    background:#fff!important;box-shadow:4px 0 8px -6px rgba(0,45,37,.6)!important;
+  }
+  html body #tableWrap #rows>tr.row-editable>td.id{background:#f0faf7!important}
+  html body #tableWrap #rows>tr.row-readonly>td.id{background:#f5f7f9!important}
   html body #tableWrap thead th:nth-child(2),
   html body #rows>tr>td.nome{
     position:static!important;left:auto!important;width:128px!important;
