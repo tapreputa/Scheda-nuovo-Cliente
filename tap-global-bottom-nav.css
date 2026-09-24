@@ -20,7 +20,7 @@
   }
   .tap-global-nav-item:active{transform:scale(.95)}
   .tap-global-nav-ico{font-size:20px;line-height:1;transition:transform .22s ease}
-  .tap-global-nav-item[aria-current="page"]{color:#0e59c7;background:#edf3ff}
+  .tap-global-nav-item[aria-current="page"]{color:#fff;background:linear-gradient(145deg,#0a48b6,#1769ff 62%,#3982ff);box-shadow:0 9px 20px rgba(23,105,255,.27),inset 0 1px rgba(255,255,255,.20)}
   .tap-global-nav-item[aria-current="page"] .tap-global-nav-ico{transform:translateY(-1px)}
   .tap-global-nav-item.tap-new[aria-current="page"]{
     color:#fff;background:linear-gradient(145deg,#0a48b6,#1769ff 62%,#3982ff);
