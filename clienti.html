@@ -88,7 +88,7 @@
   <div class="eyebrow">Database condiviso</div>
   <div class="headline"><h1>I miei clienti</h1><div id="count" class="count"></div></div>
   <div class="tools" aria-label="Filtri clienti">
-    <div class="client-search" role="search"><span class="client-search-icon" aria-hidden="true">⌕</span><input id="clientSearch" type="search" inputmode="search" autocomplete="off" placeholder="Cerca attività per nome…" aria-label="Cerca attività per nome"></div>
+    <div class="client-search" role="search"><span class="client-search-icon" aria-hidden="true">⌕</span><input id="clientSearch" type="search" inputmode="search" autocomplete="off" placeholder="Cerca per nome, ID, categoria o operatore…" aria-label="Cerca per nome, ID, categoria o operatore"></div>
     <select id="filterOperator" class="filter-select" aria-label="Filtra per operatore"><option value="">Tutti gli operatori</option></select>
     <select id="filterCategory" class="filter-select" aria-label="Filtra per categoria"><option value="">Tutte le categorie</option></select>
     <select id="filterStatus" class="filter-select" aria-label="Filtra per stato"><option value="">Tutti gli stati</option><option>Da completare</option><option>Da consegnare</option><option>Consegnato</option><option>Attivo</option></select>
@@ -119,7 +119,7 @@ function syncFilterOptions(){fillSelect(filterOperator,[...new Set(clienti.map(c
 function hasFilters(){return !!((clientSearch?.value||'').trim()||filterOperator.value||filterCategory.value||filterStatus.value||filterOrder.value!=='id')}
 function filteredClients(){
   const query=normalizeSearch(clientSearch?.value||'').trim();
-  let list=clienti.filter(c=>(!query||normalizeSearch(c.nome).includes(query))&&(!filterOperator.value||c.operatore===filterOperator.value)&&(!filterCategory.value||c.categoria===filterCategory.value)&&(!filterStatus.value||c.stato===filterStatus.value));
+  let list=clienti.filter(c=>(!query||normalizeSearch([c.nome,displayId(c),c.categoria,c.operatore].filter(Boolean).join(" ")).includes(query))&&(!filterOperator.value||c.operatore===filterOperator.value)&&(!filterCategory.value||c.categoria===filterCategory.value)&&(!filterStatus.value||c.stato===filterStatus.value));
   if(filterOrder.value==='new')list.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
   else if(filterOrder.value==='old')list.sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));
   else if(filterOrder.value==='az')list.sort((a,b)=>String(a.nome||'').localeCompare(String(b.nome||''),'it',{sensitivity:'base'}));
