@@ -110,8 +110,7 @@ function filteredClients(){
 }
 function updateSummary(list){
   const mine=user?clienti.filter(c=>c.created_by===user.id).length:0;
-  const active=clienti.filter(c=>c.stato==='Attivo').length;
-  quickSummary.innerHTML='<span class="quick-chip"><strong>'+list.length+'</strong> visualizzati</span><span class="quick-chip"><strong>'+mine+'</strong> miei</span><span class="quick-chip"><strong>'+active+'</strong> attivi</span>';
+  quickSummary.innerHTML='<span class="quick-chip"><strong>'+list.length+'</strong> visualizzati</span><span class="quick-chip"><strong>'+mine+'</strong> miei</span>';
   resetFilters.classList.toggle('active',hasFilters());
 }
 async function loadClients(){try{clienti=await TapNfc.listClients();syncFilterOptions();render()}catch(err){loading.style.display='none';notice('Errore caricamento database: '+(err.message||'riprova.'),true)}}
