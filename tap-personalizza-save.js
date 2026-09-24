@@ -38,7 +38,7 @@
     .tap-save-success{margin-top:16px;padding:18px;border:1px solid #b8e4d8;border-radius:18px;background:#f0fbf7;animation:tapSaveReveal .22s ease-out}
     .tap-save-success h3{margin:0 0 6px;color:#08735f;font-size:19px}.tap-save-success p{margin:0 0 14px;color:#5e716b;font-size:13px;line-height:1.45}
     .tap-save-success-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tap-save-success-actions a{min-height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13px;font-weight:900}
-    .tap-open-page{grid-column:1/-1;background:linear-gradient(135deg,#0b4fc2,#1769ff);color:#fff;box-shadow:0 8px 18px rgba(23,105,255,.18)}.tap-new-client{background:#003c33;color:#fff}.tap-client-list{background:#fff;color:#08735f;border:1px solid #b8ddd3}
+    .tap-open-page,.tap-open-card{grid-column:1/-1}.tap-open-page{background:linear-gradient(135deg,#0b4fc2,#1769ff);color:#fff;box-shadow:0 8px 18px rgba(23,105,255,.18)}.tap-open-card{background:#fff;color:#08735f;border:1px solid #b8ddd3}.tap-new-client{background:#003c33;color:#fff}.tap-client-list{background:#fff;color:#08735f;border:1px solid #b8ddd3}
     @keyframes tapSaveReveal{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
     @media(max-width:520px){.tap-save-actions,.tap-save-success-actions{grid-template-columns:1fr}.tap-save-modal{padding:20px;border-radius:20px}.tap-save-order{grid-template-columns:1fr 1fr 1fr}}
   `;
@@ -159,7 +159,7 @@
     ) || null;
   }
 
-  function showSuccess(data, updated) {
+  function showSuccess(data, updated, clientId) {
     addBtn.textContent = updated ? 'Cliente aggiornato ✓' : 'Cliente salvato ✓';
     addBtn.disabled = true;
     let panel = document.getElementById('tapSaveSuccess');
@@ -170,7 +170,8 @@
       addBtn.insertAdjacentElement('afterend', panel);
     }
     const pageUrl = safePageUrl(data.finalNfcUrl);
-    panel.innerHTML = `<h3>${updated ? 'Cliente aggiornato correttamente' : 'Cliente salvato correttamente'}</h3><p><strong>${esc(data.businessName)}</strong> è presente nel database condiviso.</p><div class="tap-save-success-actions">${pageUrl ? `<a class="tap-open-page" href="${esc(pageUrl)}" target="_blank" rel="noopener noreferrer">↗ Apri pagina</a>` : ''}<a class="tap-new-client" href="index.html">＋ Nuovo cliente</a><a class="tap-client-list" href="clienti.html">I miei clienti</a></div>`;
+    const clientCardUrl = clientId ? `clienti.html?open=${encodeURIComponent(clientId)}` : '';
+    panel.innerHTML = `<h3>${updated ? 'Cliente aggiornato correttamente' : 'Cliente salvato correttamente'}</h3><p><strong>${esc(data.businessName)}</strong> è presente nel database condiviso.</p><div class="tap-save-success-actions">${pageUrl ? `<a class="tap-open-page" href="${esc(pageUrl)}" target="_blank" rel="noopener noreferrer">↗ Apri pagina</a>` : ''}${clientCardUrl ? `<a class="tap-open-card" href="${esc(clientCardUrl)}">▤ Apri scheda cliente</a>` : ''}<a class="tap-new-client" href="index.html">＋ Nuovo cliente</a><a class="tap-client-list" href="clienti.html">I miei clienti</a></div>`;
     if (msg) {
       msg.className = 'message show ok';
       msg.textContent = updated ? 'Scheda cliente aggiornata nel database condiviso.' : 'Cliente salvato nel database condiviso.';
@@ -265,7 +266,7 @@
         await TapNfc.updateClient(savedClient.id, { logo_data: data.logoData || null });
       }
 
-      showSuccess(data, updateExisting);
+      showSuccess(data, updateExisting, savedClient?.id);
     } catch (err) {
       console.error(err);
       addBtn.disabled = false;
