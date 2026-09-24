@@ -221,7 +221,29 @@
 }
 @media(prefers-reduced-motion:reduce){.tap-home-premium .home-erase-btn{transition:none!important}}
 </style>
-</head>
+<style id="tap-home-erase-placement-a-v2">
+.tap-home-premium .welcome{display:grid!important;grid-template-columns:minmax(0,1fr) clamp(180px,25vw,270px);grid-template-areas:"copy visual" "tools visual";grid-template-rows:auto auto;column-gap:18px;row-gap:0;align-items:center}
+.tap-home-premium .welcome-copy{grid-area:copy;max-width:600px;min-width:0}
+.tap-home-premium .welcome-controls{grid-area:tools;position:relative;z-index:2;display:flex;align-items:center;justify-content:flex-start;gap:9px;flex-wrap:nowrap;min-width:0;margin-top:12px}
+.tap-home-premium .welcome-controls .status-pill{margin:0!important;flex:0 0 auto}
+.tap-home-premium .welcome-visual{grid-area:visual;justify-self:end;align-self:center;flex:none;width:clamp(180px,25vw,270px);max-width:100%}
+@media(max-width:760px){
+  .tap-home-premium .welcome{grid-template-columns:minmax(0,1fr) clamp(88px,28vw,124px);grid-template-areas:"copy visual" "tools tools";grid-template-rows:auto auto;column-gap:4px;row-gap:8px;align-items:center}
+  .tap-home-premium .welcome-copy{max-width:none}
+  .tap-home-premium .welcome-controls{gap:7px;margin-top:0;flex-wrap:nowrap}
+  .tap-home-premium .welcome-controls .status-pill{padding:6px 8px!important;font-size:9px!important}
+  .tap-home-premium .home-erase-btn{height:34px!important;padding:0 9px!important;gap:5px;font-size:9px!important}
+  .tap-home-premium .home-erase-btn svg{width:12px;height:12px}
+  .tap-home-premium .welcome-visual{flex:none;width:clamp(88px,28vw,124px)}
+}
+@media(max-width:350px){
+  .tap-home-premium .welcome{grid-template-columns:minmax(0,1fr) 82px}
+  .tap-home-premium .welcome-visual{width:82px}
+  .tap-home-premium .welcome-controls{gap:6px}
+  .tap-home-premium .welcome-controls .status-pill{padding:5px 7px!important;font-size:8px!important}
+  .tap-home-premium .home-erase-btn{height:32px!important;padding:0 7px!important;font-size:8px!important}
+}
+</style></head>
 <body data-auth="required">
 <header class="topbar">
   <div class="brand">
@@ -233,10 +255,11 @@
 
 <main class="wrap tap-home-premium">
 <section class="welcome">
-    <div class="welcome-copy"><div class="eyebrow">Tapreputa · NFC Control</div><h1>Ciao <span data-operator-name>Operatore</span></h1><p>Pronto per configurare la prossima card NFC?</p><div class="welcome-controls">
+    <div class="welcome-copy"><div class="eyebrow">Tapreputa · NFC Control</div><h1>Ciao <span data-operator-name>Operatore</span></h1><p>Pronto per configurare la prossima card NFC?</p></div>
+    <div class="welcome-controls">
       <div class="status-pill"><span class="status-dot"></span><span>Database connesso</span></div>
       <button class="kpi-erase-btn home-erase-btn" id="eraseNfcBtn" type="button" hidden aria-label="Azzera la card NFC"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 4v5m4-5v5"/></svg><span>Azzera Card</span></button>
-    </div></div>
+    </div>
     <div class="welcome-visual" aria-hidden="true">
       <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
         <defs>
