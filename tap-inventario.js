@@ -57,6 +57,9 @@
       return n ? (n > 0 ? '+' : '') + n + ' ' + label : '';
     }).filter(Boolean).join(' · ') || 'Nessuna variazione quantità';
   }
+  function canManageOrders() {
+    return TapNfc.operatorName(currentUser) === 'Francesco';
+  }
   function renderHistory(rows) {
     historyElement.replaceChildren();
     const visibleRows = rows.filter(row => Number(row.targhe || 0) || Number(row.carte || 0) || Number(row.adesivi || 0));
@@ -85,13 +88,18 @@
       const qtyText = document.createElement('span');
       qtyText.textContent = quantitySummary(row);
       qty.append(qtyText);
-      if (row.tipo === 'ordine') {
+      if (row.tipo === 'ordine' && canManageOrders()) {
         const edit = document.createElement('button');
         edit.type = 'button';
         edit.className = 'secondary';
         edit.textContent = 'Modifica ordine';
         edit.addEventListener('click', () => editOrder(row, item));
-        qty.append(edit);
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'danger';
+        remove.textContent = 'Elimina ordine';
+        remove.addEventListener('click', () => deleteOrder(row));
+        qty.append(edit, remove);
       }
       item.append(left, qty);
       historyElement.append(item);
@@ -103,6 +111,21 @@
     const amount = Number(raw);
     if (!Number.isFinite(amount) || amount < 0 || amount > 9999999999.99) throw new Error('Inserisci un importo valido pari o superiore a zero.');
     return amount.toFixed(2);
+  }
+  async function deleteOrder(row) {
+    const confirmed = window.confirm('Eliminare questo ordine? Le scorte e la spesa totale verranno ricalcolate. L’operazione non può essere annullata.');
+    if (!confirmed) return;
+    try {
+      const response = await TapNfc.rest('inventario_movimenti?id=eq.' + encodeURIComponent(row.id), {
+        method: 'DELETE',
+        headers: { Prefer: 'return=minimal' }
+      });
+      await readResponse(response);
+      await refresh();
+      showNotice('Ordine eliminato e inventario aggiornato.', 'ok');
+    } catch (error) {
+      showNotice(error.message || 'Non riesco a eliminare l’ordine.', 'error');
+    }
   }
   function editOrder(row, item) {
     if (item.querySelector('.movement-edit')) return;
@@ -147,7 +170,7 @@
     const save = document.createElement('button');
     save.type = 'submit';
     save.className = 'primary';
-    save.textContent = 'Salva modifiche';
+    save.textContent = 'Salva ordine';
     const cancel = document.createElement('button');
     cancel.type = 'button';
     cancel.className = 'secondary';
