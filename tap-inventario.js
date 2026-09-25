@@ -85,13 +85,13 @@
       const qtyText = document.createElement('span');
       qtyText.textContent = quantitySummary(row);
       qty.append(qtyText);
-      if (row.tipo === 'ordine' && (row.spesa === null || row.spesa === undefined)) {
-        const complete = document.createElement('button');
-        complete.type = 'button';
-        complete.className = 'secondary';
-        complete.textContent = 'Inserisci costo';
-        complete.addEventListener('click', () => completeOrderSpend(row));
-        qty.append(complete);
+      if (row.tipo === 'ordine') {
+        const edit = document.createElement('button');
+        edit.type = 'button';
+        edit.className = 'secondary';
+        edit.textContent = 'Modifica ordine';
+        edit.addEventListener('click', () => editOrder(row, item));
+        qty.append(edit);
       }
       item.append(left, qty);
       historyElement.append(item);
@@ -104,32 +104,98 @@
     if (!Number.isFinite(amount) || amount < 0 || amount > 9999999999.99) throw new Error('Inserisci un importo valido pari o superiore a zero.');
     return amount.toFixed(2);
   }
-  async function completeOrderSpend(row) {
-    const entered = window.prompt('Inserisci la spesa effettiva di questo ordine in euro (es. 125,50):');
-    if (entered === null) return;
-    try {
-      const response = await TapNfc.rest('inventario_movimenti?id=eq.' + encodeURIComponent(row.id), {
-        method: 'PATCH',
-        headers: { Prefer: 'return=minimal' },
-        body: JSON.stringify({ spesa: parseSpend(entered) })
-      });
-      await readResponse(response);
-      await refresh();
-      showNotice('Costo dell’ordine aggiornato e totale ricalcolato.', 'ok');
-    } catch (error) {
-      showNotice(error.message, 'error');
+  function editOrder(row, item) {
+    if (item.querySelector('.movement-edit')) return;
+    item.classList.add('editing');
+    const form = document.createElement('form');
+    form.className = 'movement-edit';
+    form.noValidate = true;
+    const specs = [
+      ['Data ordine', 'data_movimento', 'date', row.data_movimento || localDate()],
+      ['Targhe', 'targhe', 'number', String(Number(row.targhe || 0))],
+      ['Cards', 'carte', 'number', String(Number(row.carte || 0))],
+      ['Adesivi', 'adesivi', 'number', String(Number(row.adesivi || 0))],
+      ['Spesa (€)', 'spesa', 'text', row.spesa == null ? '' : String(row.spesa).replace('.', ',')]
+    ];
+    for (const [caption, name, type, value] of specs) {
+      const field = document.createElement('div');
+      field.className = 'field';
+      const label = document.createElement('label');
+      label.textContent = caption;
+      const input = document.createElement('input');
+      input.name = name;
+      input.type = type;
+      input.value = value;
+      if (type === 'number') {
+        input.min = '0';
+        input.step = '1';
+        input.inputMode = 'numeric';
+        input.required = true;
+      } else if (name === 'data_movimento') {
+        input.required = true;
+      } else {
+        input.inputMode = 'decimal';
+        input.placeholder = 'Lascia vuoto se il costo è sconosciuto';
+      }
+      label.htmlFor = 'edit-' + row.id + '-' + name;
+      input.id = label.htmlFor;
+      field.append(label, input);
+      form.append(field);
     }
+    const actions = document.createElement('div');
+    actions.className = 'movement-edit-actions';
+    const save = document.createElement('button');
+    save.type = 'submit';
+    save.className = 'primary';
+    save.textContent = 'Salva modifiche';
+    const cancel = document.createElement('button');
+    cancel.type = 'button';
+    cancel.className = 'secondary';
+    cancel.textContent = 'Annulla';
+    cancel.addEventListener('click', () => {
+      form.remove();
+      item.classList.remove('editing');
+    });
+    actions.append(save, cancel);
+    form.append(actions);
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      save.disabled = true;
+      try {
+        const quantities = extractQuantities(form, 'ordine');
+        const payload = {
+          data_movimento: form.elements.data_movimento.value,
+          ...quantities
+        };
+        const spend = String(form.elements.spesa.value || '').trim();
+        if (spend) payload.spesa = parseSpend(spend);
+        const response = await TapNfc.rest('inventario_movimenti?id=eq.' + encodeURIComponent(row.id), {
+          method: 'PATCH',
+          headers: { Prefer: 'return=minimal' },
+          body: JSON.stringify(payload)
+        });
+        await readResponse(response);
+        await refresh();
+        showNotice('Ordine aggiornato e giacenze ricalcolate.', 'ok');
+      } catch (error) {
+        showNotice(error.message || 'Non riesco ad aggiornare l’ordine.', 'error');
+        save.disabled = false;
+      }
+    });
+    item.append(form);
   }
   async function refresh() {
     clearNotice();
     try {
-      const [balanceRows, movementRows, openingRows, uncostedOrders] = await Promise.all([
+      const [balanceRows, movementRows, openingRows, orderRows, uncostedOrders] = await Promise.all([
         getRows('inventario_giacenze?select=id,targhe,carte,adesivi,spesa_totale,updated_at&id=eq.1&limit=1'),
         getRows('inventario_movimenti?select=id,tipo,data_movimento,targhe,carte,adesivi,spesa,operatore,note,created_at&order=created_at.desc&limit=50'),
         getRows('inventario_movimenti?select=id&tipo=eq.apertura&limit=1'),
+        getRows('inventario_movimenti?select=id&tipo=eq.ordine&limit=1'),
         getRows('inventario_movimenti?select=id,tipo,data_movimento,targhe,carte,adesivi,spesa,operatore,note,created_at&tipo=eq.ordine&spesa=is.null&order=created_at.desc')
       ]);
-      const opening = openingRows.length > 0;
+      const opening = openingRows.length > 0 || orderRows.length > 0;
       openingRecorded = opening;
       openingPanel.classList.toggle('hidden', opening);
       orderPanel.classList.toggle('hidden', !opening);
