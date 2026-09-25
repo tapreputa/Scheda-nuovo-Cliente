@@ -188,19 +188,18 @@
   async function refresh() {
     clearNotice();
     try {
-      const [balanceRows, movementRows, openingRows, orderRows, uncostedOrders] = await Promise.all([
+      const [balanceRows, movementRows, openingRows, orderRows] = await Promise.all([
         getRows('inventario_giacenze?select=id,targhe,carte,adesivi,spesa_totale,updated_at&id=eq.1&limit=1'),
         getRows('inventario_movimenti?select=id,tipo,data_movimento,targhe,carte,adesivi,spesa,operatore,note,created_at&order=created_at.desc&limit=50'),
         getRows('inventario_movimenti?select=id&tipo=eq.apertura&limit=1'),
-        getRows('inventario_movimenti?select=id&tipo=eq.ordine&limit=1'),
-        getRows('inventario_movimenti?select=id,tipo,data_movimento,targhe,carte,adesivi,spesa,operatore,note,created_at&tipo=eq.ordine&spesa=is.null&order=created_at.desc')
+        getRows('inventario_movimenti?select=id,tipo,data_movimento,targhe,carte,adesivi,spesa,operatore,note,created_at&tipo=eq.ordine&order=created_at.desc&limit=1000')
       ]);
       const opening = openingRows.length > 0 || orderRows.length > 0;
       openingRecorded = opening;
       openingPanel.classList.toggle('hidden', opening);
       orderPanel.classList.toggle('hidden', !opening);
       renderBalance(balanceRows[0]);
-      const combined = new Map([...movementRows, ...uncostedOrders].map(row => [row.id, row]));
+      const combined = new Map([...movementRows, ...orderRows].map(row => [row.id, row]));
       const allMovements = [...combined.values()].sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
       renderHistory(allMovements);
       if (!opening) showNotice('Per attivare le scorte, registra una volta le quantità fisicamente presenti. I clienti già esistenti non verranno conteggiati retroattivamente.', 'info');
