@@ -76,7 +76,7 @@
       categoryCode: activity.value || '',
       categoryText: option?.textContent?.trim() || '',
       logoData: currentLogoData(),
-      logoState: window.tapLogoSkipped ? 'Senza logo' : ((document.getElementById('logoFile')?.files?.[0]) ? 'Logo caricato' : 'Non specificato')
+      logoState: window.tapLogoSkipped ? 'Senza logo' : (currentLogoData() ? 'Logo caricato' : 'Non specificato')
     };
   }
 
@@ -105,15 +105,19 @@
     });
   }
 
-  function ask({title, text, rows = [], warning = '', confirmText = 'Conferma', icon = '✓', orderFields = false}) {
+  function ask({title, text, rows = [], warning = '', confirmText = 'Conferma', icon = '✓', orderFields = false, initialOrder = null}) {
     return new Promise(resolve => {
       const overlay = ensureOverlay();
+      const initialValue = key => {
+        const number = Number(initialOrder?.[key]);
+        return Number.isFinite(number) && number >= 0 ? number : 0;
+      };
       const fields = orderFields ? `
         <div class="tap-save-order">
-          <div class="tap-save-field"><label>Targhe</label><input id="tapSaveTarghe" class="tap-save-input" type="number" min="0" step="1" inputmode="numeric" value="0"></div>
-          <div class="tap-save-field"><label>Cards</label><input id="tapSaveCards" class="tap-save-input" type="number" min="0" step="1" inputmode="numeric" value="0"></div>
-          <div class="tap-save-field"><label>Adesivi</label><input id="tapSaveAdesivi" class="tap-save-input" type="number" min="0" step="1" inputmode="numeric" value="0"></div>
-          <div class="tap-save-field total"><label>Totale €</label><input id="tapSaveTotal" class="tap-save-input" type="number" min="0" step="0.01" inputmode="decimal" value="0"></div>
+          <div class="tap-save-field"><label>Targhe</label><input id="tapSaveTarghe" class="tap-save-input" type="number" min="0" step="1" inputmode="numeric" value="${initialValue('targhe')}"></div>
+          <div class="tap-save-field"><label>Cards</label><input id="tapSaveCards" class="tap-save-input" type="number" min="0" step="1" inputmode="numeric" value="${initialValue('carte')}"></div>
+          <div class="tap-save-field"><label>Adesivi</label><input id="tapSaveAdesivi" class="tap-save-input" type="number" min="0" step="1" inputmode="numeric" value="${initialValue('adesivi')}"></div>
+          <div class="tap-save-field total"><label>Totale €</label><input id="tapSaveTotal" class="tap-save-input" type="number" min="0" step="0.01" inputmode="decimal" value="${initialValue('spesa')}"></div>
         </div>` : '';
       overlay.innerHTML = `<div class="tap-save-modal" role="dialog" aria-modal="true"><div class="tap-save-icon">${esc(icon)}</div><h3>${esc(title)}</h3><p>${esc(text)}</p>${warning ? `<div class="tap-save-warning">${esc(warning)}</div>` : ''}<div class="tap-save-summary">${rows.map(r => `<div class="tap-save-row"><b>${esc(r[0])}</b><span>${esc(r[1] || '-')}</span></div>`).join('')}</div>${fields}<div class="tap-save-actions"><button type="button" class="tap-save-cancel">Annulla</button><button type="button" class="tap-save-confirm">${esc(confirmText)}</button></div></div>`;
       overlay.classList.add('show');
@@ -196,6 +200,7 @@
     if (stability && !stability.ok) return warn(stability.message || 'Controlla nuovamente anteprima e link finale prima di salvare.');
 
     const data = collect();
+    const potentialId = new URLSearchParams(location.search).get('potential');
     if (!data.businessName) return warn('Nome attività non disponibile.');
     if (!data.reviewUrl) return warn('Link recensioni non disponibile.');
     if (!data.finalNfcUrl) return warn('Genera prima il link finale.');
@@ -206,6 +211,7 @@
       text: 'Controlla i dati principali e inserisci le quantità vendute.',
       confirmText: 'Salva cliente',
       orderFields: true,
+      initialOrder: potentialId ? window.TapPotentialEdit : null,
       rows: [
         ['Attività', data.businessName],
         ['Categoria', data.categoryText],
@@ -226,6 +232,7 @@
       const duplicate = await findDuplicate(data);
       let updateExisting = false;
       if (duplicate) {
+        if (potentialId) throw new Error('Questo cliente è già registrato. Controlla la scheda in «I miei clienti» prima di convertire il potenziale.');
         const proceed = await ask({
           title: 'Cliente già presente',
           text: 'Ho trovato una scheda compatibile nel database.',
@@ -248,7 +255,7 @@
       }
 
       addBtn.textContent = updateExisting ? 'Aggiornamento...' : 'Salvataggio...';
-      const savedClient = await TapNfc.upsertBusinessClient({
+      const values = {
         nome: data.businessName,
         categoria: data.categoryText,
         categoria_codice: data.categoryCode,
@@ -260,7 +267,22 @@
         carte: order.carte,
         adesivi: order.adesivi,
         spesa: order.spesa
-      }, user);
+      };
+
+      if (potentialId) {
+        const potential = await TapNfc.getPotential(potentialId);
+        if (!potential || potential.created_by !== user.id) throw new Error('Potenziale non disponibile o appartenente a un altro operatore.');
+        const { stato: clientStatus, ...potentialValues } = values;
+        await TapNfc.updatePotential(potentialId, {
+          ...potentialValues, logo_data: data.logoData || null, updated_by: user.id,
+          updated_at: new Date().toISOString()
+        });
+        const clientId = await TapNfc.convertPotential(potentialId, order);
+        showSuccess(data, false, clientId);
+        return;
+      }
+
+      const savedClient = await TapNfc.upsertBusinessClient(values, user);
 
       if (savedClient?.id) {
         await TapNfc.updateClient(savedClient.id, { logo_data: data.logoData || null });
