@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Potenziali clienti · Tapreputa</title>
+<link rel="stylesheet" href="tap-premium-theme.css?v=1">
+<link rel="stylesheet" href="tap-premium-polish.css?v=20">
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#0c2543;background:#eff4fb}*{box-sizing:border-box}
+body{margin:0;padding-bottom:110px;background:linear-gradient(#eaf3fc,#f4f7fc);min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}
+.top{background:linear-gradient(115deg,#061d39,#043569);color:white;padding:20px max(16px,calc((100vw - 1000px)/2));display:flex;align-items:center;gap:16px}
+.back{border:1px solid #ffffff55;border-radius:14px;padding:10px 15px;text-decoration:none;font-weight:800}.top h1{font-size:clamp(21px,4vw,32px);margin:0}.top p{margin:3px 0 0;color:#c5d8f0;font-size:13px}.operator{margin-left:auto;border:1px solid #ffffff55;border-radius:999px;padding:10px 14px;font-weight:800}
+main{max-width:1000px;margin:auto;padding:26px 16px}.notice{padding:14px 18px;border:1px solid #b3d9cc;background:#ecfaf4;color:#075d47;border-radius:16px;font-weight:700;line-height:1.4}.notice.error{border-color:#efc3c0;background:#fff2f0;color:#a02e27}
+.toolbar{display:flex;gap:12px;margin:20px 0;align-items:center}.toolbar input{flex:1;min-width:0;border:1px solid #ccd8e6;border-radius:15px;padding:14px;background:white;color:#0c2543}.primary{border:0;background:linear-gradient(135deg,#0753ca,#0877ff);color:white;padding:14px 17px;border-radius:14px;text-decoration:none;font-weight:850;text-align:center}.secondary{border:1px solid #cbd6e2;background:white;color:#174065;padding:13px 16px;border-radius:14px;font-weight:800}
+.card{background:white;border:1px solid #dae3ed;box-shadow:0 15px 35px #172f5c16;border-radius:24px;padding:18px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:16px 12px;border-bottom:1px solid #e4eaf0}th{color:#63758a;font-size:12px;text-transform:uppercase;letter-spacing:.05em}td{font-size:14px}td strong{color:#0b365d}.muted{color:#73849a}.empty{padding:34px 14px;text-align:center;color:#6e7f90}.pill{background:#e8f5f0;color:#08745f;border-radius:100px;padding:6px 10px;font-size:12px;font-weight:800;white-space:nowrap}
+.overlay{position:fixed;inset:0;z-index:150;background:#071c37a8;display:none;align-items:center;justify-content:center;padding:12px}.overlay.show{display:flex}.modal{width:min(640px,100%);max-height:92dvh;overflow:auto;background:#fff;border-radius:24px;padding:22px}.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.modal h2{margin:2px 0 5px;font-size:26px}.close{border:1px solid #d1dce6;border-radius:50%;background:#f7f9fc;width:44px;height:44px;font-size:26px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}.field{display:grid;gap:6px;min-width:0}.field.wide{grid-column:1/-1}.field label{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#62758b;font-weight:850}.field input{border:1px solid #ccd8e6;border-radius:12px;padding:12px;width:100%;min-width:0;color:#102d48}.field input:disabled{background:#f4f6f9;color:#66798a}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.actions>*{min-height:46px}.danger{color:#ac322d;border-color:#ecc9c5}.help{font-size:12px;color:#738398;line-height:1.45}.sales{border:1px solid #b7dbd1;background:#f1faf7;border-radius:16px;padding:15px;margin:15px 0}.sales h3{margin:0 0 10px}.sales .fields{margin:0 0 10px}.sales .field input{background:#fff}
+@media(max-width:600px){.top{padding:18px 14px}.operator{display:none}.toolbar{flex-wrap:wrap}.toolbar input{flex-basis:100%}.toolbar a{flex:1}.card{padding:8px}.fields{grid-template-columns:1fr}.field.wide{grid-column:auto}.modal{padding:17px}.actions{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top"><a class="back" href="index.html" aria-label="Torna alla Home">‹</a><div><h1>Potenziali clienti</h1><p>Proposte separate da clienti, vendite e inventario</p></div><span class="operator" data-operator-name>Operatore</span></header>
+<main>
+  <p class="notice">Le quantità e gli importi qui indicati sono proposte. Verranno conteggiati solo quando salverai la vendita come cliente.</p>
+  <div class="toolbar"><input id="search" type="search" placeholder="Cerca nome, ID, categoria o operatore" aria-label="Cerca potenziali"><a class="primary" href="index.html#nuovo">＋ Nuovo potenziale</a><button id="refresh" class="secondary" type="button">Aggiorna</button></div>
+  <section class="card"><div id="count" class="muted" style="padding:12px"></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Attività</th><th>Operatore</th><th>Categoria</th><th>Prodotti proposti</th><th>Importo</th><th>Data</th><th></th></tr></thead><tbody id="rows"></tbody></table></div><div id="empty" class="empty" hidden>Nessun potenziale cliente salvato.</div></section>
+</main>
+<div class="overlay" id="overlay" role="presentation"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-head"><div><div class="muted" id="potentialId"></div><h2 id="modalTitle">Scheda potenziale</h2></div><button class="close" id="close" aria-label="Chiudi" type="button">×</button></div><p class="help" id="ownership"></p>
+  <div class="fields">
+    <div class="field wide"><label for="nome">Nome attività</label><input id="nome" disabled></div>
+    <div class="field"><label for="operatore">Operatore</label><input id="operatore" disabled></div>
+    <div class="field"><label for="categoria">Categoria</label><input id="categoria" disabled></div>
+    <div class="field wide"><label for="place_id">Place ID</label><input id="place_id" disabled></div>
+    <div class="field wide"><label for="link_recensioni">Link recensioni</label><input id="link_recensioni" type="url" disabled></div>
+    <div class="field wide"><label for="link_nfc">Link personalizzato proposto</label><input id="link_nfc" type="url" disabled></div>
+    <div class="field wide"><label>Logo</label><img id="logoSaved" alt="Logo salvato per il potenziale" hidden style="max-width:140px;max-height:100px;object-fit:contain;border:1px solid #dde7ef;border-radius:12px;padding:7px"><span class="help" id="logoMissing">Nessun logo salvato</span></div>
+    <div class="field"><label for="created_at">Data registrazione</label><input id="created_at" disabled></div>
+  </div>
+  <div class="sales"><h3>Prodotti e importo proposti</h3><div class="fields"><div class="field"><label for="targhe">Targhe</label><input id="targhe" type="number" min="0" step="1" inputmode="numeric"></div><div class="field"><label for="carte">Cards</label><input id="carte" type="number" min="0" step="1" inputmode="numeric"></div><div class="field"><label for="adesivi">Adesivi</label><input id="adesivi" type="number" min="0" step="1" inputmode="numeric"></div><div class="field"><label for="spesa">Totale €</label><input id="spesa" type="number" min="0" step="0.01" inputmode="decimal"></div></div><p class="help">Conferma questi valori prima di convertire la scheda: da quel momento saranno una vendita effettiva.</p></div>
+  <div class="actions"><button class="secondary" id="preview" type="button">Anteprima / personalizza</button><button class="secondary" id="copyReview" type="button">Copia link recensioni</button><button class="secondary" id="save" type="button">Salva modifiche</button><button class="primary" id="convert" type="button">Salva come cliente</button><button class="secondary danger" id="delete" type="button">Elimina potenziale</button></div>
+</div></div>
+<script src="tap-auth.js?v=20260928-potenziali"></script><script src="tap-potenziali.js?v=1"></script>
+</body></html>

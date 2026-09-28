@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20260916-stable5.7';
+  const BUILD_ID = '20260928-potenziali1';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
@@ -124,7 +124,8 @@
   const FINAL_MODULES = Object.freeze([
     'tap-template-stability.js',
     'tap-system-checks.js',
-    'tap-personalizza-logo-archive.js'
+    'tap-personalizza-logo-archive.js',
+    'tap-potenziali-personalizza.js'
   ]);
 
   const MODULES = Object.freeze([...CORE_MODULES, ...APPROVED_CATEGORY_MODULES, ...FINAL_MODULES]);
