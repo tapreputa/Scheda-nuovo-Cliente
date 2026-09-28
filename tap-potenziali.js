@@ -55,7 +55,9 @@
     const mine = isOwner(selected);
     $('ownership').textContent = mine ? 'Scheda modificabile da te.' : 'Scheda di ' + selected.operatore + ': disponibile in sola lettura.';
     for (const key of ['targhe','carte','adesivi','spesa']) $(key).disabled = !mine;
-    for (const key of ['save','convert','delete']) $(key).disabled = !mine;
+    for (const key of ['save','convert','delete','preview']) $(key).disabled = !mine;
+    $('modalScroll').scrollTop = 0;
+    $('modalFeedback').hidden = true;
     $('overlay').classList.add('show');
     TapNfc.getPotential(uuid).then(full => {
       if (selected?.id !== uuid || !full?.logo_data) return;
@@ -80,12 +82,12 @@
   async function execute(fn) {
     if (busy || !isOwner(selected)) return;
     busy = true;
-    for (const key of ['save','convert','delete']) $(key).disabled = true;
+    for (const key of ['save','convert','delete','preview']) $(key).disabled = true;
     try { await fn(); }
-    catch (error) { note(error.message || 'Operazione non riuscita.', true); }
+    catch (error) { $('modalFeedback').textContent = error.message || 'Operazione non riuscita.'; $('modalFeedback').hidden = false; }
     finally {
       busy = false;
-      if (selected && isOwner(selected)) for (const key of ['save','convert','delete']) $(key).disabled = false;
+      if (selected && isOwner(selected)) for (const key of ['save','convert','delete','preview']) $(key).disabled = false;
     }
   }
 
@@ -113,7 +115,7 @@
   });
 
   $('preview').onclick = () => {
-    if (!selected) return;
+    if (!isOwner(selected)) return;
     location.href = 'index.html?potential=' + encodeURIComponent(selected.id) + '#nuovo';
   };
   $('copyReview').onclick = async () => {
