@@ -227,7 +227,7 @@
   }
 
   async function listPotentials() {
-    const r = await rest('potenziali_clienti?select=id,potential_no,nome,operatore,categoria,categoria_codice,place_id,link_recensioni,link_nfc,targhe,carte,adesivi,spesa,created_by,created_at&stato=eq.potenziale&order=potential_no.asc');
+    const r = await rest('potenziali_clienti?select=id,potential_no,nome,operatore,categoria,categoria_codice,place_id,link_recensioni,link_nfc,preview_token,targhe,carte,adesivi,spesa,created_by,created_at&stato=eq.potenziale&order=potential_no.asc');
     return (await responseData(r)) || [];
   }
 
