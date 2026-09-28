@@ -226,6 +226,51 @@
     return (await responseData(r)) || [];
   }
 
+  async function listPotentials() {
+    const r = await rest('potenziali_clienti?select=id,potential_no,nome,operatore,categoria,categoria_codice,place_id,link_recensioni,link_nfc,targhe,carte,adesivi,spesa,created_by,created_at&stato=eq.potenziale&order=potential_no.asc');
+    return (await responseData(r)) || [];
+  }
+
+  async function getPotential(uuid) {
+    const r = await rest('potenziali_clienti?select=*&id=eq.' + encodeURIComponent(uuid) + '&stato=eq.potenziale&limit=1');
+    return ((await responseData(r)) || [])[0] || null;
+  }
+
+  async function createPotential(payload) {
+    const r = await rest('potenziali_clienti', {
+      method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(payload)
+    });
+    return ((await responseData(r)) || [])[0] || null;
+  }
+
+  async function updatePotential(uuid, patch) {
+    const r = await rest('potenziali_clienti?id=eq.' + encodeURIComponent(uuid) + '&stato=eq.potenziale', {
+      method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify(patch)
+    });
+    const item = ((await responseData(r)) || [])[0];
+    if (!item) throw new Error('Potenziale non disponibile o non modificabile.');
+    return item;
+  }
+
+  async function deletePotential(uuid) {
+    const r = await rest('potenziali_clienti?id=eq.' + encodeURIComponent(uuid) + '&stato=eq.potenziale', {
+      method: 'DELETE', headers: { Prefer: 'return=representation' }
+    });
+    const item = ((await responseData(r)) || [])[0];
+    if (!item) throw new Error('Potenziale non disponibile o non eliminabile.');
+    return item;
+  }
+
+  async function convertPotential(uuid, order) {
+    const r = await rest('rpc/converti_potenziale', {
+      method: 'POST', body: JSON.stringify({
+        p_id: uuid, p_targhe: order.targhe, p_carte: order.carte,
+        p_adesivi: order.adesivi, p_spesa: order.spesa
+      })
+    });
+    return await responseData(r);
+  }
+
   async function findExistingClient(nome, linkNfc) {
     if (linkNfc) {
       const r1 = await rest('clienti?select=*&link_nfc=eq.' + encodeURIComponent(linkNfc) + '&limit=1');
@@ -491,7 +536,7 @@
   function loadVeterinarioSupport() {
     if (PAGE_NAME !== 'personalizza.html' || document.querySelector('script[data-tap-veterinario]')) return;
     const script = document.createElement('script');
-    script.src = 'tap-veterinario.js?v=1';
+    script.src = 'tap-veterinario.js?v=20260928-potenziali';
     script.dataset.tapVeterinario = '1';
     document.body.appendChild(script);
   }
@@ -526,6 +571,7 @@
   window.TapNfc = {
     login, logout, getUser, requireAuth, operatorName, decoratePage,
     listClients, createClient, updateClient, deleteClient, upsertBusinessClient,
+    listPotentials, getPotential, createPotential, updatePotential, deletePotential, convertPotential,
     migrateLocalClients, rest, refreshChatBadge
   };
 
