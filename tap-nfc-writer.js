@@ -79,18 +79,16 @@
   }
 
   function beginWrite(url, label, alreadyConfirmed = false) {
-    const clean = urlForCard(url, label);
-    if (!clean || clean === '-') return;
-    if (isPotential && !alreadyConfirmed && label === 'link personalizzato') {
-      try {
-        const parsed = new URL(clean);
-        if (parsed.hostname === 'tapreputa.github.io' && parsed.pathname.endsWith('/Scheda-nuovo-Cliente/tap.html')
-            && !confirm('La pagina personalizzata sarà attiva dopo il salvataggio come cliente. Vuoi scrivere ora il link sulla card NFC?')) return;
-      } catch {}
+    const demo = isPotential && label === 'link personalizzato';
+    const clean = demo ? personalizedValue.dataset.demoUrl : urlForCard(url, label);
+    if (demo && !clean) {
+      alert('Il link demo non è disponibile. Aggiorna la scheda e riprova.');
+      return;
     }
+    if (!clean || clean === '-') return;
     pending = { url:clean, label };
     overlay.classList.remove('success', 'error');
-    title.textContent = 'Scrivi ' + label;
+    title.textContent = demo ? 'Scrivi pagina demo' : 'Scrivi ' + label;
     client.textContent = String(clientName?.textContent || '').trim();
     message.textContent = 'Avvicina la card NFC al retro del telefono e mantienila ferma.';
     cancel.hidden = false;
