@@ -85,11 +85,11 @@ begin
   if not found then
     raise exception 'Potenziale non disponibile o già convertito';
   end if;
-  if prospect.operatore <> case lower((select auth.jwt()) ->> 'email')
+  if prospect.operatore <> (case lower((select auth.jwt()) ->> 'email')
     when 'francesco@tapnfc.local' then 'Francesco'
     when 'gisberto@tapnfc.local' then 'Gisberto'
     when 'enzo@tapnfc.local' then 'Enzo'
-    else '' end then
+    else '' end) then
     raise exception 'Operatore del potenziale non valido';
   end if;
   if exists (
