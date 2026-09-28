@@ -4,9 +4,10 @@
   const nativeBridge = window.TapAndroid;
   if (!nativeBridge || typeof nativeBridge.writeNfcUrl !== 'function') return;
 
-  const reviewValue = document.getElementById('mReview');
-  const personalizedValue = document.getElementById('mNfc');
-  const clientName = document.getElementById('mName');
+  const isPotential = (location.pathname.split('/').pop() || '') === 'potenziali.html';
+  const reviewValue = document.getElementById(isPotential ? 'link_recensioni' : 'mReview');
+  const personalizedValue = document.getElementById(isPotential ? 'link_nfc' : 'mNfc');
+  const clientName = document.getElementById(isPotential ? 'modalTitle' : 'mName');
   if (!reviewValue || !personalizedValue) return;
 
   const style = document.createElement('style');
@@ -14,6 +15,8 @@
     .tap-nfc-write-detail{position:relative;padding-right:104px!important}
     .tap-nfc-write-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);min-width:76px;min-height:42px;padding:0 14px;border:0;border-radius:13px;background:#0876e8;color:#fff;font:900 14px/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;box-shadow:0 8px 20px rgba(8,118,232,.22);cursor:pointer}
     .tap-nfc-write-btn:active{transform:translateY(-50%) scale(.97)}
+    .tap-potential-write-field .tap-nfc-write-btn{position:static;display:block;width:100%;min-height:48px;margin-top:8px;transform:none}
+    .tap-potential-write-field .tap-nfc-write-btn:active{transform:scale(.98)}
     .tap-nfc-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(4,20,38,.62);padding:20px;align-items:center;justify-content:center}
     .tap-nfc-overlay.show{display:flex}
     .tap-nfc-dialog{width:min(420px,100%);background:#fff;border-radius:25px;padding:28px 24px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.30)}
@@ -75,9 +78,16 @@
     pending = null;
   }
 
-  function beginWrite(url, label) {
+  function beginWrite(url, label, alreadyConfirmed = false) {
     const clean = urlForCard(url, label);
     if (!clean || clean === '-') return;
+    if (isPotential && !alreadyConfirmed && label === 'link personalizzato') {
+      try {
+        const parsed = new URL(clean);
+        if (parsed.hostname === 'tapreputa.github.io' && parsed.pathname.endsWith('/Scheda-nuovo-Cliente/tap.html')
+            && !confirm('La pagina personalizzata sarà attiva dopo il salvataggio come cliente. Vuoi scrivere ora il link sulla card NFC?')) return;
+      } catch {}
+    }
     pending = { url:clean, label };
     overlay.classList.remove('success', 'error');
     title.textContent = 'Scrivi ' + label;
@@ -95,15 +105,15 @@
   }
 
   function addWriteButton(value, label) {
-    const detail = value.closest('.detail');
+    const detail = value.closest(isPotential ? '.field' : '.detail');
     if (!detail || detail.querySelector('.tap-nfc-write-btn')) return;
-    detail.classList.add('tap-nfc-write-detail');
+    detail.classList.add(isPotential ? 'tap-potential-write-field' : 'tap-nfc-write-detail');
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'tap-nfc-write-btn';
     button.textContent = 'Scrivi';
     button.setAttribute('aria-label', 'Scrivi ' + label + ' sulla card NFC');
-    button.addEventListener('click', () => beginWrite(value.textContent, label));
+    button.addEventListener('click', () => beginWrite(isPotential ? value.value : value.textContent, label));
     detail.appendChild(button);
   }
 
@@ -131,7 +141,7 @@
 
   cancel.addEventListener('click', closeWriter);
   close.addEventListener('click', closeWriter);
-  retry.addEventListener('click', () => pending && beginWrite(pending.url, pending.label));
+  retry.addEventListener('click', () => pending && beginWrite(pending.url, pending.label, true));
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && overlay.classList.contains('show')) closeWriter(); });
 
   addWriteButton(reviewValue, 'link recensioni');
