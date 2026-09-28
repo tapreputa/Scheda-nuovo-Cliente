@@ -10,6 +10,10 @@
   let saving = false;
   const params = new URLSearchParams(location.search);
   const editing = params.get('potential');
+  if (params.get('mode') === 'potential' || editing) {
+    const eyebrow = document.querySelector('main .eyebrow');
+    if (eyebrow) eyebrow.textContent = editing ? 'Modifica potenziale' : 'Nuovo potenziale';
+  }
   const button = document.createElement('button');
   button.id = 'savePotentialBtn';
   button.type = 'button';
