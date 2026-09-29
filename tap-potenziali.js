@@ -21,9 +21,6 @@
 
   function isOwner(p) { return p && user && p.created_by === user.id; }
   function id(p) { return 'P-' + String(p.potential_no).padStart(3, '0'); }
-  function demoUrl(p) {
-    return p?.preview_token ? new URL('demo.html?t=' + encodeURIComponent(p.preview_token), location.href).href : '';
-  }
 
   function render() {
     const search = String($('search').value || '').toLocaleLowerCase('it').trim();
@@ -51,9 +48,8 @@
     for (const key of ['nome','operatore','categoria','place_id','link_recensioni','link_nfc','targhe','carte','adesivi','spesa']) {
       $(key).value = selected[key] ?? '';
     }
-    $('link_nfc').dataset.demoUrl = demoUrl(selected);
-    $('openDemo').href = demoUrl(selected) || '#';
-    $('openDemo').hidden = !selected.preview_token;
+    $('openDemo').href = selected.link_nfc || '#';
+    $('openDemo').hidden = !selected.link_nfc;
     $('created_at').value = date(selected.created_at);
     $('logoSaved').hidden = true;
     $('logoSaved').removeAttribute('src');

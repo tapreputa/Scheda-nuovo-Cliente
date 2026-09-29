@@ -78,17 +78,16 @@
     pending = null;
   }
 
-  function beginWrite(url, label, alreadyConfirmed = false) {
-    const demo = isPotential && label === 'link personalizzato';
-    const clean = demo ? personalizedValue.dataset.demoUrl : urlForCard(url, label);
-    if (demo && !clean) {
-      alert('Il link demo non è disponibile. Aggiorna la scheda e riprova.');
+  function beginWrite(url, label) {
+    const clean = urlForCard(url, label);
+    if (!clean || clean === '-') return;
+    if (isPotential && label === 'link personalizzato' && !/^https:\/\/tapreputa\.github\.io\/Scheda-nuovo-Cliente\/tap\.html\?c=[a-z0-9-]+(?:&src=nfc)?$/.test(clean)) {
+      alert('Il link personalizzato ufficiale non è disponibile. Controlla la scheda e riprova.');
       return;
     }
-    if (!clean || clean === '-') return;
     pending = { url:clean, label };
     overlay.classList.remove('success', 'error');
-    title.textContent = demo ? 'Scrivi pagina demo' : 'Scrivi ' + label;
+    title.textContent = 'Scrivi ' + label;
     client.textContent = String(clientName?.textContent || '').trim();
     message.textContent = 'Avvicina la card NFC al retro del telefono e mantienila ferma.';
     cancel.hidden = false;
@@ -139,7 +138,7 @@
 
   cancel.addEventListener('click', closeWriter);
   close.addEventListener('click', closeWriter);
-  retry.addEventListener('click', () => pending && beginWrite(pending.url, pending.label, true));
+  retry.addEventListener('click', () => pending && beginWrite(pending.url, pending.label));
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && overlay.classList.contains('show')) closeWriter(); });
 
   addWriteButton(reviewValue, 'link recensioni');
