@@ -21,8 +21,7 @@ main{max-width:1000px;margin:auto;padding:26px 16px}.notice{padding:14px 18px;bo
 <body>
 <header class="top"><a class="back" href="index.html" aria-label="Torna alla Home">‹</a><div><h1>Potenziali clienti</h1><p>Proposte separate da clienti, vendite e inventario</p></div><span class="operator" data-operator-name>Operatore</span></header>
 <main>
-  <p class="notice">Le quantità e gli importi qui indicati sono proposte. Verranno conteggiati solo quando salverai la vendita come cliente.</p>
-  <div class="toolbar"><input id="search" type="search" placeholder="Cerca nome, ID, categoria o operatore" aria-label="Cerca potenziali"><a class="primary" href="index.html?mode=potential#nuovo">＋ Nuovo potenziale</a><button id="refresh" class="secondary" type="button">Aggiorna</button></div>
+  <div class="toolbar"><input id="search" type="search" placeholder="Cerca nome, ID, categoria o operatore" aria-label="Cerca potenziali"><button id="refresh" class="secondary" type="button">Aggiorna</button></div>
   <section class="card"><div id="count" class="muted" style="padding:12px"></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Attività</th><th>Operatore</th><th>Categoria</th><th>Prodotti proposti</th><th>Importo</th><th>Data</th><th></th></tr></thead><tbody id="rows"></tbody></table></div><div id="empty" class="empty" hidden>Nessun potenziale cliente salvato.</div></section>
 </main>
 <div class="overlay" id="overlay" role="presentation"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-head"><div><div class="muted" id="potentialId"></div><h2 id="modalTitle">Scheda potenziale</h2></div><button class="close" id="close" aria-label="Chiudi" type="button">×</button></div><div class="modal-scroll" id="modalScroll"><p class="help" id="ownership"></p><p class="help">Per cambiare attività, categoria, logo o link, usa «Modifica scheda» qui sotto.</p>
