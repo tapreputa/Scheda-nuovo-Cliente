@@ -7,6 +7,7 @@
   const date = value => value ? new Date(value).toLocaleDateString('it-IT') : '—';
   const escape = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   let user = null, potentials = [], selected = null, busy = false;
+  let displayNumbers = new Map();
 
   function note(message, error = false) {
     let box = $('feedback');
@@ -20,7 +21,8 @@
   }
 
   function isOwner(p) { return p && user && p.created_by === user.id; }
-  function id(p) { return 'P-' + String(p.potential_no).padStart(3, '0'); }
+  // Visible positions are contiguous; database IDs and NFC links stay stable.
+  function id(p) { return 'P-' + String(displayNumbers.get(p.id)).padStart(3, '0'); }
 
   function render() {
     const search = String($('search').value || '').toLocaleLowerCase('it').trim();
@@ -33,7 +35,8 @@
 
   async function refresh() {
     try {
-      potentials = await TapNfc.listPotentials();
+      potentials = (await TapNfc.listPotentials()).slice().sort((a, b) => Number(a.potential_no) - Number(b.potential_no));
+      displayNumbers = new Map(potentials.map((p, index) => [p.id, index + 1]));
       render();
     } catch (error) {
       note('Impossibile caricare i potenziali: ' + error.message, true);
