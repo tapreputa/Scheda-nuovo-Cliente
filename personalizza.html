@@ -559,6 +559,9 @@ function openInlinePreview(previewHtml) {
   }
 </style>`;
   if (previewHtml.includes("</head>")) previewHtml = previewHtml.replace("</head>", previewSafeFooterStyle + "</head>");
+  if (!window.tapLogoSkipped && window.TapLogoLegibility) {
+    previewHtml = window.TapLogoLegibility.decorateHtml(previewHtml);
+  }
   frame.srcdoc = previewHtml;
   overlay.style.display = "flex";
   document.body.style.overflow = "hidden";
@@ -2299,7 +2302,8 @@ Dicci la tua! Bastano 2 secondi!
 </html>`;
 }
 </script>
-<script src="tap-auth.js?v=20261008-logo-contrast1"></script>
+<script src="tap-logo-legibility.js?v=20261008-logo-surface1"></script>
+<script src="tap-auth.js?v=20261008-logo-surface1"></script>
 <script src="tap-nfc-analytics-ui.js?v=1"></script>
 </body>
 </html>
