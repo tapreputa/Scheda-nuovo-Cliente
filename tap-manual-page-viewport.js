@@ -23,6 +23,9 @@
     const backgroundDoc = new DOMParser().parseFromString(html, 'text/html');
     backgroundDoc.querySelectorAll('script').forEach(node => node.remove());
     backgroundDoc.body.replaceChildren();
+    const backdrop = backgroundDoc.createElement('div');
+    backdrop.className = 'pagina';
+    backgroundDoc.body.appendChild(backdrop);
     const backgroundStyle = backgroundDoc.createElement('style');
     backgroundStyle.textContent = 'html,body{margin:0!important;width:100%!important;height:100%!important;min-height:100%!important;overflow:hidden!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}';
     backgroundDoc.head.appendChild(backgroundStyle);
@@ -40,7 +43,7 @@
     foregroundDoc.documentElement.style.setProperty('background', 'transparent', 'important');
     foregroundDoc.body.style.setProperty('background', 'transparent', 'important');
     const foregroundStyle = foregroundDoc.createElement('style');
-    foregroundStyle.textContent = 'html,body{background:transparent!important;overflow:hidden!important}html::before,html::after,body::before,body::after{background:none!important}';
+    foregroundStyle.textContent = 'html,body{background:transparent!important;overflow:hidden!important}html::before,html::after,body::before,body::after,.pagina::before,.pagina::after{background:none!important}';
     foregroundDoc.head.appendChild(foregroundStyle);
     frame.id = 'tapManualContentFrame';
     frame.srcdoc = '<!doctype html>\n' + foregroundDoc.documentElement.outerHTML;
