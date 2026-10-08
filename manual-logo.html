@@ -3,6 +3,7 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Recensioni</title>
 <style>html,body{margin:0;width:100%;height:100%;font-family:Arial;background:#f5f8f7}iframe{position:fixed;inset:0;width:100%;height:100%;border:0}#status{padding:24px;text-align:center;color:#173d34}</style></head>
 <body><div id="status">Apertura pagina…</div>
+<script src="tap-manual-page-viewport.js?v=20261008-manual-logo-viewport1"></script>
 <script>
 (async()=>{
   const slug=new URLSearchParams(location.search).get('c')||'';
@@ -21,5 +22,6 @@
   frame.setAttribute('sandbox','allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation');
   frame.srcdoc=rows[0].html;
   document.body.replaceChildren(frame);
+  TapManualPageViewport.mount(frame, rows[0].html);
 })().catch(e=>{document.getElementById('status').textContent=e.message;});
 </script></body></html>

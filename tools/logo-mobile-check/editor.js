@@ -102,7 +102,7 @@
   }
   function fitFrame() {
     const overlay = document.getElementById('tapPreviewOverlay');
-    if (!stage || !frame || !overlay?.classList.contains('tap-manual-active') || !stage.clientHeight) return;
+    if (!stage || !frame || !referenceViewport || !overlay?.classList.contains('tap-manual-active') || !stage.clientHeight) return;
     // Freeze the composition's viewport; resizes only scale its outside display.
     const { width, height } = referenceViewport;
     const scale = Math.min((stage.clientWidth - 8) / width, (stage.clientHeight - 8) / height, 1);

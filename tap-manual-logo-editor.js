@@ -22,6 +22,11 @@
   let nativeFrameStyle = '';
   let nativeTopbarDisplay = '';
   let fitRequest = 0;
+  let referenceViewport = null;
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(key + ':viewport') || 'null');
+    if (saved && Number.isInteger(saved.width) && Number.isInteger(saved.height) && saved.width >= 200 && saved.width <= 4096 && saved.height >= 200 && saved.height <= 8192) referenceViewport = saved;
+  } catch {}
   function enabled() { return activity.value !== 'standard' && !window.tapLogoSkipped; }
   function persist() { try { sessionStorage.setItem(key, JSON.stringify(settings)); } catch {} }
   function notice(text) {
@@ -41,6 +46,10 @@
     // Published snapshots contain static markup only; no automatic logo scripts.
     doc.querySelectorAll('script').forEach(n => n.remove());
     doc.querySelectorAll('[id^="tap-logo-solid"],#tap-manual-logo-style').forEach(n => n.remove());
+    const style = doc.createElement('style');
+    style.id = 'tap-manual-logo-style';
+    style.textContent = 'html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}';
+    doc.head.appendChild(style);
     if (!doc.querySelector('[data-tap-manual-slot]')) {
       const slot = logo.cloneNode(true);
       slot.removeAttribute('id');
@@ -67,8 +76,9 @@
     };
     for (const [property,value] of Object.entries(css)) logo.style.setProperty(property,value,'important');
     doc.body.appendChild(logo);
-    doc.documentElement.dataset.tapManualLogo = 'v1';
+    doc.documentElement.dataset.tapManualLogo = 'v2';
     doc.documentElement.dataset.tapManualSettings = JSON.stringify(settings);
+    doc.documentElement.dataset.tapManualViewport = JSON.stringify(referenceViewport);
     return '<!doctype html>\n' + doc.documentElement.outerHTML;
   }
   function output() { return transform(sourceHtml); }
@@ -92,11 +102,9 @@
   }
   function fitFrame() {
     const overlay = document.getElementById('tapPreviewOverlay');
-    if (!stage || !frame || !overlay?.classList.contains('tap-manual-active') || !stage.clientHeight) return;
-    // The iframe keeps the final page's full viewport. Only its outside display
-    // is scaled down: controls never change vh, vw or category breakpoints.
-    const width = overlay.clientWidth;
-    const height = overlay.clientHeight;
+    if (!stage || !frame || !referenceViewport || !overlay?.classList.contains('tap-manual-active') || !stage.clientHeight) return;
+    // Freeze the composition's viewport; resizes only scale its outside display.
+    const { width, height } = referenceViewport;
     const scale = Math.min((stage.clientWidth - 8) / width, (stage.clientHeight - 8) / height, 1);
     frame.style.cssText = 'border:0;position:absolute;flex:none;max-width:none;max-height:none;min-width:0;min-height:0;background:#fff;transform-origin:0 0;';
     frame.style.width = width + 'px';
@@ -249,6 +257,11 @@
     editing=true;
     baseOpen(html);
     sourceHtml=document.getElementById('tapPreviewFrame')?.srcdoc || html;
+    if (!referenceViewport) {
+      const overlay = document.getElementById('tapPreviewOverlay');
+      referenceViewport = { width:overlay.clientWidth, height:overlay.clientHeight };
+      try { sessionStorage.setItem(key + ':viewport', JSON.stringify(referenceViewport)); } catch {}
+    }
     installToolbar();
   };
   async function publish() {
@@ -291,12 +304,14 @@
   activity.addEventListener('change',()=>{publishedHash='';sourceHtml='';});
   document.getElementById('logoFile').addEventListener('change',()=>{
     settings={...defaults};persist();publishedHash='';
+    referenceViewport=null;
+    try { sessionStorage.removeItem(key + ':viewport'); } catch {}
     try { logoDataUrl=''; } catch {}
   });
   window.addEventListener('tap-logo-archive-selected',()=>{publishedHash='';});
   previewButton.textContent='Regola logo e anteprima';
   window.TapManualLogoEditor=Object.freeze({
-    enabled,transform,getSettings:()=>({...settings}),
+    enabled,transform,getSettings:()=>({...settings,viewport:referenceViewport && {...referenceViewport}}),
     isEditing:()=>editing
   });
 })();
