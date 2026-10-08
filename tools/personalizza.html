@@ -486,7 +486,7 @@ generateBtn.onclick = () => {
 
 
 async function loadBackgroundDataUrl(fileName) {
-  const backgroundUrl = new URL(fileName, window.location.href).href;
+  const backgroundUrl = new URL(fileName, document.baseURI).href;
   const response = await fetch(backgroundUrl, { cache: "no-store" });
 
   if (!response.ok) {
