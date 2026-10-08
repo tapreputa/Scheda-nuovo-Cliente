@@ -42,7 +42,12 @@
     const data = await response.json().catch(() => []);
     const row = Array.isArray(data) ? data[0] : data;
     if (!row?.target_url) throw new Error('target missing');
-    location.replace(row.target_url);
+    const destination = new URL(row.target_url, location.href);
+    if (destination.origin === location.origin &&
+        /\/(?:cliente|demo)\.html$/.test(destination.pathname)) {
+      destination.searchParams.set('v', '20261008-logo-surface1');
+    }
+    location.replace(destination.href);
   }
 
   go().catch(() => {
