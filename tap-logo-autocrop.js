@@ -204,7 +204,7 @@
       if (processed) setCanonicalLogo(processed);
       let finalHtml = html;
       if (processed && processed !== src) finalHtml = finalHtml.split(src).join(processed);
-      finalHtml = finalHtml.replace('</head>', `<style id="tap-global-logo-harmony-v2">
+      finalHtml = finalHtml.replace('</head>', `<style id="tap-global-logo-harmony-v3">
         .logo-wrap,.logo-box,.logo-container{
           background:transparent!important;
           border:0!important;
@@ -219,7 +219,8 @@
           box-shadow:none!important;
           padding:0!important;
           object-fit:contain!important;
-          filter:drop-shadow(0 5px 12px rgba(0,0,0,.24))!important;
+          /* Dual contrast follows the alpha silhouette; original colours stay intact. */
+          filter:drop-shadow(1px 0 0 rgba(255,255,255,.98)) drop-shadow(-1px 0 0 rgba(255,255,255,.98)) drop-shadow(0 1px 0 rgba(255,255,255,.98)) drop-shadow(0 -1px 0 rgba(255,255,255,.98)) drop-shadow(0 2px 2px rgba(0,0,0,.95)) drop-shadow(0 5px 10px rgba(0,0,0,.45))!important;
         }
       </style></head>`);
       previousOpenInlinePreview(finalHtml);
