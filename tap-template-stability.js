@@ -46,7 +46,8 @@
       templateSignature: window.TapTemplateManifest?.signature?.(category) || '',
       mode: skipped ? 'no-logo' : 'logo',
       reviewUrl: String(reviewInput?.value || '').trim(),
-      logoHash: skipped ? 'none' : hashText(logo)
+      logoHash: skipped ? 'none' : hashText(logo),
+      manualLogo: window.TapManualLogoEditor?.enabled() ? window.TapManualLogoEditor.getSettings() : null
     });
   }
 
@@ -135,6 +136,9 @@
   }
 
   function validateForGenerate() {
+    if (window.TapManualLogoEditor?.enabled() && window.TapManualLogoEditor.isEditing()) {
+      return { ok:false, message:'Salva prima le regolazioni manuali del logo.' };
+    }
     if (currentCategory() === 'standard') return { ok:true };
     const snapshot = getSnapshot();
     if (!snapshot) {
@@ -263,5 +267,11 @@
     isClosed: id => Boolean(window.TapCategories?.isClosed?.(id)),
     getFinalPreviewHtml: () => getSnapshot()?.html || '',
     invalidate
+    ,commitManualPreview: html => {
+      if (!window.TapManualLogoEditor?.enabled()) return null;
+      resetGeneratedUi();
+      return saveSnapshot(html);
+    }
   });
 })();
+

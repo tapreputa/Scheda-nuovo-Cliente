@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261008-logo-surface1';
+  const BUILD_ID = '20261008-manual-logo1';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
@@ -107,7 +107,7 @@
     'tap-macelleria-review.js',
     'tap-ottica-review.js',
     'tap-panificio-review.js',
-    'tap-logo-autocrop.js',
+    ...(new URLSearchParams(location.search).has('potential') ? ['tap-logo-autocrop.js'] : []),
     'tap-panineria-review.js',
     'tap-parrucchiere-review.js',
     'tap-pasticceria-review.js',
@@ -122,6 +122,7 @@
   ]);
 
   const FINAL_MODULES = Object.freeze([
+    'tap-manual-logo-editor.js',
     'tap-template-stability.js',
     'tap-system-checks.js',
     'tap-personalizza-logo-archive.js',
@@ -179,3 +180,4 @@
     }
   })();
 })();
+

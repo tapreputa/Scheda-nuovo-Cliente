@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="it">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Recensioni</title>
+<style>html,body{margin:0;width:100%;height:100%;font-family:Arial;background:#f5f8f7}iframe{position:fixed;inset:0;width:100%;height:100%;border:0}#status{padding:24px;text-align:center;color:#173d34}</style></head>
+<body><div id="status">Apertura pagina…</div>
+<script>
+(async()=>{
+  const slug=new URLSearchParams(location.search).get('c')||'';
+  if(!/^[a-z0-9-]{1,80}$/.test(slug)) throw new Error('Link non valido.');
+  const key='sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
+  const response=await fetch('https://rqzgdgdoulgjwlxtdxhi.supabase.co/rest/v1/rpc/get_public_manual_logo_page',{
+    method:'POST',headers:{apikey:key,Authorization:'Bearer '+key,'Content-Type':'application/json'},
+    body:JSON.stringify({p_slug:slug})
+  });
+  if(!response.ok) throw new Error('Pagina non disponibile.');
+  const rows=await response.json();
+  if(!rows[0]?.html) throw new Error('Pagina non disponibile.');
+  const frame=document.createElement('iframe');
+  frame.title='Pagina recensioni';
+  // Static snapshot: no scripts or same-origin privileges in public content.
+  frame.setAttribute('sandbox','allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation');
+  frame.srcdoc=rows[0].html;
+  document.body.replaceChildren(frame);
+})().catch(e=>{document.getElementById('status').textContent=e.message;});
+</script></body></html>
