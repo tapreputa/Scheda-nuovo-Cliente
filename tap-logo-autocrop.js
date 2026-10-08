@@ -8,6 +8,8 @@
   const cache = new Map();
   let pendingLogoProcess = Promise.resolve('');
   let processedLogoData = '';
+  let selectionVersion = 0;
+  let processing = false;
 
   function colorDistance(a, b) {
     const dr = a[0] - b[0];
@@ -16,23 +18,47 @@
     return Math.sqrt(dr * dr + dg * dg + db * db);
   }
 
-  function getCornerColor(data, w, h) {
-    const pts = [
-      [0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1],
-      [Math.min(2, w - 1), Math.min(2, h - 1)],
-      [Math.max(0, w - 3), Math.min(2, h - 1)],
-      [Math.min(2, w - 1), Math.max(0, h - 3)],
-      [Math.max(0, w - 3), Math.max(0, h - 3)]
-    ];
-    const sum = [0, 0, 0];
-    let count = 0;
-    for (const [x, y] of pts) {
+  // A transparent asset is already the preferred version: only trim its margins.
+  // For opaque assets, require one uniform colour along all four edges.
+  function getBackgroundColor(data, w, h) {
+    const samples = [];
+    const take = (x, y) => {
       const i = (y * w + x) * 4;
-      if (data[i + 3] < 20) continue;
-      sum[0] += data[i]; sum[1] += data[i + 1]; sum[2] += data[i + 2]; count++;
+      samples.push([data[i], data[i + 1], data[i + 2], data[i + 3]]);
+    };
+    for (let x = 0; x < w; x += Math.max(1, Math.floor(w / 64))) {
+      take(x, 0); take(x, h - 1);
     }
-    if (!count) return null;
-    return [sum[0] / count, sum[1] / count, sum[2] / count];
+    for (let y = 0; y < h; y += Math.max(1, Math.floor(h / 64))) {
+      take(0, y); take(w - 1, y);
+    }
+    if (samples.some(s => s[3] < 250)) return null;
+    const median = channel => samples.map(s => s[channel]).sort((a, b) => a - b)[Math.floor(samples.length / 2)];
+    const bg = [median(0), median(1), median(2)];
+    const matches = samples.filter(s => colorDistance(s, bg) <= 18).length;
+    return matches / samples.length >= 0.95 ? bg : null;
+  }
+
+  function selectLogoPixels(original, w, h) {
+    // Never strip a second background from the remaining lettering.
+    for (let i = 3; i < original.length; i += 4) {
+      if (original[i] < 250) return { data:original, mode:'transparent' };
+    }
+    const bg = getBackgroundColor(original, w, h);
+    if (!bg) return { data:original, mode:'original' };
+    const candidate = new Uint8ClampedArray(original);
+    removeConnectedBackground(candidate, w, h, bg, 24);
+    let remaining = 0, removed = 0, contrast = 0;
+    for (let p = 0; p < w * h; p++) {
+      const i = p * 4;
+      if (candidate[i + 3] > 20) {
+        remaining++;
+        if (colorDistance([candidate[i], candidate[i + 1], candidate[i + 2]], bg) > 60) contrast++;
+      } else removed++;
+    }
+    // Reject empty, near-empty and low-contrast cutouts; keep the source recoverable.
+    const safe = remaining >= Math.max(8, w * h * 0.001) && contrast >= remaining * 0.1 && removed >= w * h * 0.05;
+    return safe ? { data:candidate, mode:'cutout' } : { data:original, mode:'original' };
   }
 
   function alphaBounds(d, w, h, alphaMin = 20) {
@@ -91,24 +117,6 @@
     }
   }
 
-  function sampleOpaqueBorderColor(d, w, h, b) {
-    const samples = [];
-    const stepX = Math.max(1, Math.floor((b.maxX - b.minX + 1) / 40));
-    const stepY = Math.max(1, Math.floor((b.maxY - b.minY + 1) / 40));
-    const take = (x, y) => {
-      const i = (y * w + x) * 4;
-      if (d[i + 3] > 180) samples.push([d[i], d[i + 1], d[i + 2]]);
-    };
-    for (let x = b.minX; x <= b.maxX; x += stepX) { take(x, b.minY); take(x, b.maxY); }
-    for (let y = b.minY; y <= b.maxY; y += stepY) { take(b.minX, y); take(b.maxX, y); }
-    if (!samples.length) return null;
-
-    const avg = [0, 0, 0];
-    for (const s of samples) { avg[0] += s[0]; avg[1] += s[1]; avg[2] += s[2]; }
-    avg[0] /= samples.length; avg[1] /= samples.length; avg[2] /= samples.length;
-    return avg;
-  }
-
   function processLogoDataUrl(src) {
     if (!src || !/^data:image\/(png|jpeg|jpg|webp);base64,/i.test(src)) return Promise.resolve(src);
     if (cache.has(src)) return cache.get(src);
@@ -128,15 +136,8 @@
           const image = ctx.getImageData(0, 0, w, h);
           const d = image.data;
 
-          const bg = getCornerColor(d, w, h);
-          removeConnectedBackground(d, w, h, bg, 34);
-
-          const firstBounds = alphaBounds(d, w, h);
-          if (firstBounds) {
-            const innerBg = sampleOpaqueBorderColor(d, w, h, firstBounds);
-            if (innerBg) removeConnectedBackground(d, w, h, innerBg, 28, firstBounds);
-          }
-
+          const selected = selectLogoPixels(d, w, h);
+          d.set(selected.data);
           const bounds = alphaBounds(d, w, h);
           if (!bounds) return resolve(src);
           let { minX, minY, maxX, maxY } = bounds;
@@ -197,7 +198,9 @@
     const src = extractLogoDataUrl(html);
     if (!src) return previousOpenInlinePreview(html);
 
+    const version = selectionVersion;
     processLogoDataUrl(src).then((processed) => {
+      if (version !== selectionVersion || window.tapLogoSkipped) return;
       if (processed) setCanonicalLogo(processed);
       let finalHtml = html;
       if (processed && processed !== src) finalHtml = finalHtml.split(src).join(processed);
@@ -228,25 +231,49 @@
   if (logoInput && previewImg) {
     logoInput.addEventListener('change', () => {
       const file = logoInput.files && logoInput.files[0];
+      const version = ++selectionVersion;
       processedLogoData = '';
-      if (!file || !file.type.startsWith('image/') || file.type.includes('svg')) {
+      processing = Boolean(file);
+      const name = document.getElementById('logoName');
+      if (name) name.textContent = file?.name || '';
+      try { logoDataUrl = ''; } catch (_) {}
+      window.logoDataUrl = '';
+      if (!file || !file.type.startsWith('image/')) {
+        processing = false;
         pendingLogoProcess = Promise.resolve('');
         return;
       }
-
       pendingLogoProcess = new Promise(resolve => {
         const reader = new FileReader();
         reader.onload = () => {
-          processLogoDataUrl(String(reader.result || '')).then((processed) => {
-            if (processed) setCanonicalLogo(processed);
+          processLogoDataUrl(String(reader.result || '')).then(processed => {
+            if (version === selectionVersion) {
+              processing = false;
+              if (processed && !window.tapLogoSkipped) setCanonicalLogo(processed);
+            }
             resolve(processed || '');
           });
         };
-        reader.onerror = () => resolve('');
+        reader.onerror = () => {
+          if (version === selectionVersion) processing = false;
+          resolve('');
+        };
         reader.readAsDataURL(file);
       });
     });
   }
+
+  // Wait before template creation, so preview and publication use the same logo.
+  document.addEventListener('click', event => {
+    const button = event.target.closest?.('#previewBtn,#generateBtn,#addClientBtn,#tapSavePotentialBtn');
+    if (!button || !processing || window.tapLogoSkipped) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const version = selectionVersion;
+    pendingLogoProcess.then(() => {
+      if (version === selectionVersion && !processing) button.click();
+    });
+  }, true);
 
   window.TapLogoAutocrop = Object.freeze({
     processLogoDataUrl,

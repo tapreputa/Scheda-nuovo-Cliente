@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20260929-potenziale-home1';
+  const BUILD_ID = '20261008-logo-auto-safe1';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');

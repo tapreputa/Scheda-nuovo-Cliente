@@ -381,9 +381,11 @@ if (incomingCategory) {
 
 logoFile.addEventListener("change", () => {
   const file = logoFile.files[0];
-  if (!file) return;
+  if (!file || window.TapLogoAutocrop) return;
+  const selectedFile = file;
   const reader = new FileReader();
   reader.onload = e => {
+    if (logoFile.files[0] !== selectedFile) return;
     logoDataUrl = e.target.result;
     logoPreviewImg.src = logoDataUrl;
     logoName.textContent = file.name;
@@ -2297,7 +2299,7 @@ Dicci la tua! Bastano 2 secondi!
 </html>`;
 }
 </script>
-<script src="tap-auth.js?v=20260929-potenziale-home1"></script>
+<script src="tap-auth.js?v=20261008-logo-auto-safe1"></script>
 <script src="tap-nfc-analytics-ui.js?v=1"></script>
 </body>
 </html>
