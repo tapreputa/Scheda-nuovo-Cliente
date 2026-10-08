@@ -156,7 +156,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <link rel="stylesheet" href="tap-premium-theme.css?v=1">
 <link rel="stylesheet" href="tap-premium-polish.css?v=20">
 </head>
-<body data-auth="demo">
+<body data-auth="required">
 <header class="topbar">
 <div class="brand">
 <a class="brand-home" href="index.html" aria-label="Vai alla home"><div class="brand-icon"><svg class="tap-logo-svg" viewBox="0 0 100 100" role="img" aria-label="Tapreputa" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="14" fill="#fff"/><path d="M31 12 L88 50 L16 92 L48 56 L66 50 L25 23 Z" fill="#071d35"/><path d="M18 31 L50 50 L39 60 L8 40 Z" fill="#071d35"/><path d="M15 90 L27 57 L39 64 Z" fill="#e6a019"/></svg></div></a>
@@ -792,17 +792,7 @@ function buildPanificioTemplate(logo, reviewUrl, backgroundDataUrl) {
   footer{font-size:8px!important;bottom:8px!important;right:8px!important}
   footer strong{font-size:15px!important}
 }
-@media (orientation:landscape) and (max-height:680px){.scene-original{object-fit:fill;object-position:center center}.pagina{min-height:100dvh;align-items:center;padding:10px 16px 50px}.card{width:min(100%,900px);display:grid;grid-template-columns:minmax(125px,.58fr) minmax(0,1.42fr);grid-template-areas:"logo eyebrow" "logo message" "logo button" "logo stars";align-items:center;column-gap:20px;row-gap:8px;padding:0}.logo{grid-area:logo;width:min(220px,100%);max-height:min(29vh,116px);margin:0 auto}.eyebrow{grid-area:eyebrow;margin:0;font-size:12px;line-height:1.2;letter-spacing:.12em}.messaggio-box{grid-area:message;margin:0;padding:9px 12px;border-radius:14px}.messaggio{font-size:14px;line-height:1.32}.bottone-google{grid-area:button;min-height:48px;font-size:15px;padding:8px 14px;border-radius:14px}.stelle{grid-area:stars;margin-top:1px;font-size:24px;line-height:1}footer{right:14px;bottom:9px;font-size:9px}footer strong{font-size:18px}}@media(prefers-reduced-motion:reduce){.bottone-google,.bottone-google:before,.bottone-google:after{animation:none!important}}</style></head><body><img class="scene-original" src="${backgroundDataUrl}" alt=""><main class="pagina"><section class="card"><img class="logo" src="${logo}" alt="Logo attività"><div class="eyebrow">Ti sono piaciuti i nostri prodotti da forno?</div><div class="messaggio-box"><p class="messaggio">La tua opinione ci aiuta a portare in tavola ogni giorno pane, biscotti e bontà ancora migliori. Raccontaci la tua esperienza! Bastano 2 secondi!</p></div><a class="bottone-google" href="${safeUrl}" target="_blank" rel="noopener noreferrer" aria-label="Lascia una recensione Google">Recensione Google</a><div class="stelle" aria-label="5 stelle">★★★★★</div><footer>Powered by <strong>Tapreputa</strong></footer></section></main><script>
-document.body.dataset.tapOperator='Francesco';
-logoDataUrl='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="340" height="90"><text x="8" y="65" font-family="Arial" font-size="48" fill="#16212b">LOGO TEST</text></svg>');
-document.getElementById('logoPreviewImg').src=logoDataUrl;
-document.getElementById('logoPreview').classList.add('show');
-window.TapNfc={getUser:async()=>({id:'demo'}),operatorName:()=> 'Francesco',listClients:async()=>[],listPotentials:async()=>[],
-rest:async(path,options)=>{if(path.startsWith('manual_logo_pages')){const value=JSON.parse(options.body);window.QAPublished=value;
-document.getElementById('qaResult').textContent='Verifica HTML: '+(value.html===TapTemplateStability.getFinalPreviewHtml()?'identico all’anteprima salvata':'ERRORE')+' · script nel risultato: '+(new DOMParser().parseFromString(value.html,'text/html').querySelectorAll('script').length);
-return {ok:true,json:async()=>[{slug:'demo'}]};}return {ok:true,json:async()=>[]};}
-};
-</script><p id="qaResult" style="position:fixed;bottom:0;left:0;background:white;z-index:10000000;color:#123d34;padding:8px">Ambiente dimostrativo: nessuna modifica al database.</p><script src="tap-veterinario.js?v=20261008-manual-logo1"></script></body></html>`;
+@media (orientation:landscape) and (max-height:680px){.scene-original{object-fit:fill;object-position:center center}.pagina{min-height:100dvh;align-items:center;padding:10px 16px 50px}.card{width:min(100%,900px);display:grid;grid-template-columns:minmax(125px,.58fr) minmax(0,1.42fr);grid-template-areas:"logo eyebrow" "logo message" "logo button" "logo stars";align-items:center;column-gap:20px;row-gap:8px;padding:0}.logo{grid-area:logo;width:min(220px,100%);max-height:min(29vh,116px);margin:0 auto}.eyebrow{grid-area:eyebrow;margin:0;font-size:12px;line-height:1.2;letter-spacing:.12em}.messaggio-box{grid-area:message;margin:0;padding:9px 12px;border-radius:14px}.messaggio{font-size:14px;line-height:1.32}.bottone-google{grid-area:button;min-height:48px;font-size:15px;padding:8px 14px;border-radius:14px}.stelle{grid-area:stars;margin-top:1px;font-size:24px;line-height:1}footer{right:14px;bottom:9px;font-size:9px}footer strong{font-size:18px}}@media(prefers-reduced-motion:reduce){.bottone-google,.bottone-google:before,.bottone-google:after{animation:none!important}}</style></head><body><img class="scene-original" src="${backgroundDataUrl}" alt=""><main class="pagina"><section class="card"><img class="logo" src="${logo}" alt="Logo attività"><div class="eyebrow">Ti sono piaciuti i nostri prodotti da forno?</div><div class="messaggio-box"><p class="messaggio">La tua opinione ci aiuta a portare in tavola ogni giorno pane, biscotti e bontà ancora migliori. Raccontaci la tua esperienza! Bastano 2 secondi!</p></div><a class="bottone-google" href="${safeUrl}" target="_blank" rel="noopener noreferrer" aria-label="Lascia una recensione Google">Recensione Google</a><div class="stelle" aria-label="5 stelle">★★★★★</div><footer>Powered by <strong>Tapreputa</strong></footer></section></main></body></html>`;
 }
 
 function buildYogurteriaTemplate(logoDataUrl, reviewUrl, backgroundDataUrl) {
@@ -2316,6 +2306,16 @@ Dicci la tua! Bastano 2 secondi!
 <script src="tap-logo-legibility.js?v=20261008-logo-surface1"></script>
 
 
-</body>
+<script>
+document.body.dataset.tapOperator='Francesco';
+logoDataUrl='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="340" height="90"><text x="8" y="65" font-family="Arial" font-size="48" fill="#16212b">LOGO TEST</text></svg>');
+document.getElementById('logoPreviewImg').src=logoDataUrl;
+document.getElementById('logoPreview').classList.add('show');
+window.TapNfc={getUser:async()=>({id:'demo'}),operatorName:()=> 'Francesco',listClients:async()=>[],listPotentials:async()=>[],
+rest:async(path,options)=>{if(path.startsWith('manual_logo_pages')){const value=JSON.parse(options.body);window.QAPublished=value;
+document.getElementById('qaResult').textContent='Verifica HTML: '+(value.html===TapTemplateStability.getFinalPreviewHtml()?'identico all’anteprima salvata':'ERRORE')+' · script nel risultato: '+(new DOMParser().parseFromString(value.html,'text/html').querySelectorAll('script').length);
+return {ok:true,json:async()=>[{slug:'demo'}]};}return {ok:true,json:async()=>[]};}
+};
+</script><p id="qaResult" style="position:fixed;bottom:0;left:0;background:white;z-index:10000000;color:#123d34;padding:8px">Ambiente dimostrativo: nessuna modifica al database.</p><script src="tap-veterinario.js?v=20261008-manual-logo1"></script></body>
 </html>
 
