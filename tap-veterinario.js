@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261008-manual-logo1';
+  const BUILD_ID = '20261008-manual-logo-mobile2';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
