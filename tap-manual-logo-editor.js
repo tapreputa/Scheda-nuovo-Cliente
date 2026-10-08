@@ -158,7 +158,7 @@
     publishing=true;generateButton.disabled=true;
     try {
       const user=await TapNfc.getUser();
-      const response=await TapNfc.rest('manual_logo_pages?on_conflict=slug',{
+      const response=await TapNfc.rest('manual_logo_pages?on_conflict=slug&select=slug',{
         method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=representation'},
         body:JSON.stringify({slug,html,created_by:user.id})
       });
@@ -186,7 +186,10 @@
     }
   },true);
   activity.addEventListener('change',()=>{publishedHash='';sourceHtml='';});
-  document.getElementById('logoFile').addEventListener('change',()=>{settings={...defaults};persist();publishedHash='';});
+  document.getElementById('logoFile').addEventListener('change',()=>{
+    settings={...defaults};persist();publishedHash='';
+    try { logoDataUrl=''; } catch {}
+  });
   window.addEventListener('tap-logo-archive-selected',()=>{publishedHash='';});
   previewButton.textContent='Regola logo e anteprima';
   window.TapManualLogoEditor=Object.freeze({
