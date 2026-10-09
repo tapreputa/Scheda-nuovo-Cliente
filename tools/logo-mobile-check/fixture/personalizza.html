@@ -2312,9 +2312,16 @@ document.body.dataset.tapOperator='Francesco';
 const qaParams=new URLSearchParams(location.search),qaLegacy=qaParams.has('legacy');
 const qaCategory=qaLegacy?'bar':qaParams.get('category')||'barextra';
 const qaSlug=qaLegacy?'qa-legacy':'fimis-bar';
-const qaClient={id:'00000000-0000-0000-0000-000000000001',created_by:'demo',nome:'Cliente dimostrativo',categoria:'Demo',categoria_codice:qaCategory,preview_token:'00000000-0000-0000-0000-000000000002',stato:'potenziale',targhe:2,carte:3,adesivi:1,spesa:120,link_recensioni:'https://search.google.com/local/writereview?placeid=qa',link_nfc:qaCategory==='standard'?'https://search.google.com/local/writereview?placeid=qa':'https://tapreputa.github.io/Scheda-nuovo-Cliente/tap.html?c='+qaSlug};
+const qaClient={id:'00000000-0000-0000-0000-000000000001',created_by:'demo',nome:'Cliente dimostrativo',categoria:'Demo',categoria_codice:qaCategory,preview_token:'00000000-0000-4000-8000-000000000002',stato:'potenziale',targhe:2,carte:3,adesivi:1,spesa:120,link_recensioni:'https://search.google.com/local/writereview?placeid=qa',link_nfc:qaCategory==='standard'?'https://search.google.com/local/writereview?placeid=qa':'https://tapreputa.github.io/Scheda-nuovo-Cliente/tap.html?c='+qaSlug};
 const qaRealFetch=window.fetch.bind(window);
-window.fetch=async(input,options)=>{if(String(input).includes('/storage/v1/object/sign/tapnfc-logo-archive/'))return new Response(JSON.stringify({signedURL:'https://tapreputa.github.io/Scheda-nuovo-Cliente/tools/logo-mobile-check/fixture/logo.svg'}),{status:200});return qaRealFetch(input,options);};
+window.fetch=async(input,options)=>{
+ if(String(input).includes('/storage/v1/object/sign/tapnfc-logo-archive/'))return new Response(JSON.stringify({signedURL:'https://tapreputa.github.io/Scheda-nuovo-Cliente/tools/logo-mobile-check/fixture/logo.svg'}),{status:200});
+ // Production resolves category photographs beside personalizza.html. The
+ // demo lives in a subdirectory, so reuse the same root assets for this test.
+ const url=new URL(String(input),document.baseURI);
+ if(url.origin===location.origin&&url.pathname.startsWith(new URL('.',location.href).pathname)&&/\.(png|webp|jpe?g)$/i.test(url.pathname))input=new URL(url.pathname.split('/').pop()+url.search,document.baseURI).href;
+ return qaRealFetch(input,options);
+};
 const qaSrc=Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype,'src');
 Object.defineProperty(HTMLIFrameElement.prototype,'src',{...qaSrc,set(value){const url=new URL(value,document.baseURI);if(url.pathname.endsWith('/demo.html')&&url.searchParams.get('t')===qaClient.preview_token)value=new URL('demo.html'+url.search,location.href).href;qaSrc.set.call(this,value);}});
 if(!sessionStorage.getItem('tapnfc_supabase_session_v1')&&!localStorage.getItem('tapnfc_supabase_session_v1'))sessionStorage.setItem('tapnfc_supabase_session_v1',JSON.stringify({access_token:'qa-local-mock',expires_at:Date.now()+3600000}));
