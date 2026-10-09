@@ -132,6 +132,14 @@
       node.dataset.tapPageElement=id;
       const patch=elements[id],base=baselines[id];
       if(opening || !base || !patch || !Object.keys(patch).length) continue;
+      const messageValue={...base,...patch};
+      if(activity.value==='fumetti' && id==='message' && node.closest('.fumetti-copy')){
+        const cb=baselines.caption,cp={...cb,...elements.caption};
+        const scale=cb?cp.width/cb.width:1;
+        css(node,{'font-size':messageValue.fontSize*scale+'px',color:messageValue.color,'text-align':messageValue.align,'white-space':'pre-line'});
+        if(patch.text!==undefined)replaceText(node,id,patch.text);
+        continue;
+      }
       if(!doc.querySelector('[data-tap-page-slot="'+id+'"]')){
         const slot=node.cloneNode(true);
         slot.removeAttribute('id');slot.removeAttribute('data-tap-page-element');
@@ -141,13 +149,6 @@
         css(slot,{visibility:'hidden','pointer-events':'none'});node.replaceWith(slot);
       }
       const value={...base,...patch};
-      if(activity.value==='fumetti' && id==='message' && node.closest('.fumetti-copy')){
-        const cb=baselines.caption,cp={...cb,...elements.caption};
-        const scale=cb?cp.width/cb.width:1;
-        css(node,{'font-size':value.fontSize*scale+'px',color:value.color,'text-align':value.align,'white-space':'pre-line'});
-        if(patch.text!==undefined)replaceText(node,id,patch.text);
-        continue;
-      }
       if(patch.text!==undefined && (id==='caption'||id==='message')) css(node,{'white-space':'pre-line'});
       css(node,{
         position:'fixed',left:value.x+'vw',top:value.y+'vh',right:'auto',bottom:'auto',
