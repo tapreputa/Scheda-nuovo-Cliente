@@ -1936,7 +1936,20 @@ async function load(){
  }
  document.getElementById('headline').textContent=text[0];
  if(text[1]){message.textContent=text[1];message.classList.remove('hidden');}else{message.textContent='';message.classList.add('hidden');}
- document.getElementById('review').href=row.link_recensioni;
+ // Resolve the review link from the Place ID, regardless of category.
+ const directPrefix='https://search.google.com/local/writereview?placeid=';
+ let reviewPlaceId=String(row.place_id||'').trim();
+ if(!/^ChI[A-Za-z0-9_-]{10,}$/.test(reviewPlaceId)){
+   try{const u=new URL(row.link_recensioni);reviewPlaceId=u.searchParams.get('placeid')||u.searchParams.get('query_place_id')||'';}catch(_){}
+ }
+ const review=document.getElementById('review');
+ if(/^ChI[A-Za-z0-9_-]{10,}$/.test(reviewPlaceId)){
+   review.href=directPrefix+encodeURIComponent(reviewPlaceId);
+ }else{
+   review.removeAttribute('href');
+   review.setAttribute('aria-disabled','true');
+   review.title='Link recensioni non disponibile: Place ID da verificare';
+ }
  if(cat==='fumetti'){TapFumettiTemplate.applyLegacy(page);document.getElementById('review').setAttribute('target','_blank');document.getElementById('review').setAttribute('rel','noopener noreferrer');}
  if(cat==='bar') page.classList.add('bar');
  if(cat==='barextra') page.classList.add('barextra');
@@ -1983,7 +1996,7 @@ async function load(){
 load().catch(e=>document.getElementById('error').textContent=e.message||'Link non disponibile.');
 })();
 </script>
-<script src="tap-public-analytics.js?v=20261009-fumetti-external1"></script>
+<script src="tap-public-analytics.js?v=20261009-review-safe2"></script>
 <script src="tap-logo-legibility.js?v=20261008-logo-surface1"></script>
 </body>
 </html>
