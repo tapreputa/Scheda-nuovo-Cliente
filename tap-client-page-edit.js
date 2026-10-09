@@ -10,8 +10,9 @@
   hideAdd();activity.disabled=true;saveButton.disabled=true;preview.disabled=true;
   saveButton.textContent='Salva modifiche cliente';preview.textContent='Modifica pagina e anteprima';
   document.querySelector('h1').textContent='Modifica cliente';
+  document.querySelector('main .eyebrow').textContent='CLIENTE ESISTENTE';
   document.getElementById('backBtn').onclick=()=>location.href='clienti.html';
-  document.querySelector('.steps')?.setAttribute('hidden','');
+  document.querySelector('.steps')?.style.setProperty('display','none','important');
   notice('Caricamento della pagina del cliente…');
   async function rows(response){const data=await response.json();if(!response.ok)throw Error(data.message||'Operazione non riuscita.');return data;}
   function setLogo(value){try{logoDataUrl=value;}catch{window.logoDataUrl=value;}const img=document.getElementById('logoPreviewImg');img.src=value;document.getElementById('logoPreview').classList.toggle('show',!!value);document.getElementById('logoName').textContent=value?'Logo attuale del cliente':'';window.tapLogoSkipped=!value;}

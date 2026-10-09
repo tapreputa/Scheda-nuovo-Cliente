@@ -254,7 +254,7 @@
         letterSpacing:ts.letterSpacing,textTransform:ts.textTransform,minHeight:style.minHeight,
         color:toHex(ts.color),align:ts.textAlign,text:readText(node,id),
         background:toHex(style.backgroundImage.match(/rgba?\([^)]+\)/)?.[0]||style.backgroundColor,'#b66c27'),radius:parseFloat(style.borderTopLeftRadius)||0,
-        brightness:122
+        brightness:Math.round(100*Number(style.filter.match(/brightness\(([\d.]+)\)/)?.[1]||1))
       };
     }
     if(imported && !logoDirty && !importedLogoState && baselines.logo){const {width,x,y}=baselines.logo;settings={...defaults,width,x,y};}
