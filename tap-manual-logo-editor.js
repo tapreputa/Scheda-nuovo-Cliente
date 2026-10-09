@@ -160,7 +160,7 @@
       });
       if(id==='caption' && node.classList.contains('fumetti-copy')){
         const scale=value.width/base.width;
-        css(node,{padding:base.paddingY*scale+'px '+base.paddingX*scale+'px','border-radius':base.radius*scale+'px',height:'auto','min-height':'0'});
+        css(node,{padding:base.paddingY*scale+'px '+base.paddingX*scale+'px','border-radius':base.radius*scale+'px',height:'auto','min-height':'0','text-transform':'none','letter-spacing':'normal'});
         const headline=node.querySelector('.headline'),message=node.querySelector('#message,.box');
         if(headline)css(headline,{'font-size':base.fontSize*scale+'px',margin:'0 0 '+13*scale+'px',color:value.color,'text-align':value.align});
         if(message)css(message,{'font-size':base.messageFontSize*scale+'px'});
