@@ -35,8 +35,8 @@
   });
   // Google rejects review forms loaded inside an embedded iframe.
   // Open review anchors in a top-level browser tab; leave saved layout unchanged.
-  const navigableHtml=html.replace(/<a\\b([^>]*\\bhref=(["'])https:\/\/search\\.google\\.com\/local\/writereview\\?placeid=[^"']+\\2[^>]*)>/gi,(tag,attrs)=>{
-    const withoutTarget=attrs.replace(/\\s+target\\s*=\\s*(?:"[^"]*"|'[^']*'|[^\\s>]+)/gi,'');
+  const navigableHtml=html.replace(/<a\b([^>]*\bhref=(["'])https:\/\/search\.google\.com\/local\/writereview\?placeid=[^"']+\2[^>]*)>/gi,(tag,attrs)=>{
+    const withoutTarget=attrs.replace(/\s+target\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi,'');
     return '<a'+withoutTarget+' target="_blank" rel="noopener noreferrer">';
   });
   frame.srcdoc=navigableHtml;
