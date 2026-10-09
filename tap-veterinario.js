@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261008-manual-logo-viewport1';
+  const BUILD_ID = '20261009-page-editor1';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
@@ -156,12 +156,25 @@
     });
   }
 
+  // New compositions must wait for all editor modules before opening or publishing.
+  const protectNewEditor = !new URLSearchParams(location.search).has('potential');
+  let modulesReady = false;
+  const pendingButtons = ['previewBtn','generateBtn'].map(id=>document.getElementById(id)).filter(Boolean);
+  if(protectNewEditor) pendingButtons.forEach(button=>button.disabled=true);
+  document.addEventListener('click',event=>{
+    if(!protectNewEditor || modulesReady || !event.target.closest('#previewBtn,#generateBtn')) return;
+    event.preventDefault();event.stopImmediatePropagation();
+    const status=document.getElementById('msg');
+    if(status){status.className='message show warn';status.textContent='Preparazione editor in corso…';}
+  },true);
   installOperatorAndPreviewFixes();
 
   (async () => {
     try {
       for (const src of MODULES) await loadScript(src);
       installOperatorAndPreviewFixes();
+      modulesReady=true;
+      if(protectNewEditor) pendingButtons.forEach(button=>button.disabled=false);
       document.documentElement.dataset.tapModulesBuild = BUILD_ID;
       window.TapPersonalizzaBuild = Object.freeze({
         id: BUILD_ID,
@@ -180,4 +193,5 @@
     }
   })();
 })();
+
 

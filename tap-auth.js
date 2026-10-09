@@ -536,7 +536,7 @@
   function loadVeterinarioSupport() {
     if (PAGE_NAME !== 'personalizza.html' || document.querySelector('script[data-tap-veterinario]')) return;
     const script = document.createElement('script');
-    script.src = 'tap-veterinario.js?v=20261008-manual-logo-viewport1';
+    script.src = 'tap-veterinario.js?v=20261009-page-editor1';
     script.dataset.tapVeterinario = '1';
     document.body.appendChild(script);
   }
@@ -585,4 +585,5 @@
     loadPageTools();
   }
 })();
+
 
