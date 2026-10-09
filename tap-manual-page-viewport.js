@@ -22,12 +22,17 @@
     // original proportions and fits entirely inside the available viewport.
     const backgroundDoc = new DOMParser().parseFromString(html, 'text/html');
     backgroundDoc.querySelectorAll('script').forEach(node => node.remove());
+    // New templates carry the photograph on .page itself, including an inline
+    // data URL. Keep that surface and its category, without foreground children.
+    const savedSurface = backgroundDoc.querySelector('.page');
+    const backdrop = savedSurface ? savedSurface.cloneNode(false) : backgroundDoc.createElement('div');
+    if (!savedSurface) backdrop.className = 'pagina';
+    backdrop.removeAttribute('id');
     backgroundDoc.body.replaceChildren();
-    const backdrop = backgroundDoc.createElement('div');
-    backdrop.className = 'pagina';
     backgroundDoc.body.appendChild(backdrop);
     const backgroundStyle = backgroundDoc.createElement('style');
     backgroundStyle.textContent = 'html,body{margin:0!important;width:100%!important;height:100%!important;min-height:100%!important;overflow:hidden!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}';
+    if (savedSurface) backgroundStyle.textContent += '.page{position:fixed!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}';
     backgroundDoc.head.appendChild(backgroundStyle);
     const background = document.createElement('iframe');
     background.id = 'tapManualBackgroundFrame';
@@ -44,6 +49,10 @@
     foregroundDoc.body.style.setProperty('background', 'transparent', 'important');
     const foregroundStyle = foregroundDoc.createElement('style');
     foregroundStyle.textContent = 'html,body{background:transparent!important;overflow:hidden!important}html::before,html::after,body::before,body::after,.pagina::before,.pagina::after{background:none!important}';
+    if (savedSurface) {
+      foregroundDoc.querySelectorAll('.page').forEach(node => node.style.setProperty('background', 'transparent', 'important'));
+      foregroundStyle.textContent += '.page::before,.page::after{background:none!important}';
+    }
     foregroundDoc.head.appendChild(foregroundStyle);
     frame.id = 'tapManualContentFrame';
     frame.srcdoc = '<!doctype html>\n' + foregroundDoc.documentElement.outerHTML;
@@ -72,3 +81,4 @@
   }
   window.TapManualPageViewport = Object.freeze({reference, mount});
 })();
+
