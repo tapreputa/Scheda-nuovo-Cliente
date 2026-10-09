@@ -3,7 +3,7 @@
   const BUILD = '20261008-logo-surface1';
   const STYLE_ID = 'tap-logo-solid-contrast-v1';
   const css = `
-    html body img.logo,html body img#logo{
+    html body .page:not(.fumetti) img.logo,html body .page:not(.fumetti) img#logo{
       background:#fff!important;
       padding:10px 14px!important;
       border-radius:14px!important;
@@ -66,7 +66,7 @@
       style.textContent = css;
       document.head.appendChild(style);
     }
-    document.querySelectorAll('img.logo,img#logo').forEach(applyToImage);
+    document.querySelectorAll('img.logo,img#logo').forEach(img => { if (!img.closest('.page.fumetti')) applyToImage(img); });
   }
 
   function decorateHtml(html) {
