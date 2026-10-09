@@ -20,8 +20,21 @@
   frame.title='Pagina recensioni';
   // Static snapshot: no scripts or same-origin privileges in public content.
   frame.setAttribute('sandbox','allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation');
-  frame.srcdoc=rows[0].html;
+  // Keep the exact saved composition (layout, pixels and editable positions).
+  // Repair only legacy Google Maps review href values from their Place ID.
+  const savedHtml=rows[0].html;
+  const html=savedHtml.replace(/href=(["'])(https:\/\/[^"']+)\1/gi,(original,quote,encodedUrl)=>{
+    const rawUrl=encodedUrl.replace(/&amp;/gi,'&');
+    try{
+      const url=new URL(rawUrl);
+      if(!/(^|\\.)google\\.com$/.test(url.hostname))return original;
+      const placeId=url.searchParams.get('placeid')||url.searchParams.get('query_place_id');
+      if(!placeId||!/^ChI[A-Za-z0-9_-]{10,}$/.test(placeId))return original;
+      return 'href='+quote+'https://search.google.com/local/writereview?placeid='+encodeURIComponent(placeId)+quote;
+    }catch(_){return original;}
+  });
+  frame.srcdoc=html;
   document.body.replaceChildren(frame);
-  TapManualPageViewport.mount(frame, rows[0].html);
+  TapManualPageViewport.mount(frame, html);
 })().catch(e=>{document.getElementById('status').textContent=e.message;});
 </script></body></html>
