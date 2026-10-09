@@ -124,7 +124,7 @@
     const params = new URLSearchParams({
       potential:selected.id, business:selected.nome || '',
       category:selected.categoria_codice || '', reviewurl:selected.link_recensioni || '',
-      placeid:selected.place_id || '', v:'20261009-potential-editor1'
+      placeid:selected.place_id || '', v:'20261009-potential-editor2'
     });
     location.href = 'personalizza.html?' + params.toString();
   };

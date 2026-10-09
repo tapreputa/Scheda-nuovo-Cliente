@@ -26,7 +26,7 @@
   function setLogo(value){try{logoDataUrl=value;}catch{window.logoDataUrl=value;}const img=document.getElementById('logoPreviewImg');img.src=value;document.getElementById('logoPreview').classList.toggle('show',!!value);document.getElementById('logoName').textContent=value?'Logo attuale del '+label:'';window.tapLogoSkipped=!value;if(logoState)logoState.textContent=value?'Logo salvato':'Proseguimento senza logo';}
   async function legacyHtml(){
     const f=document.createElement('iframe');f.title='Caricamento pagina esistente';f.style.cssText='position:fixed;left:-10000px;top:0;border:0;width:'+Math.max(200,Math.min(480,document.documentElement.clientWidth))+'px;height:'+Math.max(568,Math.min(900,innerHeight))+'px;';
-    f.src=(potential?'demo.html?t='+encodeURIComponent(client.preview_token):'cliente.html?c='+encodeURIComponent(slug))+'&preview=1&v=20261009-potential-editor1';document.body.appendChild(f);
+    f.src=(potential?'demo.html?t='+encodeURIComponent(client.preview_token):'cliente.html?c='+encodeURIComponent(slug))+'&preview=1&v=20261009-potential-editor2';document.body.appendChild(f);
     try{
       await new Promise((resolve,reject)=>{const start=Date.now();const timer=setInterval(()=>{const doc=f.contentDocument,page=doc?.getElementById('page'),error=doc?.getElementById('error')?.textContent;if(error||Date.now()-start>20000){clearInterval(timer);reject(Error(error||'Caricamento non riuscito. Riapri Modifica.'));}else if(page&&!page.classList.contains('hidden')){clearInterval(timer);resolve();}},80);});
       const doc=f.contentDocument;await Promise.all([...doc.images].map(img=>img.decode().catch(()=>{})));await doc.fonts.ready;

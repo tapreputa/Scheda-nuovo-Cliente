@@ -192,6 +192,9 @@
   }
 
   openInlinePreview = function(html) {
+    // Saved pages already contain the approved logo and composition. Reopening
+    // them must be synchronous so the shared editor can install its controls.
+    if (window.TapClientPageEdit?.active()) return previousOpenInlinePreview(html);
     const noLogo = !!window.tapLogoSkipped;
     if (noLogo || typeof html !== 'string') return previousOpenInlinePreview(html);
 
@@ -282,3 +285,4 @@
     getProcessedLogo: () => processedLogoData
   });
 })();
+
