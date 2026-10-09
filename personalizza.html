@@ -293,15 +293,18 @@ function normalizeReviewUrl(value) {
 
   if (!current) return "";
 
-  if (current.startsWith(prefix)) {
-    let placePart = current.slice(prefix.length);
-    for (let i = 0; i < 5 && placePart.startsWith(prefix); i++) {
-      placePart = placePart.slice(prefix.length);
-    }
-    return prefix + placePart;
+  // Accept direct Place IDs and extract IDs from Google Maps links.
+  for (let i = 0; i < 5 && current.startsWith(prefix); i++) {
+    current = current.slice(prefix.length);
   }
-
-  return current;
+  if (/^ChI[A-Za-z0-9_-]{10,}$/.test(current)) return prefix + current;
+  try {
+    const url = new URL(current);
+    if (!/(^|\\.)google\\.com$/.test(url.hostname)) return "";
+    const placeId = url.searchParams.get("placeid") || url.searchParams.get("query_place_id");
+    if (placeId && /^ChI[A-Za-z0-9_-]{10,}$/.test(placeId)) return prefix + placeId;
+  } catch (_) {}
+  return "";
 }
 
 const incomingParams = new URLSearchParams(window.location.search);
