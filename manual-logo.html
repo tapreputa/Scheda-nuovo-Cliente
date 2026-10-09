@@ -27,7 +27,7 @@
     const rawUrl=encodedUrl.replace(/&amp;/gi,'&');
     try{
       const url=new URL(rawUrl);
-      if(!/(^|\\.)google\\.com$/.test(url.hostname))return original;
+      if(!/(^|\.)google\.com$/.test(url.hostname))return original;
       const placeId=url.searchParams.get('placeid')||url.searchParams.get('query_place_id');
       if(!placeId||!/^ChI[A-Za-z0-9_-]{10,}$/.test(placeId))return original;
       return 'href='+quote+'https://search.google.com/local/writereview?placeid='+encodeURIComponent(placeId)+quote;
