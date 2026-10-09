@@ -300,7 +300,7 @@ function normalizeReviewUrl(value) {
   if (/^ChI[A-Za-z0-9_-]{10,}$/.test(current)) return prefix + current;
   try {
     const url = new URL(current);
-    if (!/(^|\\.)google\\.com$/.test(url.hostname)) return "";
+    if (!/(^|\.)google\.com$/.test(url.hostname)) return "";
     const placeId = url.searchParams.get("placeid") || url.searchParams.get("query_place_id");
     if (placeId && /^ChI[A-Za-z0-9_-]{10,}$/.test(placeId)) return prefix + placeId;
   } catch (_) {}
