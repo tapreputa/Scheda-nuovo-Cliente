@@ -1937,7 +1937,7 @@ async function load(){
  document.getElementById('headline').textContent=text[0];
  if(text[1]){message.textContent=text[1];message.classList.remove('hidden');}else{message.textContent='';message.classList.add('hidden');}
  document.getElementById('review').href=row.link_recensioni;
- if(cat==='fumetti')TapFumettiTemplate.applyLegacy(page);
+ if(cat==='fumetti'){TapFumettiTemplate.applyLegacy(page);document.getElementById('review').setAttribute('target','_blank');document.getElementById('review').setAttribute('rel','noopener noreferrer');}
  if(cat==='bar') page.classList.add('bar');
  if(cat==='barextra') page.classList.add('barextra');
  if(cat==='abbigliamento') page.classList.add('abbigliamento');
@@ -1983,7 +1983,7 @@ async function load(){
 load().catch(e=>document.getElementById('error').textContent=e.message||'Link non disponibile.');
 })();
 </script>
-<script src="tap-public-analytics.js?v=1"></script>
+<script src="tap-public-analytics.js?v=20261009-fumetti-external1"></script>
 <script src="tap-logo-legibility.js?v=20261008-logo-surface1"></script>
 </body>
 </html>
