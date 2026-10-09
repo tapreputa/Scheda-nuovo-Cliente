@@ -9,6 +9,7 @@
 
   let saving = false;
   const params = new URLSearchParams(location.search);
+  if(params.has('client')) return;
   const editing = params.get('potential');
   if (params.get('mode') === 'potential' || editing) {
     const eyebrow = document.querySelector('main .eyebrow');
