@@ -29,6 +29,11 @@
   if (!review) return;
   let leaving = false;
   review.addEventListener('click', event => {
+    // Fumetti: allow the native external-link navigation. Blocking it can leave Google inside an embedded frame.
+    if (review.closest('.page.fumetti')) {
+      register('google_click', true).catch(() => {});
+      return;
+    }
     if (leaving) return;
     const href = review.href;
     if (!href) return;
