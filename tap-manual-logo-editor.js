@@ -97,6 +97,7 @@
         if(message)group.appendChild(message);
         for(const child of [headline,message].filter(Boolean)) css(child,{position:'static',width:'100%',height:'auto',left:'auto',top:'auto',right:'auto',bottom:'auto',transform:'none','box-sizing':'border-box','max-width':'100%',margin:child===headline?'0 0 13px':'0'});
         group.dataset.tapPageElement='caption';
+        css(group,{'box-sizing':'border-box','max-width':'100%'});
       }
     }
     doc.querySelectorAll('script,[id^="tap-logo-solid"],#tap-manual-logo-style,#tap-page-editor-style').forEach(n=>n.remove());
