@@ -549,7 +549,7 @@
     const src = modules[PAGE_NAME];
     if (!src || document.querySelector(`script[data-tap-page-tools="${src}"]`)) return;
     const script = document.createElement('script');
-    script.src = src + '?v=20261009-potential-editor2';
+    script.src = src + '?v=20261009-standard-category';
     script.dataset.tapPageTools = src;
     document.body.appendChild(script);
   }

@@ -16,6 +16,7 @@
   const actionGrid = overlay?.querySelector('.action-grid');
 
   const CATEGORIES = Object.freeze([
+    ['standard','Standard — collegamento diretto'],
     ['abbigliamento','Abbigliamento'],
     ['autolavaggio','Autolavaggio'],
     ['beb','B&B Isola'],
@@ -482,3 +483,4 @@
     }
   });
 })();
+
