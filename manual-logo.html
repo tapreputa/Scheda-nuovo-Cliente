@@ -33,12 +33,19 @@
       return 'href='+quote+'https://search.google.com/local/writereview?placeid='+encodeURIComponent(placeId)+quote;
     }catch(_){return original;}
   });
-  // Google rejects review forms loaded inside an embedded iframe.
-  // Open review anchors in a top-level browser tab; leave saved layout unchanged.
-  const navigableHtml=html.replace(/<a\b([^>]*\bhref=(["'])https:\/\/search\.google\.com\/local\/writereview\?placeid=[^"']+\2[^>]*)>/gi,(tag,attrs)=>{
-    const withoutTarget=attrs.replace(/\s+target\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi,'');
-    return '<a'+withoutTarget+' target="_blank" rel="noopener noreferrer">';
+  // Edit link attributes as DOM, not using fragile regex substitutions.
+  // Saved CSS and coordinates are preserved byte-for-byte.
+  const documentForLinks=new DOMParser().parseFromString(html,'text/html');
+  documentForLinks.querySelectorAll('a[href]').forEach(anchor=>{
+    try{
+      const link=new URL(anchor.getAttribute('href').replace(/&amp;/gi,'&'),location.href);
+      if(link.hostname==='search.google.com' && link.pathname==='/local/writereview'){
+        anchor.setAttribute('target','_blank');
+        anchor.setAttribute('rel','noopener noreferrer');
+      }
+    }catch(_){}
   });
+  const navigableHtml='<!doctype html>\n'+documentForLinks.documentElement.outerHTML;
   frame.srcdoc=navigableHtml;
   document.body.replaceChildren(frame);
   TapManualPageViewport.mount(frame, navigableHtml);
