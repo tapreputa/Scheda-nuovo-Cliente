@@ -536,7 +536,7 @@
   function loadVeterinarioSupport() {
     if (PAGE_NAME !== 'personalizza.html' || document.querySelector('script[data-tap-veterinario]')) return;
     const script = document.createElement('script');
-    script.src = 'tap-veterinario.js?v=20261009-potential-editor2';
+    script.src = 'tap-veterinario.js?v=20261009-fumetti';
     script.dataset.tapVeterinario = '1';
     document.body.appendChild(script);
   }
@@ -549,7 +549,7 @@
     const src = modules[PAGE_NAME];
     if (!src || document.querySelector(`script[data-tap-page-tools="${src}"]`)) return;
     const script = document.createElement('script');
-    script.src = src + '?v=20261009-standard-category';
+    script.src = src + '?v=20261009-fumetti';
     script.dataset.tapPageTools = src;
     document.body.appendChild(script);
   }
@@ -585,6 +585,7 @@
     loadPageTools();
   }
 })();
+
 
 
 

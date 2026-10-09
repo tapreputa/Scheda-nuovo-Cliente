@@ -7,7 +7,7 @@
   const generateButton = document.getElementById('generateBtn');
   const msg = document.getElementById('msg');
   const key = 'tap_manual_logo_v1:' + (params.get('client') ? 'client:'+params.get('client') : params.get('potential') ? 'potential:'+params.get('potential') : params.get('placeid') || params.get('business') || '');
-  const defaults = {width:55,x:50,y:3,surface:'none'};
+  const defaults = {get width(){return activity.value==='fumetti'?65:55;},x:50,get y(){return activity.value==='fumetti'?6:3;},surface:'none'};
   const definitions = {
     logo:{label:'Logo',selector:'#tapManualLogo,img.logo,img#logo'},
     caption:{label:'Didascalia',selector:'.eyebrow,.headline,h1.title'},

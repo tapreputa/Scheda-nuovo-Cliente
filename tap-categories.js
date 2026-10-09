@@ -17,6 +17,7 @@
     { id:'fioraio', label:'Fioraio', background:'Sfondofioraio.png', title:'I nostri fiori hanno reso speciale il tuo momento?', accent:'#cf7f8f', accent2:'#8e5f67', theme:'#314035', approvedAt:'2026-09-19', description:'Sfondo fioraio premium con composizioni floreali, legno rustico e luce naturale + layout dedicato con palette verde salvia/rosa cipria e massima visibilità dei fiori + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
     { id:'fitness', label:'Palestre / Fitness', background:'Sfondofitness.jpg', description:'Sfondo palestra moderno + stile energico + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
     { id:'fotografo', label:'Fotografo', background:'Sfondofotografo.png', title:'Ti è piaciuto il nostro lavoro?', accent:'#c59a6d', accent2:'#8c6848', theme:'#2d2926', approvedAt:'2026-09-17', description:'Sfondo studio fotografico premium + layout dedicato con spazio per logo, titolo, didascalia, pulsante recensioni e 5 stelle + Powered by Tapreputa.' },
+    { id:'fumetti', label:'Fumetti/Giochi', background:'Sfondofumetti.webp', title:'La tua prossima avventura inizia qui!', approvedAt:'2026-10-09', description:'Galassia dei giochi: sfondo fotografico con fumetti, miniature e giochi da tavolo + logo, didascalia, pulsante recensioni e 5 stelle modificabili.' },
     { id:'gelateria', label:'Gelaterie', background:'Sfondogelateria.jpg', description:'Sfondo gelateria luminoso + stile fresco + pulsante premium + 5 stelle + Powered by Tapreputa.' },
     { id:'hotel', label:'Hotel Isola', background:'Sfondohotel.png', title:'Il tuo soggiorno è stato all’altezza delle aspettative?', accent:'#d5a36a', accent2:'#a46c37', theme:'#3b2a1f', approvedAt:'2026-09-18', description:'Sfondo Hotel premium ispirato a Isola delle Femmine con tramonto e isolotto protagonista + layout dedicato con priorità alla visibilità dell’isolotto, logo, titolo, didascalia, pulsante recensioni e 5 stelle + Powered by Tapreputa.' },
     { id:'gioielleria', label:'Gioielleria', background:'Sfondogioielleria.png', title:'La qualità e la cura dei nostri gioielli ti hanno conquistato?', accent:'#b9975b', accent2:'#7d6238', theme:'#8a744a', description:'Sfondo gioielleria premium + layout elegante dedicato + pulsante recensioni + 5 stelle + Powered by Tapreputa.' },
@@ -84,3 +85,4 @@
     ids: Object.freeze(sorted.map(item => item.id))
   });
 })();
+

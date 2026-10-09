@@ -30,6 +30,7 @@
     ['farmacia','Farmacie'],
     ['fioraio','Fioraio'],
     ['fotografo','Fotografo'],
+    ['fumetti','Fumetti/Giochi'],
     ['gelateria','Gelaterie'],
     ['gioielleria','Gioielleria'],
     ['hotel','Hotel Isola'],
@@ -483,4 +484,5 @@
     }
   });
 })();
+
 

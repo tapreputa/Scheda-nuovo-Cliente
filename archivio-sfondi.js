@@ -15,6 +15,7 @@
     ['Farmacie','Sfondofarmacia.jpg'],
     ['Fioraio','Sfondofioraio.png'],
     ['Fotografo','Sfondofotografo.png?v=20260918-hq-original'],
+    ['Fumetti/Giochi','Sfondofumetti.webp'],
     ['Gelaterie','Sfondogelateria.jpg'],
     ['Gioielleria','Sfondogioielleria.png'],
     ['Hotel Isola','Sfondohotel.png'],
@@ -119,3 +120,4 @@
 
   render();
 })();
+

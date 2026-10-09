@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261009-potential-editor2';
+  const BUILD_ID = '20261009-fumetti';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
@@ -48,6 +48,7 @@
     detersivi: 'Sfondodetersivi.jpg',
     farmacia: 'Sfondofarmacia.jpg',
     fitness: 'Sfondofitness.jpg',
+    fumetti: 'Sfondofumetti.webp',
     gelateria: 'Sfondogelateria.jpg',
     hamburgeria: 'Sfondohamburgeria.png',
     ottica: 'Sfondoottica.png',
@@ -122,6 +123,7 @@
   ]);
 
   const FINAL_MODULES = Object.freeze([
+    'tap-fumetti-template.js',
     'tap-manual-logo-editor.js',
     'tap-template-stability.js',
     'tap-system-checks.js',
@@ -194,6 +196,7 @@
     }
   })();
 })();
+
 
 
 

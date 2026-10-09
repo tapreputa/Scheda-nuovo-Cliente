@@ -1859,6 +1859,7 @@
 <body>
 <div id="loading" class="loading"><div class="card"><h2>Tapreputa</h2><div>Apertura pagina personalizzata…</div><div id="error" class="error"></div></div></div>
 <div id="page" class="page hidden"><div class="content"><img id="logo" class="logo" alt="Logo attività"><div id="name" class="name"></div><div id="headline" class="headline"></div><div id="message" class="box"></div><a id="review" class="review" href="#">Recensione Google</a><div class="stars">★★★★★</div></div><div class="footer">Powered by <strong>Tapreputa</strong></div></div>
+<script src="tap-fumetti-template.js?v=20261009-fumetti"></script>
 <script>
 (()=>{
 'use strict';
@@ -1866,8 +1867,9 @@ const SUPABASE_URL='https://rqzgdgdoulgjwlxtdxhi.supabase.co';
 const KEY='sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p';
 const slug=new URLSearchParams(location.search).get('c')||'';
 const bg={
-abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',beb:'Sfondohotel.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',enoteca:'Sfondoenoteca.png',farmacia:'Sfondofarmacia.jpg',fioraio:'Sfondofioraio.png',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.png?v=20260918-hq-original',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',hotel:'Sfondohotel.png',lavanderia:'Sfondolavanderia.png',macelleria:'Sfondomacelleria.png',petfood:'Sfondopetfood.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',studiotatuaggi:'Sfondostudiotatuaggi.png',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',toelettaturacani:'Sfondotoelettaturacani.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg'};
+abbigliamento:'Sfondoabbigliamento.png',autolavaggio:'Sfondoautolavaggio.png',beb:'Sfondohotel.png',bar:'Sfondobar.png',barextra:'Sfondobarextra.webp?v=20260911-0035',barbershop:'Sfondobarbershop.jpg',cartolibreria:'Sfondocartolibreria.png',centroestetico:'Sfondocentroestetico.jpg',detersivi:'Sfondodetersivi.jpg',enoteca:'Sfondoenoteca.png',farmacia:'Sfondofarmacia.jpg',fioraio:'Sfondofioraio.png',fitness:'Sfondofitness.jpg',fotografo:'Sfondofotografo.png?v=20260918-hq-original',gelateria:'Sfondogelateria.jpg',gioielleria:'Sfondogioielleria.png',hotel:'Sfondohotel.png',lavanderia:'Sfondolavanderia.png',macelleria:'Sfondomacelleria.png',petfood:'Sfondopetfood.png',ottica:'Sfondoottica.png',panificio:'Sfondopanificio.webp',panineria_hamburgeria:'Sfondopanineria.png',hamburgeria:'Sfondopanineria.png',parrucchiere:'Sfondoparrucchiere.jpg',pasticceria:'Sfondopasticceria.jpg',pizzeria:'Sfondopizzeria.jpg',polli_spiedo:'SfondopollialloSpiedo.png',pub:'Sfondopub.jpg',ristorante:'Sfondoristorante.png',ristorantemare:'Sfondoristorantemare.png',stabilimento:'Sfondostabilimento.jpg',studiotatuaggi:'Sfondostudiotatuaggi.png',strumentimusicali:'Sfondostrumentimusicali.png',svapostore:'Sfondosvapostore.png',toelettaturacani:'Sfondotoelettaturacani.png',veterinario:'Sfondoveterinario.png',yogurteria:'Sfondoyogurteria.jpg',fumetti:'Sfondofumetti.webp'};
 const copy={
+fumetti:['La tua prossima avventura inizia qui!','Fumetti, giochi e nuove sfide: ti è piaciuta la tua esperienza?\nRaccontacela con una recensione.\nBastano 2 secondi!'],
 abbigliamento:['IL TUO STILE MERITA 5 STELLE?','La tua opinione ci aiuta a migliorare ogni giorno stile, assortimento e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 autolavaggio:['LA TUA AUTO SPLENDE COME MERITA?','La tua opinione ci aiuta a migliorare ogni giorno qualità, cura e servizio. Raccontaci la tua esperienza! Bastano 2 secondi!'],
 beb:['TI È PIACIUTO IL TUO SOGGIORNO DA NOI?','La tua opinione ci aiuta a rendere ogni soggiorno ancora più accogliente e speciale. Raccontaci la tua esperienza! Bastano 2 secondi!'],
@@ -1935,6 +1937,7 @@ async function load(){
  document.getElementById('headline').textContent=text[0];
  if(text[1]){message.textContent=text[1];message.classList.remove('hidden');}else{message.textContent='';message.classList.add('hidden');}
  document.getElementById('review').href=row.link_recensioni;
+ if(cat==='fumetti')TapFumettiTemplate.applyLegacy(page);
  if(cat==='bar') page.classList.add('bar');
  if(cat==='barextra') page.classList.add('barextra');
  if(cat==='abbigliamento') page.classList.add('abbigliamento');
@@ -1984,3 +1987,4 @@ load().catch(e=>document.getElementById('error').textContent=e.message||'Link no
 <script src="tap-logo-legibility.js?v=20261008-logo-surface1"></script>
 </body>
 </html>
+

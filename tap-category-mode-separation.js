@@ -9,6 +9,7 @@
   const previousOpenInlinePreview = openInlinePreview;
 
   const closedNoLogoCategories = new Set([
+    'fumetti',
     'abbigliamento',
     'autolavaggio',
     'bar',

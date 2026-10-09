@@ -204,6 +204,7 @@ select:focus,input[type="url"]:focus{border-color:#0c9b80;box-shadow:0 0 0 4px r
 <option value="farmacia">Farmacie</option>
 <option value="fioraio">Fioraio</option>
 <option value="fotografo">Fotografo</option>
+<option value="fumetti">Fumetti/Giochi</option>
 <option value="gelateria">Gelaterie</option>
 <option value="gioielleria">Gioielleria</option>
 <option value="hotel">Hotel Isola</option>
@@ -2306,11 +2307,10 @@ Dicci la tua! Bastano 2 secondi!
 <script src="tap-logo-legibility.js?v=20261008-logo-surface1"></script>
 
 
-
 <script>
 document.body.dataset.tapOperator='Francesco';
 const qaParams=new URLSearchParams(location.search),qaLegacy=qaParams.has('legacy');
-const qaCategory=qaLegacy?'bar':qaParams.get('category')||'barextra';
+const qaCategory=qaParams.get('category')||(qaLegacy?'bar':'barextra');
 const qaSlug=qaLegacy?'qa-legacy':'fimis-bar';
 const qaClient={id:'00000000-0000-0000-0000-000000000001',created_by:'demo',nome:'Cliente dimostrativo',categoria:'Demo',categoria_codice:qaCategory,preview_token:'00000000-0000-4000-8000-000000000002',stato:'potenziale',targhe:2,carte:3,adesivi:1,spesa:120,link_recensioni:'https://search.google.com/local/writereview?placeid=qa',link_nfc:qaCategory==='standard'?'https://search.google.com/local/writereview?placeid=qa':'https://tapreputa.github.io/Scheda-nuovo-Cliente/tap.html?c='+qaSlug};
 const qaRealFetch=window.fetch.bind(window);
@@ -2323,7 +2323,7 @@ window.fetch=async(input,options)=>{
  return qaRealFetch(input,options);
 };
 const qaSrc=Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype,'src');
-Object.defineProperty(HTMLIFrameElement.prototype,'src',{...qaSrc,set(value){const url=new URL(value,document.baseURI);if(url.pathname.endsWith('/demo.html')&&url.searchParams.get('t')===qaClient.preview_token)value=new URL('demo.html'+url.search,location.href).href;qaSrc.set.call(this,value);}});
+Object.defineProperty(HTMLIFrameElement.prototype,'src',{...qaSrc,set(value){const url=new URL(value,document.baseURI);if(url.pathname.endsWith('/demo.html')&&url.searchParams.get('t')===qaClient.preview_token){url.searchParams.set('category',qaCategory);value=new URL('demo.html'+url.search,location.href).href;}qaSrc.set.call(this,value);}});
 if(!sessionStorage.getItem('tapnfc_supabase_session_v1')&&!localStorage.getItem('tapnfc_supabase_session_v1'))sessionStorage.setItem('tapnfc_supabase_session_v1',JSON.stringify({access_token:'qa-local-mock',expires_at:Date.now()+3600000}));
 window.TapNfc={
  createPotential:async v=>(window.QASavedRecord={...v,id:qaClient.id,potential_no:1}),
@@ -2338,6 +2338,7 @@ window.TapNfc={
   if(path.startsWith('manual_logo_pages')&&!options.body){
    if(window.QAPublished)return {ok:true,json:async()=>[{html:QAPublished.html}]};
    if(qaLegacy)return {ok:true,json:async()=>[]};
+   if(qaCategory==='fumetti'){const bg=await loadBackgroundDataUrl('Sfondofumetti.webp');return {ok:true,json:async()=>[{html:TapFumettiTemplate.build('https://tapreputa.github.io/Scheda-nuovo-Cliente/tools/logo-mobile-check/fixture/logo.svg',qaClient.link_recensioni,bg)}]};}
    return qaRealFetch('https://rqzgdgdoulgjwlxtdxhi.supabase.co/rest/v1/rpc/get_public_manual_logo_page',{method:'POST',headers:{apikey:'sb_publishable_Hc_FOVPSOkuNC-mz25VknA_5O0fWJ6p','Content-Type':'application/json'},body:JSON.stringify({p_slug:qaSlug})});
   }
   if(path==='rpc/save_potential_page_composition'||path==='rpc/save_client_page_composition'||(path.startsWith('manual_logo_pages')&&options.body)){
@@ -2352,14 +2353,14 @@ window.TapNfc={
 logoDataUrl='https://tapreputa.github.io/Scheda-nuovo-Cliente/tools/logo-mobile-check/fixture/logo.svg';
 document.getElementById('logoPreviewImg').src=logoDataUrl;document.getElementById('logoPreview').classList.add('show');
 </script>
-<p id="qaResult" style="position:static;background:white;color:#123d34;padding:8px">Ambiente dimostrativo: nessuna modifica al database.</p>
-
-<script>(() => {
+<p id="qaResult">Ambiente dimostrativo: nessuna modifica al database.</p>
+<script>
+(() => {
   'use strict';
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261009-potential-editor2';
+  const BUILD_ID = '20261009-fumetti';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
@@ -2404,6 +2405,7 @@ document.getElementById('logoPreviewImg').src=logoDataUrl;document.getElementByI
     detersivi: 'Sfondodetersivi.jpg',
     farmacia: 'Sfondofarmacia.jpg',
     fitness: 'Sfondofitness.jpg',
+    fumetti: 'Sfondofumetti.webp',
     gelateria: 'Sfondogelateria.jpg',
     hamburgeria: 'Sfondohamburgeria.png',
     ottica: 'Sfondoottica.png',
@@ -2478,6 +2480,7 @@ document.getElementById('logoPreviewImg').src=logoDataUrl;document.getElementByI
   ]);
 
   const FINAL_MODULES = Object.freeze([
+    'tap-fumetti-template.js',
     'tap-manual-logo-editor.js',
     'tap-template-stability.js',
     'tap-system-checks.js',
@@ -2553,7 +2556,10 @@ document.getElementById('logoPreviewImg').src=logoDataUrl;document.getElementByI
 
 
 
-</script></body>
+
+
+</script>
+</body>
 </html>
 
 
