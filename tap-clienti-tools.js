@@ -281,6 +281,7 @@
     host.innerHTML = `
       <div class="tap-edit-panel" role="dialog" aria-modal="true" aria-labelledby="tapEditTitle">
         <div class="tap-edit-top"><div><h2 id="tapEditTitle">Modifica cliente</h2><div class="tap-edit-lock">Nome attività, operatore e link restano bloccati.</div></div><button class="tap-edit-close" type="button" aria-label="Chiudi">×</button></div>
+        <div style="margin:16px 0"><button id="tapEditPage" class="tap-edit-save" type="button" style="width:100%">Modifica pagina: logo, testi, stelle e pulsante</button></div>
         <div class="tap-edit-grid">
           <div class="tap-edit-field wide"><label>Nome attività</label><input id="tapEditName" class="tap-edit-input tap-edit-readonly" readonly></div>
           <div class="tap-edit-field"><label>Categoria</label><select id="tapEditCategory" class="tap-edit-select"></select></div>
@@ -311,6 +312,11 @@
     host.querySelector('.tap-edit-cancel').addEventListener('click', () => host.classList.remove('show'));
     host.addEventListener('click', event => { if (event.target === host) host.classList.remove('show'); });
     host.querySelector('#tapEditSave').addEventListener('click', saveCurrentEdit);
+    host.querySelector('#tapEditPage').addEventListener('click', () => {
+      const client=currentClient();if(!client)return;
+      const p=new URLSearchParams({client:client.id,business:client.nome||'',placeid:client.place_id||'',reviewurl:client.link_recensioni||'',category:client.categoria_codice||'',v:'20261009-client-edit1'});
+      location.href='personalizza.html?'+p.toString();
+    });
     return host;
   }
 
@@ -324,6 +330,7 @@
   function showEdit(client) {
     const host = createEditPanel();
     host.dataset.clientId = client.id || '';
+    host.querySelector('#tapEditPage').hidden=client.categoria_codice==='standard';
     host.querySelector('#tapEditName').value = client.nome || '';
     const category = host.querySelector('#tapEditCategory');
     const categoryId = client.categoria_codice || '';

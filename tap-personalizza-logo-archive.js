@@ -102,12 +102,12 @@
       .tap-logo-archive-search{width:100%;height:50px;border:1.5px solid #cad7e6;border-radius:14px;padding:0 14px;font:inherit;font-size:15px;outline:none;background:#fff;color:#10233f}
       .tap-logo-archive-search:focus{border-color:#1769ff;box-shadow:0 0 0 4px rgba(23,105,255,.10)}
       .tap-logo-archive-status{padding:0 17px 10px;background:#fff;color:#718097;font-size:12px;font-weight:700}
-      .tap-logo-archive-grid{overflow:auto;padding:14px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;-webkit-overflow-scrolling:touch}
-      .tap-logo-choice{border:1px solid #dbe4ef;background:#fff;border-radius:16px;overflow:hidden;padding:0;text-align:left;cursor:pointer;box-shadow:0 7px 18px rgba(20,42,74,.06)}
+      .tap-logo-archive-grid{flex:1 1 auto;min-height:0;overflow:auto;padding:14px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:max-content;align-content:start;gap:12px;-webkit-overflow-scrolling:touch}
+      .tap-logo-choice{display:flex;flex-direction:column;align-items:stretch;height:auto!important;min-height:0!important;max-height:none!important;border:1px solid #dbe4ef;background:#fff;border-radius:16px;overflow:hidden;padding:0;text-align:left;cursor:pointer;box-shadow:0 7px 18px rgba(20,42,74,.06)}
       .tap-logo-choice:active{transform:scale(.985)}
-      .tap-logo-choice-img{aspect-ratio:1.3/1;background:#eef3f8;display:grid;place-items:center;padding:10px;color:#7f8c9c;font-size:11px}
-      .tap-logo-choice-img img{width:100%;height:100%;object-fit:contain;display:block}
-      .tap-logo-choice-copy{padding:11px}
+      .tap-logo-choice-img{height:160px;flex:0 0 160px;min-width:0;background:#eef3f8;display:flex;align-items:center;justify-content:center;padding:10px;color:#7f8c9c;font-size:11px;overflow:hidden}
+      .tap-logo-choice-img img{width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;display:block;border-radius:0;padding:0}
+      .tap-logo-choice-copy{flex:0 0 auto;min-height:62px;padding:11px;white-space:normal}
       .tap-logo-choice-name{font-size:13px;font-weight:900;color:#0b2142;overflow-wrap:anywhere}
       .tap-logo-choice-meta{margin-top:4px;color:#8090a3;font-size:10px;line-height:1.35}
       .tap-logo-archive-empty{grid-column:1/-1;padding:38px 12px;text-align:center;color:#728096;font-size:13px}
@@ -260,7 +260,7 @@
     document.body.style.overflow = 'hidden';
     search.value = '';
     render('');
-    setTimeout(() => search.focus(), 80);
+    closeBtn.focus();
   });
 
   closeBtn.addEventListener('click', close);

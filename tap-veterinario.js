@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261009-page-editor1';
+  const BUILD_ID = '20261009-client-edit1';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
@@ -126,7 +126,8 @@
     'tap-template-stability.js',
     'tap-system-checks.js',
     'tap-personalizza-logo-archive.js',
-    'tap-potenziali-personalizza.js'
+    'tap-potenziali-personalizza.js',
+    'tap-client-page-edit.js'
   ]);
 
   const MODULES = Object.freeze([...CORE_MODULES, ...APPROVED_CATEGORY_MODULES, ...FINAL_MODULES]);

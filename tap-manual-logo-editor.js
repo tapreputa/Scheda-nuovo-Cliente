@@ -8,17 +8,18 @@
   const previewButton = document.getElementById('previewBtn');
   const generateButton = document.getElementById('generateBtn');
   const msg = document.getElementById('msg');
-  const key = 'tap_manual_logo_v1:' + (params.get('placeid') || params.get('business') || '');
+  const key = 'tap_manual_logo_v1:' + (params.get('client') ? 'client:'+params.get('client') : params.get('placeid') || params.get('business') || '');
   const defaults = {width:55,x:50,y:3,surface:'none'};
   const definitions = {
     logo:{label:'Logo',selector:'#tapManualLogo,img.logo,img#logo'},
-    caption:{label:'Didascalia',selector:'.eyebrow'},
-    message:{label:'Testo aggiuntivo',selector:'.messaggio-box,.messaggio'},
-    stars:{label:'Stelle',selector:'.stelle'},
-    button:{label:'Pulsante recensione',selector:'a.bottone-google,#bottoneGoogle'}
+    caption:{label:'Didascalia',selector:'.eyebrow,.headline,h1.title'},
+    message:{label:'Testo aggiuntivo',selector:'.messaggio-box,.messaggio,#message,p.text'},
+    stars:{label:'Stelle',selector:'.stelle,.stars'},
+    button:{label:'Pulsante recensione',selector:'a.bottone-google,#bottoneGoogle,a.review,a.btn'}
   };
   let settings = {...defaults}, elements = {}, baselines = {}, selected = 'logo';
   let sourceHtml='',editing=false,publishing=false,publishedHash='';
+  let imported=false,logoDirty=false,importedLogoState=false;
   let frame=null,toolbar=null,stage=null,nativeFrameStyle='',nativeTopbarDisplay='';
   let fitRequest=0,referenceViewport=null,opening=false,needsBaseline=false,ready=false,loadEpoch=0;
   try { settings={...defaults,...JSON.parse(sessionStorage.getItem(key)||'{}')}; } catch {}
@@ -88,7 +89,7 @@
     style.textContent='html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}[data-tap-page-element]{overflow-wrap:anywhere}';
     doc.head.appendChild(style);
     const logo=doc.getElementById('tapManualLogo')||doc.querySelector('img.logo,img#logo');
-    if(logo && !window.tapLogoSkipped){
+    if(logo && !window.tapLogoSkipped && (!imported || logoDirty)){
       if(!doc.querySelector('[data-tap-manual-slot]')){
         const slot=logo.cloneNode(true);
         slot.removeAttribute('id');slot.setAttribute('data-tap-manual-slot','');slot.setAttribute('aria-hidden','true');slot.alt='';
@@ -105,6 +106,7 @@
       });
       logo.dataset.tapPageElement='logo';doc.body.appendChild(logo);
     }
+    if(logo && !window.tapLogoSkipped) logo.dataset.tapPageElement='logo';
     if(window.tapLogoSkipped) doc.querySelectorAll('#tapManualLogo,img.logo,img#logo,[data-tap-manual-slot]').forEach(n=>n.remove());
     for(const [id,definition] of Object.entries(definitions)){
       if(id==='logo') continue;
@@ -200,7 +202,7 @@
       const half=(selected==='logo'?Math.min(values.width,600/referenceViewport.width*100):values.width)/2;
       values.x=Math.max(half,Math.min(100-half,valueFor(selected).x));
     }
-    if(selected==='logo') Object.assign(settings,values);
+    if(selected==='logo') {logoDirty=true;Object.assign(settings,values);}
     else elements[selected]={...elements[selected],...values};
     change();
   }
@@ -210,7 +212,7 @@
       x:Number(((Math.max(0,Math.min(Math.max(0,w-width),left))+width/2)/w*100).toFixed(3)),
       y:Number((Math.max(0,Math.min(Math.max(0,h-height),top))/h*100).toFixed(3))
     };
-    if(id==='logo') Object.assign(settings,values);
+    if(id==='logo') {logoDirty=true;Object.assign(settings,values);}
     else elements[id]={...elements[id],...values};
   }
   function nudge(dx,dy){
@@ -255,6 +257,7 @@
         brightness:122
       };
     }
+    if(imported && !logoDirty && !importedLogoState && baselines.logo){const {width,x,y}=baselines.logo;settings={...defaults,width,x,y};}
   }
   function warnings(){
     const output=toolbar?.querySelector('[data-warning]');if(!output) return;
@@ -328,7 +331,7 @@
       toolbar.querySelector('[data-center]').onclick=()=>{if(ready) setValues({x:50});};
       toolbar.querySelector('[data-reset]').onclick=()=>{
         if(!ready) return;
-        if(selected==='logo') settings={...defaults};else delete elements[selected];
+        if(selected==='logo') {logoDirty=true;settings={...defaults};}else delete elements[selected];
         change();
       };
       toolbar.querySelector('[data-save]').onclick=commit;
@@ -434,6 +437,7 @@
 
   async function publish() {
     if (publishing) return;
+    if(window.TapClientPageEdit?.active()) return window.TapClientPageEdit.save();
     const check=window.TapTemplateStability?.validateForGenerate();
     if (!check?.ok || editing) return notice(check?.message || 'Salva prima le modifiche alla pagina.');
     const html=check.snapshot.html;
@@ -471,6 +475,7 @@
   },true);
   activity.addEventListener('change',()=>{publishedHash='';sourceHtml='';baselines={};loadComposition();});
   document.getElementById('logoFile').addEventListener('change',()=>{
+    if(params.has('client')) {invalidate();return;}
     settings={...defaults};persist();publishedHash='';
     referenceViewport=null;
     try { sessionStorage.removeItem(key + ':viewport'); } catch {}
@@ -478,9 +483,19 @@
   });
   window.addEventListener('tap-logo-archive-selected',()=>{publishedHash='';});
   previewButton.textContent='Personalizza pagina e anteprima';
+  function openSaved(html){
+    const doc=new DOMParser().parseFromString(html,'text/html');
+    imported=true;logoDirty=false;elements={};settings={...defaults};
+    importedLogoState=false;
+    try{const state=JSON.parse(doc.documentElement.dataset.tapManualSettings||'{}');if(state.logo){settings={...defaults,...state.logo};importedLogoState=true;}}catch{}
+    try{const viewport=JSON.parse(doc.documentElement.dataset.tapManualViewport||'null');if(viewport?.width>=200 && viewport?.height>=200) referenceViewport=viewport;}catch{}
+    if(!referenceViewport) referenceViewport={width:Math.max(200,Math.min(480,document.documentElement.clientWidth)),height:Math.max(568,Math.min(900,innerHeight))};
+    // Keep the published inline styles as the new baseline, including earlier edits.
+    persist();openInlinePreview(html);
+  }
   window.TapManualLogoEditor=Object.freeze({
     enabled,transform,getSettings:()=>({...settings,elements:JSON.parse(JSON.stringify(elements)),viewport:referenceViewport && {...referenceViewport}}),
-    isEditing:()=>editing
+    isEditing:()=>editing,openSaved,getDraft:()=>sourceHtml?output():''
   });
 })();
 
