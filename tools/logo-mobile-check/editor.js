@@ -123,7 +123,7 @@
       if(patch.text!==undefined && (id==='caption'||id==='message')) css(node,{'white-space':'pre-line'});
       css(node,{
         position:'fixed',left:value.x+'vw',top:value.y+'vh',right:'auto',bottom:'auto',
-        width:value.width+'vw',height:id==='button'?value.height+'px':'auto',
+        width:(id==='stars'?value.width*value.fontSize/base.fontSize:value.width)+'vw',height:id==='button'?value.height+'px':'auto',
         'max-width':'100vw','min-width':'0','max-height':'none','min-height':id==='button'?'0':base.minHeight,
         transform:'translateX(-50%)',margin:'0','box-sizing':'border-box','z-index':'21',
         'font-family':base.fontFamily,'font-size':value.fontSize+'px','font-weight':base.fontWeight,
@@ -140,7 +140,9 @@
         if(patch.fontSize!==undefined) css(textTarget(node,id),{'font-size':value.fontSize+'px'});
       }
       if(id==='stars'){
+        css(node,{'white-space':'nowrap'});
         if(patch.brightness!==undefined) css(node,{filter:'brightness('+value.brightness/100+')'});
+        if(patch.color!==undefined) css(node,{'text-shadow':'0 0 8px '+value.color+',0 0 18px '+value.color+',0 3px 8px rgba(0,0,0,.35)'});
         node.querySelectorAll('span').forEach(n=>css(n,{'font-size':'inherit',color:value.color}));
       }
       if(patch.text!==undefined) replaceText(node,id,patch.text);
@@ -184,8 +186,19 @@
     overlay.firstElementChild.style.display=nativeTopbarDisplay;
   }
   function nodeFor(id){return frame?.contentDocument?.querySelector('[data-tap-page-element="'+id+'"]');}
+  function rectFor(node,id){
+    if(id==='stars'){
+      const range=node.ownerDocument.createRange();range.selectNodeContents(node);
+      const r=range.getBoundingClientRect(),box=node.getBoundingClientRect();if(r.width && r.height) return {left:r.left,top:box.top,width:r.width,height:box.height,right:r.right,bottom:box.bottom};
+    }
+    return node.getBoundingClientRect();
+  }
   function valueFor(id){return id==='logo'?settings:{...baselines[id],...elements[id]};}
   function setValues(values){
+    if(values.width!==undefined){
+      const half=(selected==='logo'?Math.min(values.width,600/referenceViewport.width*100):values.width)/2;
+      values.x=Math.max(half,Math.min(100-half,valueFor(selected).x));
+    }
     if(selected==='logo') Object.assign(settings,values);
     else elements[selected]={...elements[selected],...values};
     change();
@@ -202,7 +215,7 @@
   function nudge(dx,dy){
     if(!ready) return;
     const node=nodeFor(selected);if(!node) return;
-    const r=node.getBoundingClientRect();
+    const r=rectFor(node,selected);
     moveTo(selected,r.left+dx*referenceViewport.width/100,r.top+dy*referenceViewport.height/100,r.width,r.height);
     change();
   }
@@ -227,7 +240,7 @@
     for(const id of Object.keys(definitions)){
       const node=doc.querySelector('[data-tap-page-element="'+id+'"]');
       if(!node) continue;
-      const r=node.getBoundingClientRect();
+      const r=rectFor(node,id);
       if(!r.width || !r.height) continue;
       const text=textTarget(node,id),style=frame.contentWindow.getComputedStyle(node),ts=frame.contentWindow.getComputedStyle(text);
       baselines[id]={
@@ -236,14 +249,14 @@
         fontFamily:ts.fontFamily,fontWeight:ts.fontWeight,lineHeight:ts.lineHeight==='normal'?'normal':String(parseFloat(ts.lineHeight)/parseFloat(ts.fontSize)),
         letterSpacing:ts.letterSpacing,textTransform:ts.textTransform,minHeight:style.minHeight,
         color:toHex(ts.color),align:ts.textAlign,text:readText(node,id),
-        background:toHex(style.backgroundColor,'#b66c27'),radius:parseFloat(style.borderTopLeftRadius)||0,
+        background:toHex(style.backgroundImage.match(/rgba?\([^)]+\)/)?.[0]||style.backgroundColor,'#b66c27'),radius:parseFloat(style.borderTopLeftRadius)||0,
         brightness:122
       };
     }
   }
   function warnings(){
     const output=toolbar?.querySelector('[data-warning]');if(!output) return;
-    const boxes=Object.keys(definitions).map(id=>({id,node:nodeFor(id)})).filter(v=>v.node && !v.node.hidden).map(v=>({...v,r:v.node.getBoundingClientRect()})).filter(v=>v.r.width && v.r.height);
+    const boxes=Object.keys(definitions).map(id=>({id,node:nodeFor(id)})).filter(v=>v.node && !v.node.hidden).map(v=>({...v,r:rectFor(v.node,v.id)})).filter(v=>v.r.width && v.r.height);
     const problems=[];
     for(const {id,r} of boxes){
       if(r.left<-.5 || r.top<-.5 || r.right>referenceViewport.width+.5 || r.bottom>referenceViewport.height+.5) problems.push(definitions[id].label+' fuori dalla pagina');
@@ -279,7 +292,7 @@
         '#tapManualControls [data-hint]{text-align:center;font-weight:400;font-size:11px}#tapManualControls [data-preview-heading],#tapManualControls [data-edit]{display:none}',
         '#tapManualControls [data-status],#tapManualControls [data-warning]{color:#7b5410;white-space:normal;font-size:11px}',
         '#tapManualControls [data-color-row]{display:flex;align-items:center;gap:8px;flex-wrap:wrap}#tapManualControls input[type=color]{width:32px;height:26px;padding:0;border:1px solid #a8c9bf;border-radius:4px}',
-        '#tapManualControls select{padding:4px;border:1px solid #a8c9bf;border-radius:5px;width:auto;max-width:110px;font:inherit;color:#123d34;background:white}',
+        '#tapManualControls [data-hex]{width:69px;height:26px;padding:3px;border:1px solid #a8c9bf;border-radius:4px;font:11px Arial;background:white;color:#123d34}#tapManualControls select{padding:4px;border:1px solid #a8c9bf;border-radius:5px;width:auto;max-width:110px;font:inherit;color:#123d34;background:white}',
         '#tapManualControls [data-text]{resize:vertical;display:block;width:100%;min-height:36px;max-height:62px;margin:3px 0 0;padding:5px 7px;border:1px solid #a8c9bf;border-radius:5px;font:13px/1.2 Arial;color:#123d34;background:white}',
         '#tapManualControls[data-preview=true]{grid-template-columns:1fr auto auto;align-items:center;gap:6px;padding-top:6px;padding-bottom:calc(6px + env(safe-area-inset-bottom))}',
         '#tapManualControls[data-preview=true] [data-edit-only],#tapManualControls[data-preview=true] [data-save]{display:none}#tapManualControls[data-preview=true] [data-preview-heading],#tapManualControls[data-preview=true] [data-edit]{display:block}',
@@ -294,7 +307,7 @@
         '<div data-edit-only data-select-row>'+Object.entries(definitions).map(([id,d])=>'<button type="button" data-select="'+id+'">'+(id==='button'?'Pulsante':id==='message'?'Testo':d.label)+'</button>').join('')+'</div>'+
         '<label data-edit-only data-text-row><span data-text-label>Testo</span><textarea data-text aria-label="Testo elemento selezionato" rows="2" maxlength="4000"></textarea></label>'+
         range('width','Larghezza',10,95)+range('fontSize','Dimensione',10,72)+range('height','Altezza',32,120)+range('radius','Angoli',0,60)+range('brightness','Luminosità',50,200)+
-        '<div data-edit-only data-color-row><label data-color-label for="tapPage-color">Colore</label><input id="tapPage-color" data-control="color" type="color" aria-label="Colore elemento"><label data-background-label for="tapPage-background">Sfondo</label><input id="tapPage-background" data-control="background" type="color" aria-label="Colore sfondo pulsante"><label data-align-label for="tapPage-align">Allinea</label><select id="tapPage-align" data-control="align" aria-label="Allineamento testo"><option value="left">Sinistra</option><option value="center">Centro</option><option value="right">Destra</option></select></div>'+
+        '<div data-edit-only data-color-row><label data-color-label for="tapPage-color">Colore</label><input id="tapPage-color" data-control="color" type="color" aria-label="Colore elemento"><input data-hex="color" aria-label="Codice colore elemento" maxlength="7"><label data-background-label for="tapPage-background">Sfondo</label><input id="tapPage-background" data-control="background" type="color" aria-label="Colore sfondo pulsante"><input data-hex="background" aria-label="Codice colore sfondo pulsante" maxlength="7"><label data-align-label for="tapPage-align">Allinea</label><select id="tapPage-align" data-control="align" aria-label="Allineamento testo"><option value="left">Sinistra</option><option value="center">Centro</option><option value="right">Destra</option></select></div>'+
         '<div data-edit-only data-surface-row><span>Sfondo</span><button type="button" data-surface="none">Nessuno</button><button type="button" data-surface="light">Chiaro</button><button type="button" data-surface="dark">Scuro</button></div>'+
         '<div data-edit-only data-position-row><button type="button" data-move="left">←</button><button type="button" data-move="right">→</button><button type="button" data-move="up">↑</button><button type="button" data-move="down">↓</button><button type="button" data-center>Centra</button><button type="button" data-reset>Ripristina</button></div>'+
         '<button type="button" data-edit>Modifica pagina</button><div data-actions><button type="button" data-edit-close>Torna</button><button type="button" data-save>Salva e visualizza anteprima</button></div>'+
@@ -306,6 +319,7 @@
         const name=e.target.dataset.control,value=e.target.type==='range'?Number(e.target.value):e.target.value;
         setValues({[name]:value});
       }));
+      toolbar.querySelectorAll('[data-hex]').forEach(input=>input.addEventListener('input',()=>{const value=input.value.startsWith('#')?input.value:'#'+input.value;if(/^#[0-9a-f]{6}$/i.test(value) && baselines[selected]) setValues({[input.dataset.hex]:value});}));
       toolbar.querySelector('[data-text]').addEventListener('input',e=>{if(baselines[selected] && selected!=='logo') setValues({text:e.target.value});});
       toolbar.querySelectorAll('[data-surface]').forEach(b=>b.onclick=()=>setValues({surface:b.dataset.surface}));
       toolbar.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>nudge(...({left:[-1,0],right:[1,0],up:[0,-1],down:[0,1]})[b.dataset.move]));
@@ -347,8 +361,9 @@
     toolbar.querySelector('[data-color-row]').hidden=selected==='logo';
     toolbar.querySelector('[data-control="color"]').value=value.color||'#ffffff';
     toolbar.querySelector('[data-control="background"]').value=value.background||'#b66c27';
+    toolbar.querySelectorAll('[data-hex]').forEach(input=>{if(input!==document.activeElement) input.value=value[input.dataset.hex]||'#ffffff';});
     toolbar.querySelector('[data-control="align"]').value=['left','center','right'].includes(value.align)?value.align:'center';
-    for(const selector of ['[data-background-label]','[data-control="background"]']) toolbar.querySelector(selector).hidden=selected!=='button';
+    for(const selector of ['[data-background-label]','[data-control="background"]','[data-hex="background"]']) toolbar.querySelector(selector).hidden=selected!=='button';
     for(const selector of ['[data-align-label]','[data-control="align"]']) toolbar.querySelector(selector).hidden=!isText;
     toolbar.querySelector('[data-surface-row]').hidden=selected!=='logo';
     toolbar.querySelectorAll('[data-surface]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.surface===settings.surface)));
@@ -383,7 +398,7 @@
       node.addEventListener('pointerdown',e=>{
         if(e.button!==0) return;
         select(id);
-        const r=node.getBoundingClientRect();drag={x:e.clientX,y:e.clientY,left:r.left,top:r.top,w:r.width,h:r.height,moved:false};
+        const r=rectFor(node,id);drag={x:e.clientX,y:e.clientY,left:r.left,top:r.top,w:r.width,h:r.height,moved:false};
         node.setPointerCapture(e.pointerId);e.preventDefault();
       });
       node.addEventListener('pointermove',e=>{
@@ -391,8 +406,9 @@
         drag.moved=true;editing=true;
         moveTo(id,drag.left+e.clientX-drag.x,drag.top+e.clientY-drag.y,drag.w,drag.h);
         if(id!=='logo' && node.style.position!=='fixed'){
+          const slot=node.cloneNode(true);slot.removeAttribute('id');slot.removeAttribute('data-tap-page-element');slot.removeAttribute('data-tap-selected');slot.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));slot.setAttribute('aria-hidden','true');css(slot,{visibility:'hidden','pointer-events':'none'});node.replaceWith(slot);
           css(node,{position:'fixed',width:drag.w+'px',height:drag.h+'px',margin:'0',right:'auto',bottom:'auto',transform:'translateX(-50%)','z-index':'21'});
-          doc.body.appendChild(node);
+          doc.body.appendChild(node);node.setPointerCapture(e.pointerId);
         }
         const value=valueFor(id);css(node,{left:value.x+'vw',top:value.y+'vh'});
       });
