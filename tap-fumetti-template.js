@@ -8,6 +8,9 @@ html:has(.page.fumetti),body:has(.page.fumetti){margin:0;min-height:100%;backgro
 .page.fumetti:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(4,11,25,.13),transparent 23%,rgba(4,11,25,.13) 48%,rgba(4,11,25,.06) 80%,rgba(4,11,25,.30))!important}
 body:has(.page.fumetti) .content{position:relative!important;width:100%!important;max-width:none!important;min-height:100vh!important;min-height:100svh!important;margin:0!important;padding:0!important;transform:none!important;display:block!important}
 body:has(.page.fumetti) .name{display:none!important}
+body:has(.page.fumetti) .fumetti-logo-frame{position:absolute!important;top:5svh!important;left:50%!important;transform:translateX(-50%)!important;width:min(65vw,460px)!important;height:19svh!important;min-height:140px!important;max-height:240px!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#17212b!important;border-radius:24px!important;padding:14px!important;box-sizing:border-box!important}
+body:has(.page.fumetti) .fumetti-logo-frame .logo{position:static!important;display:block!important;width:auto!important;max-width:100%!important;height:100%!important;max-height:100%!important;object-fit:contain!important;transform:none!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;filter:none!important}
+
 body:has(.page.fumetti) .logo{position:absolute!important;top:6svh!important;left:50%!important;transform:translateX(-50%)!important;width:min(65vw,300px)!important;height:auto!important;max-height:19svh!important;object-fit:contain!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;filter:drop-shadow(0 4px 12px #0007)!important;display:none}
 body:has(.page.fumetti) .logo.show{display:block}
 body:has(.page.fumetti) .fumetti-copy{position:absolute;top:29svh;left:6%;right:6%;width:min(88%,520px);margin:auto;padding:18px 15px;text-align:center;border-radius:20px;background:rgba(8,17,34,.76);border:1px solid rgba(255,255,255,.35);box-shadow:0 8px 24px #0002}
@@ -23,12 +26,17 @@ body:has(.page.fumetti) .footer strong{display:block!important;font-size:20px!im
 `;
   function escape(value){return String(value||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function build(logo,reviewUrl,background){
-    return '<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Recensioni</title><style>'+css+'</style></head><body><main class="page fumetti" style="background-image:url(&quot;'+escape(background)+'&quot;)"><div class="content">'+(logo?'<img class="logo show" alt="Logo attività" src="'+escape(logo)+'">':'')+'<div class="fumetti-copy"><div class="headline">'+escape(title)+'</div><div id="message" class="box">'+escape(message)+'</div></div><a class="review" href="'+escape(reviewUrl)+'" aria-label="Lascia una recensione"><span class="fumetti-google" aria-hidden="true">G</span><span class="button-text">Lascia una recensione</span></a><div class="stars" aria-label="Cinque stelle">★★★★★</div></div><div class="footer">Powered by<strong>Tapreputa</strong></div></main></body></html>';
+    return '<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Recensioni</title><style>'+css+'</style></head><body><main class="page fumetti" style="background-image:url(&quot;'+escape(background)+'&quot;)"><div class="content">'+(logo?'<div class="fumetti-logo-frame"><img class="logo show" alt="Logo attività" src="'+escape(logo)+'"></div>':'')+'<div class="fumetti-copy"><div class="headline">'+escape(title)+'</div><div id="message" class="box">'+escape(message)+'</div></div><a class="review" href="'+escape(reviewUrl)+'" aria-label="Lascia una recensione"><span class="fumetti-google" aria-hidden="true">G</span><span class="button-text">Lascia una recensione</span></a><div class="stars" aria-label="Cinque stelle">★★★★★</div></div><div class="footer">Powered by<strong>Tapreputa</strong></div></main></body></html>';
   }
   function applyLegacy(page){
     page.classList.add('fumetti');
     const doc=page.ownerDocument;
     if(!doc.getElementById('tap-fumetti-style')){const style=doc.createElement('style');style.id='tap-fumetti-style';style.textContent=css;doc.head.appendChild(style);}
+    const logo=page.querySelector('img.logo');
+    if(logo && !logo.closest('.fumetti-logo-frame')){
+      const frame=doc.createElement('div');frame.className='fumetti-logo-frame';
+      logo.before(frame);frame.appendChild(logo);
+    }
     const group=doc.createElement('div');group.className='fumetti-copy';
     const headline=page.querySelector('.headline'),box=page.querySelector('.box');
     headline.before(group);group.append(headline,box);
