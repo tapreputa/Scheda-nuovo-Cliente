@@ -121,7 +121,12 @@
 
   $('preview').onclick = () => {
     if (!isOwner(selected)) return;
-    location.href = 'index.html?potential=' + encodeURIComponent(selected.id) + '#nuovo';
+    const params = new URLSearchParams({
+      potential:selected.id, business:selected.nome || '',
+      category:selected.categoria_codice || '', reviewurl:selected.link_recensioni || '',
+      placeid:selected.place_id || '', v:'20261009-potential-editor1'
+    });
+    location.href = 'personalizza.html?' + params.toString();
   };
   $('copyReview').onclick = async () => {
     if (!selected?.link_recensioni) return note('Link recensioni non disponibile.', true);
@@ -142,3 +147,4 @@
     if (requested) open(requested);
   })();
 })();
+

@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261009-client-edit3';
+  const BUILD_ID = '20261009-potential-editor1';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
@@ -157,8 +157,8 @@
     });
   }
 
-  // New compositions must wait for all editor modules before opening or publishing.
-  const protectNewEditor = !new URLSearchParams(location.search).has('potential');
+  // Every composition waits for the complete editor, including saved prospects.
+  const protectNewEditor = true;
   let modulesReady = false;
   const pendingButtons = ['previewBtn','generateBtn'].map(id=>document.getElementById(id)).filter(Boolean);
   if(protectNewEditor) pendingButtons.forEach(button=>button.disabled=true);
@@ -175,7 +175,7 @@
       for (const src of MODULES) await loadScript(src);
       installOperatorAndPreviewFixes();
       modulesReady=true;
-      if(protectNewEditor) pendingButtons.forEach(button=>button.disabled=false);
+      if(!window.TapClientPageEdit?.active()) pendingButtons.forEach(button=>button.disabled=false);
       document.documentElement.dataset.tapModulesBuild = BUILD_ID;
       window.TapPersonalizzaBuild = Object.freeze({
         id: BUILD_ID,
@@ -194,5 +194,6 @@
     }
   })();
 })();
+
 
 

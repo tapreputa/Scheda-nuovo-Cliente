@@ -11,6 +11,9 @@
   const params = new URLSearchParams(location.search);
   if(params.has('client')) return;
   const editing = params.get('potential');
+  // Registered personalized prospects use the saved composition editor.
+  // Standard prospects retain their direct Google link and proposal flow.
+  if (editing && activity.value !== 'standard') return;
   if (params.get('mode') === 'potential' || editing) {
     const eyebrow = document.querySelector('main .eyebrow');
     if (eyebrow) eyebrow.textContent = editing ? 'Modifica potenziale' : 'Nuovo potenziale';
@@ -184,3 +187,4 @@
 
   restorePotential();
 })();
+

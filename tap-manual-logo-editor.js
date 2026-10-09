@@ -2,13 +2,11 @@
   'use strict';
   if (!location.pathname.endsWith('/personalizza.html')) return;
   const params = new URLSearchParams(location.search);
-  // Existing potential/client edit sessions keep their original pipeline.
-  if (params.has('potential')) return;
   const activity = document.getElementById('activityType');
   const previewButton = document.getElementById('previewBtn');
   const generateButton = document.getElementById('generateBtn');
   const msg = document.getElementById('msg');
-  const key = 'tap_manual_logo_v1:' + (params.get('client') ? 'client:'+params.get('client') : params.get('placeid') || params.get('business') || '');
+  const key = 'tap_manual_logo_v1:' + (params.get('client') ? 'client:'+params.get('client') : params.get('potential') ? 'potential:'+params.get('potential') : params.get('placeid') || params.get('business') || '');
   const defaults = {width:55,x:50,y:3,surface:'none'};
   const definitions = {
     logo:{label:'Logo',selector:'#tapManualLogo,img.logo,img#logo'},
@@ -475,7 +473,7 @@
   },true);
   activity.addEventListener('change',()=>{publishedHash='';sourceHtml='';baselines={};loadComposition();});
   document.getElementById('logoFile').addEventListener('change',()=>{
-    if(params.has('client')) {invalidate();return;}
+    if(params.has('client') || params.has('potential')) {invalidate();return;}
     settings={...defaults};persist();publishedHash='';
     referenceViewport=null;
     try { sessionStorage.removeItem(key + ':viewport'); } catch {}
@@ -498,4 +496,5 @@
     isEditing:()=>editing,openSaved,getDraft:()=>sourceHtml?output():''
   });
 })();
+
 
