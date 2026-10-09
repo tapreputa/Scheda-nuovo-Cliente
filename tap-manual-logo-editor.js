@@ -81,6 +81,11 @@
   function transform(html){
     if(!enabled()) return html;
     const doc=new DOMParser().parseFromString(html,'text/html');
+    if(activity.value==='fumetti' && doc.querySelector('.page.fumetti')){
+      doc.querySelectorAll('style').forEach(style=>{
+        style.textContent=style.textContent.replace(/\.page\.fumetti \./g,'body:has(.page.fumetti) .');
+      });
+    }
     doc.querySelectorAll('script,[id^="tap-logo-solid"],#tap-manual-logo-style,#tap-page-editor-style').forEach(n=>n.remove());
     const style=doc.createElement('style');
     style.id='tap-page-editor-style';

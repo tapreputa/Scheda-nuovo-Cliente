@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261009-fumetti';
+  const BUILD_ID = '20261009-fumetti-button2';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
