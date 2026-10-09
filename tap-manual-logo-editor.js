@@ -135,6 +135,7 @@
         const slot=node.cloneNode(true);
         slot.removeAttribute('id');slot.removeAttribute('data-tap-page-element');
         slot.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
+        slot.querySelectorAll('[data-tap-page-element]').forEach(n=>n.removeAttribute('data-tap-page-element'));
         slot.dataset.tapPageSlot=id;slot.setAttribute('aria-hidden','true');
         css(slot,{visibility:'hidden','pointer-events':'none'});node.replaceWith(slot);
       }
@@ -448,7 +449,8 @@
         drag.moved=true;editing=true;
         moveTo(id,drag.left+e.clientX-drag.x,drag.top+e.clientY-drag.y,drag.w,drag.h);
         if(id!=='logo' && node.style.position!=='fixed'){
-          const slot=node.cloneNode(true);slot.removeAttribute('id');slot.removeAttribute('data-tap-page-element');slot.removeAttribute('data-tap-selected');slot.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));slot.setAttribute('aria-hidden','true');css(slot,{visibility:'hidden','pointer-events':'none'});node.replaceWith(slot);
+          const slot=node.cloneNode(true);slot.removeAttribute('id');slot.removeAttribute('data-tap-page-element');slot.removeAttribute('data-tap-selected');slot.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
+        slot.querySelectorAll('[data-tap-page-element]').forEach(n=>n.removeAttribute('data-tap-page-element'));slot.setAttribute('aria-hidden','true');css(slot,{visibility:'hidden','pointer-events':'none'});node.replaceWith(slot);
           css(node,{position:'fixed',width:drag.w+'px',height:drag.h+'px',margin:'0',right:'auto',bottom:'auto',transform:'translateX(-50%)','z-index':'21'});
           doc.body.appendChild(node);node.setPointerCapture(e.pointerId);
         }
