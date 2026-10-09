@@ -10,7 +10,7 @@
   const defaults = {get width(){return activity.value==='fumetti'?65:55;},x:50,get y(){return activity.value==='fumetti'?6:3;},surface:'none'};
   const definitions = {
     logo:{label:'Logo',selector:'#tapManualLogo,img.logo,img#logo'},
-    caption:{label:'Didascalia',selector:'.eyebrow,.headline,h1.title'},
+    caption:{label:'Didascalia',get selector(){return activity.value==='fumetti'?'.fumetti-copy':'.eyebrow,.headline,h1.title';}},
     message:{label:'Testo aggiuntivo',selector:'.messaggio-box,.messaggio,#message,p.text'},
     stars:{label:'Stelle',selector:'.stelle,.stars'},
     button:{label:'Pulsante recensione',selector:'a.bottone-google,#bottoneGoogle,a.review,a.btn'}
@@ -54,6 +54,7 @@
     for(const [property,value] of Object.entries(values)) if(value!==undefined && value!==null) node.style.setProperty(property,String(value),'important');
   }
   function textTarget(node,id){
+    if(id==='caption' && node.classList.contains('fumetti-copy')) return node.querySelector('.headline')||node;
     if(id==='message') return node.querySelector('.messaggio')||node;
     if(id==='button') return node.querySelector('.testo-bottone,.button-text,.btn-text')||node;
     return node;
@@ -85,6 +86,18 @@
       doc.querySelectorAll('style').forEach(style=>{
         style.textContent=style.textContent.replace(/\.page\.fumetti \./g,'body:has(.page.fumetti) .');
       });
+    }
+    if(activity.value==='fumetti'){
+      const group=doc.querySelector('.fumetti-copy:not([data-tap-page-slot])');
+      if(group){
+        const headline=doc.querySelector('.headline[data-tap-page-element="caption"]')||group.querySelector('.headline:not([data-tap-page-slot])');
+        const message=doc.querySelector('[data-tap-page-element="message"]')||group.querySelector('#message,.box:not([data-tap-page-slot])');
+        group.querySelectorAll('[data-tap-page-slot]').forEach(n=>n.remove());
+        if(headline){headline.removeAttribute('data-tap-page-element');group.prepend(headline);}
+        if(message)group.appendChild(message);
+        for(const child of [headline,message].filter(Boolean)) css(child,{position:'static',width:'100%',height:'auto',left:'auto',top:'auto',right:'auto',bottom:'auto',transform:'none','box-sizing':'border-box','max-width':'100%',margin:child===headline?'0 0 13px':'0'});
+        group.dataset.tapPageElement='caption';
+      }
     }
     doc.querySelectorAll('script,[id^="tap-logo-solid"],#tap-manual-logo-style,#tap-page-editor-style').forEach(n=>n.remove());
     const style=doc.createElement('style');
@@ -126,6 +139,13 @@
         css(slot,{visibility:'hidden','pointer-events':'none'});node.replaceWith(slot);
       }
       const value={...base,...patch};
+      if(activity.value==='fumetti' && id==='message' && node.closest('.fumetti-copy')){
+        const cb=baselines.caption,cp={...cb,...elements.caption};
+        const scale=cb?cp.width/cb.width:1;
+        css(node,{'font-size':value.fontSize*scale+'px',color:value.color,'text-align':value.align,'white-space':'pre-line'});
+        if(patch.text!==undefined)replaceText(node,id,patch.text);
+        continue;
+      }
       if(patch.text!==undefined && (id==='caption'||id==='message')) css(node,{'white-space':'pre-line'});
       css(node,{
         position:'fixed',left:value.x+'vw',top:value.y+'vh',right:'auto',bottom:'auto',
@@ -136,6 +156,13 @@
         'line-height':base.lineHeight,'letter-spacing':base.letterSpacing,'text-transform':base.textTransform,
         'text-align':value.align,color:value.color
       });
+      if(id==='caption' && node.classList.contains('fumetti-copy')){
+        const scale=value.width/base.width;
+        css(node,{padding:base.paddingY*scale+'px '+base.paddingX*scale+'px','border-radius':base.radius*scale+'px',height:'auto','min-height':'0'});
+        const headline=node.querySelector('.headline'),message=node.querySelector('#message,.box');
+        if(headline)css(headline,{'font-size':base.fontSize*scale+'px',margin:'0 0 '+13*scale+'px',color:value.color,'text-align':value.align});
+        if(message)css(message,{'font-size':base.messageFontSize*scale+'px'});
+      }
       if(id==='message'){
         css(textTarget(node,id),{'font-size':value.fontSize+'px','font-family':base.fontFamily,'font-weight':base.fontWeight,'line-height':base.lineHeight,color:value.color,'text-align':value.align,'white-space':'pre-line'});
       }
@@ -256,6 +283,8 @@
         fontFamily:ts.fontFamily,fontWeight:ts.fontWeight,lineHeight:ts.lineHeight==='normal'?'normal':String(parseFloat(ts.lineHeight)/parseFloat(ts.fontSize)),
         letterSpacing:ts.letterSpacing,textTransform:ts.textTransform,minHeight:style.minHeight,
         color:toHex(ts.color),align:ts.textAlign,text:readText(node,id),
+        paddingY:parseFloat(style.paddingTop)||0,paddingX:parseFloat(style.paddingRight)||0,
+        messageFontSize:node.querySelector('#message,.box')?parseFloat(frame.contentWindow.getComputedStyle(node.querySelector('#message,.box')).fontSize):0,
         background:toHex(style.backgroundImage.match(/rgba?\([^)]+\)/)?.[0]||style.backgroundColor,'#b66c27'),radius:parseFloat(style.borderTopLeftRadius)||0,
         brightness:Math.round(100*Number(style.filter.match(/brightness\(([\d.]+)\)/)?.[1]||1))
       };
@@ -271,6 +300,7 @@
     }
     for(let i=0;i<boxes.length;i++) for(let j=i+1;j<boxes.length;j++){
       const a=boxes[i],b=boxes[j];
+      if(a.node.contains(b.node)||b.node.contains(a.node))continue;
       if(Math.min(a.r.right,b.r.right)-Math.max(a.r.left,b.r.left)>3 && Math.min(a.r.bottom,b.r.bottom)-Math.max(a.r.top,b.r.top)>3) problems.push(definitions[a.id].label+' e '+definitions[b.id].label+' si sovrappongono');
     }
     output.hidden=!editing || !problems.length;output.textContent=problems.join(' · ');
@@ -355,7 +385,8 @@
     if(!toolbar) return;
     const value=valueFor(selected)||{},isText=selected==='caption'||selected==='message';
     toolbar.querySelectorAll('[data-select]').forEach(b=>{b.hidden=!baselines[b.dataset.select];b.setAttribute('aria-pressed',String(b.dataset.select===selected));});
-    const shown={width:selected!=='stars',fontSize:selected!=='logo',height:selected==='button',radius:selected==='button',brightness:selected==='stars'};
+    const grouped=activity.value==='fumetti'&&(selected==='caption'||selected==='message');
+    const shown={width:selected!=='stars'&&!(grouped&&selected==='message'),fontSize:selected!=='logo'&&!grouped,height:selected==='button',radius:selected==='button',brightness:selected==='stars'};
     for(const [name,show] of Object.entries(shown)){
       toolbar.querySelector('[data-row="'+name+'"]').hidden=!show;
       const control=toolbar.querySelector('[data-control="'+name+'"]');control.value=Math.round(value[name]??control.min);
@@ -363,7 +394,8 @@
       toolbar.querySelector('[data-output="'+name+'"]').textContent=Math.round(value[name]??0)+unit;
       control.setAttribute('aria-label',({width:selected==='logo'?'Dimensione':'Larghezza',fontSize:'Dimensione',height:'Altezza',radius:'Angoli',brightness:'Luminosità'})[name]+' '+definitions[selected].label.toLowerCase());
     }
-    toolbar.querySelector('[data-row="width"] label').textContent=selected==='logo'?'Dimensione':'Larghezza';
+    toolbar.querySelector('[data-row="width"] label').textContent=grouped?'Dimensione blocco':selected==='logo'?'Dimensione':'Larghezza';
+    toolbar.querySelector('[data-position-row]').hidden=grouped&&selected==='message';
     toolbar.querySelector('[data-text-row]').hidden=!(isText||selected==='button');
     const text=toolbar.querySelector('[data-text]');if(force || text!==document.activeElement) text.value=value.text??'';
     toolbar.querySelector('[data-color-row]').hidden=selected==='logo';
@@ -404,6 +436,8 @@
       });
       let drag=null;
       node.addEventListener('pointerdown',e=>{
+        if(activity.value==='fumetti' && id==='message'){e.stopPropagation();select(id);return;}
+        if(activity.value==='fumetti' && id==='caption' && e.target.closest('[data-tap-page-element="message"]'))return;
         if(e.button!==0) return;
         select(id);
         const r=rectFor(node,id);drag={x:e.clientX,y:e.clientY,left:r.left,top:r.top,w:r.width,h:r.height,moved:false};
