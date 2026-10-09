@@ -2314,7 +2314,7 @@ const qaLegacy=new URLSearchParams(location.search).has('legacy');
 const qaSlug=qaLegacy?'maxim-bar':'fimis-bar';
 const qaClient={id:'00000000-0000-0000-0000-000000000001',created_by:'demo',nome:'Cliente dimostrativo',categoria_codice:'barextra',link_recensioni:'https://search.google.com/local/writereview?placeid=qa',link_nfc:'https://tapreputa.github.io/Scheda-nuovo-Cliente/tap.html?c='+qaSlug};
 const qaRealFetch=window.fetch.bind(window);
-window.fetch=async(input,options)=>{if(String(input).includes('/storage/v1/object/sign/tapnfc-logo-archive/'))return new Response(JSON.stringify({signedURL:'https://tapreputa.github.io/Scheda-nuovo-Cliente/tapreputa-logo.webp'}),{status:200});return qaRealFetch(input,options);};
+window.fetch=async(input,options)=>{if(String(input).includes('/storage/v1/object/sign/tapnfc-logo-archive/'))return new Response(JSON.stringify({signedURL:'https://tapreputa.github.io/Scheda-nuovo-Cliente/tools/logo-mobile-check/fixture/logo.svg'}),{status:200});return qaRealFetch(input,options);};
 if(!sessionStorage.getItem('tapnfc_supabase_session_v1')&&!localStorage.getItem('tapnfc_supabase_session_v1'))sessionStorage.setItem('tapnfc_supabase_session_v1',JSON.stringify({access_token:'qa-local-mock',expires_at:Date.now()+3600000}));
 window.TapNfc={createPotential:async v=>({...v,id:'qa-potential',potential_no:1}),getUser:async()=>({id:'demo'}),operatorName:()=> 'Francesco',listClients:async()=>[],listPotentials:async()=>[],
 rest:async(path,options={})=>{
@@ -2330,7 +2330,7 @@ rest:async(path,options={})=>{
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261009-client-edit2';
+  const BUILD_ID = '20261009-client-edit3';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');

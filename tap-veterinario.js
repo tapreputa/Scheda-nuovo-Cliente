@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261009-client-edit2';
+  const BUILD_ID = '20261009-client-edit3';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');

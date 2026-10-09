@@ -314,7 +314,7 @@
     host.querySelector('#tapEditSave').addEventListener('click', saveCurrentEdit);
     host.querySelector('#tapEditPage').addEventListener('click', () => {
       const client=currentClient();if(!client)return;
-      const p=new URLSearchParams({client:client.id,business:client.nome||'',placeid:client.place_id||'',reviewurl:client.link_recensioni||'',category:client.categoria_codice||'',v:'20261009-client-edit2'});
+      const p=new URLSearchParams({client:client.id,business:client.nome||'',placeid:client.place_id||'',reviewurl:client.link_recensioni||'',category:client.categoria_codice||'',v:'20261009-client-edit3'});
       location.href='personalizza.html?'+p.toString();
     });
     return host;

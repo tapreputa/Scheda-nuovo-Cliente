@@ -4,10 +4,14 @@
   const params=new URLSearchParams(location.search),id=params.get('client');
   if(!id) return;
   const activity=document.getElementById('activityType'),preview=document.getElementById('previewBtn'),saveButton=document.getElementById('generateBtn'),add=document.getElementById('addClientBtn'),msg=document.getElementById('msg');
-  let client=null,slug='',savedHtml='',busy=false,loaded=false,existingManual=false;
+  let client=null,slug='',savedHtml='',busy=false,loaded=false,existingManual=false,logoRemoved=false;
+  function pageLogo(doc){return doc.getElementById('tapManualLogo')||doc.querySelector('img.logo:not([data-tap-manual-slot]),img#logo');}
   function notice(text,error=false){msg.className='message show '+(error?'warn':'ok');msg.textContent=text;}
   function hideAdd(){add.hidden=true;add.style.setProperty('display','none','important');}
   hideAdd();activity.disabled=true;saveButton.disabled=true;preview.disabled=true;
+  document.getElementById('tapCategorySearch')?.setAttribute('disabled','');
+  document.getElementById('logoFile').addEventListener('change',()=>{logoRemoved=false;});
+  document.querySelector('[data-logo-remove]')?.addEventListener('click',()=>{logoRemoved=true;window.tapLogoSkipped=true;TapTemplateStability.invalidate('logo rimosso');});
   saveButton.textContent='Salva modifiche cliente';preview.textContent='Modifica pagina e anteprima';
   document.querySelector('h1').textContent='Modifica cliente';
   document.querySelector('main .eyebrow').textContent='CLIENTE ESISTENTE';
@@ -18,7 +22,7 @@
   function setLogo(value){try{logoDataUrl=value;}catch{window.logoDataUrl=value;}const img=document.getElementById('logoPreviewImg');img.src=value;document.getElementById('logoPreview').classList.toggle('show',!!value);document.getElementById('logoName').textContent=value?'Logo attuale del cliente':'';window.tapLogoSkipped=!value;}
   async function legacyHtml(){
     const f=document.createElement('iframe');f.title='Caricamento pagina esistente';f.style.cssText='position:fixed;left:-10000px;top:0;border:0;width:'+Math.max(200,Math.min(480,document.documentElement.clientWidth))+'px;height:'+Math.max(568,Math.min(900,innerHeight))+'px;';
-    f.src='cliente.html?c='+encodeURIComponent(slug)+'&preview=1&v=20261009-client-edit2';document.body.appendChild(f);
+    f.src='cliente.html?c='+encodeURIComponent(slug)+'&preview=1&v=20261009-client-edit3';document.body.appendChild(f);
     try{
       await new Promise((resolve,reject)=>{const start=Date.now();const timer=setInterval(()=>{const doc=f.contentDocument,page=doc?.getElementById('page'),error=doc?.getElementById('error')?.textContent;if(error||Date.now()-start>20000){clearInterval(timer);reject(Error(error||'Caricamento non riuscito. Riapri Modifica.'));}else if(page&&!page.classList.contains('hidden')){clearInterval(timer);resolve();}},80);});
       const doc=f.contentDocument;await Promise.all([...doc.images].map(img=>img.decode().catch(()=>{})));await doc.fonts.ready;
@@ -42,11 +46,11 @@
       const file=document.getElementById('logoFile').files?.[0];
       if(file){
         const value=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(Error('Impossibile leggere il logo.'));reader.readAsDataURL(file);});setLogo(value);
-        let logo=doc.querySelector('#tapManualLogo,img.logo,img#logo');
+        let logo=pageLogo(doc);
         if(!logo){logo=doc.createElement('img');logo.id='tapManualLogo';logo.alt='Logo attività';logo.style.cssText='position:fixed;left:50vw;top:3vh;width:55vw;height:auto;transform:translateX(-50%);z-index:20';doc.body.appendChild(logo);}
         logo.src=value;logo.classList.add('show');logo.classList.remove('hidden');logo.style.setProperty('display','block','important');
       }
-      if(window.tapLogoSkipped)doc.querySelectorAll('#tapManualLogo,img.logo,img#logo,[data-tap-manual-slot]').forEach(n=>n.remove());
+      if(logoRemoved||window.tapLogoSkipped)doc.querySelectorAll('#tapManualLogo,img.logo,img#logo,[data-tap-manual-slot]').forEach(n=>n.remove());
       TapManualLogoEditor.openSaved('<!doctype html>\n'+doc.documentElement.outerHTML);
     }catch(error){notice(error.message,true);}
   }
@@ -57,7 +61,7 @@
     busy=true;saveButton.disabled=true;
     try{
       const html=check.snapshot.html,doc=new DOMParser().parseFromString(html,'text/html');
-      const logo=doc.querySelector('#tapManualLogo,img.logo,img#logo')?.getAttribute('src')||null;
+      const logo=pageLogo(doc)?.getAttribute('src')||null;
       const data=await rows(await TapNfc.rest('rpc/save_client_page_composition',{method:'POST',body:JSON.stringify({p_client_id:client.id,p_html:html,p_logo_data:logo,p_expected_html:existingManual?savedHtml:null})}));
       const result=Array.isArray(data)?data[0]:data;if(!result?.link_nfc||result.link_nfc!==client.link_nfc)throw Error('Il salvataggio non ha confermato il link del cliente.');
       savedHtml=html;existingManual=true;finalNfcUrl=client.link_nfc;document.getElementById('finalLinkValue').textContent=client.link_nfc;document.getElementById('finalLinkBox').classList.add('show');TapTemplateStability.bindGeneratedLink(client.link_nfc);hideAdd();notice('Modifiche salvate. La pagina del cliente è aggiornata sullo stesso link.');
@@ -78,7 +82,7 @@
       slug=new URL(client.link_nfc).searchParams.get('c')||'';if(!/^[a-z0-9-]{1,80}$/.test(slug))throw Error('Link personalizzato non valido.');
       activity.value=client.categoria_codice;document.getElementById('destinationUrl').value=client.link_recensioni;
       const saved=await rows(await TapNfc.rest('manual_logo_pages?select=html&slug=eq.'+encodeURIComponent(slug)+'&limit=1'));
-      if(saved[0]?.html){existingManual=true;savedHtml=saved[0].html;const doc=new DOMParser().parseFromString(savedHtml,'text/html');setLogo(doc.querySelector('#tapManualLogo,img.logo,img#logo')?.getAttribute('src')||'');}
+      if(saved[0]?.html){existingManual=true;savedHtml=saved[0].html;const doc=new DOMParser().parseFromString(savedHtml,'text/html');setLogo(pageLogo(doc)?.getAttribute('src')||'');}
       else savedHtml=await legacyHtml();
       activity.disabled=true;preview.disabled=false;saveButton.disabled=false;preview.classList.add('show');loaded=true;
       notice('Pagina di '+client.nome+' caricata. Apri l’editor per modificare logo, testi, stelle e pulsante.');
