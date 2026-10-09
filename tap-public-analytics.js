@@ -27,21 +27,10 @@
 
   const review = document.getElementById('review');
   if (!review) return;
-  let leaving = false;
-  review.addEventListener('click', event => {
-    // Fumetti: allow the native external-link navigation. Blocking it can leave Google inside an embedded frame.
-    if (review.closest('.page.fumetti')) {
-      register('google_click', true).catch(() => {});
-      return;
-    }
-    if (leaving) return;
-    const href = review.href;
-    if (!href) return;
-    event.preventDefault();
-    leaving = true;
-    Promise.race([
-      register('google_click', true).catch(() => {}),
-      new Promise(resolve => setTimeout(resolve, 350))
-    ]).finally(() => { location.href = href; });
+  review.addEventListener('click', () => {
+    if (!review.hasAttribute('href')) return;
+    // Never intercept navigation: the browser opens Google directly.
+    // keepalive allows analytics to continue while navigating away.
+    register('google_click', true).catch(() => {});
   });
 })();
