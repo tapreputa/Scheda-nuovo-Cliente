@@ -19,10 +19,14 @@
     // Support only known CSS-background templates. Do not rewrite embedded
     // photographs, arbitrary img elements or legacy unknown compositions.
     const hasBackground = Boolean(
-      body?.style.backgroundImage || page?.style.backgroundImage ||
-      /background(?:-image)?\s*:[^;}]*url\(/i.test(html)
+      (body?.style.backgroundImage && body.style.backgroundImage !== 'none') ||
+      (page?.style.backgroundImage && page.style.backgroundImage !== 'none')
     );
-    if(!hasBackground) throw Error('Questo modello richiede una conversione controllata: nessuna modifica è stata pubblicata.');
+    // A background somewhere in a CSS rule or inside an embedded image does
+    // not establish that it is the actual page background. Fail closed.
+    if(!hasBackground || doc.querySelector('[data-tap-background],img.background-image,img#background')) {
+      throw Error('Sfondo non riconosciuto con sicurezza: cambio categoria bloccato. La pagina NFC originale resta invariata.');
+    }
     const asset=encodeURI(info.background);
     const old=doc.getElementById('tap-category-background-swap');
     old?.remove();
