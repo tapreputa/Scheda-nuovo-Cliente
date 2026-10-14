@@ -468,7 +468,7 @@ generateBtn.onclick = () => {
   if (!operatorSelect.value) return warn("Seleziona l’operatore.");
   if (!type) return warn("Seleziona la tipologia di attività.");
   if (!["standard","abbigliamento","autolavaggio","bar","barextra","ristorante","ristorantemare","pizzeria","gelateria","hamburgeria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria","laboratorioanalisi"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
-  if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
+  if (type !== "standard" && type !== "laboratorioanalisi" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
   if (!businessName) return warn("Nome attività non disponibile. Torna indietro e inseriscilo.");
 
@@ -588,7 +588,7 @@ previewBtn.addEventListener("click", async () => {
 
   if (!type) return warn("Seleziona la tipologia di attività.");
   if (!["standard","abbigliamento","autolavaggio","bar","barextra","ristorante","ristorantemare","pizzeria","gelateria","hamburgeria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria","laboratorioanalisi"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
-  if (type !== "standard" && !logoDataUrl) return warn("Carica il logo dell’attività.");
+  if (type !== "standard" && type !== "laboratorioanalisi" && !logoDataUrl) return warn("Carica il logo dell’attività.");
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
 
   if (type === "standard") {
@@ -666,6 +666,11 @@ previewBtn.addEventListener("click", async () => {
       const cfg = configs[type];
       const backgroundDataUrl = await loadBackgroundDataUrl(cfg.file);
       previewHtml = buildPremiumTemplate(logoDataUrl, reviewUrl, backgroundDataUrl, cfg);
+      if (type === "laboratorioanalisi" && !logoDataUrl) {
+        // No-logo layout: hide only the missing logo, preserve review and editable elements.
+        previewHtml = previewHtml.replace('<img class="logo" src="" alt="Logo attività">', '');
+        previewHtml = previewHtml.replace('</head>', '<style id="laboratorio-no-logo">.pagina{padding-top:clamp(70px,12vh,160px)!important}.eyebrow{font-size:clamp(18px,4.5vw,26px)!important}.messaggio-box{margin-top:20px!important}</style></head>');
+      }
       if (type === "cartolibreria") {
         previewHtml = previewHtml.replace("</head>", '<style id="cartolibreria-logo-fade">.logo{-webkit-mask-image:radial-gradient(ellipse at center,#000 70%,rgba(0,0,0,.94) 82%,transparent 100%)!important;mask-image:radial-gradient(ellipse at center,#000 70%,rgba(0,0,0,.94) 82%,transparent 100%)!important;border:none!important;box-shadow:none!important;background:transparent!important}</style>' + "</head>");
       }
