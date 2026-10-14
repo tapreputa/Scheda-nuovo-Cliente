@@ -49,6 +49,7 @@
     farmacia: 'Sfondofarmacia.jpg',
     fitness: 'Sfondofitness.jpg',
     fumetti: 'Sfondofumetti.webp',
+    laboratorioanalisi: 'Sfondolaboratorioanalisi.svg',
     gelateria: 'Sfondogelateria.jpg',
     hamburgeria: 'Sfondohamburgeria.png',
     ottica: 'Sfondoottica.png',
