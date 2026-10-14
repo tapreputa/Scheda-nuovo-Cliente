@@ -2,7 +2,7 @@
 
 Codice stabile: `laboratorioanalisi`
 Creazione: 2026-10-14
-Sfondo: `Sfondolaboratorioanalisi.svg`, disegno vettoriale adattabile ai display verticali.
+Sfondo attuale: `Sfondolaboratorioanalisi.svg`, contenitore SVG 720 × 1280 con fotografia WebP incorporata (non più il precedente disegno vettoriale). Fotografia installata sul ramo `main` dal commit `4e76ac2f775eaac7a244635d18a7086e3dcab68e` del 2026-10-14, descritto nel commit come fotografia luminosa approvata. Il file PNG originale `laboratorio_clinico_moderno_e_luminoso.png` non è conservato separatamente nel repository.
 Testo di default: "La tua esperienza conta per noi". Invito alla recensione basato su accoglienza, organizzazione e qualità del servizio.
 
 ## Integrazione effettuata
@@ -15,6 +15,14 @@ Testo di default: "La tua esperienza conta per noi". Invito alla recensione basa
 - Percorsi di riserva quando non c'è composizione salvata: `cliente.html` e `demo.html` includono sfondo e testi della categoria.
 - Recensioni Google: apertura esterna tramite link nativo; eccezione specifica nel listener analytics `tap-public-analytics.js`, senza alterare le altre categorie.
 - Le composizioni definitive restano gestite dall'editor e da `manual-logo.html`, con template HTML salvato su Supabase e percorso NFC `tap.html`.
+
+## Verifiche di repository aggiornate al 2026-10-14
+- Commit fotografia `4e76ac2f775eaac7a244635d18a7086e3dcab68e` verificato come HEAD di `main`.
+- Sfondo SVG esistente, con `image` incorporata in formato WebP e dimensioni 720 × 1280.
+- Mappatura della categoria riscontrata in `tap-categories.js`, `personalizza.html`, `tap-clienti-tools.js`, `tap-veterinario.js`, `cliente.html` e `demo.html`.
+- Gestione logo facoltativo in `tap-logo-optional.js` e interventi sull'editor in `tap-manual-logo-editor.js` riscontrati nel codice.
+- NON verificati tramite sessione interattiva: resa visuale esatta dell'immagine, navigazione Torna, salvataggi su Supabase, link recensioni di un potenziale reale, anteprima contro link finale, test Android e deploy effettivamente servito da GitHub Pages.
+- Questa verifica documentale non certifica il collaudo end-to-end.
 
 ## Verifiche eseguite
 - File SVG presente nel repository.
