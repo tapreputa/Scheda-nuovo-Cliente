@@ -317,7 +317,9 @@
     host.querySelector('#tapEditSave').addEventListener('click', saveCurrentEdit);
     host.querySelector('#tapEditPage').addEventListener('click', () => {
       const client=currentClient();if(!client)return;
-      const p=new URLSearchParams({client:client.id,business:client.nome||'',placeid:client.place_id||'',reviewurl:client.link_recensioni||'',category:client.categoria_codice||'',v:'20261009-client-edit3'});
+      const selected=host.querySelector('#tapEditCategory')?.value||client.categoria_codice||'';
+      const p=new URLSearchParams({client:client.id,business:client.nome||'',placeid:client.place_id||'',reviewurl:client.link_recensioni||'',category:client.categoria_codice||'',v:'20261015-atomic-category1'});
+      if(selected!==client.categoria_codice) p.set('requestedCategory',selected);
       location.href='personalizza.html?'+p.toString();
     });
     return host;
