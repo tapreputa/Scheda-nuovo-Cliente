@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261014-back-editor1';
+  const BUILD_ID = '20261015-dentista1';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
@@ -50,6 +50,7 @@
     fitness: 'Sfondofitness.jpg',
     fumetti: 'Sfondofumetti.webp',
     laboratorioanalisi: 'Sfondolaboratorioanalisi.svg',
+    dentista: 'Sfondodentista.svg',
     gelateria: 'Sfondogelateria.jpg',
     hamburgeria: 'Sfondohamburgeria.png',
     ottica: 'Sfondoottica.png',
