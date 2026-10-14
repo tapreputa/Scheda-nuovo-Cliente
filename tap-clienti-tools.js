@@ -31,6 +31,7 @@
     ['fioraio','Fioraio'],
     ['fotografo','Fotografo'],
     ['fumetti','Fumetti/Giochi'],
+    ['laboratorioanalisi','Laboratorio analisi cliniche'],
     ['gelateria','Gelaterie'],
     ['gioielleria','Gioielleria'],
     ['hotel','Hotel Isola'],
