@@ -468,7 +468,7 @@ generateBtn.onclick = () => {
   if (!operatorSelect.value) return warn("Seleziona l’operatore.");
   if (!type) return warn("Seleziona la tipologia di attività.");
   if (!["standard","abbigliamento","autolavaggio","bar","barextra","ristorante","ristorantemare","pizzeria","gelateria","hamburgeria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria","laboratorioanalisi"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
-  if (type !== "standard" && type !== "laboratorioanalisi" && !logoDataUrl) return warn("Carica il logo dell’attività.");
+  // Logo facoltativo: gestito da tap-logo-optional.js tramite conferma prima di proseguire.
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
   if (!businessName) return warn("Nome attività non disponibile. Torna indietro e inseriscilo.");
 
@@ -588,7 +588,7 @@ previewBtn.addEventListener("click", async () => {
 
   if (!type) return warn("Seleziona la tipologia di attività.");
   if (!["standard","abbigliamento","autolavaggio","bar","barextra","ristorante","ristorantemare","pizzeria","gelateria","hamburgeria","ottica","stabilimento","parrucchiere","barbershop","centroestetico","panificio","svapostore","yogurteria","detersivi","farmacia","fitness","pasticceria","pub","strumentimusicali","cartolibreria","laboratorioanalisi"].includes(type)) return warn("Il template master di questa categoria non è ancora stato configurato.");
-  if (type !== "standard" && type !== "laboratorioanalisi" && !logoDataUrl) return warn("Carica il logo dell’attività.");
+  // Logo facoltativo: gestito da tap-logo-optional.js tramite conferma prima di proseguire.
   if (!reviewUrl) return warn("Il link recensioni non è presente.");
 
   if (type === "standard") {
