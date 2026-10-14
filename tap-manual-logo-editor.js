@@ -17,6 +17,7 @@
   };
   let settings = {...defaults}, elements = {}, baselines = {}, selected = 'logo';
   let sourceHtml='',editing=false,publishing=false,publishedHash='';
+  let entryDraft=null;
   let imported=false,logoDirty=false,importedLogoState=false;
   let frame=null,toolbar=null,stage=null,nativeFrameStyle='',nativeTopbarDisplay='';
   let fitRequest=0,referenceViewport=null,opening=false,needsBaseline=false,ready=false,loadEpoch=0;
@@ -373,7 +374,16 @@
       toolbar.querySelector('[data-save]').onclick=commit;
       toolbar.querySelector('[data-edit]').onclick=()=>{editing=true;invalidate();toolbar.dataset.preview='false';syncControls();markSelection();warnings();scheduleFit();};
       toolbar.querySelector('[data-edit-close]').onclick=()=>{
-        if(editing){notice('Salva prima le modifiche alla pagina.');return;}
+        if(editing && !window.confirm('Uscire dalla personalizzazione senza salvare le modifiche?')) return;
+        if(editing && entryDraft){
+          settings=JSON.parse(JSON.stringify(entryDraft.settings));
+          elements=JSON.parse(JSON.stringify(entryDraft.elements));
+          logoDirty=entryDraft.logoDirty;
+          publishedHash=entryDraft.publishedHash;
+          persist();
+        }
+        editing=false;
+        restoreNativePreview();
         closeInlinePreview();
       };
       frame.addEventListener('load',installCanvas);
@@ -466,6 +476,7 @@
   const baseOpen=openInlinePreview;
   openInlinePreview=function(html){
     if(!enabled()){restoreNativePreview();return baseOpen(html);}
+    entryDraft={settings:JSON.parse(JSON.stringify(settings)),elements:JSON.parse(JSON.stringify(elements)),logoDirty,publishedHash};
     baselines={};ready=false;needsBaseline=true;sourceHtml=html;editing=true;opening=true;
     try{baseOpen(html);}finally{opening=false;}
     sourceHtml=document.getElementById('tapPreviewFrame')?.srcdoc||html;
