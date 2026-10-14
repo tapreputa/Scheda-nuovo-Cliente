@@ -1945,6 +1945,7 @@ async function load(){
  if(text[1]){message.textContent=text[1];message.classList.remove('hidden');}else{message.textContent='';message.classList.add('hidden');}
  document.getElementById('review').href=row.link_recensioni;
  if(cat==='fumetti')TapFumettiTemplate.applyLegacy(page);
+ if(cat==='laboratorioanalisi'){page.classList.add('laboratorioanalisi');const reviewLink=document.getElementById('review');reviewLink.setAttribute('target','_blank');reviewLink.setAttribute('rel','noopener noreferrer');}
  if(cat==='bar') page.classList.add('bar');
  if(cat==='barextra') page.classList.add('barextra');
  if(cat==='abbigliamento') page.classList.add('abbigliamento');
