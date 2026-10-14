@@ -28,7 +28,7 @@
     old?.remove();
     const style=doc.createElement('style');
     style.id='tap-category-background-swap';
-    style.textContent='html,body,body::before,body::after,#page,.page{background-image:url("'+asset+'")!important;background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important}';
+    style.textContent='html,body{background-image:url("'+asset+'")!important;background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important}#page,.page{background-image:none!important;background-color:transparent!important}';
     (doc.head||doc.documentElement).appendChild(style);
     doc.documentElement.dataset.tapCategory=categoryId;
     return '<!doctype html>\n'+doc.documentElement.outerHTML;
