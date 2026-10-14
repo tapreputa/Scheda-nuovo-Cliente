@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261014-lab1';
+  const BUILD_ID = '20261014-back-editor1';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
