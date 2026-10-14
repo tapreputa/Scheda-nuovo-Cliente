@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920" role="img" aria-label="Laboratorio analisi cliniche moderno">
+<defs>
+<linearGradient id="bg" x2=".85" y2="1"><stop stop-color="#06283b"/><stop offset=".53" stop-color="#0b5160"/><stop offset="1" stop-color="#062d44"/></linearGradient>
+<linearGradient id="glass" x2="1" y2="1"><stop stop-color="#e8ffff" stop-opacity=".4"/><stop offset="1" stop-color="#a3f3f1" stop-opacity=".06"/></linearGradient>
+<linearGradient id="tube" x2="0" y2="1"><stop stop-color="#d3ffff" stop-opacity=".8"/><stop offset="1" stop-color="#5ce0d8" stop-opacity=".13"/></linearGradient>
+<radialGradient id="halo"><stop stop-color="#80f6d9" stop-opacity=".32"/><stop offset="1" stop-color="#80f6d9" stop-opacity="0"/></radialGradient>
+<filter id="blur"><feGaussianBlur stdDeviation="50"/></filter>
+<pattern id="grid" width="90" height="90" patternUnits="userSpaceOnUse"><path d="M90 0H0V90" fill="none" stroke="#9ef7eb" stroke-opacity=".085" stroke-width="1"/></pattern>
+</defs>
+<rect width="1080" height="1920" fill="url(#bg)"/>
+<rect width="1080" height="1920" fill="url(#grid)"/>
+<circle cx="850" cy="245" r="430" fill="url(#halo)"/><circle cx="140" cy="1520" r="520" fill="url(#halo)"/>
+<g opacity=".33" fill="none" stroke="#9df9ed" stroke-width="6"><path d="M-60 360C200 60 440 650 710 310S1130 145 1210 420"/><path d="M-50 400C210 100 450 690 720 350S1140 185 1220 460" stroke-width="2"/></g>
+<g opacity=".68"><g transform="translate(95 125) rotate(-13)"><rect x="0" y="0" width="250" height="410" rx="25" fill="url(#glass)" stroke="#c5fffa" stroke-opacity=".5" stroke-width="5"/><path d="M48 60h155m-155 35h155m-155 35h95" stroke="#d4fffa" stroke-opacity=".44" stroke-width="11" stroke-linecap="round"/><circle cx="126" cy="270" r="80" fill="none" stroke="#81efe0" stroke-width="16"/><path d="M126 214v112m-56-56h112" stroke="#b5fff6" stroke-width="24" stroke-linecap="round"/></g></g>
+<g transform="translate(700 90) rotate(18)" opacity=".85">
+<rect x="0" y="0" width="110" height="420" rx="55" fill="url(#tube)" stroke="#c8fffb" stroke-width="9"/><rect x="-8" y="-10" width="126" height="65" rx="12" fill="#d9fffb" opacity=".84"/><path d="M15 278 Q60 250 95 278 V340 A42 42 0 0 1 15 340Z" fill="#27b9be" opacity=".75"/>
+</g>
+<g transform="translate(875 260) rotate(-21)" opacity=".60"><rect width="95" height="260" rx="45" fill="url(#tube)" stroke="#b5ffff" stroke-width="7"/><path d="M9 178q40-17 76 0v36q-35 52-76 0z" fill="#57dad1"/></g>
+<g transform="translate(0 1235)" opacity=".70">
+<path d="M0 290C260 160 470 240 680 100s330-100 400-165v560H0Z" fill="#064356" opacity=".65"/>
+<g transform="translate(75 160)"><rect x="0" y="210" width="930" height="200" rx="22" fill="#b9efec" opacity=".18"/><path d="M0 235h930M0 285h930" stroke="#d4fffa" stroke-opacity=".24" stroke-width="8"/></g>
+<g transform="translate(140 0)"><path d="M0 75h270v52H0z" fill="#dbfffa" opacity=".28"/><path d="M38 0h50v75H38zm78-25h50v100h-50zm79 12h50v88h-50z" fill="#9de9e7" opacity=".7"/><rect x="48" y="83" width="30" height="120" rx="12" fill="#b9fffb" stroke="#e1fffa" stroke-width="5"/><rect x="125" y="83" width="30" height="120" rx="12" fill="#b9fffb" stroke="#e1fffa" stroke-width="5"/><rect x="202" y="83" width="30" height="120" rx="12" fill="#b9fffb" stroke="#e1fffa" stroke-width="5"/><path d="M52 151h22v37H52zm77-14h22v51h-22zm77 27h22v24h-22z" fill="#00bdb5"/></g>
+<g transform="translate(720 0)"><circle cx="120" cy="100" r="120" fill="#aefcf6" opacity=".20"/><circle cx="120" cy="100" r="85" fill="none" stroke="#bffffa" stroke-width="14"/><circle cx="120" cy="100" r="48" fill="none" stroke="#bffffa" stroke-width="10"/><path d="M120 3v194M23 100h194" stroke="#bffffa" stroke-width="6"/></g></g>
+<rect width="1080" height="1920" fill="#00121e" opacity=".09"/>
+</svg>
