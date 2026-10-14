@@ -536,7 +536,7 @@
   function loadVeterinarioSupport() {
     if (PAGE_NAME !== 'personalizza.html' || document.querySelector('script[data-tap-veterinario]')) return;
     const script = document.createElement('script');
-    script.src = 'tap-veterinario.js?v=20261014-lab1';
+    script.src = 'tap-veterinario.js?v=20261014-back-editor1';
     script.dataset.tapVeterinario = '1';
     document.body.appendChild(script);
   }
