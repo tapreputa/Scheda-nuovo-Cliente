@@ -549,7 +549,7 @@
     const src = modules[PAGE_NAME];
     if (!src || document.querySelector(`script[data-tap-page-tools="${src}"]`)) return;
     const script = document.createElement('script');
-    script.src = src + '?v=20261009-fumetti-caption7';
+    script.src = src + '?v=20261014-lab1';
     script.dataset.tapPageTools = src;
     document.body.appendChild(script);
   }
