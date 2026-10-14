@@ -2313,6 +2313,24 @@ Dicci la tua! Bastano 2 secondi!
 </body>
 </html>`;
 }
+
+// Capture missing-logo clicks before legacy handlers; keep the existing optional-logo state.
+// Works even when an old category-specific handler still validates logoDataUrl.
+document.addEventListener('click', function tapNoLogoCapture(event) {
+  const button=event.target.closest?.('#previewBtn,#generateBtn');
+  if (!button || button.disabled) return;
+  const category=document.getElementById('activityType')?.value || '';
+  if (!category || category === 'standard' || window.tapLogoSkipped || logoDataUrl) return;
+  if (!window.confirm('Non hai caricato il logo dell’attività.\nVuoi proseguire senza logo?')) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    return;
+  }
+  window.tapLogoSkipped=true;
+  logoDataUrl='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+  window.dispatchEvent(new CustomEvent('tap-logo-skip-change',{detail:{skipped:true}}));
+}, true);
+
 </script>
 <script src="tap-logo-legibility.js?v=20261008-logo-surface1"></script>
 <script src="tap-auth.js?v=20261014-lab1"></script>
