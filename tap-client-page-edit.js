@@ -89,6 +89,9 @@
       }
       if(logoRemoved||window.tapLogoSkipped)doc.querySelectorAll('#tapManualLogo,img.logo,img#logo,[data-tap-manual-slot]').forEach(n=>n.remove());
       TapManualLogoEditor.openSaved('<!doctype html>\n'+doc.documentElement.outerHTML);
+      // Only the first opening uses the category replacement seed. Later
+      // openings must retain the latest editor draft, not overwrite edits.
+      categoryDraft='';
     }catch(error){notice(error.message,true);}
   }
   async function save(){
