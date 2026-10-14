@@ -29,8 +29,8 @@
   if (!review) return;
   let leaving = false;
   review.addEventListener('click', event => {
-    // Fumetti: allow the native external-link navigation. Blocking it can leave Google inside an embedded frame.
-    if (review.closest('.page.fumetti')) {
+    // Fumetti and Laboratorio analisi: keep native external-link navigation. Blocking it can leave Google inside an embedded frame.
+    if (review.closest('.page.fumetti, .page.laboratorioanalisi')) {
       register('google_click', true).catch(() => {});
       return;
     }
