@@ -419,19 +419,6 @@
     try {
       const category = host.querySelector('#tapEditCategory');
       const selected = category.options[category.selectedIndex];
-      // Safety invariant: the NFC page is a saved HTML composition. Changing
-      // only categoria_codice would leave the previous background public.
-      // Never mutate a paying customer's category metadata without publishing
-      // the corresponding page composition in the same protected workflow.
-      const previousCategory = String(client.categoria_codice || '').trim();
-      const requestedCategory = String(category.value || '').trim();
-      if (requestedCategory !== previousCategory) {
-        msg.className = 'tap-edit-msg show error';
-        msg.textContent = 'Categoria NON modificata: per proteggere la pagina NFC e i clienti esistenti, il cambio categoria richiede la pubblicazione contestuale del nuovo sfondo. Nessun dato è stato salvato. Puoi ancora modificare la pagina con il pulsante dedicato.';
-        save.disabled = false;
-        save.textContent = 'Salva modifiche';
-        return;
-      }
       const patch = {
         categoria_codice: category.value || null,
         categoria: selected?.textContent || null,
