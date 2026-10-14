@@ -1,6 +1,24 @@
 # TAPREPUTA — Procedura stabile per nuove categorie e controllo finale
 Data di riferimento: 2026-10-09. Documento operativo; non esegue codice.
 
+## COMANDO OPERATIVO UFFICIALE: "creare nuova categoria" (2026-10-14)
+Ogni volta che l'utente scrive esattamente o sostanzialmente **"creare nuova categoria"**, applicare questa procedura dall'inizio alla fine. Non proporre di riscrivere la checklist: USARLA direttamente.
+
+1. **Nome e codice**: ottenere nome categoria; controllare duplicati e stabilire uno slug univoco stabile.
+2. **6 sfondi fotografici HQ**: mostrare prima 6 alternative verticali 9:16, con spazio per logo/didascalia/pulsante/stelle; consentire selezione; NON installare alcuno sfondo finché l'utente non ne approva uno. Se l'utente ha già scelto, saltare questo passo.
+3. **Una sola fonte categorie**: aggiornare il registro centrale `tap-categories.js` e i mapping effettivamente richiesti dal codice corrente, senza duplicare renderer, menu o sistemi.
+4. **Collegamento in TUTTI i flussi**: Nuovo cliente, Nuovo potenziale, Modifica categoria cliente, Modifica potenziale, Personalizza, anteprima, pagina pubblica `cliente.html`/`demo.html` quando utilizzate, e pagine salvate `manual-logo.html` tramite percorso `tap.html`.
+5. **Logo FACOLTATIVO per TUTTE le categorie**: preservare `tap-logo-optional.js`, la conferma senza logo e `tapLogoSkipped`. Non aggiungere vincoli globali di logo. Verificare direttamente in APP e browser; cache/versioni dei moduli devono combaciare.
+6. **Editor collaudato**: riusare `tap-manual-logo-editor.js` per didascalia, testo, stelle, logo e pulsante. `Torna` deve sempre permettere uscita senza salvataggio (con conferma quando ci sono modifiche). Evitare CSS speciali che causano testi fuori pagina o bande.
+7. **Recensioni**: Place ID reale e collegamento diretto a `https://search.google.com/local/writereview?placeid=...`; apertura browser fuori dall'iframe, niente 401. Non usare link Maps Search.
+8. **Anteprima = finale**: la composizione HTML salvata è autorevole; provare URL NFC effettivo e pagina pubblica, non confondere `cliente.html` con `manual-logo.html`.
+9. **Test senza toccare clienti**: usare potenziale di prova; provare con e senza logo, editor/Torna/salvataggio, modifica categoria, resa verticale senza bande, Google cinque stelle, regression test su almeno una categoria storica e un cliente funzionante.
+10. **Consegna e memoria operativa**: riportare file/commit e ciò che è verificato vs ancora da collaudare. Non dichiarare completata categoria finché test in app e link definitivo superati. Non modificare inventario o clienti paganti.
+
+Obiettivo: procedura ripetibile e rapida, fino a circa 10 categorie/ora se asset e verifiche lo consentono; rapidità non sostituisce test.
+
+---
+
 ## Regola fondamentale
 Non ricostruire o modificare l'app per aggiungere una categoria se il meccanismo esistente può riutilizzare un template. Separare SEMPRE: aspetto della pagina, Place ID/link recensioni, pagina salvata, link NFC.
 Per clienti/potenziali con composizione manuale salvata, il percorso effettivo è:
