@@ -103,7 +103,7 @@
       const changing=!potential && requestedCategory && requestedCategory!==client.categoria_codice;
       const endpoint=changing?'rpc/save_client_category_composition':'rpc/save_'+(potential?'potential':'client')+'_page_composition';
       const payload=changing?{p_client_id:client.id,p_expected_category:client.categoria_codice,p_category:requestedCategory,
-        p_category_label:window.TapCategories.get(requestedCategory).label,p_html:html,p_expected_html:existingManual?savedHtml:null}
+        p_category_label:window.TapCategories.get(requestedCategory).label,p_html:html,p_logo_data:logo,p_expected_html:existingManual?savedHtml:null}
         :{[potential?'p_potential_id':'p_client_id']:client.id,p_html:html,p_logo_data:logo,p_expected_html:existingManual?savedHtml:null};
       const data=await rows(await TapNfc.rest(endpoint,{method:'POST',body:JSON.stringify(payload)}));
       const result=Array.isArray(data)?data[0]:data;if(!result?.link_nfc||result.link_nfc!==client.link_nfc)throw Error('Il salvataggio non ha confermato il link del '+label+'.');
