@@ -6,6 +6,7 @@ create or replace function public.save_client_category_composition(
   p_category text,
   p_category_label text,
   p_html text,
+  p_logo_data text,
   p_expected_html text
 ) returns table(link_nfc text)
 language plpgsql security invoker set search_path = ''
@@ -38,6 +39,10 @@ begin
   if p_html is null or octet_length(p_html) not between 100 and 15000000 then
     raise exception 'Composizione non valida.';
   end if;
+  if position('data-tap-category="' || p_category || '"' in p_html)=0
+     or position('tap-category-background-swap' in p_html)=0 then
+    raise exception 'La composizione non corrisponde alla categoria selezionata.';
+  end if;
   select html into v_old_html from public.manual_logo_pages
     where slug = v_slug for update;
   if v_old_html is distinct from p_expected_html then
@@ -52,10 +57,11 @@ begin
   update public.clienti
     set categoria_codice = p_category,
         categoria = p_category_label,
+        logo_data = p_logo_data,
         updated_by = auth.uid()
     where id = v_client.id;
   link_nfc := v_client.link_nfc;
   return next;
 end $$;
-revoke all on function public.save_client_category_composition(uuid,text,text,text,text,text) from public, anon;
-grant execute on function public.save_client_category_composition(uuid,text,text,text,text,text) to authenticated;
+revoke all on function public.save_client_category_composition(uuid,text,text,text,text,text,text) from public, anon;
+grant execute on function public.save_client_category_composition(uuid,text,text,text,text,text,text) to authenticated;
