@@ -6,6 +6,33 @@
   if(potential && document.getElementById('activityType').value==='standard') return;
   const activity=document.getElementById('activityType'),preview=document.getElementById('previewBtn'),saveButton=document.getElementById('generateBtn'),add=document.getElementById('addClientBtn'),msg=document.getElementById('msg');
   let client=null,slug='',savedHtml='',busy=false,loaded=false,existingManual=false,logoRemoved=false;
+  // Category changes are opt-in, never an implicit rewrite of an existing page.
+  let requestedCategory='',categoryDraft='';
+  const categoryFromLink=params.get('requestedCategory')||'';
+  function prepareCategoryDraft(html,categoryId){
+    const info=window.TapCategories?.get(categoryId);
+    if(!info?.background || !/^Sfondo[a-zA-Z0-9_-]+\.(?:svg|png|jpg|jpeg|webp)$/.test(info.background)) {
+      throw Error('La categoria scelta non ha uno sfondo registrato.');
+    }
+    const doc=new DOMParser().parseFromString(html,'text/html');
+    const body=doc.body,page=doc.getElementById('page');
+    // Support only known CSS-background templates. Do not rewrite embedded
+    // photographs, arbitrary img elements or legacy unknown compositions.
+    const hasBackground = Boolean(
+      body?.style.backgroundImage || page?.style.backgroundImage ||
+      /background(?:-image)?\s*:[^;}]*url\(/i.test(html)
+    );
+    if(!hasBackground) throw Error('Questo modello richiede una conversione controllata: nessuna modifica è stata pubblicata.');
+    const asset=encodeURI(info.background);
+    const old=doc.getElementById('tap-category-background-swap');
+    old?.remove();
+    const style=doc.createElement('style');
+    style.id='tap-category-background-swap';
+    style.textContent='html,body,body::before,body::after,#page,.page{background-image:url("'+asset+'")!important;background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important}';
+    (doc.head||doc.documentElement).appendChild(style);
+    doc.documentElement.dataset.tapCategory=categoryId;
+    return '<!doctype html>\n'+doc.documentElement.outerHTML;
+  }
   function pageLogo(doc){return doc.getElementById('tapManualLogo')||doc.querySelector('img.logo:not([data-tap-manual-slot]),img#logo');}
   function notice(text,error=false){msg.className='message show '+(error?'warn':'ok');msg.textContent=text;}
   function hideAdd(){add.hidden=true;add.style.setProperty('display','none','important');}
@@ -46,7 +73,7 @@
     if(!loaded||busy)return;
     try{
       if(window.TapLogoAutocrop)await TapLogoAutocrop.whenReady();
-      let html=TapManualLogoEditor.getDraft()||savedHtml;
+      let html=categoryDraft || TapManualLogoEditor.getDraft()||savedHtml;
       const doc=new DOMParser().parseFromString(html,'text/html');
       const file=document.getElementById('logoFile').files?.[0];
       if(file){
@@ -67,10 +94,20 @@
     busy=true;saveButton.disabled=true;
     try{
       const html=check.snapshot.html,doc=new DOMParser().parseFromString(html,'text/html');
+      if(requestedCategory && requestedCategory !== client.categoria_codice &&
+          (doc.documentElement.dataset.tapCategory !== requestedCategory ||
+           !doc.getElementById('tap-category-background-swap'))) {
+        throw Error('Il nuovo sfondo non è presente nella composizione da salvare.');
+      }
       const logo=pageLogo(doc)?.getAttribute('src')||null;
-      const data=await rows(await TapNfc.rest('rpc/save_'+(potential?'potential':'client')+'_page_composition',{method:'POST',body:JSON.stringify({[potential?'p_potential_id':'p_client_id']:client.id,p_html:html,p_logo_data:logo,p_expected_html:existingManual?savedHtml:null})}));
+      const changing=!potential && requestedCategory && requestedCategory!==client.categoria_codice;
+      const endpoint=changing?'rpc/save_client_category_composition':'rpc/save_'+(potential?'potential':'client')+'_page_composition';
+      const payload=changing?{p_client_id:client.id,p_expected_category:client.categoria_codice,p_category:requestedCategory,
+        p_category_label:window.TapCategories.get(requestedCategory).label,p_html:html,p_expected_html:existingManual?savedHtml:null}
+        :{[potential?'p_potential_id':'p_client_id']:client.id,p_html:html,p_logo_data:logo,p_expected_html:existingManual?savedHtml:null};
+      const data=await rows(await TapNfc.rest(endpoint,{method:'POST',body:JSON.stringify(payload)}));
       const result=Array.isArray(data)?data[0]:data;if(!result?.link_nfc||result.link_nfc!==client.link_nfc)throw Error('Il salvataggio non ha confermato il link del '+label+'.');
-      savedHtml=html;existingManual=true;finalNfcUrl=client.link_nfc;document.getElementById('finalLinkValue').textContent=client.link_nfc;document.getElementById('finalLinkBox').classList.add('show');TapTemplateStability.bindGeneratedLink(client.link_nfc);hideAdd();notice('Modifiche salvate. La pagina del '+label+' è aggiornata sullo stesso link.');
+      savedHtml=html;existingManual=true;if(changing){client.categoria_codice=requestedCategory;requestedCategory='';categoryDraft='';}finalNfcUrl=client.link_nfc;document.getElementById('finalLinkValue').textContent=client.link_nfc;document.getElementById('finalLinkBox').classList.add('show');TapTemplateStability.bindGeneratedLink(client.link_nfc);hideAdd();notice('Modifiche salvate. La pagina del '+label+' è aggiornata sullo stesso link.');
     }catch(error){notice('Modifiche non salvate: '+error.message,true);}finally{busy=false;saveButton.disabled=false;}
   }
   window.TapClientPageEdit=Object.freeze({active:()=>true,save});
@@ -92,6 +129,13 @@
       const saved=await rows(await TapNfc.rest('manual_logo_pages?select=html&slug=eq.'+encodeURIComponent(slug)+'&limit=1'));
       if(saved[0]?.html){existingManual=true;savedHtml=saved[0].html;const doc=new DOMParser().parseFromString(savedHtml,'text/html');setLogo(pageLogo(doc)?.getAttribute('src')||'');}
       else savedHtml=await legacyHtml();
+      if(!potential && categoryFromLink && categoryFromLink!==client.categoria_codice){
+        if(!window.TapCategories?.get(categoryFromLink))throw Error('Categoria richiesta inesistente.');
+        requestedCategory=categoryFromLink;
+        categoryDraft=prepareCategoryDraft(savedHtml,requestedCategory);
+        activity.value=requestedCategory;
+        notice('Nuovo sfondo preparato. Apri anteprima e salva solo dopo aver verificato tutte le posizioni.');
+      }
       activity.disabled=true;preview.disabled=false;saveButton.disabled=false;preview.classList.add('show');loaded=true;
       notice('Pagina di '+client.nome+' caricata. Apri l’editor per modificare logo, didascalia, testi, stelle e pulsante.');
     }catch(error){notice(error.message,true);}
