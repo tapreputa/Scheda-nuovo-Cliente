@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261015-credit-footer3';
+  const BUILD_ID = '20261016-credit-size4';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
