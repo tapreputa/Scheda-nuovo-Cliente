@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261015-credit-position1';
+  const BUILD_ID = '20261015-credit-visible2';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
