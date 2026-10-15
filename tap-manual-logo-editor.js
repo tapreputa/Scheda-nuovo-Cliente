@@ -161,6 +161,18 @@
         'line-height':base.lineHeight,'letter-spacing':base.letterSpacing,'text-transform':base.textTransform,
         'text-align':value.align,color:value.color
       });
+      if(id==='credit'){
+        // Preserve the brand's two-line layout: auto-sized footer, not a narrow vw box.
+        // Scale the prominent Tapreputa word with the smaller 'Powered by' caption.
+        css(node,{'width':'max-content','min-width':'max-content','max-width':'95vw',
+          'white-space':'nowrap','overflow-wrap':'normal','word-break':'normal',
+          'text-align':'right','height':'auto'});
+        const strong=node.querySelector('strong');
+        if(strong && base.strongFontSize && base.fontSize){
+          css(strong,{'font-size':(base.strongFontSize*value.fontSize/base.fontSize)+'px',
+            'white-space':'nowrap','overflow-wrap':'normal','word-break':'normal'});
+        }
+      }
       if(id==='caption' && node.classList.contains('fumetti-copy')){
         const scale=value.width/base.width;
         css(node,{padding:base.paddingY*scale+'px '+base.paddingX*scale+'px','border-radius':base.radius*scale+'px',height:'auto','min-height':'0','text-transform':'none','letter-spacing':'normal'});
@@ -291,6 +303,7 @@
         paddingY:parseFloat(style.paddingTop)||0,paddingX:parseFloat(style.paddingRight)||0,
         messageFontSize:node.querySelector('#message,.box')?parseFloat(frame.contentWindow.getComputedStyle(node.querySelector('#message,.box')).fontSize):0,
         background:toHex(style.backgroundImage.match(/rgba?\([^)]+\)/)?.[0]||style.backgroundColor,'#b66c27'),radius:parseFloat(style.borderTopLeftRadius)||0,
+        strongFontSize:node.querySelector('strong')?parseFloat(frame.contentWindow.getComputedStyle(node.querySelector('strong')).fontSize):0,
         brightness:Math.round(100*Number(style.filter.match(/brightness\(([\d.]+)\)/)?.[1]||1))
       };
     }
@@ -400,7 +413,7 @@
     const value=valueFor(selected)||{},isText=selected==='caption'||selected==='message';
     toolbar.querySelectorAll('[data-select]').forEach(b=>{b.hidden=!baselines[b.dataset.select];b.setAttribute('aria-pressed',String(b.dataset.select===selected));});
     const grouped=activity.value==='fumetti'&&(selected==='caption'||selected==='message');
-    const shown={width:selected!=='stars'&&selected!=='credit'&&!(grouped&&selected==='message'),fontSize:selected!=='logo'&&selected!=='credit'&&!grouped,height:selected==='button',radius:selected==='button',brightness:selected==='stars'};
+    const shown={width:selected!=='stars'&&selected!=='credit'&&!(grouped&&selected==='message'),fontSize:selected!=='logo'&&!grouped,height:selected==='button',radius:selected==='button',brightness:selected==='stars'};
     for(const [name,show] of Object.entries(shown)){
       toolbar.querySelector('[data-row="'+name+'"]').hidden=!show;
       const control=toolbar.querySelector('[data-control="'+name+'"]');control.value=Math.round(value[name]??control.min);
