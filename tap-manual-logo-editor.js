@@ -14,7 +14,7 @@
     message:{label:'Testo aggiuntivo',selector:'.messaggio-box,.messaggio,#message,p.text'},
     stars:{label:'Stelle',selector:'.stelle,.stars'},
     button:{label:'Pulsante recensione',selector:'a.bottone-google,#bottoneGoogle,a.review,a.btn'},
-    credit:{label:'Powered by Tapreputa',selector:'footer'}
+    credit:{label:'Powered by Tapreputa',selector:'footer,.footer'}
   };
   let settings = {...defaults}, elements = {}, baselines = {}, selected = 'logo';
   let sourceHtml='',editing=false,publishing=false,publishedHash='';
