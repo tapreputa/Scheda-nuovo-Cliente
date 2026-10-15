@@ -326,7 +326,7 @@
         '#tapManualControls label{margin:0;font:inherit;display:block}',
         '#tapManualControls button{margin:0;width:auto;min-width:0;min-height:32px;height:auto;padding:5px 7px;border:1px solid #a8c9bf;border-radius:7px;background:#fff;color:#123d34;font:700 12px/1.2 Arial,Helvetica,sans-serif;cursor:pointer;touch-action:manipulation;white-space:nowrap}',
         '#tapManualControls button:focus-visible{outline:3px solid #157861;outline-offset:1px}#tapManualControls button[aria-pressed=true]{background:#096b59;color:#fff;border-color:#096b59}',
-        '#tapManualControls [data-select-row]{display:flex;gap:4px;overflow-x:auto;padding:1px}#tapManualControls [data-select-row] button{flex:1;font-size:11px}',
+        '#tapManualControls [data-select-row]{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;overflow:visible;padding:1px}#tapManualControls [data-select-row] button{width:100%;min-height:36px;font-size:11px;white-space:normal;line-height:1.15}',
         '#tapManualControls [data-range-row]{display:grid;grid-template-columns:68px 1fr 38px;gap:6px;align-items:center;min-height:24px}',
         '#tapManualControls input[type=range]{width:100%;height:24px;margin:0;min-width:0;accent-color:#00866d}',
         '#tapManualControls [data-surface-row]{display:grid;grid-template-columns:68px repeat(3,1fr);gap:5px;align-items:center}',
@@ -347,7 +347,7 @@
       toolbar=document.createElement('div');toolbar.id='tapManualControls';
       const range=(name,label,min,max)=>'<div data-edit-only data-range-row data-row="'+name+'"><label for="tapPage-'+name+'">'+label+'</label><input id="tapPage-'+name+'" data-control="'+name+'" type="range" min="'+min+'" max="'+max+'" step="1"><output data-output="'+name+'"></output></div>';
       toolbar.innerHTML='<strong data-preview-heading>Anteprima salvata ✓</strong>'+
-        '<div data-edit-only data-select-row>'+Object.entries(definitions).map(([id,d])=>'<button type="button" data-select="'+id+'">'+(id==='button'?'Pulsante':id==='message'?'Testo':d.label)+'</button>').join('')+'</div>'+
+        '<div data-edit-only data-select-row>'+Object.entries(definitions).map(([id,d])=>'<button type="button" data-select="'+id+'">'+(id==='button'?'Pulsante':id==='message'?'Testo':id==='credit'?'Powered by':d.label)+'</button>').join('')+'</div>'+
         '<label data-edit-only data-text-row><span data-text-label>Testo</span><textarea data-text aria-label="Testo elemento selezionato" rows="2" maxlength="4000"></textarea></label>'+
         range('width','Larghezza',10,95)+range('fontSize','Dimensione',10,72)+range('height','Altezza',32,120)+range('radius','Angoli',0,60)+range('brightness','Luminosità',50,200)+
         '<div data-edit-only data-color-row><label data-color-label for="tapPage-color">Colore</label><input id="tapPage-color" data-control="color" type="color" aria-label="Colore elemento"><input data-hex="color" aria-label="Codice colore elemento" maxlength="7"><label data-background-label for="tapPage-background">Sfondo</label><input id="tapPage-background" data-control="background" type="color" aria-label="Colore sfondo pulsante"><input data-hex="background" aria-label="Codice colore sfondo pulsante" maxlength="7"><label data-align-label for="tapPage-align">Allinea</label><select id="tapPage-align" data-control="align" aria-label="Allineamento testo"><option value="left">Sinistra</option><option value="center">Centro</option><option value="right">Destra</option></select></div>'+
