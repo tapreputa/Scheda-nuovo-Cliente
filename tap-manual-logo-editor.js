@@ -13,7 +13,8 @@
     caption:{label:'Didascalia',get selector(){return activity.value==='fumetti'?'.fumetti-copy':'.eyebrow,.headline,h1.title';}},
     message:{label:'Testo aggiuntivo',selector:'.messaggio-box,.messaggio,#message,p.text'},
     stars:{label:'Stelle',selector:'.stelle,.stars'},
-    button:{label:'Pulsante recensione',selector:'a.bottone-google,#bottoneGoogle,a.review,a.btn'}
+    button:{label:'Pulsante recensione',selector:'a.bottone-google,#bottoneGoogle,a.review,a.btn'},
+    credit:{label:'Powered by Tapreputa',selector:'footer'}
   };
   let settings = {...defaults}, elements = {}, baselines = {}, selected = 'logo';
   let sourceHtml='',editing=false,publishing=false,publishedHash='';
@@ -399,7 +400,7 @@
     const value=valueFor(selected)||{},isText=selected==='caption'||selected==='message';
     toolbar.querySelectorAll('[data-select]').forEach(b=>{b.hidden=!baselines[b.dataset.select];b.setAttribute('aria-pressed',String(b.dataset.select===selected));});
     const grouped=activity.value==='fumetti'&&(selected==='caption'||selected==='message');
-    const shown={width:selected!=='stars'&&!(grouped&&selected==='message'),fontSize:selected!=='logo'&&!grouped,height:selected==='button',radius:selected==='button',brightness:selected==='stars'};
+    const shown={width:selected!=='stars'&&selected!=='credit'&&!(grouped&&selected==='message'),fontSize:selected!=='logo'&&selected!=='credit'&&!grouped,height:selected==='button',radius:selected==='button',brightness:selected==='stars'};
     for(const [name,show] of Object.entries(shown)){
       toolbar.querySelector('[data-row="'+name+'"]').hidden=!show;
       const control=toolbar.querySelector('[data-control="'+name+'"]');control.value=Math.round(value[name]??control.min);
@@ -411,7 +412,7 @@
     toolbar.querySelector('[data-position-row]').hidden=grouped&&selected==='message';
     toolbar.querySelector('[data-text-row]').hidden=!(isText||selected==='button');
     const text=toolbar.querySelector('[data-text]');if(force || text!==document.activeElement) text.value=value.text??'';
-    toolbar.querySelector('[data-color-row]').hidden=selected==='logo';
+    toolbar.querySelector('[data-color-row]').hidden=selected==='logo'||selected==='credit';
     toolbar.querySelector('[data-control="color"]').value=value.color||'#ffffff';
     toolbar.querySelector('[data-control="background"]').value=value.background||'#b66c27';
     toolbar.querySelectorAll('[data-hex]').forEach(input=>{if(force || input!==document.activeElement) input.value=value[input.dataset.hex]||'#ffffff';});
