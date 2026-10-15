@@ -536,7 +536,7 @@
   function loadVeterinarioSupport() {
     if (PAGE_NAME !== 'personalizza.html' || document.querySelector('script[data-tap-veterinario]')) return;
     const script = document.createElement('script');
-    script.src = 'tap-veterinario.js?v=20261015-credit-footer3';
+    script.src = 'tap-veterinario.js?v=20261016-credit-size4';
     script.dataset.tapVeterinario = '1';
     document.body.appendChild(script);
   }
