@@ -32,6 +32,7 @@
     ['fotografo','Fotografo'],
     ['fumetti','Fumetti/Giochi'],
     ['laboratorioanalisi','Laboratorio analisi cliniche'],
+    ['carrellielevatori','Carrelli elevatori'],
     ['dentista','Dentista'],
     ['gelateria','Gelaterie'],
     ['gioielleria','Gioielleria'],

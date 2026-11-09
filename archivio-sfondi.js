@@ -11,6 +11,7 @@
     ['Cartolibreria','Sfondocartolibreria.png'],
     ['Centri estetici','Sfondocentroestetico.jpg'],
     ['Detersivi e casalinghi','Sfondodetersivi.jpg'],
+    ['Carrelli elevatori','Sfondocarrellielevatori.webp'],
     ['Dentista','Sfondodentista.svg'],
     ['Enoteca','Sfondoenoteca.png'],
     ['Farmacie','Sfondofarmacia.jpg'],

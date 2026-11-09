@@ -3,7 +3,7 @@
 
   if ((location.pathname.split('/').pop() || '') !== 'personalizza.html') return;
 
-  const BUILD_ID = '20261016-credit-size4';
+  const BUILD_ID = '20261109-carrellielevatori1';
 
   function syncAuthenticatedOperator() {
     const select = document.getElementById('operatorSelect');
@@ -51,6 +51,7 @@
     fumetti: 'Sfondofumetti.webp',
     laboratorioanalisi: 'Sfondolaboratorioanalisi.svg',
     dentista: 'Sfondodentista.svg',
+    carrellielevatori: 'Sfondocarrellielevatori.webp',
     gelateria: 'Sfondogelateria.jpg',
     hamburgeria: 'Sfondohamburgeria.png',
     ottica: 'Sfondoottica.png',
